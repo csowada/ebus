@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,20 +23,24 @@ import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusQueue.QueueEntry;
 import de.csdev.ebus.core.connection.IEBusConnection;
-import de.csdev.ebus.telegram.IEBusTelegram;
+import de.csdev.ebus.telegram.EBusTelegram;
 import de.csdev.ebus.utils.EBusUtils;
 
+/**
+ * @author Christian Sowada
+ *
+ */
 public class EBusController extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusController.class);
-
+    
+    /** the list for listeners */
+    private final List<EBusConnectorEventListener> listeners = new ArrayList<EBusConnectorEventListener>();
+    
     private IEBusConnection connection;
 
     /** serial receive buffer */
     private final ByteBuffer inputBuffer = ByteBuffer.allocate(100);
-
-    /** the list for listeners */
-    private final List<EBusConnectorEventListener> listeners = new ArrayList<EBusConnectorEventListener>();
 
     private EBusQueue queue = new EBusQueue();
 
@@ -86,10 +90,10 @@ public class EBusController extends Thread {
         // afterwards check for next sending slot
         queue.checkSendStatus();
 
-        if (inputBuffer.position() == 1 && inputBuffer.get(0) == IEBusTelegram.SYN) {
+        if (inputBuffer.position() == 1 && inputBuffer.get(0) == EBusTelegram.SYN) {
             logger.trace("Auto-SYN byte received");
 
-        } else if (inputBuffer.position() == 2 && inputBuffer.get(0) == IEBusTelegram.SYN) {
+        } else if (inputBuffer.position() == 2 && inputBuffer.get(0) == EBusTelegram.SYN) {
             logger.warn("Collision on eBUS detected (SYN DATA SYNC Sequence) ...");
 
         } else if (inputBuffer.position() < 7) {
@@ -99,7 +103,7 @@ public class EBusController extends Thread {
             byte[] receivedRawData = Arrays.copyOf(inputBuffer.array(), inputBuffer.position());
 
             // execute event
-            onEBusTelegramReceived(receivedRawData, null);
+            fireOnEBusTelegramReceived(receivedRawData, null);
         }
 
         // reset receive buffer
@@ -112,7 +116,7 @@ public class EBusController extends Thread {
      *
      * @param telegram
      */
-    private void onEBusTelegramReceived(final byte[] receivedRawData, final Integer sendQueueId) {
+    private void fireOnEBusTelegramReceived(final byte[] receivedRawData, final Integer sendQueueId) {
 
         if (threadPool == null) {
             logger.warn("ThreadPool not ready!");
@@ -125,6 +129,8 @@ public class EBusController extends Thread {
 
                 try {
                     byte[] receivedData = EBusUtils.decodeExpandedData(receivedRawData);
+                    receivedData = receivedRawData;
+                    
                     if (receivedData != null) {
                         for (EBusConnectorEventListener listener : listeners) {
                             listener.onTelegramReceived(receivedData, sendQueueId);
@@ -134,16 +140,37 @@ public class EBusController extends Thread {
                     }
 
                 } catch (EBusDataException e) {
-                    logger.error("error!", e);
+                	
+                	logger.trace("error!", e);
+                	
+                	for (EBusConnectorEventListener listener : listeners) {
+                        listener.onTelegramException(e, sendQueueId);
+                    }
                 }
 
             }
         });
     }
 
-    private void reconnect() throws IOException, InterruptedException {
-        System.out.println("EBusController.reconnect()");
-        this.interrupt();
+    private boolean reconnect() throws IOException, InterruptedException {
+        logger.trace("EBusController.reconnect()");
+        
+        if(reConnectCounter > 10) {
+        	return false;
+        }
+
+        reConnectCounter++;
+        
+        if(!connection.isOpen()) {
+        	if(connection.open()) {
+        		reConnectCounter = 0;
+        	} else {
+        		logger.warn("xxxxx");
+        		Thread.sleep(5000*reConnectCounter);
+        	}
+        }
+
+        return true;
     }
 
     /**
@@ -185,12 +212,25 @@ public class EBusController extends Thread {
 
         byte[] buffer = new byte[100];
 
+        try {
+			if (!connection.isOpen()) {
+				connection.open();
+			}
+		} catch (IOException e) {
+			logger.error("error!", e);
+			//interrupt();
+		}
+        
         // loop until interrupt or reconnector count is -1 (to many retries)
         while (!isInterrupted() || reConnectCounter == -1) {
             try {
 
                 if (!connection.isOpen()) {
-                    reconnect();
+                    if(!reconnect()) {
+                    	
+                    	// end thread !!
+                    	interrupt();
+                    }
 
                 } else {
 
@@ -209,7 +249,7 @@ public class EBusController extends Thread {
                             inputBuffer.put(receivedByte);
 
                             // the 0xAA byte is a end of a packet
-                            if (receivedByte == IEBusTelegram.SYN) {
+                            if (receivedByte == EBusTelegram.SYN) {
 
                                 // check if the buffer is empty and ready for
                                 // sending data
@@ -250,6 +290,8 @@ public class EBusController extends Thread {
             }
         }
 
+        logger.debug("End ...");
+        
         // *******************************
         // ** end of thread **
         // *******************************
@@ -306,6 +348,7 @@ public class EBusController extends Thread {
         for (int i = 0; i < dataOutputBuffers.length; i++) {
             byte b = dataOutputBuffers[i];
 
+            logger.trace("Send {}", b);
             connection.writeByte(b);
 
             if (i == 0) {
@@ -317,7 +360,7 @@ public class EBusController extends Thread {
 
                     // written and read byte not identical, that's
                     // a collision
-                    if (readByte == IEBusTelegram.SYN) {
+                    if (readByte == EBusTelegram.SYN) {
                         logger.debug("eBus collision with SYN detected!");
                     } else {
                         logger.debug("eBus collision detected! 0x{}", EBusUtils.toHexDumpString(readByte));
@@ -346,35 +389,40 @@ public class EBusController extends Thread {
 
         }
 
-        // sending master data finish
-
+        // start of transfer successful
+        
         // reset global variables
         queue.setLastSendCollisionDetected(false);
         queue.setBlockNextSend(false);
 
+
+        // send rest of master telegram
+        readWriteDelay = System.nanoTime();
+
+        // copy input data to result buffer, skip first byte
+        sendBuffer.put(dataOutputBuffers, 1, dataOutputBuffers.length - 1);
+
+        // skip next bytes
+        connection.readBytes(new byte[dataOutputBuffers.length - 1]);
+        readWriteDelay = (System.nanoTime() - readWriteDelay) / 1000;
+
+        logger.trace("readin delay " + readWriteDelay);
+
+
+        // sending master data finish
+        
         // if this telegram a broadcast?
-        if (dataOutputBuffers[1] == (byte) 0xFE) {
+        if (dataOutputBuffers[1] == EBusTelegram.BROADCAST_ADDRESS) {
 
             logger.trace("Broadcast send ..............");
-
+            
             // sende master sync
-            connection.writeByte(IEBusTelegram.SYN);
-            sendBuffer.put(IEBusTelegram.SYN);
+            connection.writeByte(EBusTelegram.SYN);
+            sendBuffer.put(EBusTelegram.SYN);
 
         } else {
 
-            readWriteDelay = System.nanoTime();
-
-            // copy input data to result buffer
-            sendBuffer.put(dataOutputBuffers, 1, dataOutputBuffers.length - 1);
-
-            // skip next bytes
-            connection.readBytes(new byte[dataOutputBuffers.length - 1]);
-            // getInputStream().skip(dataOutputBuffers.length - 1);
-
-            readWriteDelay = (System.nanoTime() - readWriteDelay) / 1000;
-
-            logger.trace("readin delay " + readWriteDelay);
+        	// read slave answer
 
             read = connection.readByte(true);
             if (read != -1) {
@@ -382,13 +430,11 @@ public class EBusController extends Thread {
                 byte ack = (byte) (read & 0xFF);
                 sendBuffer.put(ack);
 
-                if (ack == IEBusTelegram.ACK_OK) {
-
-                    boolean isMasterAddr = EBusUtils.isMasterAddress(dataOutputBuffers[1]);
+                if (ack == EBusTelegram.ACK_OK) {
 
                     // if the telegram is a slave telegram we will
                     // get data from slave
-                    if (!isMasterAddr) {
+                    if (!EBusUtils.isMasterAddress(dataOutputBuffers[1])) {
 
                         // len of answer
                         byte nn2 = (byte) (connection.readByte(true) & 0xFF);
@@ -431,15 +477,15 @@ public class EBusController extends Thread {
                         }
 
                         // sende master sync
-                        connection.writeByte(IEBusTelegram.ACK_OK);
-                        sendBuffer.put(IEBusTelegram.ACK_OK);
+                        connection.writeByte(EBusTelegram.ACK_OK);
+                        sendBuffer.put(EBusTelegram.ACK_OK);
                     } // isMasterAddr check
 
                     // send SYN byte
-                    connection.writeByte(IEBusTelegram.SYN);
-                    sendBuffer.put(IEBusTelegram.SYN);
+                    connection.writeByte(EBusTelegram.SYN);
+                    sendBuffer.put(EBusTelegram.SYN);
 
-                } else if (ack == IEBusTelegram.ACK_FAIL) {
+                } else if (ack == EBusTelegram.ACK_FAIL) {
 
                     // clear uncompleted telegram
                     sendBuffer.clear();
@@ -449,7 +495,7 @@ public class EBusController extends Thread {
                         return;
                     }
 
-                } else if (ack == IEBusTelegram.SYN) {
+                } else if (ack == EBusTelegram.SYN) {
                     logger.debug("No answer from slave for telegram: {}", EBusUtils.toHexDumpString(sendBuffer));
 
                     // clear uncompleted telegram or it will result
@@ -479,7 +525,7 @@ public class EBusController extends Thread {
         if (sendBuffer.position() > 0) {
             byte[] buffer = Arrays.copyOf(sendBuffer.array(), sendBuffer.position());
             logger.debug("Succcesful send: {}", EBusUtils.toHexDumpString(buffer));
-            onEBusTelegramReceived(buffer, sendEntry.id);
+            fireOnEBusTelegramReceived(buffer, sendEntry.id);
         }
 
         // reset send module

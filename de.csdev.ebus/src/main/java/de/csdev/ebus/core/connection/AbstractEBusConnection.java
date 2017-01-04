@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
@@ -6,6 +14,10 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * @author Christian Sowada
+ *
+ */
 public abstract class AbstractEBusConnection implements IEBusConnection {
 
     /** output stream for eBus communication */

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,10 @@ import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.utils.EBusUtils;
 
+/**
+ * @author Christian Sowada
+ *
+ */
 public class EBusQueue {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusQueue.class);
@@ -108,6 +112,8 @@ public class EBusQueue {
             outputQueue.add(entry);
         }
 
+        //checkSendStatus();
+        
         return entry.id;
     }
 
