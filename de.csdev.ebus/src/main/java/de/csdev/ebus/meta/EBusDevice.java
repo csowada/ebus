@@ -18,71 +18,78 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusDevice implements IEBusDevice {
 
-	byte masterAddress;
-	byte slaveAddress;
-	public long lastActivity;
-	private byte vendor;
-	private String deviceId;
-	private BigDecimal softwareVersion;
-	private BigDecimal hardwareVersion;
-	
-	public void setVendor(byte vendor) {
-		this.vendor = vendor;
-	}
+    byte masterAddress;
+    byte slaveAddress;
+    public long lastActivity;
+    private byte vendor;
+    private String deviceId;
+    private BigDecimal softwareVersion;
+    private BigDecimal hardwareVersion;
 
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
-	}
+    public void setVendor(byte vendor) {
+        this.vendor = vendor;
+    }
 
-	public void setSoftwareVersion(BigDecimal softwareVersion) {
-		this.softwareVersion = softwareVersion;
-	}
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 
-	public void setHardwareVersion(BigDecimal hardwareVersion) {
-		this.hardwareVersion = hardwareVersion;
-	}
+    public void setSoftwareVersion(BigDecimal softwareVersion) {
+        this.softwareVersion = softwareVersion;
+    }
 
-	public EBusDevice(byte masterAddress) {
-		this.masterAddress = masterAddress;
-		this.slaveAddress = EBusUtils.getSlaveAddress(masterAddress);
-	}
+    public void setHardwareVersion(BigDecimal hardwareVersion) {
+        this.hardwareVersion = hardwareVersion;
+    }
 
-	@Override
-	public long getLastActivity() {
-		return lastActivity;
-	}
+    public EBusDevice(byte masterAddress) {
+        this.masterAddress = masterAddress;
+        this.slaveAddress = EBusUtils.getSlaveAddress(masterAddress);
+    }
 
-	public void setLastActivity(long lastActivity) {
-		this.lastActivity = lastActivity;
-	}
+    @Override
+    public long getLastActivity() {
+        return lastActivity;
+    }
 
-	@Override
-	public byte getMasterAddress() {
-		return masterAddress;
-	}
+    public void setLastActivity(long lastActivity) {
+        this.lastActivity = lastActivity;
+    }
 
-	@Override
-	public byte getSlaveAddress() {
-		return slaveAddress;
-	}
+    @Override
+    public byte getMasterAddress() {
+        return masterAddress;
+    }
 
-	@Override
-	public byte getVendor() {
-		return vendor;
-	}
+    @Override
+    public byte getSlaveAddress() {
+        return slaveAddress;
+    }
 
-	@Override
-	public String getDeviceId() {
-		return deviceId;
-	}
+    @Override
+    public byte getVendor() {
+        return vendor;
+    }
 
-	@Override
-	public BigDecimal getSoftwareVersion() {
-		return softwareVersion;
-	}
+    @Override
+    public String getDeviceId() {
+        return deviceId;
+    }
 
-	@Override
-	public BigDecimal getHardwareVersion() {
-		return hardwareVersion;
-	}
+    @Override
+    public BigDecimal getSoftwareVersion() {
+        return softwareVersion;
+    }
+
+    @Override
+    public BigDecimal getHardwareVersion() {
+        return hardwareVersion;
+    }
+
+    @Override
+    public String toString() {
+        return "EBusDevice [masterAddress=" + masterAddress + ", slaveAddress=" + slaveAddress + ", lastActivity="
+                + lastActivity + ", vendor=" + vendor + ", deviceId=" + deviceId + ", softwareVersion="
+                + softwareVersion + ", hardwareVersion=" + hardwareVersion + "]";
+    }
 }

@@ -17,86 +17,106 @@ import de.csdev.ebus.utils.NumberUtils;
 
 public class EBusDeviceTable {
 
-	private static final Logger logger = LoggerFactory.getLogger(EBusTelegramComposer.class);
-	
-	private Map<Byte, EBusDevice> deviceTable;
+    private static final Logger logger = LoggerFactory.getLogger(EBusTelegramComposer.class);
 
-	/** the list for listeners */
-	private final List<EBusDeviceTableListener> listeners = new ArrayList<EBusDeviceTableListener>();
+    private Map<Byte, EBusDevice> deviceTable;
 
-	/** the address of this library */
-	private byte ownAddress;
-	
-	public EBusDeviceTable(byte ownAddress) {
-		this.ownAddress = ownAddress;
-		
-		deviceTable = new HashMap<Byte, EBusDevice>();
-		
-		EBusDevice d = new EBusDevice(ownAddress);
-		deviceTable.put(d.getMasterAddress(), d);
-	}
-	
-	public void updateDevice(byte address, Map<String, Object> data) {
-		
-		EBusDevice device = deviceTable.get(address);
+    /** the list for listeners */
+    private final List<EBusDeviceTableListener> listeners = new ArrayList<EBusDeviceTableListener>();
 
-		if(device == null) {
-			device = new EBusDevice(address);
-			deviceTable.put(device.getMasterAddress(), device);
-			logger.info("New eBus device with master address 0x{} found ...", EBusUtils.toHexDumpString(device.getMasterAddress()));
-		}
+    /** the address of this library */
+    private byte ownAddress;
 
-		if(data != null && !data.isEmpty()) {
+    public EBusDeviceTable(byte ownAddress) {
+        this.ownAddress = ownAddress;
 
-			Object obj = data.get("common.identification.device");
-			if(obj != null) device.setDeviceId((String)obj);
+        deviceTable = new HashMap<Byte, EBusDevice>();
 
-			BigDecimal obj2 =  NumberUtils.toBigDecimal(data.get("common.identification.hardware_version"));
-			if(obj != null) device.setHardwareVersion(obj2);
+        EBusDevice d = new EBusDevice(ownAddress);
+        deviceTable.put(d.getMasterAddress(), d);
+    }
 
-			obj = NumberUtils.toBigDecimal(data.get("common.identification.software_version"));
-			if(obj != null) device.setSoftwareVersion(obj2);
+    public void updateDevice(byte address, Map<String, Object> data) {
 
-			obj = NumberUtils.toBigDecimal(data.get("common.identification.vendor"));
-			if(obj != null) device.setVendor(obj2.byteValue());
-		}
+        EBusDevice device = deviceTable.get(address);
+        boolean isNewDevice = false;
+        boolean isUpdate = false;
 
-		// update activity
-		device.setLastActivity(System.currentTimeMillis());
-		fireOnTelegramResolved();
-	}
-	
-	public Collection<EBusDevice> getDeviceTable() {
-		return Collections.unmodifiableCollection(deviceTable.values());
-	}
-	
-	private void fireOnTelegramResolved() {
-		for (EBusDeviceTableListener listener : listeners) {
-			//listener.onTelegramResolved();
-		}
-	}    
+        if (device == null) {
+            device = new EBusDevice(address);
+            deviceTable.put(device.getMasterAddress(), device);
+            logger.info("New eBus device with master address 0x{} found ...",
+                    EBusUtils.toHexDumpString(device.getMasterAddress()));
+            isNewDevice = true;
+        }
 
-	public EBusDevice getOwnDevice() {
-		return deviceTable.get(ownAddress);
-	}
-	
-	/**
-	 * Add a listener
-	 *
-	 * @param listener
-	 */
-	public void addEBusDeviceTableListener(EBusDeviceTableListener listener) {
-		listeners.add(listener);
-	}
+        if (data != null && !data.isEmpty()) {
 
-	/**
-	 * Remove a listener
-	 *
-	 * @param listener
-	 * @return
-	 */
-	public boolean removeEBusDeviceTableListener(EBusDeviceTableListener listener) {
-		return listeners.remove(listener);
-	}
-	
+            Object obj = data.get("common.identification.device");
+            if (obj != null) {
+                device.setDeviceId((String) obj);
+            }
+
+            BigDecimal obj2 = NumberUtils.toBigDecimal(data.get("common.identification.hardware_version"));
+            if (obj != null) {
+                device.setHardwareVersion(obj2);
+            }
+
+            obj = NumberUtils.toBigDecimal(data.get("common.identification.software_version"));
+            if (obj != null) {
+                device.setSoftwareVersion(obj2);
+            }
+
+            obj = NumberUtils.toBigDecimal(data.get("common.identification.vendor"));
+            if (obj != null) {
+                device.setVendor(obj2.byteValue());
+            }
+
+            isUpdate = true;
+        }
+
+        // update activity
+        device.setLastActivity(System.currentTimeMillis());
+
+        if (isNewDevice) {
+            fireOnTelegramResolved(EBusDeviceTableListener.TYPE.NEW, device);
+        } else if (isUpdate) {
+            fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE, device);
+        }
+
+    }
+
+    public Collection<EBusDevice> getDeviceTable() {
+        return Collections.unmodifiableCollection(deviceTable.values());
+    }
+
+    private void fireOnTelegramResolved(EBusDeviceTableListener.TYPE type, EBusDevice device) {
+        for (EBusDeviceTableListener listener : listeners) {
+            listener.onEBusDeviceUpdate(type, device);
+        }
+    }
+
+    public EBusDevice getOwnDevice() {
+        return deviceTable.get(ownAddress);
+    }
+
+    /**
+     * Add a listener
+     *
+     * @param listener
+     */
+    public void addEBusDeviceTableListener(EBusDeviceTableListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * Remove a listener
+     *
+     * @param listener
+     * @return
+     */
+    public boolean removeEBusDeviceTableListener(EBusDeviceTableListener listener) {
+        return listeners.remove(listener);
+    }
+
 }

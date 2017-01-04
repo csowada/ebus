@@ -28,6 +28,8 @@ public class EBusHighLevelService {
         controller.addEBusEventListener(resolverService);
         resolverService.addEBusParserListener(deviceTableService);
 
+        deviceTable.addEBusDeviceTableListener(deviceTableService);
+
     }
 
     public EBusController getController() {

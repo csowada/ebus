@@ -19,14 +19,15 @@ import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.meta.EBusDeviceTable;
+import de.csdev.ebus.meta.EBusDeviceTableListener;
+import de.csdev.ebus.meta.IEBusDevice;
 import de.csdev.ebus.telegram.EBusTelegram;
-import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada
  *
  */
-public class EBusDeviceTableService implements EBusConnectorEventListener, EBusParserListener {
+public class EBusDeviceTableService implements EBusConnectorEventListener, EBusParserListener, EBusDeviceTableListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
 
@@ -83,12 +84,11 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         controller.addToSendQueue(buffer);
     }
 
-    public void sendXyyy() {
+    public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         EBusConfigurationTelegram command = configurationProvider.getCommandById("common.identification");
 
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, EBusUtils.getSlaveAddress((byte) 0x30),
-                masterAddress, null);
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, slaveAddress, masterAddress, null);
 
         controller.addToSendQueue(buffer);
     }
@@ -132,4 +132,14 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
+    @Override
+    public void onEBusDeviceUpdate(TYPE type, IEBusDevice device) {
+
+        logger.info("DATA TABLE UPDATE {}", device);
+
+        // identify new devices
+        if (type.equals(TYPE.NEW)) {
+            sendIdentificationRequest(device.getSlaveAddress());
+        }
+    }
 }

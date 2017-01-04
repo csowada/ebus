@@ -2,6 +2,12 @@ package de.csdev.ebus.meta;
 
 public interface EBusDeviceTableListener {
 
-	public void onEBusDeviceChanged();
-	
+    public enum TYPE {
+        NEW,
+        UPDATE,
+        REMOVED
+    }
+
+    public void onEBusDeviceUpdate(TYPE type, IEBusDevice device);
+
 }

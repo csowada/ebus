@@ -49,9 +49,9 @@ public class EBusMain {
             controller.start();
             // service.getDeviceTableService().startDeviceScan();
 
-            Thread.sleep(3000);
+            // Thread.sleep(3000);
 
-            service.getDeviceTableService().sendXyyy();
+            // service.getDeviceTableService().sendXyyy();
 
             // main thread wait
             controller.join();
