@@ -33,10 +33,10 @@ import de.csdev.ebus.utils.EBusUtils;
 public class EBusController extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusController.class);
-    
+
     /** the list for listeners */
     private final List<EBusConnectorEventListener> listeners = new ArrayList<EBusConnectorEventListener>();
-    
+
     private IEBusConnection connection;
 
     /** serial receive buffer */
@@ -130,7 +130,7 @@ public class EBusController extends Thread {
                 try {
                     byte[] receivedData = EBusUtils.decodeExpandedData(receivedRawData);
                     receivedData = receivedRawData;
-                    
+
                     if (receivedData != null) {
                         for (EBusConnectorEventListener listener : listeners) {
                             listener.onTelegramReceived(receivedData, sendQueueId);
@@ -140,10 +140,10 @@ public class EBusController extends Thread {
                     }
 
                 } catch (EBusDataException e) {
-                	
-                	logger.trace("error!", e);
-                	
-                	for (EBusConnectorEventListener listener : listeners) {
+
+                    logger.trace("error!", e);
+
+                    for (EBusConnectorEventListener listener : listeners) {
                         listener.onTelegramException(e, sendQueueId);
                     }
                 }
@@ -154,20 +154,20 @@ public class EBusController extends Thread {
 
     private boolean reconnect() throws IOException, InterruptedException {
         logger.trace("EBusController.reconnect()");
-        
-        if(reConnectCounter > 10) {
-        	return false;
+
+        if (reConnectCounter > 10) {
+            return false;
         }
 
         reConnectCounter++;
-        
-        if(!connection.isOpen()) {
-        	if(connection.open()) {
-        		reConnectCounter = 0;
-        	} else {
-        		logger.warn("xxxxx");
-        		Thread.sleep(5000*reConnectCounter);
-        	}
+
+        if (!connection.isOpen()) {
+            if (connection.open()) {
+                reConnectCounter = 0;
+            } else {
+                logger.warn("xxxxx");
+                Thread.sleep(5000 * reConnectCounter);
+            }
         }
 
         return true;
@@ -213,23 +213,23 @@ public class EBusController extends Thread {
         byte[] buffer = new byte[100];
 
         try {
-			if (!connection.isOpen()) {
-				connection.open();
-			}
-		} catch (IOException e) {
-			logger.error("error!", e);
-			//interrupt();
-		}
-        
+            if (!connection.isOpen()) {
+                connection.open();
+            }
+        } catch (IOException e) {
+            logger.error("error!", e);
+            // interrupt();
+        }
+
         // loop until interrupt or reconnector count is -1 (to many retries)
         while (!isInterrupted() || reConnectCounter == -1) {
             try {
 
                 if (!connection.isOpen()) {
-                    if(!reconnect()) {
-                    	
-                    	// end thread !!
-                    	interrupt();
+                    if (!reconnect()) {
+
+                        // end thread !!
+                        interrupt();
                     }
 
                 } else {
@@ -291,7 +291,7 @@ public class EBusController extends Thread {
         }
 
         logger.debug("End ...");
-        
+
         // *******************************
         // ** end of thread **
         // *******************************
@@ -390,11 +390,10 @@ public class EBusController extends Thread {
         }
 
         // start of transfer successful
-        
+
         // reset global variables
         queue.setLastSendCollisionDetected(false);
         queue.setBlockNextSend(false);
-
 
         // send rest of master telegram
         readWriteDelay = System.nanoTime();
@@ -403,26 +402,28 @@ public class EBusController extends Thread {
         sendBuffer.put(dataOutputBuffers, 1, dataOutputBuffers.length - 1);
 
         // skip next bytes
-        connection.readBytes(new byte[dataOutputBuffers.length - 1]);
+        for (int i = 0; i < dataOutputBuffers.length - 1; i++) {
+            connection.readByte(true);
+        }
+        // connection.readBytes(new byte[dataOutputBuffers.length - 1]);
         readWriteDelay = (System.nanoTime() - readWriteDelay) / 1000;
 
         logger.trace("readin delay " + readWriteDelay);
 
-
         // sending master data finish
-        
+
         // if this telegram a broadcast?
         if (dataOutputBuffers[1] == EBusTelegram.BROADCAST_ADDRESS) {
 
             logger.trace("Broadcast send ..............");
-            
+
             // sende master sync
             connection.writeByte(EBusTelegram.SYN);
             sendBuffer.put(EBusTelegram.SYN);
 
         } else {
 
-        	// read slave answer
+            // read slave answer
 
             read = connection.readByte(true);
             if (read != -1) {
@@ -508,7 +509,8 @@ public class EBusController extends Thread {
 
                 } else {
                     // Wow, wrong answer, and now?
-                    logger.debug("Received wrong telegram: {}", EBusUtils.toHexDumpString(sendBuffer));
+                    logger.debug("Received wrong byte{}, telegram: {}", EBusUtils.toHexDumpString(sendBuffer),
+                            EBusUtils.toHexDumpString(ack));
 
                     // clear uncompleted telegram
                     sendBuffer.clear();

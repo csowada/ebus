@@ -5,48 +5,48 @@ import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.meta.EBusDeviceTable;
 
 public class EBusHighLevelService {
-	
-	private EBusDeviceTable deviceTable;
-	private EBusController controller;
-	private EBusConfigurationProvider configurationProvider;
-	private EBusParserService resolverService;
-	private EBusDeviceTableService deviceTableService;
 
-	public EBusHighLevelService(EBusController controller) {
-		this.controller = controller;
-		init();
-	}
-	
-	private void init() {
-		
-		deviceTable = new EBusDeviceTable((byte)0xFF);
-		configurationProvider = new EBusConfigurationProvider();
-		
-		resolverService = new EBusParserService(controller, configurationProvider);
-		deviceTableService = new EBusDeviceTableService(controller, configurationProvider,	deviceTable);
-		
-		controller.addEBusEventListener(resolverService);
-		resolverService.addEBusParserListener(deviceTableService);
+    private EBusDeviceTable deviceTable;
+    private EBusController controller;
+    private EBusConfigurationProvider configurationProvider;
+    private EBusParserService resolverService;
+    private EBusDeviceTableService deviceTableService;
 
-	}
+    public EBusHighLevelService(EBusController controller) {
+        this.controller = controller;
+        init();
+    }
 
-	public EBusController getController() {
-		return controller;
-	}
+    private void init() {
 
-	public EBusConfigurationProvider getConfigurationProvider() {
-		return configurationProvider;
-	}
+        deviceTable = new EBusDeviceTable((byte) 0x00);
+        configurationProvider = new EBusConfigurationProvider();
 
-	public EBusParserService getResolverService() {
-		return resolverService;
-	}
+        resolverService = new EBusParserService(controller, configurationProvider);
+        deviceTableService = new EBusDeviceTableService(controller, configurationProvider, deviceTable);
 
-	public EBusDeviceTableService getDeviceTableService() {
-		return deviceTableService;
-	}
+        controller.addEBusEventListener(resolverService);
+        resolverService.addEBusParserListener(deviceTableService);
 
-	public EBusDeviceTable getDeviceTable() {
-		return deviceTable;
-	}
+    }
+
+    public EBusController getController() {
+        return controller;
+    }
+
+    public EBusConfigurationProvider getConfigurationProvider() {
+        return configurationProvider;
+    }
+
+    public EBusParserService getResolverService() {
+        return resolverService;
+    }
+
+    public EBusDeviceTableService getDeviceTableService() {
+        return deviceTableService;
+    }
+
+    public EBusDeviceTable getDeviceTable() {
+        return deviceTable;
+    }
 }

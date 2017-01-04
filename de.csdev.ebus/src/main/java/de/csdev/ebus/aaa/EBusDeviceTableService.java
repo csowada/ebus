@@ -20,6 +20,7 @@ import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.meta.EBusDeviceTable;
 import de.csdev.ebus.telegram.EBusTelegram;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada
@@ -27,98 +28,108 @@ import de.csdev.ebus.telegram.EBusTelegram;
  */
 public class EBusDeviceTableService implements EBusConnectorEventListener, EBusParserListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
 
-	private EBusController controller;
+    private EBusController controller;
 
-	private Integer scanQueueId = -1;
+    private Integer scanQueueId = -1;
 
-	private EBusConfigurationProvider configurationProvider;
+    private EBusConfigurationProvider configurationProvider;
 
-	private EBusDeviceTable deviceTable;
+    private EBusDeviceTable deviceTable;
 
-	public EBusDeviceTableService(EBusController controller, EBusConfigurationProvider configurationProvider,
-			EBusDeviceTable deviceTable) {
-		
-		this.controller = controller;
-		this.configurationProvider = configurationProvider;
-		this.deviceTable = deviceTable;
-		this.controller.addEBusEventListener(this);
-	}
+    public EBusDeviceTableService(EBusController controller, EBusConfigurationProvider configurationProvider,
+            EBusDeviceTable deviceTable) {
 
-	public void startDeviceScan() {
+        this.controller = controller;
+        this.configurationProvider = configurationProvider;
+        this.deviceTable = deviceTable;
+        this.controller.addEBusEventListener(this);
+    }
 
-		if(scanQueueId != -1) {
-			logger.warn("Scan is still in progress ...");
-			return;
-		}
+    public void startDeviceScan() {
 
-		logger.info("Start scan process ...");
+        if (scanQueueId != -1) {
+            logger.warn("Scan is still in progress ...");
+            return;
+        }
 
-		byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-		
-		EBusConfigurationTelegram command = configurationProvider.getCommandById("common.inquiry_of_existence");
-		byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, 
-				EBusTelegram.BROADCAST_ADDRESS, masterAddress, null);
+        logger.info("Start scan process ...");
 
-		scanQueueId = controller.addToSendQueue(buffer);
-	}
+        byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-	/**
-	 * 
-	 */
-	public void close() {
-		this.controller.removeEBusEventListener(this);
-		this.controller = null;
-	}
+        EBusConfigurationTelegram command = configurationProvider.getCommandById("common.inquiry_of_existence");
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, EBusTelegram.BROADCAST_ADDRESS,
+                masterAddress, null);
 
-	private void sendSignOfLife() {
-		byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-		EBusConfigurationTelegram command = configurationProvider.getCommandById("common.sign_of_life");
-		
-		byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, 
-				EBusTelegram.BROADCAST_ADDRESS, masterAddress, null);
+        scanQueueId = controller.addToSendQueue(buffer);
+    }
 
-		controller.addToSendQueue(buffer);
-	}
+    /**
+     *
+     */
+    public void close() {
+        this.controller.removeEBusEventListener(this);
+        this.controller = null;
+    }
 
-	@Override
-	public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+    private void sendSignOfLife() {
+        byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
+        EBusConfigurationTelegram command = configurationProvider.getCommandById("common.sign_of_life");
 
-		logger.debug("EBusNNN.onTelegramReceived() {}", receivedData[0]);
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, EBusTelegram.BROADCAST_ADDRESS,
+                masterAddress, null);
 
-		deviceTable.updateDevice(receivedData[0], null);
+        controller.addToSendQueue(buffer);
+    }
 
-		if(sendQueueId != null && sendQueueId.equals(scanQueueId)) {
-			logger.warn("Scan broadcast has been send out!");
-			scanQueueId = -1;
-		}
-	}
+    public void sendXyyy() {
+        byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
+        EBusConfigurationTelegram command = configurationProvider.getCommandById("common.identification");
 
-	@Override
-	public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
-		if(sendQueueId != null && sendQueueId.equals(scanQueueId)) {
-			logger.warn("Scan broadcast failed!");
-			scanQueueId = -1;
-		}
-	}
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, EBusUtils.getSlaveAddress((byte) 0x30),
+                masterAddress, null);
 
-	@Override
-	public void onTelegramResolved(EBusConfigurationTelegram registryEntry, Map<String, 
-			Object> result, byte[] receivedData, Integer sendQueueId) {
+        controller.addToSendQueue(buffer);
+    }
 
-		String id = registryEntry.getFullId();
-		byte masterAddress = receivedData[0];
+    @Override
+    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
-		if(id.equals("common.sign_of_life")) {
-			deviceTable.updateDevice(masterAddress, null);
+        logger.debug("EBusNNN.onTelegramReceived() {}", receivedData[0]);
 
-		} else if(id.equals("common.inquiry_of_existence")) {
-			sendSignOfLife();
+        deviceTable.updateDevice(receivedData[0], null);
 
-		} else if(id.equals("common.identification") || id.equals("common.identification_broadcast")) {
-			deviceTable.updateDevice(masterAddress, result);
-		}
-	}
+        if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
+            logger.warn("Scan broadcast has been send out!");
+            scanQueueId = -1;
+        }
+    }
+
+    @Override
+    public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+        if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
+            logger.warn("Scan broadcast failed!");
+            scanQueueId = -1;
+        }
+    }
+
+    @Override
+    public void onTelegramResolved(EBusConfigurationTelegram registryEntry, Map<String, Object> result,
+            byte[] receivedData, Integer sendQueueId) {
+
+        String id = registryEntry.getFullId();
+        byte masterAddress = receivedData[0];
+
+        if (id.equals("common.sign_of_life")) {
+            deviceTable.updateDevice(masterAddress, null);
+
+        } else if (id.equals("common.inquiry_of_existence")) {
+            sendSignOfLife();
+
+        } else if (id.equals("common.identification") || id.equals("common.identification_broadcast")) {
+            deviceTable.updateDevice(masterAddress, result);
+        }
+    }
 
 }

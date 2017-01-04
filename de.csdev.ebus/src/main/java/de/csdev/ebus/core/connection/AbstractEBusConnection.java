@@ -13,12 +13,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Christian Sowada
  *
  */
 public abstract class AbstractEBusConnection implements IEBusConnection {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractEBusConnection.class);
 
     /** output stream for eBus communication */
     protected OutputStream outputStream;
@@ -66,7 +70,11 @@ public abstract class AbstractEBusConnection implements IEBusConnection {
 
     @Override
     public void reset() throws IOException {
-        inputStream.reset();
+        int available = inputStream.available();
+        if (available > 0) {
+            logger.debug("InputBuffer is not empty before sending: {} bytes waiting !", available);
+        }
+        inputStream.skip(available);
     }
 
 }

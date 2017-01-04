@@ -18,39 +18,51 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.aaa.EBusHighLevelService;
 import de.csdev.ebus.cfg.EBusConfigurationJsonReader;
 import de.csdev.ebus.core.EBusController;
+import de.csdev.ebus.core.connection.EBusCaptureProxyConnection;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
+import de.csdev.ebus.core.connection.EBusTCPConnection;
 import de.csdev.ebus.core.connection.IEBusConnection;
+import de.csdev.ebus.utils.EmulatorCapture;
 
 public class EBusMain {
 
-	private static final Logger logger = LoggerFactory.getLogger(EBusMain.class);
-	
+    private static final Logger logger = LoggerFactory.getLogger(EBusMain.class);
+
     @SuppressWarnings("deprecation")
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
         try {
             IEBusConnection connection = new EBusEmulatorConnection(new File("src/resources/replay.txt"));
+            connection = new EBusTCPConnection("openhab", 8000);
 
-        	EBusController controller = new EBusController(connection);
-        	EBusHighLevelService service = new EBusHighLevelService(controller);
-            EBusConfigurationJsonReader jsonCfgReader =  new EBusConfigurationJsonReader(service.getConfigurationProvider());
-        	
-        	File filex = new File("src/resources/common-configuration.json");
-			jsonCfgReader.loadConfigurationFile(filex.toURL());
-        	
-	        controller.start();
-	        service.getDeviceTableService().startDeviceScan();
-			
-        	// main thread wait
+            EmulatorCapture captureWriter = new EmulatorCapture(new File("src/resources/capture.txt"));
+            connection = new EBusCaptureProxyConnection(connection, captureWriter);
+
+            EBusController controller = new EBusController(connection);
+            EBusHighLevelService service = new EBusHighLevelService(controller);
+            EBusConfigurationJsonReader jsonCfgReader = new EBusConfigurationJsonReader(
+                    service.getConfigurationProvider());
+
+            File filex = new File("src/resources/common-configuration.json");
+            jsonCfgReader.loadConfigurationFile(filex.toURL());
+
+            controller.start();
+            // service.getDeviceTableService().startDeviceScan();
+
+            Thread.sleep(3000);
+
+            service.getDeviceTableService().sendXyyy();
+
+            // main thread wait
             controller.join();
-            
+
         } catch (InterruptedException e) {
             logger.error("errro1", e);
         } catch (MalformedURLException e) {
-        	 logger.error("errro1", e);
-		} catch (IOException e) {
-			 logger.error("errro1", e);
-		}
+            logger.error("errro1", e);
+        } catch (IOException e) {
+            logger.error("errro1", e);
+        }
 
     }
 

@@ -4,7 +4,8 @@ Bundle-Name: eBUS 4 Java
 Bundle-SymbolicName: de.csdev.ebus;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.commons.io;version="2.2.0",
+Import-Package: gnu.io,
+ org.apache.commons.io;version="2.2.0",
  org.apache.commons.lang;version="2.6.0",
  org.apache.commons.lang.builder;version="2.6.0",
  org.codehaus.jackson.annotate,
