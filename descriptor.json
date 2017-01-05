@@ -1,0 +1,19 @@
+{
+
+	"package": {
+		"name": "eBUS",
+		"repo": "ebus",
+		"subject": "csowada"
+	},
+
+	"version": {
+		"name": "latest"
+	},
+
+	"files": [{
+		"includePattern": "de.csdev.ebus/target/(.*\.jar)",
+		"excludePattern": "de.csdev.ebus/target/.*.zip$",
+		"uploadPattern": "/$1"
+	}],
+	"publish": true
+}

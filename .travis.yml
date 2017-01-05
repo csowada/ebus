@@ -1,1 +1,11 @@
 language: java
+deploy:
+  provider: bintray
+  file: "descriptor.json"
+  skip_cleanup: true
+  dry-run: "false"
+  user: "csowada"
+  key:
+    secure: nIfBMkDnB07YNlxEsK4ubTQzgodLGDGrT/tikmzwlpQ2zU6EEmOj+nFexzmvuUIBph6Pi1/CNFS+7j1dpaTD7XJCSKcwB1gwBp3GB2yrH3P2Ujy+Pkmsjl8G9k3IpQiQFtgWvSYgvcGk/vDxaKqlP6s/fsqkwwYhJZJ+Zk8RnT5R+AptD2cc9p88rzwz3wHsAIRBqADqEAQC6BJMY62iU5I/wSuBheQymi+sBk27EoKoUZ17dr+DdDJjRvjaK5MRF7qXVUPpqq8pRBF8kUzXkQ5lM5O3PdApzcDPCG2SqtvdXzl2QJJxKJ3IvzZzNSGbLd5kOc2seM130Ms1ZqZFrysytFov8RjY+xVR/VqLwg/u98ufDyM9OOeaTZ/a9IjyDQzfnqHr/ZyaDYxON088sEI53m5KSZnofoA0N1MlO5XUHedHJdbn95z1F+xpm/QAt1N8wZ8N0YkQb1JF1RvFvx/5/ia3unvmCaebh3HZCSFE7+7YX9JuvwRxlV9qN1vDNY6a62+RFupMdVJAdA65eOqQvRBKrJIDjUuXJ48EF9xbmCqgt/Q2IohIUegFmKkUxrGNRVJsiPvADx235phiO9JUhdKdF7lL/GPe7mlAXCIOyZuX0iEgtqAiPA37Ngr9/3/ryUft7vQoJdTfKO9Bp/im1w5GNWs3Q34L5heu07Q=
+  on:
+    all_branches: true
