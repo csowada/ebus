@@ -8,7 +8,7 @@
 
     <groupId>de.csdev</groupId>
     <artifactId>ebus-dist</artifactId>
-    <version>1.0.0</version>
+    <version>alpha</version>
     <name>eBUS distribution</name>
 
     <organization>

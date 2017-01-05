@@ -11,7 +11,10 @@
 
 	"files": [{
 		"includePattern": "de.csdev.ebus/target/(.*\.jar)",
-		"uploadPattern": "$1"
+		"uploadPattern": "$1",
+		"matrixParams": {
+			"override": 1
+		}
 	}],
 	"publish": true
 }
