@@ -4,6 +4,8 @@ This library handles the communication with heating engineering via the eBUS spe
 
 _Notice: This is not an offical eBUS library!_
 
+# Example
+
 ```java
 /**
  * Copyright (c) 2010-2017 by the respective copyright holders.
@@ -63,7 +65,23 @@ public class EBusMain {
         }
     }
 }
-´´´
+```
+
+#Dependencies
+
+## Required
+
+* slf4j
+* commons-io
+* commons-lang
+* jackson
+
+## Optional
+
+* nrjavaserial
+* jssc
+
+For more information see Maven _pom.xml_ file
 
 # Trademark Disclaimer
 
