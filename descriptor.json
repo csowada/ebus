@@ -12,8 +12,7 @@
 
 	"files": [{
 		"includePattern": "de.csdev.ebus/target/(.*\.jar)",
-		"excludePattern": "de.csdev.ebus/target/.*.zip$",
-		"uploadPattern": "/$1"
+		"uploadPattern": "$1"
 	}],
 	"publish": true
 }
