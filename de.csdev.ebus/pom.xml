@@ -5,16 +5,19 @@
 	<groupId>de.csdev</groupId>
 	<artifactId>ebus</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>${versionName}</version>
 	<name>eBUS core library</name>
 	<url>https://github.com/csowada/ebus</url>
 
-
+	<properties>
+		<versionName>1.0.0-SNAPSHOT</versionName>
+	</properties>
+	
 	<parent>
-  <groupId>de.csdev</groupId>
-  <artifactId>ebus-dist</artifactId>
-  <version>1.0.0</version>
-  </parent>
+		<groupId>de.csdev</groupId>
+		<artifactId>ebus-dist</artifactId>
+		<version>1.0.0</version>
+	</parent>
 
 	<dependencies>
 	
