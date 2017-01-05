@@ -9,9 +9,7 @@
 	<name>eBUS core library</name>
 	<url>https://github.com/csowada/ebus</url>
 
-	<properties>
-		<versionName>1.0.0-SNAPSHOT</versionName>
-	</properties>
+	<finalName>${project.artifactId}-${maven.build.timestamp}</finalName>
 	
 	<parent>
 		<groupId>de.csdev</groupId>

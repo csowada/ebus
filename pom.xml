@@ -33,7 +33,6 @@
 
     <packaging>pom</packaging>
 
-	
     <modules>
         <module>de.csdev.ebus</module>
     </modules>
