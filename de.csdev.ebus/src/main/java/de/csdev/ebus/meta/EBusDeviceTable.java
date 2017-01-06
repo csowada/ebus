@@ -1,6 +1,18 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.meta;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +31,10 @@ import de.csdev.ebus.aaa.EBusTelegramComposer;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
+/**
+ * @author Christian Sowada
+ *
+ */
 public class EBusDeviceTable {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTelegramComposer.class);
@@ -24,6 +44,8 @@ public class EBusDeviceTable {
     /** the list for listeners */
     private final List<EBusDeviceTableListener> listeners = new ArrayList<EBusDeviceTableListener>();
 
+    private Map<Integer, String> vendors;
+
     /** the address of this library */
     private byte ownAddress;
 
@@ -32,8 +54,37 @@ public class EBusDeviceTable {
 
         deviceTable = new HashMap<Byte, EBusDevice>();
 
-        EBusDevice d = new EBusDevice(ownAddress);
+        EBusDevice d = new EBusDevice(ownAddress, this);
         deviceTable.put(d.getMasterAddress(), d);
+    }
+
+    public String getManufacturerName(byte vendorCode) {
+        if (vendors == null) {
+
+            try {
+                final ObjectMapper mapper = new ObjectMapper();
+                final File file = new File("src/resources/manufactures.json");
+                final InputStream inputStream = file.toURI().toURL().openConnection().getInputStream();
+
+                vendors = mapper.readValue(inputStream, new TypeReference<Map<Byte, String>>() {});
+                
+            } catch (JsonParseException e) {
+                logger.error("error!", e);
+            } catch (JsonMappingException e) {
+                logger.error("error!", e);
+            } catch (MalformedURLException e) {
+                logger.error("error!", e);
+            } catch (IOException e) {
+                logger.error("error!", e);
+            }
+        }
+
+        if(vendors == null) {
+            logger.warn("Ups");
+            return null;
+        }
+        
+        return vendors.get(vendorCode);
     }
 
     public void updateDevice(byte address, Map<String, Object> data) {
@@ -43,7 +94,7 @@ public class EBusDeviceTable {
         boolean isUpdate = false;
 
         if (device == null) {
-            device = new EBusDevice(address);
+            device = new EBusDevice(address, this);
             deviceTable.put(device.getMasterAddress(), device);
             logger.info("New eBus device with master address 0x{} found ...",
                     EBusUtils.toHexDumpString(device.getMasterAddress()));
@@ -58,18 +109,19 @@ public class EBusDeviceTable {
             }
 
             BigDecimal obj2 = NumberUtils.toBigDecimal(data.get("common.identification.hardware_version"));
-            if (obj != null) {
+            if (obj2 != null) {
                 device.setHardwareVersion(obj2);
             }
 
-            obj = NumberUtils.toBigDecimal(data.get("common.identification.software_version"));
-            if (obj != null) {
+            obj2 = NumberUtils.toBigDecimal(data.get("common.identification.software_version"));
+            if (obj2 != null) {
                 device.setSoftwareVersion(obj2);
             }
 
-            obj = NumberUtils.toBigDecimal(data.get("common.identification.vendor"));
-            if (obj != null) {
-                device.setVendor(obj2.byteValue());
+            obj2 = NumberUtils.toBigDecimal(data.get("common.identification.vendor"));
+            if (obj2 != null) {
+                int intValue = obj2.intValue();
+                device.setManufacturer((byte) intValue);
             }
 
             isUpdate = true;

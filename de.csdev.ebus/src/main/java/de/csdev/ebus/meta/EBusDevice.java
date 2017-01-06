@@ -19,15 +19,23 @@ import de.csdev.ebus.utils.EBusUtils;
 public class EBusDevice implements IEBusDevice {
 
     byte masterAddress;
+    
     byte slaveAddress;
+    
     public long lastActivity;
-    private byte vendor;
+    
+    private byte manufacturer;
+    
     private String deviceId;
+    
     private BigDecimal softwareVersion;
+    
     private BigDecimal hardwareVersion;
 
-    public void setVendor(byte vendor) {
-        this.vendor = vendor;
+    private EBusDeviceTable deviceTable;
+
+    public void setManufacturer(byte manufactur) {
+        this.manufacturer = manufactur;
     }
 
     public void setDeviceId(String deviceId) {
@@ -42,8 +50,9 @@ public class EBusDevice implements IEBusDevice {
         this.hardwareVersion = hardwareVersion;
     }
 
-    public EBusDevice(byte masterAddress) {
+    public EBusDevice(byte masterAddress, EBusDeviceTable deviceTable) {
         this.masterAddress = masterAddress;
+        this.deviceTable = deviceTable;
         this.slaveAddress = EBusUtils.getSlaveAddress(masterAddress);
     }
 
@@ -67,8 +76,8 @@ public class EBusDevice implements IEBusDevice {
     }
 
     @Override
-    public byte getVendor() {
-        return vendor;
+    public byte getManufacturer() {
+        return manufacturer;
     }
 
     @Override
@@ -86,10 +95,14 @@ public class EBusDevice implements IEBusDevice {
         return hardwareVersion;
     }
 
+    public String getManufacturerName() {
+        return deviceTable.getManufacturerName(manufacturer);
+    }
+    
     @Override
     public String toString() {
         return "EBusDevice [masterAddress=" + masterAddress + ", slaveAddress=" + slaveAddress + ", lastActivity="
-                + lastActivity + ", vendor=" + vendor + ", deviceId=" + deviceId + ", softwareVersion="
+                + lastActivity + ", manufacturer=" + manufacturer + "("+getManufacturerName()+"), deviceId=" + deviceId + ", softwareVersion="
                 + softwareVersion + ", hardwareVersion=" + hardwareVersion + "]";
     }
 }

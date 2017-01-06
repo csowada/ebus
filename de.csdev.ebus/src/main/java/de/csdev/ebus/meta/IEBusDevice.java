@@ -20,7 +20,7 @@ public interface IEBusDevice {
 
     public byte getSlaveAddress();
 
-    public byte getVendor();
+    public byte getManufacturer();
 
     public String getDeviceId();
 
