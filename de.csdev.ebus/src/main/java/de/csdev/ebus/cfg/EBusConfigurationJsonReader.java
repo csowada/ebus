@@ -25,6 +25,9 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.cfg.EBusConfigurationProvider;
+import de.csdev.ebus.cfg.EBusConfigurationTelegram;
+
 /**
  * @author Christian Sowada
  *
@@ -94,6 +97,7 @@ public class EBusConfigurationJsonReader {
         // Use filter property if set
         if (StringUtils.isNotEmpty(configurationEntry.getFilter())) {
             String filter = configurationEntry.getFilter();
+            logger.warn("Property filter is deprecated ! -> {}", configurationEntry.getComment());
             filter = P_PLACEHOLDER.matcher(filter).replaceAll("[0-9A-Z]{2}");
             logger.trace("Compile RegEx filter: {}", filter);
             configurationEntry.setFilterPattern(Pattern.compile(filter));
@@ -101,26 +105,32 @@ public class EBusConfigurationJsonReader {
         } else {
             // Build filter string
 
+            StringBuilder filter = new StringBuilder();
+
             // Always ignore first two hex bytes
-            String filter = "[0-9A-Z]{2} [0-9A-Z]{2}";
+            filter.append("[0-9A-Z]{2} [0-9A-Z]{2}");
 
             // Add command to filter string
             if (StringUtils.isNotEmpty(configurationEntry.getCommand())) {
-                filter += " " + configurationEntry.getCommand();
-                filter += " [0-9A-Z]{2}";
+                filter.append(" " + configurationEntry.getCommand());
+                filter.append(" [0-9A-Z]{2}");
             }
 
             // Add data to filter string
             if (StringUtils.isNotEmpty(configurationEntry.getData())) {
-                Matcher matcher = P_BRACKETS_VALS.matcher(configurationEntry.getData());
-                filter += " " + matcher.replaceAll("[0-9A-Z]{2}");
+                
+                // only if this is no broadcast
+                if (!configurationEntry.getDst().equals("FE")) {
+                    Matcher matcher = P_BRACKETS_VALS.matcher(configurationEntry.getData());
+                    filter.append(" " + matcher.replaceAll("[0-9A-Z]{2}"));
+                }
             }
 
             // Finally add .* to end with everything
-            filter += " .*";
+            filter.append(" .*");
 
             logger.trace("Compile RegEx filter: {}", filter);
-            configurationEntry.setFilterPattern(Pattern.compile(filter));
+            configurationEntry.setFilterPattern(Pattern.compile(filter.toString()));
         }
 
         // remove brackets if used
