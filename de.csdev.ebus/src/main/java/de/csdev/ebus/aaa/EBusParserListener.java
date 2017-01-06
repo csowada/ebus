@@ -18,6 +18,7 @@ import de.csdev.ebus.cfg.EBusConfigurationTelegram;
  */
 public interface EBusParserListener {
 
-	public void onTelegramResolved(EBusConfigurationTelegram registryEntry, Map<String, Object> result, byte[] receivedData, Integer sendQueueId);
-	
+    public void onTelegramResolved(EBusConfigurationTelegram registryEntry, Map<String, Object> result,
+            byte[] receivedData, Integer sendQueueId);
+
 }

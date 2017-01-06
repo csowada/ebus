@@ -29,5 +29,5 @@ public interface IEBusDevice {
     public BigDecimal getHardwareVersion();
 
     public long getLastActivity();
-    
+
 }

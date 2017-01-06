@@ -21,7 +21,7 @@ public interface EBusConnectorEventListener {
      * @param telegram
      */
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId);
-    
+
     /**
      * A new valid telegram has been received.
      *

@@ -21,46 +21,46 @@ import org.slf4j.LoggerFactory;
  */
 public class EBusCodecUtils {
 
-	public static String CHAR = "char";
-	
-	public static String BYTE = "byte";
-	
-	public static String UCHAR = "uchar";
-	
-	public static String BIT = "bit";
-	
-	public static String INT = "int";
-	
-	public static String WORD = "word";
+    public static String CHAR = "char";
 
-	public static String BCD = "bcd";
-	
-	public static String DATA1B = "data1b";
-	
-	public static String DATA1C = "data1c";
-	
-	public static String DATA2B = "data2b";
-	
-	public static String DATA2C = "data2c";
-	
+    public static String BYTE = "byte";
+
+    public static String UCHAR = "uchar";
+
+    public static String BIT = "bit";
+
+    public static String INT = "int";
+
+    public static String WORD = "word";
+
+    public static String BCD = "bcd";
+
+    public static String DATA1B = "data1b";
+
+    public static String DATA1C = "data1c";
+
+    public static String DATA2B = "data2b";
+
+    public static String DATA2C = "data2c";
+
     private static final Logger logger = LoggerFactory.getLogger(EBusCodecUtils.class);
 
     public static boolean decodeBit(byte data, int bit) {
-    	return ((Byte) data >> bit & 0x1) == 1;
+        return ((Byte) data >> bit & 0x1) == 1;
     }
-    
+
     public static byte encodeBit(byte data, int bit) {
-    	return 0;
+        return 0;
     }
-    
+
     public static int getDataTypeLen(String type) {
-    	if (type.equals(DATA2B) || type.equals(DATA2C) || type.equals(WORD) || type.equals(INT)) {
-    		return 2;
-    	}
-    	
-    	return 1;
+        if (type.equals(DATA2B) || type.equals(DATA2C) || type.equals(WORD) || type.equals(INT)) {
+            return 2;
+        }
+
+        return 1;
     }
-    
+
     /**
      * Decodes a byte buffer to a number value
      * 

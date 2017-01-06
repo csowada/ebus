@@ -26,31 +26,31 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class EBusConfigurationValue {
 
     private Integer bit;
-    
+
     private CompiledScript csript;
-    
+
     private String debug;
-    
+
     private BigDecimal factor;
-    
+
     private String label;
-    
+
     private Map<String, String> mapping;
-    
+
     private BigDecimal max;
-    
+
     private BigDecimal min;
-    
+
     private Integer pos;
-    
+
     private BigDecimal replaceValue;
-    
+
     private String script;
-    
+
     private String step;
-    
+
     private String type;
-    
+
     private String typeHint;
 
     /**

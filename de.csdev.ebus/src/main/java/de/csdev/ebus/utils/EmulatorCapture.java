@@ -57,7 +57,7 @@ public class EmulatorCapture {
         writer.print(" - ");
         writer.println(EBusUtils.toHexDumpString(buffer).toString());
         writer.flush();
-        
+
         referenceTime = System.currentTimeMillis();
     }
 

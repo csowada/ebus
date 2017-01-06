@@ -172,5 +172,27 @@
             "_error_message9": {"type": "char", "pos": 14},
             "_error_message10": {"type": "char", "pos": 15}
         }
+    },
+    
+    {
+        "comment":  "<General> Error Message (2)",
+        "id":		"error",
+        "class":    "common",
+        "command":  "FE 01",
+        "data":		"00 00 00 00 00 00 00 00 00 00",
+        "dst":		"FE",
+
+        "values": {
+            "_error_message1": {"type": "char", "pos": 6},
+            "_error_message2": {"type": "char", "pos": 7},
+            "_error_message3": {"type": "char", "pos": 8},
+            "_error_message4": {"type": "char", "pos": 9},
+            "_error_message5": {"type": "char", "pos": 10},
+            "_error_message6": {"type": "char", "pos": 11},
+            "_error_message7": {"type": "char", "pos": 12},
+            "_error_message8": {"type": "char", "pos": 13},
+            "_error_message9": {"type": "char", "pos": 14},
+            "_error_message10": {"type": "char", "pos": 15}
+        }
     }
 ]

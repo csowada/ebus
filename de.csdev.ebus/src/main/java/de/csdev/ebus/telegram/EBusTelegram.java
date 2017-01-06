@@ -10,37 +10,28 @@ package de.csdev.ebus.telegram;
 
 import java.nio.ByteBuffer;
 
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * Represent a valid ebus telegram structure.
  * 
  * @author Christian Sowada
+ * @deprecated
  */
+@Deprecated
 public class EBusTelegram {
 
-    /** The SYN byte */
-    public final static byte SYN = (byte) 0xAA;
-
-    /** The ACK OK answer byte */
-    public final static byte ACK_OK = (byte) 0x00;
-
-    /** The ACK FAIL answer byte */
-    public final static byte ACK_FAIL = (byte) 0xFF;
-
-    /** The Broadcast address */
-    public final static byte BROADCAST_ADDRESS = (byte) 0xFE;
-
     public enum TYPE {
-    	
-    	/** Telegram type broadcast */
-    	BROADCAST,
-    	
-    	/** Telegram type Master-Slave */
-    	MASTER_SLAVE,
-    	
-    	/** Telegram type Master-Master */
-    	MASTER_MASTER
+
+        /** Telegram type broadcast */
+        BROADCAST,
+
+        /** Telegram type Master-Slave */
+        MASTER_SLAVE,
+
+        /** Telegram type Master-Master */
+        MASTER_MASTER
     }
 
     /** internal raw data */
@@ -88,10 +79,10 @@ public class EBusTelegram {
      * @return
      */
     public byte[] getCommand() {
-    	byte[] buffer = new byte[2];
-    	System.out.println("EBusTelegram.getCommand() > " + EBusUtils.toHexDumpString(data));
-    	data.position(2);
-    	data.get(buffer);
+        byte[] buffer = new byte[2];
+        System.out.println("EBusTelegram.getCommand() > " + EBusUtils.toHexDumpString(data));
+        data.position(2);
+        data.get(buffer);
         return buffer;
     }
 
@@ -124,9 +115,9 @@ public class EBusTelegram {
     public TYPE getType() {
         int pos = getDataLen() + 6;
         byte b = data.get(pos);
-        if (b == SYN) {
+        if (b == EBusConsts.SYN) {
             return TYPE.BROADCAST;
-        } else if (b == ACK_OK && data.get(pos + 1) == SYN) {
+        } else if (b == EBusConsts.ACK_OK && data.get(pos + 1) == EBusConsts.SYN) {
             return TYPE.MASTER_MASTER;
         }
 
@@ -195,27 +186,27 @@ public class EBusTelegram {
         byte[] buffer = new byte[l];
         data.position(getDataLen() + 8);
         data.get(buffer);
-        
+
         return buffer;
     }
-    
-//    public ByteBuffer asExpandedByteBuffer() {
-//    	
-//    	ByteBuffer buffer = ByteBuffer.allocate(40);
-//
-//    	buffer.put(getSource());
-//    	buffer.put(getDestination());
-//    	buffer.put(getCommand());
-//    	buffer.put((byte) getDataLen());
-//
-//    	if(getDataLen() > 0) {
-//    		byte[] masterData = getData();
-//    		buffer.put(EBusUtils.encodeEBusData(masterData));
-//    	}
-//    	
-//    	buffer.put(EBusUtils.encodeEBusData(getCRC()));
-//    	
-//
-//    	return  buffer;
-//    }
+
+    // public ByteBuffer asExpandedByteBuffer() {
+    //
+    // ByteBuffer buffer = ByteBuffer.allocate(40);
+    //
+    // buffer.put(getSource());
+    // buffer.put(getDestination());
+    // buffer.put(getCommand());
+    // buffer.put((byte) getDataLen());
+    //
+    // if(getDataLen() > 0) {
+    // byte[] masterData = getData();
+    // buffer.put(EBusUtils.encodeEBusData(masterData));
+    // }
+    //
+    // buffer.put(EBusUtils.encodeEBusData(getCRC()));
+    //
+    //
+    // return buffer;
+    // }
 }

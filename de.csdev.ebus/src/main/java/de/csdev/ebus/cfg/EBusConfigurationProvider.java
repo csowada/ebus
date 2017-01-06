@@ -36,146 +36,146 @@ import org.slf4j.LoggerFactory;
  */
 public class EBusConfigurationProvider {
 
-	private static final Logger logger = LoggerFactory.getLogger(EBusConfigurationProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusConfigurationProvider.class);
 
-	// The registry with all loaded configuration entries
-	private ArrayList<EBusConfigurationTelegram> telegramRegistry = new ArrayList<EBusConfigurationTelegram>();
+    // The registry with all loaded configuration entries
+    private ArrayList<EBusConfigurationTelegram> telegramRegistry = new ArrayList<EBusConfigurationTelegram>();
 
-	// The script engine if available
-	private Compilable compEngine;
-	
-	/**
-	 * Return if the provider is empty.
-	 * 
-	 * @return
-	 */
-	public boolean isEmpty() {
-		return telegramRegistry.isEmpty();
-	}
+    // The script engine if available
+    private Compilable compEngine;
 
-	/**
-	 * Constructor
-	 */
-	public EBusConfigurationProvider() {
-		final ScriptEngineManager mgr = new ScriptEngineManager();
+    /**
+     * Return if the provider is empty.
+     * 
+     * @return
+     */
+    public boolean isEmpty() {
+        return telegramRegistry.isEmpty();
+    }
 
-		// load script engine if available
-		if (mgr != null) {
-			final ScriptEngine engine = mgr.getEngineByName("JavaScript");
+    /**
+     * Constructor
+     */
+    public EBusConfigurationProvider() {
+        final ScriptEngineManager mgr = new ScriptEngineManager();
 
-			if (engine == null) {
-				logger.warn("Unable to load \"JavaScript\" engine! Skip every eBus value calculated by JavaScript.");
+        // load script engine if available
+        if (mgr != null) {
+            final ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
-			} else if (engine instanceof Compilable) {
-				compEngine = (Compilable) engine;
+            if (engine == null) {
+                logger.warn("Unable to load \"JavaScript\" engine! Skip every eBus value calculated by JavaScript.");
 
-			}
-		}
-	}
+            } else if (engine instanceof Compilable) {
+                compEngine = (Compilable) engine;
 
-	protected boolean add(List<EBusConfigurationTelegram> loadedTelegramRegistry) {
-		
-		for (Iterator<EBusConfigurationTelegram> iterator = loadedTelegramRegistry.iterator(); iterator.hasNext();) {
-			EBusConfigurationTelegram configurationEntry = iterator.next();
-			
-			// compile scipt's if available also once
-			if (configurationEntry.getValues() != null && !configurationEntry.getValues().isEmpty()) {
-				Map<String, EBusConfigurationValue> values = configurationEntry.getValues();
-				for (Entry<String, EBusConfigurationValue> entry : values.entrySet()) {
-					if (StringUtils.isNotEmpty(entry.getValue().getScript())) {
-						String script = entry.getValue().getScript();
+            }
+        }
+    }
 
-						// check if engine is available
-						if (StringUtils.isNotEmpty(script) && compEngine != null) {
-							try {
-								CompiledScript compile = compEngine.compile(script);
-								entry.getValue().setCsript(compile);
-							} catch (ScriptException e) {
-								logger.error("Error while compiling JavaScript!", e);
-							}
-						}
-					}
-				}
-			}
+    protected boolean add(List<EBusConfigurationTelegram> loadedTelegramRegistry) {
 
-			// compile scipt's if available
-			if (configurationEntry.getComputedValues() != null && !configurationEntry.getComputedValues().isEmpty()) {
-				Map<String, EBusConfigurationValue> cvalues = configurationEntry.getComputedValues();
-				for (Entry<String, EBusConfigurationValue> entry : cvalues.entrySet()) {
-					if (StringUtils.isNotEmpty(entry.getValue().getScript())) {
-						String script = entry.getValue().getScript();
+        for (Iterator<EBusConfigurationTelegram> iterator = loadedTelegramRegistry.iterator(); iterator.hasNext();) {
+            EBusConfigurationTelegram configurationEntry = iterator.next();
 
-						// check if engine is available
-						if (StringUtils.isNotEmpty(script) && compEngine != null) {
-							try {
-								CompiledScript compile = compEngine.compile(script);
-								entry.getValue().setCsript(compile);
-							} catch (ScriptException e) {
-								logger.error("Error while compiling JavaScript!", e);
-							}
-						}
-					}
-				}
-			}
-		}
+            // compile scipt's if available also once
+            if (configurationEntry.getValues() != null && !configurationEntry.getValues().isEmpty()) {
+                Map<String, EBusConfigurationValue> values = configurationEntry.getValues();
+                for (Entry<String, EBusConfigurationValue> entry : values.entrySet()) {
+                    if (StringUtils.isNotEmpty(entry.getValue().getScript())) {
+                        String script = entry.getValue().getScript();
 
-		return telegramRegistry.addAll(loadedTelegramRegistry);
-	}
-	
-	/**
-	 * Clears all loaded configurations
-	 */
-	public void clear() {
-		if (telegramRegistry != null) {
-			telegramRegistry.clear();
-		}
-	}
+                        // check if engine is available
+                        if (StringUtils.isNotEmpty(script) && compEngine != null) {
+                            try {
+                                CompiledScript compile = compEngine.compile(script);
+                                entry.getValue().setCsript(compile);
+                            } catch (ScriptException e) {
+                                logger.error("Error while compiling JavaScript!", e);
+                            }
+                        }
+                    }
+                }
+            }
 
-	/**
-	 * Return all configuration which filter match the bufferString paramter
-	 * 
-	 * @param bufferString The byte string to check against all loaded filters
-	 * @return All configurations with matching filter
-	 */
-	public List<EBusConfigurationTelegram> getCommandsByFilter(String bufferString) {
+            // compile scipt's if available
+            if (configurationEntry.getComputedValues() != null && !configurationEntry.getComputedValues().isEmpty()) {
+                Map<String, EBusConfigurationValue> cvalues = configurationEntry.getComputedValues();
+                for (Entry<String, EBusConfigurationValue> entry : cvalues.entrySet()) {
+                    if (StringUtils.isNotEmpty(entry.getValue().getScript())) {
+                        String script = entry.getValue().getScript();
 
-		final List<EBusConfigurationTelegram> matchedTelegramRegistry = new ArrayList<EBusConfigurationTelegram>();
+                        // check if engine is available
+                        if (StringUtils.isNotEmpty(script) && compEngine != null) {
+                            try {
+                                CompiledScript compile = compEngine.compile(script);
+                                entry.getValue().setCsript(compile);
+                            } catch (ScriptException e) {
+                                logger.error("Error while compiling JavaScript!", e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		/** select matching telegram registry entries */
-		for (EBusConfigurationTelegram registryEntry : telegramRegistry) {
-			Pattern pattern = registryEntry.getFilterPattern();
-			Matcher matcher = pattern.matcher(bufferString);
-			if (matcher.matches()) {
-				matchedTelegramRegistry.add(registryEntry);
-			}
-		}
+        return telegramRegistry.addAll(loadedTelegramRegistry);
+    }
 
-		return matchedTelegramRegistry;
-	}
+    /**
+     * Clears all loaded configurations
+     */
+    public void clear() {
+        if (telegramRegistry != null) {
+            telegramRegistry.clear();
+        }
+    }
 
-	/**
-	 * Return all configurations by command id and class
-	 * 
-	 * @param commandId The command id
-	 * @return All matching configurations
-	 */
-	public EBusConfigurationTelegram getCommandById(String commandId) {
+    /**
+     * Return all configuration which filter match the bufferString paramter
+     * 
+     * @param bufferString The byte string to check against all loaded filters
+     * @return All configurations with matching filter
+     */
+    public List<EBusConfigurationTelegram> getCommandsByFilter(String bufferString) {
 
-		String[] idElements = StringUtils.split(commandId, ".");
-		String commandClass = null;
-		commandId = null;
+        final List<EBusConfigurationTelegram> matchedTelegramRegistry = new ArrayList<EBusConfigurationTelegram>();
 
-		if (idElements.length > 1) {
-			commandClass = idElements[0];
-			commandId = idElements[1];
-		}
+        /** select matching telegram registry entries */
+        for (EBusConfigurationTelegram registryEntry : telegramRegistry) {
+            Pattern pattern = registryEntry.getFilterPattern();
+            Matcher matcher = pattern.matcher(bufferString);
+            if (matcher.matches()) {
+                matchedTelegramRegistry.add(registryEntry);
+            }
+        }
 
-		for (EBusConfigurationTelegram entry : telegramRegistry) {
-			if (StringUtils.equals(entry.getId(), commandId) && StringUtils.equals(entry.getClazz(), commandClass)) {
-				return entry;
-			}
-		}
+        return matchedTelegramRegistry;
+    }
 
-		return null;
-	}
+    /**
+     * Return all configurations by command id and class
+     * 
+     * @param commandId The command id
+     * @return All matching configurations
+     */
+    public EBusConfigurationTelegram getCommandById(String commandId) {
+
+        String[] idElements = StringUtils.split(commandId, ".");
+        String commandClass = null;
+        commandId = null;
+
+        if (idElements.length > 1) {
+            commandClass = idElements[0];
+            commandId = idElements[1];
+        }
+
+        for (EBusConfigurationTelegram entry : telegramRegistry) {
+            if (StringUtils.equals(entry.getId(), commandId) && StringUtils.equals(entry.getClazz(), commandClass)) {
+                return entry;
+            }
+        }
+
+        return null;
+    }
 }

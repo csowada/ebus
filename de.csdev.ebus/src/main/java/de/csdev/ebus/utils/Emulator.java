@@ -71,38 +71,37 @@ public class Emulator {
             @Override
             public void run() {
                 try {
-                	synchronized (out) {
-                		if(logger.isTraceEnabled()) {
-                			logger.trace("Emulator WRITE: {}", EBusUtils.toHexDumpString(byteArray).toString());
-                		}
+                    synchronized (out) {
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("Emulator WRITE: {}", EBusUtils.toHexDumpString(byteArray).toString());
+                        }
 
                         out.write(byteArray);
                         out.flush();
-                        
+
                         // delay for 2400baud
                         Thread.sleep(4);
-					}
+                    }
 
                 } catch (IOException e) {
                     logger.error("error!", e);
                 } catch (InterruptedException e) {
-                	logger.error("error!", e);
-				}
+                    logger.error("error!", e);
+                }
             }
         });
-        
-        
+
         try {
-        	// block here !!!
-			submit.get(30, TimeUnit.SECONDS);
-			
-		} catch (InterruptedException e) {
-			logger.error("error!", e);
-		} catch (ExecutionException e) {
-			logger.error("error!", e);
-		} catch (TimeoutException e) {
-			logger.error("error!", e);
-		}
+            // block here !!!
+            submit.get(30, TimeUnit.SECONDS);
+
+        } catch (InterruptedException e) {
+            logger.error("error!", e);
+        } catch (ExecutionException e) {
+            logger.error("error!", e);
+        } catch (TimeoutException e) {
+            logger.error("error!", e);
+        }
     }
 
     public void play(final File inputFile) {
@@ -114,7 +113,7 @@ public class Emulator {
 
             @Override
             public void run() {
-                //long lastTime = 0;
+                // long lastTime = 0;
                 LineNumberReader reader = null;
                 String line = "";
 
@@ -131,15 +130,15 @@ public class Emulator {
                             long time = Long.parseLong(line.substring(0, timeSepPos));
                             byte[] byteArray = EBusUtils.toByteArray(line.substring(timeSepPos + 2));
 
-                            //long sleepTime = (long) (replaySpeed * (time - lastTime));
+                            // long sleepTime = (long) (replaySpeed * (time - lastTime));
                             long sleepTime = (long) (replaySpeed * time);
-                            //lastTime = time;
+                            // lastTime = time;
 
                             if (sleepTime > 0) {
                                 logger.debug("Sleep for " + sleepTime + " ms ...");
                                 Thread.sleep(sleepTime);
                             }
-                            
+
                             Emulator.this.write(byteArray);
                         }
                     }

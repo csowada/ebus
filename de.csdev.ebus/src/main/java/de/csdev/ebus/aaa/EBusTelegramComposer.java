@@ -27,26 +27,47 @@ import de.csdev.ebus.utils.NumberUtils;
  *
  */
 public class EBusTelegramComposer {
-	
-	private static final Logger logger = LoggerFactory.getLogger(EBusTelegramComposer.class);
 
-	public static byte[] composeEBusTelegram2(EBusConfigurationTelegram commandCfg, Byte dst, Byte src, Map<String, Object> values) {
-		byte[] buffer = composeEBusTelegram(commandCfg, dst, src, values);
-		
-		 buffer[buffer.length-1] = EBusUtils.crc8(buffer, buffer.length-1);
-		
-		return buffer;
-	}
-	
+    private static final Logger logger = LoggerFactory.getLogger(EBusTelegramComposer.class);
+
     /**
-     * @param commandId
-     * @param commandClass
-     * @param dst
-     * @param src
-     * @param values
-     * @return
+     * Composes a byte array from the given telegram configuration including master crc.
+     * 
+     * @param commandCfg
+     * @param dst Set slave or broadcast address, if <code>null</code> then use the <code>dst</code> from commandCfg if
+     *            set.
+     * @param src The sender master address
+     * @param values A value map to set/replace the values from commandCfg
+     * @return Returns a ready-to-send byte array with master crc as last byte.
      */
-    private static byte[] composeEBusTelegram(EBusConfigurationTelegram commandCfg, Byte dst, Byte src, Map<String, Object> values) {
+    public static byte[] composeEBusTelegram(EBusConfigurationTelegram commandCfg, Byte dst, Byte src,
+            Map<String, Object> values) {
+        byte[] buffer = internalComposeEBusTelegram(commandCfg, dst, src, values);
+        
+        if(buffer == null)
+            return null;
+        
+        // encode the data buffer
+        buffer = EBusUtils.encodeEBusData(buffer);
+        
+        // compute crc and set it as the last byte
+        buffer[buffer.length - 1] = EBusUtils.crc8(buffer, buffer.length - 1);
+
+        return buffer;
+    }
+    
+    /**
+     * Composes a byte array from the given telegram configuration without master crc.
+     * 
+     * @param commandCfg
+     * @param dst Set slave or broadcast address, if <code>null</code> then use the <code>dst</code> from commandCfg if
+     *            set.
+     * @param src The sender master address
+     * @param values A value map to set/replace the values from commandCfg
+     * @return Returns a unescaped byte array with 0x00 byte for master crc as last byte.
+     */
+    private static byte[] internalComposeEBusTelegram(EBusConfigurationTelegram commandCfg, Byte dst, Byte src,
+            Map<String, Object> values) {
 
         byte[] buffer = null;
 
@@ -123,7 +144,7 @@ public class EBusTelegramComposer {
 
             for (Entry<String, EBusConfigurationValue> value : valuesConfig.entrySet()) {
 
-                // check if the special value type for kromsch�der/wolf crc is availabel
+                // check if the special value type for kromschöder/wolf crc is availabel
                 if (StringUtils.equals(value.getValue().getType(), "crc-kw")) {
 
                     byte b = 0;
@@ -141,7 +162,7 @@ public class EBusTelegramComposer {
                 }
             }
 
-            bytesData = EBusUtils.encodeEBusData(bytesData);
+            //bytesData = EBusUtils.encodeEBusData(bytesData);
             System.arraycopy(bytesData, 0, buffer, 5, bytesData.length);
 
             return buffer;

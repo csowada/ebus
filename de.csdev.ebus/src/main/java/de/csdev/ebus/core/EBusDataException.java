@@ -20,10 +20,15 @@ public class EBusDataException extends IOException {
 
     public enum EBusError {
         NONE,
+        
         MASTER_CRC_INVALID,
+        
         SLAVE_CRC_INVALID,
+        
         NO_SLAVE_RESPONSE,
+        
         UNEXSPECTED_RESPONSE,
+        
         INDEX_OUT_OF_BOUNDS
     }
 

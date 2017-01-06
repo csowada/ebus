@@ -30,103 +30,103 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class EBusConfigurationJsonReader {
-	
-	private static final Logger logger = LoggerFactory.getLogger(EBusConfigurationJsonReader.class);
-	
-	// filter: ??
-	private static Pattern P_PLACEHOLDER = Pattern.compile("\\?\\?");
 
-	// filter: (00)
-	private static Pattern P_BRACKETS_VALS = Pattern.compile("(\\([0-9A-Z]{2}\\))");
+    private static final Logger logger = LoggerFactory.getLogger(EBusConfigurationJsonReader.class);
 
-	// filter: (|)
-	private static Pattern P_BRACKETS_CLEAN = Pattern.compile("(\\(|\\))");
-	
-	private Map<String, String> loadedFilters = new HashMap<String, String>();
+    // filter: ??
+    private static Pattern P_PLACEHOLDER = Pattern.compile("\\?\\?");
 
-	private EBusConfigurationProvider configurationProvider;
+    // filter: (00)
+    private static Pattern P_BRACKETS_VALS = Pattern.compile("(\\([0-9A-Z]{2}\\))");
 
-	public EBusConfigurationJsonReader(EBusConfigurationProvider configurationProvider) {
-		this.configurationProvider = configurationProvider;
-	}
+    // filter: (|)
+    private static Pattern P_BRACKETS_CLEAN = Pattern.compile("(\\(|\\))");
 
-	/**
-	 * Loads a JSON configuration file by url
-	 * 
-	 * @param url The url to a configuration file
-	 * @throws IOException Unable to read configuration file
-	 * @throws ParseException A invalid json file
-	 */
-	public void loadConfigurationFile(URL url) throws IOException {
+    private Map<String, String> loadedFilters = new HashMap<String, String>();
 
-		final ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
-		final InputStream inputStream = url.openConnection().getInputStream();
+    private EBusConfigurationProvider configurationProvider;
 
-		final List<EBusConfigurationTelegram> loadedTelegramRegistry = mapper.readValue(inputStream,
-				new TypeReference<List<EBusConfigurationTelegram>>() {
-		});
+    public EBusConfigurationJsonReader(EBusConfigurationProvider configurationProvider) {
+        this.configurationProvider = configurationProvider;
+    }
 
-		for (Iterator<EBusConfigurationTelegram> iterator = loadedTelegramRegistry.iterator(); iterator.hasNext();) {
-			EBusConfigurationTelegram object = iterator.next();
-			transformDataTypes(object);
+    /**
+     * Loads a JSON configuration file by url
+     * 
+     * @param url The url to a configuration file
+     * @throws IOException Unable to read configuration file
+     * @throws ParseException A invalid json file
+     */
+    public void loadConfigurationFile(URL url) throws IOException {
 
-			// check if this filter pattern is already loaded
-			String filter = object.getFilterPattern().toString();
-			String fileComment = StringUtils.substringAfterLast(url.getFile(), "/") + " >>> " + object.getComment();
+        final ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+        final InputStream inputStream = url.openConnection().getInputStream();
 
-			if (loadedFilters.containsKey(filter)) {
-				logger.info("Identical filter already loaded ... {} AND {}", loadedFilters.get(filter), fileComment);
-			} else {
-				loadedFilters.put(filter, fileComment);
-			}
-		}
+        final List<EBusConfigurationTelegram> loadedTelegramRegistry = mapper.readValue(inputStream,
+                new TypeReference<List<EBusConfigurationTelegram>>() {
+                });
 
-		if (loadedTelegramRegistry != null && !loadedTelegramRegistry.isEmpty()) {
-			configurationProvider.add(loadedTelegramRegistry);
-		}
-	}
+        for (Iterator<EBusConfigurationTelegram> iterator = loadedTelegramRegistry.iterator(); iterator.hasNext();) {
+            EBusConfigurationTelegram object = iterator.next();
+            transformDataTypes(object);
 
-	/**
-	 * @param configurationEntry
-	 */
-	protected void transformDataTypes(EBusConfigurationTelegram configurationEntry) {
+            // check if this filter pattern is already loaded
+            String filter = object.getFilterPattern().toString();
+            String fileComment = StringUtils.substringAfterLast(url.getFile(), "/") + " >>> " + object.getComment();
 
-		// Use filter property if set
-		if (StringUtils.isNotEmpty(configurationEntry.getFilter())) {
-			String filter = configurationEntry.getFilter();
-			filter = P_PLACEHOLDER.matcher(filter).replaceAll("[0-9A-Z]{2}");
-			logger.trace("Compile RegEx filter: {}", filter);
-			configurationEntry.setFilterPattern(Pattern.compile(filter));
+            if (loadedFilters.containsKey(filter)) {
+                logger.info("Identical filter already loaded ... {} AND {}", loadedFilters.get(filter), fileComment);
+            } else {
+                loadedFilters.put(filter, fileComment);
+            }
+        }
 
-		} else {
-			// Build filter string
+        if (loadedTelegramRegistry != null && !loadedTelegramRegistry.isEmpty()) {
+            configurationProvider.add(loadedTelegramRegistry);
+        }
+    }
 
-			// Always ignore first two hex bytes
-			String filter = "[0-9A-Z]{2} [0-9A-Z]{2}";
+    /**
+     * @param configurationEntry
+     */
+    protected void transformDataTypes(EBusConfigurationTelegram configurationEntry) {
 
-			// Add command to filter string
-			if (StringUtils.isNotEmpty(configurationEntry.getCommand())) {
-				filter += " " + configurationEntry.getCommand();
-				filter += " [0-9A-Z]{2}";
-			}
+        // Use filter property if set
+        if (StringUtils.isNotEmpty(configurationEntry.getFilter())) {
+            String filter = configurationEntry.getFilter();
+            filter = P_PLACEHOLDER.matcher(filter).replaceAll("[0-9A-Z]{2}");
+            logger.trace("Compile RegEx filter: {}", filter);
+            configurationEntry.setFilterPattern(Pattern.compile(filter));
 
-			// Add data to filter string
-			if (StringUtils.isNotEmpty(configurationEntry.getData())) {
-				Matcher matcher = P_BRACKETS_VALS.matcher(configurationEntry.getData());
-				filter += " " + matcher.replaceAll("[0-9A-Z]{2}");
-			}
+        } else {
+            // Build filter string
 
-			// Finally add .* to end with everything
-			filter += " .*";
+            // Always ignore first two hex bytes
+            String filter = "[0-9A-Z]{2} [0-9A-Z]{2}";
 
-			logger.trace("Compile RegEx filter: {}", filter);
-			configurationEntry.setFilterPattern(Pattern.compile(filter));
-		}
+            // Add command to filter string
+            if (StringUtils.isNotEmpty(configurationEntry.getCommand())) {
+                filter += " " + configurationEntry.getCommand();
+                filter += " [0-9A-Z]{2}";
+            }
 
-		// remove brackets if used
-		if (StringUtils.isNotEmpty(configurationEntry.getData())) {
-			Matcher matcher = P_BRACKETS_CLEAN.matcher(configurationEntry.getData());
-			configurationEntry.setData(matcher.replaceAll(""));
-		}
-	}
+            // Add data to filter string
+            if (StringUtils.isNotEmpty(configurationEntry.getData())) {
+                Matcher matcher = P_BRACKETS_VALS.matcher(configurationEntry.getData());
+                filter += " " + matcher.replaceAll("[0-9A-Z]{2}");
+            }
+
+            // Finally add .* to end with everything
+            filter += " .*";
+
+            logger.trace("Compile RegEx filter: {}", filter);
+            configurationEntry.setFilterPattern(Pattern.compile(filter));
+        }
+
+        // remove brackets if used
+        if (StringUtils.isNotEmpty(configurationEntry.getData())) {
+            Matcher matcher = P_BRACKETS_CLEAN.matcher(configurationEntry.getData());
+            configurationEntry.setData(matcher.replaceAll(""));
+        }
+    }
 }

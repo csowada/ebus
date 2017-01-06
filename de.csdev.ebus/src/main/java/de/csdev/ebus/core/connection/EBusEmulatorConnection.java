@@ -41,17 +41,17 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
         return true;
     }
 
-	@Override
-	public void writeByte(int b) throws IOException {
-		byte[] byteArray = {(byte) b};
-		emu.write(byteArray);
-	}
+    @Override
+    public void writeByte(int b) throws IOException {
+        byte[] byteArray = { (byte) b };
+        emu.write(byteArray);
+    }
 
-	@Override
-	public void reset() throws IOException {
-		if(emu.getInputStream().available() > 0 ) {
-			byte[] x = new byte[emu.getInputStream().available()];
-			emu.getInputStream().read(x);
-		}
-	}
+    @Override
+    public void reset() throws IOException {
+        if (emu.getInputStream().available() > 0) {
+            byte[] x = new byte[emu.getInputStream().available()];
+            emu.getInputStream().read(x);
+        }
+    }
 }

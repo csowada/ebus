@@ -112,8 +112,8 @@ public class EBusQueue {
             outputQueue.add(entry);
         }
 
-        //checkSendStatus();
-        
+        // checkSendStatus();
+
         return entry.id;
     }
 

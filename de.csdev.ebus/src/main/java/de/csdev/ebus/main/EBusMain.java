@@ -11,17 +11,23 @@ package de.csdev.ebus.main;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.aaa.EBusHighLevelService;
+import de.csdev.ebus.aaa.EBusTelegramComposer;
 import de.csdev.ebus.cfg.EBusConfigurationJsonReader;
+import de.csdev.ebus.cfg.EBusConfigurationTelegram;
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.connection.EBusCaptureProxyConnection;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.core.connection.EBusTCPConnection;
 import de.csdev.ebus.core.connection.IEBusConnection;
+import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.EmulatorCapture;
 
 public class EBusMain {
@@ -33,10 +39,10 @@ public class EBusMain {
 
         try {
             IEBusConnection connection = new EBusEmulatorConnection(new File("src/resources/replay.txt"));
-            connection = new EBusTCPConnection("openhab", 8000);
+            //connection = new EBusTCPConnection("openhab", 8000);
 
-            EmulatorCapture captureWriter = new EmulatorCapture(new File("src/resources/capture.txt"));
-            connection = new EBusCaptureProxyConnection(connection, captureWriter);
+            //EmulatorCapture captureWriter = new EmulatorCapture(new File("src/resources/capture.txt"));
+            //connection = new EBusCaptureProxyConnection(connection, captureWriter);
 
             EBusController controller = new EBusController(connection);
             EBusHighLevelService service = new EBusHighLevelService(controller);
@@ -46,6 +52,30 @@ public class EBusMain {
             File filex = new File("src/resources/common-configuration.json");
             jsonCfgReader.loadConfigurationFile(filex.toURL());
 
+            EBusConfigurationTelegram command = service.getConfigurationProvider().getCommandById("common.error");
+            Map<String, Object> values = new HashMap<String, Object>();
+            
+            byte[] bytes = "HALLO WELT".getBytes();
+            
+            values.put("_error_message1", bytes[0]);
+            values.put("_error_message2", bytes[1]);
+            values.put("_error_message3", bytes[2]);
+            values.put("_error_message4", bytes[3]);
+            values.put("_error_message5", bytes[4]);
+            values.put("_error_message6", bytes[5]);
+            values.put("_error_message7", bytes[6]);
+            values.put("_error_message8", bytes[7]);
+            values.put("_error_message9", bytes[8]);
+            values.put("_error_message10", bytes[9]);
+            
+            values.put("_error_message10", EBusConsts.ESCAPE);
+            
+            byte[] composeEBusTelegram2 = EBusTelegramComposer.composeEBusTelegram(command, null, (byte) 0xFF, values);
+            
+            logger.info("TEST: Error Command {}", EBusUtils.toHexDumpString(composeEBusTelegram2).toString());
+            
+            controller.addToSendQueue(composeEBusTelegram2);
+            
             controller.start();
             // service.getDeviceTableService().startDeviceScan();
 

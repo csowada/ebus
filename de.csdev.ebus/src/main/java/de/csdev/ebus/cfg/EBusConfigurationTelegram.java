@@ -24,27 +24,27 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class EBusConfigurationTelegram {
 
     private Pattern cfilter;
-    
+
     private String clazz;
-    
+
     private String command;
-    
+
     private String comment;
-    
+
     private Map<String, EBusConfigurationValue> computedValues;
-    
+
     private String data;
-    
+
     private Integer debug;
-    
+
     private String device;
-    
+
     private String dst;
-    
+
     private String filter;
 
     private String id;
-    
+
     private Map<String, EBusConfigurationValue> values;
 
     /**
@@ -148,9 +148,9 @@ public class EBusConfigurationTelegram {
     }
 
     public String getFullId() {
-    	return clazz + "." + id;
+        return clazz + "." + id;
     }
-    
+
     /**
      * A list of values of the eBus telegram
      * 

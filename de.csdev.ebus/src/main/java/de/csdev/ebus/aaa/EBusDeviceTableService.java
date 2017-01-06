@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationProvider;
 import de.csdev.ebus.cfg.EBusConfigurationTelegram;
 import de.csdev.ebus.core.EBusConnectorEventListener;
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.meta.EBusDeviceTable;
 import de.csdev.ebus.meta.EBusDeviceTableListener;
 import de.csdev.ebus.meta.IEBusDevice;
-import de.csdev.ebus.telegram.EBusTelegram;
 
 /**
  * @author Christian Sowada
@@ -60,7 +60,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
         EBusConfigurationTelegram command = configurationProvider.getCommandById("common.inquiry_of_existence");
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, EBusTelegram.BROADCAST_ADDRESS,
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS,
                 masterAddress, null);
 
         scanQueueId = controller.addToSendQueue(buffer);
@@ -78,7 +78,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         EBusConfigurationTelegram command = configurationProvider.getCommandById("common.sign_of_life");
 
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, EBusTelegram.BROADCAST_ADDRESS,
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS,
                 masterAddress, null);
 
         controller.addToSendQueue(buffer);
@@ -88,7 +88,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         EBusConfigurationTelegram command = configurationProvider.getCommandById("common.identification");
 
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram2(command, slaveAddress, masterAddress, null);
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, slaveAddress, masterAddress, null);
 
         controller.addToSendQueue(buffer);
     }

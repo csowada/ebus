@@ -17,8 +17,8 @@ import javax.xml.bind.DatatypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusDataException;
-import de.csdev.ebus.telegram.EBusTelegram;
 
 /**
  * A helper class to decode all eBus data types and telegrams.
@@ -123,12 +123,12 @@ public class EBusUtils {
     }
 
     public static byte crc8(byte[] data, int len) {
-    	byte uc_crc = 0;
-    	for (int i = 0; i < len; i++) {
-			byte b = data[i];
-			uc_crc = crc8_tab(b, uc_crc);
-		}
-    	return uc_crc;
+        byte uc_crc = 0;
+        for (int i = 0; i < len; i++) {
+            byte b = data[i];
+            uc_crc = crc8_tab(b, uc_crc);
+        }
+        return uc_crc;
     }
 
     /**
@@ -140,16 +140,17 @@ public class EBusUtils {
      * @return The new value or the unchanged byte
      */
     static private byte decodeEBusData(byte[] data, int pos) {
-        if (data[pos - 1] == (byte) 0xA9) {
+        
+        if (data[pos - 1] == EBusConsts.ESCAPE) {
             if (data[pos] == (byte) 0x00) {
-                return (byte) 0xA9;
+                return EBusConsts.ESCAPE;
             } else if (data[pos] == (byte) 0x01) {
-                return (byte) 0xAA;
+                return EBusConsts.SYN;
             }
         }
         return data[pos];
     }
-    
+
     /**
      * Encodes the eBUS data to replace sync and 0x9A bytes
      *
@@ -160,10 +161,10 @@ public class EBusUtils {
         final ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         try {
             for (byte b : data) {
-                if (b == (byte) 0xAA) {
-                    byteBuffer.write(new byte[] { (byte) 0xA9, (byte) 0x01 });
-                } else if (b == (byte) 0x9A) {
-                    byteBuffer.write(new byte[] { (byte) 0xA9, (byte) 0x00 });
+                if (b == EBusConsts.SYN) {
+                    byteBuffer.write(new byte[] { EBusConsts.ESCAPE, (byte) 0x01 });
+                } else if (b == EBusConsts.ESCAPE) {
+                    byteBuffer.write(new byte[] { EBusConsts.ESCAPE, (byte) 0x00 });
                 } else {
                     byteBuffer.write(b);
                 }
@@ -174,7 +175,7 @@ public class EBusUtils {
 
         return byteBuffer.toByteArray();
     }
-    
+
     /**
      * Encodes the eBUS data to replace sync and 0x9A bytes
      *
@@ -182,9 +183,21 @@ public class EBusUtils {
      * @return
      */
     public static byte[] encodeEBusData(byte data) {
-    	return encodeEBusData(new byte[] {data});
+        return encodeEBusData(new byte[] { data });
     }
-    
+
+    /**
+     * Check if the address is in general valid
+     * @param address
+     * @return
+     */
+    public static boolean isValidAddress(byte address) {
+        if (address == EBusConsts.BROADCAST_ADDRESS || address == EBusConsts.SYN || address == EBusConsts.ESCAPE) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Check if the address is a valid master address.
      *
@@ -193,19 +206,10 @@ public class EBusUtils {
      */
     public static boolean isMasterAddress(byte address) {
 
-        byte addr = (byte) ((byte) (address >>> 4) & (byte)0x0F);
+        byte addr = (byte) ((byte) (address >>> 4) & (byte) 0x0F);
         byte prio = (byte) (address & (byte) 0x0F);
 
-//        addr = (byte) (address & (byte)0x0F);
-//        //int x = (address ^ (byte)0xF0);
-//        if((address ^ (byte)0xF0) == 0) {
-//        	logger.debug("xxxx");
-//        }
-        
-//        addr = addr ^ 12;
-        
-        // check if it's a broadcast
-        if (address != (byte) 0xFE) {
+        if (isValidAddress(address)) {
             if (addr == (byte) 0x00 || addr == (byte) 0x01 || addr == (byte) 0x03 || addr == (byte) 0x07
                     || addr == (byte) 0x0F) {
                 if (prio == (byte) 0x00 || prio == (byte) 0x01 || prio == (byte) 0x03 || prio == (byte) 0x07
@@ -228,10 +232,10 @@ public class EBusUtils {
      */
     static public byte[] decodeExpandedData(byte[] data) throws EBusDataException {
 
-    	if(data.length < 7) {
-    		throw new EBusDataException("To short. ..",EBusDataException.EBusError.INDEX_OUT_OF_BOUNDS, data);
-    	}
-    	
+        if (data.length < 7) {
+            throw new EBusDataException("To short. ..", EBusDataException.EBusError.INDEX_OUT_OF_BOUNDS, data);
+        }
+
         try {
             ByteBuffer buffer = ByteBuffer.allocate(data.length + 10);
 
@@ -257,7 +261,7 @@ public class EBusUtils {
 
                     uc_crc = crc8_tab(b, uc_crc);
 
-                    if (b != (byte) 0xA9) {
+                    if (b != EBusConsts.ESCAPE) {
                         nnPos++;
                         buffer.put(decodeEBusData(data, i));
                     }
@@ -281,9 +285,9 @@ public class EBusUtils {
             buffer.put(crc);
             buffer.put(data[crcPos + 1]);
 
-            if (data[crcPos + 1] == EBusTelegram.SYN) {
+            if (data[crcPos + 1] == EBusConsts.SYN) {
 
-                if (data[1] == EBusTelegram.BROADCAST_ADDRESS) {
+                if (data[1] == EBusConsts.BROADCAST_ADDRESS) {
                     // Broadcast Telegram, end
                     return buffer.array();
                 }
@@ -292,15 +296,15 @@ public class EBusUtils {
                         data);
             }
 
-            if ((data[crcPos + 1] == EBusTelegram.ACK_OK || data[crcPos + 1] == EBusTelegram.ACK_FAIL)
-                    && data[crcPos + 2] == EBusTelegram.SYN) {
+            if ((data[crcPos + 1] == EBusConsts.ACK_OK || data[crcPos + 1] == EBusConsts.ACK_FAIL)
+                    && data[crcPos + 2] == EBusConsts.SYN) {
 
                 // Master-Master Telegram, add ack value and end
                 buffer.put(data[crcPos + 2]);
                 return buffer.array();
             }
 
-            if (data[crcPos + 1] != EBusTelegram.ACK_OK && data[crcPos + 1] != EBusTelegram.ACK_FAIL) {
+            if (data[crcPos + 1] != EBusConsts.ACK_OK && data[crcPos + 1] != EBusConsts.ACK_FAIL) {
 
                 // Unexpected value on this position
                 throw new EBusDataException("Unexpect ACK value in eBUS telegram!",
@@ -323,7 +327,7 @@ public class EBusUtils {
 
                     uc_crc = crc8_tab(b, uc_crc);
 
-                    if (b != (byte) 0xA9) {
+                    if (b != EBusConsts.ESCAPE) {
                         buffer.put(decodeEBusData(data, i));
                     }
                 }

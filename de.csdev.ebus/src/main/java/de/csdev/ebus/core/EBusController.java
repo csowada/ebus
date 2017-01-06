@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusQueue.QueueEntry;
 import de.csdev.ebus.core.connection.IEBusConnection;
-import de.csdev.ebus.telegram.EBusTelegram;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -90,10 +89,10 @@ public class EBusController extends Thread {
         // afterwards check for next sending slot
         queue.checkSendStatus();
 
-        if (inputBuffer.position() == 1 && inputBuffer.get(0) == EBusTelegram.SYN) {
+        if (inputBuffer.position() == 1 && inputBuffer.get(0) == EBusConsts.SYN) {
             logger.trace("Auto-SYN byte received");
 
-        } else if (inputBuffer.position() == 2 && inputBuffer.get(0) == EBusTelegram.SYN) {
+        } else if (inputBuffer.position() == 2 && inputBuffer.get(0) == EBusConsts.SYN) {
             logger.warn("Collision on eBUS detected (SYN DATA SYNC Sequence) ...");
 
         } else if (inputBuffer.position() < 7) {
@@ -249,7 +248,7 @@ public class EBusController extends Thread {
                             inputBuffer.put(receivedByte);
 
                             // the 0xAA byte is a end of a packet
-                            if (receivedByte == EBusTelegram.SYN) {
+                            if (receivedByte == EBusConsts.SYN) {
 
                                 // check if the buffer is empty and ready for
                                 // sending data
@@ -360,7 +359,7 @@ public class EBusController extends Thread {
 
                     // written and read byte not identical, that's
                     // a collision
-                    if (readByte == EBusTelegram.SYN) {
+                    if (readByte == EBusConsts.SYN) {
                         logger.debug("eBus collision with SYN detected!");
                     } else {
                         logger.debug("eBus collision detected! 0x{}", EBusUtils.toHexDumpString(readByte));
@@ -413,13 +412,13 @@ public class EBusController extends Thread {
         // sending master data finish
 
         // if this telegram a broadcast?
-        if (dataOutputBuffers[1] == EBusTelegram.BROADCAST_ADDRESS) {
+        if (dataOutputBuffers[1] == EBusConsts.BROADCAST_ADDRESS) {
 
             logger.trace("Broadcast send ..............");
 
             // sende master sync
-            connection.writeByte(EBusTelegram.SYN);
-            sendBuffer.put(EBusTelegram.SYN);
+            connection.writeByte(EBusConsts.SYN);
+            sendBuffer.put(EBusConsts.SYN);
 
         } else {
 
@@ -431,7 +430,7 @@ public class EBusController extends Thread {
                 byte ack = (byte) (read & 0xFF);
                 sendBuffer.put(ack);
 
-                if (ack == EBusTelegram.ACK_OK) {
+                if (ack == EBusConsts.ACK_OK) {
 
                     // if the telegram is a slave telegram we will
                     // get data from slave
@@ -478,15 +477,15 @@ public class EBusController extends Thread {
                         }
 
                         // sende master sync
-                        connection.writeByte(EBusTelegram.ACK_OK);
-                        sendBuffer.put(EBusTelegram.ACK_OK);
+                        connection.writeByte(EBusConsts.ACK_OK);
+                        sendBuffer.put(EBusConsts.ACK_OK);
                     } // isMasterAddr check
 
                     // send SYN byte
-                    connection.writeByte(EBusTelegram.SYN);
-                    sendBuffer.put(EBusTelegram.SYN);
+                    connection.writeByte(EBusConsts.SYN);
+                    sendBuffer.put(EBusConsts.SYN);
 
-                } else if (ack == EBusTelegram.ACK_FAIL) {
+                } else if (ack == EBusConsts.ACK_FAIL) {
 
                     // clear uncompleted telegram
                     sendBuffer.clear();
@@ -496,7 +495,7 @@ public class EBusController extends Thread {
                         return;
                     }
 
-                } else if (ack == EBusTelegram.SYN) {
+                } else if (ack == EBusConsts.SYN) {
                     logger.debug("No answer from slave for telegram: {}", EBusUtils.toHexDumpString(sendBuffer));
 
                     // clear uncompleted telegram or it will result
