@@ -29,7 +29,7 @@ public class EBusComposeTelegramTest {
 		jsonCfgReader = new EBusConfigurationJsonReader(configurationProvider);
 		
         try {
-        	File filex = new File("src/resources/common-configuration.json");
+        	File filex = new File("src/main/resources/common-configuration.json");
 			jsonCfgReader.loadConfigurationFile(filex.toURL());
 		} catch (IOException e1) {
 			e1.printStackTrace();

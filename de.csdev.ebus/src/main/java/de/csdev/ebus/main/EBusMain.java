@@ -11,6 +11,7 @@ package de.csdev.ebus.main;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class EBusMain {
     public static void main(String[] args) {
 
         try {
-            IEBusConnection connection = new EBusEmulatorConnection(new File("src/resources/replay.txt"));
+            IEBusConnection connection = new EBusEmulatorConnection(new File("src/main/resources/replay.txt"));
             //connection = new EBusTCPConnection("openhab", 8000);
 
             //EmulatorCapture captureWriter = new EmulatorCapture(new File("src/resources/capture.txt"));
@@ -49,9 +50,15 @@ public class EBusMain {
             EBusConfigurationJsonReader jsonCfgReader = new EBusConfigurationJsonReader(
                     service.getConfigurationProvider());
 
-            File filex = new File("src/resources/common-configuration.json");
-            jsonCfgReader.loadConfigurationFile(filex.toURL());
+            ClassLoader classLoader = controller.getClass().getClassLoader();
+            URL resource = classLoader.getResource("common-configuration.json");
+            
+            logger.info(">>>>>>>>>>>>>>>>>>" + resource.openStream().read());
 
+            File filex = new File("src/main/resources/common-configuration.json");
+            jsonCfgReader.loadConfigurationFile(filex.toURL());
+            //jsonCfgReader.loadConfigurationFile(resource);
+            
             EBusConfigurationTelegram command = service.getConfigurationProvider().getCommandById("common.error");
             Map<String, Object> values = new HashMap<String, Object>();
             

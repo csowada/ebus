@@ -82,6 +82,8 @@ public class EBusConfigurationJsonReader {
             } else {
                 loadedFilters.put(filter, fileComment);
             }
+            
+            object.setConfigurationSource(url.toString());
         }
 
         if (loadedTelegramRegistry != null && !loadedTelegramRegistry.isEmpty()) {

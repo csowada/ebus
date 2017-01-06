@@ -47,6 +47,16 @@ public class EBusConfigurationTelegram {
 
     private Map<String, EBusConfigurationValue> values;
 
+    private String configurationSource;
+    
+    public String getConfigurationSource() {
+        return configurationSource;
+    }
+
+    public void setConfigurationSource(String configurationSource) {
+        this.configurationSource = configurationSource;
+    }
+
     /**
      * The class of the eBus telegram
      * 
