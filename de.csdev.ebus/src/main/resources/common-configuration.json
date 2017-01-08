@@ -192,7 +192,8 @@
             "_error_message7": {"type": "char", "pos": 12},
             "_error_message8": {"type": "char", "pos": 13},
             "_error_message9": {"type": "char", "pos": 14},
-            "_error_message10": {"type": "char", "pos": 15}
+            "_error_message10": {"type": "char", "pos": 15},
+            "error": {"type": "string", "pos": 6, "length": 10}
         }
     }
 ]

@@ -53,9 +53,19 @@ public class EBusConfigurationValue {
 
     private String typeHint;
 
+    private Integer length;
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
     /**
      * Returns a bit of
-     * 
+     *
      * @return
      */
     public Integer getBit() {
@@ -64,7 +74,7 @@ public class EBusConfigurationValue {
 
     /**
      * Returns compiled script
-     * 
+     *
      * @return
      */
     public CompiledScript getCsript() {
@@ -73,7 +83,7 @@ public class EBusConfigurationValue {
 
     /**
      * Get debug string
-     * 
+     *
      * @return
      */
     public String getDebug() {
@@ -82,7 +92,7 @@ public class EBusConfigurationValue {
 
     /**
      * Returns factor
-     * 
+     *
      * @return
      */
     public BigDecimal getFactor() {
@@ -91,7 +101,7 @@ public class EBusConfigurationValue {
 
     /**
      * Returns label of value
-     * 
+     *
      * @return
      */
     public String getLabel() {
@@ -100,7 +110,7 @@ public class EBusConfigurationValue {
 
     /**
      * Returns mapping to this value
-     * 
+     *
      * @return
      */
     public Map<String, String> getMapping() {
@@ -109,7 +119,7 @@ public class EBusConfigurationValue {
 
     /**
      * Get max value
-     * 
+     *
      * @return
      */
     public BigDecimal getMax() {
@@ -118,7 +128,7 @@ public class EBusConfigurationValue {
 
     /**
      * Get min value
-     * 
+     *
      * @return
      */
     public BigDecimal getMin() {
@@ -127,7 +137,7 @@ public class EBusConfigurationValue {
 
     /**
      * Get telegram position for this value
-     * 
+     *
      * @return
      */
     public Integer getPos() {
@@ -136,7 +146,7 @@ public class EBusConfigurationValue {
 
     /**
      * Get replace value
-     * 
+     *
      * @return
      */
     public BigDecimal getReplaceValue() {
@@ -145,7 +155,7 @@ public class EBusConfigurationValue {
 
     /**
      * Returns uncompiled script
-     * 
+     *
      * @return
      */
     public String getScript() {
@@ -154,7 +164,7 @@ public class EBusConfigurationValue {
 
     /**
      * Returns the step wide for this value
-     * 
+     *
      * @return
      */
     public String getStep() {
@@ -163,7 +173,7 @@ public class EBusConfigurationValue {
 
     /**
      * Returns the value eBus type
-     * 
+     *
      * @return
      */
     public String getType() {
@@ -172,7 +182,7 @@ public class EBusConfigurationValue {
 
     /**
      * Returns a hint for documentation
-     * 
+     *
      * @return
      */
     public String getTypeHint() {
@@ -280,7 +290,7 @@ public class EBusConfigurationValue {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -292,7 +302,7 @@ public class EBusConfigurationValue {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -307,7 +317,7 @@ public class EBusConfigurationValue {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override

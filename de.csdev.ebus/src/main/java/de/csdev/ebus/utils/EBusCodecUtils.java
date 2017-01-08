@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * A helper class to encode all eBus data types and telegrams.
  *
  * @author Christian Sowada
- * 
+ *
  */
 public class EBusCodecUtils {
 
@@ -43,10 +43,14 @@ public class EBusCodecUtils {
 
     public static String DATA2C = "data2c";
 
+    // custom types
+
+    public static String STRING = "string";
+
     private static final Logger logger = LoggerFactory.getLogger(EBusCodecUtils.class);
 
     public static boolean decodeBit(byte data, int bit) {
-        return ((Byte) data >> bit & 0x1) == 1;
+        return (data >> bit & 0x1) == 1;
     }
 
     public static byte encodeBit(byte data, int bit) {
@@ -63,7 +67,7 @@ public class EBusCodecUtils {
 
     /**
      * Decodes a byte buffer to a number value
-     * 
+     *
      * @param type
      * @param data
      * @param replaceValue
@@ -134,7 +138,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a number value to a byte buffer
-     * 
+     *
      * @param type
      * @param value
      * @return
@@ -179,7 +183,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert the value to a bcd value
-     * 
+     *
      * @param data The encoded value
      * @return The bcd value
      */
@@ -189,7 +193,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert eBus Type CHAR
-     * 
+     *
      * @param data
      * @return The decoded value
      */
@@ -199,7 +203,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert eBus Type DATA1B
-     * 
+     *
      * @param data The encoded value
      * @return The decoded value
      */
@@ -209,7 +213,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert eBus Type DATA1C
-     * 
+     *
      * @param data The encoded value
      * @return The decoded value
      */
@@ -219,7 +223,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert eBus Type DATA2b
-     * 
+     *
      * @param data The encoded bytes
      * @return The decoded value
      */
@@ -229,7 +233,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert eBus Type DATA2c
-     * 
+     *
      * @param data The encoded bytes
      * @return The decoded value
      */
@@ -239,7 +243,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert eBus Type Int
-     * 
+     *
      * @param data The encoded bytes
      * @return The decoded value
      */
@@ -249,7 +253,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert eBus Type UCHAR
-     * 
+     *
      * @param data
      * @return The decoded value
      */
@@ -259,7 +263,7 @@ public class EBusCodecUtils {
 
     /**
      * Convert eBus Type WORD
-     * 
+     *
      * @param The encoded bytes
      * @return The decoded value
      */
@@ -269,7 +273,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a BCD value
-     * 
+     *
      * @param data
      * @return
      */
@@ -279,7 +283,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a CHAR value
-     * 
+     *
      * @param data
      * @return
      */
@@ -289,7 +293,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a DATA1b value
-     * 
+     *
      * @param data
      * @return
      */
@@ -299,7 +303,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a DATA1c value
-     * 
+     *
      * @param data
      * @return
      */
@@ -309,7 +313,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a DATA2b value
-     * 
+     *
      * @param data
      * @return
      */
@@ -319,7 +323,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a DATA2c value
-     * 
+     *
      * @param data
      * @return
      */
@@ -329,7 +333,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a INT value
-     * 
+     *
      * @param data
      * @return
      */
@@ -339,7 +343,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a UCHAR value
-     * 
+     *
      * @param data
      * @return
      */
@@ -349,7 +353,7 @@ public class EBusCodecUtils {
 
     /**
      * Encodes a WORD value
-     * 
+     *
      * @param data
      * @return
      */

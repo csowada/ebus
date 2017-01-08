@@ -8,7 +8,6 @@
  */
 package de.csdev.ebus.meta;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -63,11 +62,13 @@ public class EBusDeviceTable {
 
             try {
                 final ObjectMapper mapper = new ObjectMapper();
-                final File file = new File("src/resources/manufactures.json");
-                final InputStream inputStream = file.toURI().toURL().openConnection().getInputStream();
+                final InputStream inputStream = this.getClass().getResourceAsStream("/manufactures.json");
 
-                vendors = mapper.readValue(inputStream, new TypeReference<Map<Byte, String>>() {});
-                
+                vendors = mapper.readValue(inputStream, new TypeReference<Map<Integer, String>>() {
+                });
+
+                inputStream.close();
+
             } catch (JsonParseException e) {
                 logger.error("error!", e);
             } catch (JsonMappingException e) {
@@ -79,12 +80,12 @@ public class EBusDeviceTable {
             }
         }
 
-        if(vendors == null) {
+        if (vendors == null) {
             logger.warn("Ups");
             return null;
         }
-        
-        return vendors.get(vendorCode);
+
+        return vendors.get(vendorCode & 0xFF);
     }
 
     public void updateDevice(byte address, Map<String, Object> data) {

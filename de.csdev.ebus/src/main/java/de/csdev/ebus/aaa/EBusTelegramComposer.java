@@ -32,7 +32,7 @@ public class EBusTelegramComposer {
 
     /**
      * Composes a byte array from the given telegram configuration including master crc.
-     * 
+     *
      * @param commandCfg
      * @param dst Set slave or broadcast address, if <code>null</code> then use the <code>dst</code> from commandCfg if
      *            set.
@@ -43,22 +43,23 @@ public class EBusTelegramComposer {
     public static byte[] composeEBusTelegram(EBusConfigurationTelegram commandCfg, Byte dst, Byte src,
             Map<String, Object> values) {
         byte[] buffer = internalComposeEBusTelegram(commandCfg, dst, src, values);
-        
-        if(buffer == null)
+
+        if (buffer == null) {
             return null;
-        
+        }
+
         // encode the data buffer
         buffer = EBusUtils.encodeEBusData(buffer);
-        
+
         // compute crc and set it as the last byte
         buffer[buffer.length - 1] = EBusUtils.crc8(buffer, buffer.length - 1);
 
         return buffer;
     }
-    
+
     /**
      * Composes a byte array from the given telegram configuration without master crc.
-     * 
+     *
      * @param commandCfg
      * @param dst Set slave or broadcast address, if <code>null</code> then use the <code>dst</code> from commandCfg if
      *            set.
@@ -131,7 +132,16 @@ public class EBusTelegramComposer {
                     value = value.divide(valueEntry.getFactor());
                 }
 
-                byte[] encode = EBusCodecUtils.encode(type, value);
+                byte[] encode = null;
+
+                if (type.equals(EBusCodecUtils.STRING)) {
+                    byte[] bytes = ((String) entry.getValue()).getBytes();
+                    encode = new byte[valueEntry.getLength()];
+                    System.arraycopy(bytes, 0, encode, 0, encode.length);
+
+                } else {
+                    encode = EBusCodecUtils.encode(type, value);
+                }
 
                 if (encode.length == 0) {
                     logger.warn("eBUS codec encoder returns empty buffer ...");
@@ -162,7 +172,7 @@ public class EBusTelegramComposer {
                 }
             }
 
-            //bytesData = EBusUtils.encodeEBusData(bytesData);
+            // bytesData = EBusUtils.encodeEBusData(bytesData);
             System.arraycopy(bytesData, 0, buffer, 5, bytesData.length);
 
             return buffer;

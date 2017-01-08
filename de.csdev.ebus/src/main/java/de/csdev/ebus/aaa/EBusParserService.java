@@ -69,6 +69,7 @@ public class EBusParserService implements EBusConnectorEventListener {
         int pos = telegramValue.getPos() != null ? telegramValue.getPos() : -1;
 
         Object value = null;
+        byte[] bytes = null;
 
         // requested pos is greater as whole buffer
         if (pos > byteBuffer.limit()) {
@@ -81,19 +82,22 @@ public class EBusParserService implements EBusConnectorEventListener {
             type = "word";
         }
 
-        byte[] bytes = null;
-
-        bytes = new byte[EBusCodecUtils.getDataTypeLen(type) - 1];
-        // byteBuffer.get(bytes, pos - 1, bytes.length);
-
         if (EBusCodecUtils.getDataTypeLen(type) == 2) {
+            // low byte first
             bytes = new byte[] { byteBuffer.get(pos), byteBuffer.get(pos - 1) };
+
         } else {
             bytes = new byte[] { byteBuffer.get(pos - 1) };
         }
 
         if (type.equals(EBusCodecUtils.BIT)) {
             value = EBusCodecUtils.decodeBit(bytes[0], telegramValue.getBit());
+
+        } else if (type.equals(EBusCodecUtils.STRING)) {
+            bytes = new byte[telegramValue.getLength()];
+            System.arraycopy(byteBuffer.array(), pos - 1, bytes, 0, bytes.length);
+            value = new String(bytes);
+
         } else {
             value = NumberUtils.toBigDecimal(EBusCodecUtils.decode(type, bytes, telegramValue.getReplaceValue()));
         }
@@ -263,7 +267,7 @@ public class EBusParserService implements EBusConnectorEventListener {
 
     /**
      * Evaluates the compiled script of a entry.
-     * 
+     *
      * @param entry The configuration entry to evaluate
      * @param scopeValues All known values for script scope
      * @return The computed value
