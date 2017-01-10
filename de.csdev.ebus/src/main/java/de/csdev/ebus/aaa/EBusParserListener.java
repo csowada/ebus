@@ -18,6 +18,14 @@ import de.csdev.ebus.cfg.EBusConfigurationTelegram;
  */
 public interface EBusParserListener {
 
+    /**
+     * A parsed eBUS telegram was received and successful converted to it's values.
+     *
+     * @param registryEntry The used configuration to parse the byte data
+     * @param result The result with all values
+     * @param receivedData The raw data
+     * @param sendQueueId The sendQueue id if available
+     */
     public void onTelegramResolved(EBusConfigurationTelegram registryEntry, Map<String, Object> result,
             byte[] receivedData, Integer sendQueueId);
 

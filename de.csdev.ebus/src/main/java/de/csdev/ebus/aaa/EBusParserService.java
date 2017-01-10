@@ -57,11 +57,11 @@ public class EBusParserService implements EBusConnectorEventListener {
     }
 
     /**
-     * @param byteBuffer
-     * @param telegramValue
-     * @param type
-     * @param pos
-     * @return
+     * Converts the byte data via the configuration to the value.
+     *
+     * @param byteBuffer The received telegram byte data
+     * @param telegramValue The configuration to encode the value
+     * @return Returns the converted value or <code>null</code> on error
      */
     private Object getValue(ByteBuffer byteBuffer, EBusConfigurationValue telegramValue) {
 
@@ -127,6 +127,13 @@ public class EBusParserService implements EBusConnectorEventListener {
         return value;
     }
 
+    /**
+     * Parse the received byte data with the load configurations.
+     *
+     * @param receivedData The received decoded byte data
+     * @param sendQueueId The sendQueue id if available
+     * @return Returns a map with all converted values
+     */
     private Map<String, Object> parse(byte[] receivedData, Integer sendQueueId) {
 
         // All parsed values
@@ -166,8 +173,8 @@ public class EBusParserService implements EBusConnectorEventListener {
             logger.debug("Found telegram {}", registryEntry.getComment());
 
             // get id and class key if used
-            String idKey = registryEntry.getId();
-            String classKey = registryEntry.getClazz();
+            String idKey = StringUtils.defaultString(registryEntry.getId());
+            String classKey = StringUtils.defaultString(registryEntry.getClazz());
 
             // get values block of configuration
             Map<String, EBusConfigurationValue> values = registryEntry.getValues();
@@ -179,7 +186,10 @@ public class EBusParserService implements EBusConnectorEventListener {
 
                     EBusConfigurationValue settings = entry.getValue();
 
-                    String uniqueKey = classKey + "." + idKey + "." + entry.getKey();
+                    // String uniqueKey = classKey + "." + idKey + "." + entry.getKey();
+
+                    String uniqueKey = (classKey != "" ? classKey + "." : "") + (idKey != "" ? idKey + "." : "")
+                            + entry.getKey();
 
                     // Extract the value from byte buffer
                     Object value = getValue(byteBuffer, entry.getValue());
@@ -230,7 +240,8 @@ public class EBusParserService implements EBusConnectorEventListener {
             if (cvalues != null && !cvalues.isEmpty()) {
                 for (Entry<String, EBusConfigurationValue> entry : cvalues.entrySet()) {
 
-                    String uniqueKey = classKey + "." + idKey + "." + entry.getKey();
+                    String uniqueKey = (classKey != "" ? classKey + "." : "") + (idKey != "" ? idKey + "." : "")
+                            + entry.getKey();
 
                     // Add all values to script scope
                     HashMap<String, Object> bindings = new HashMap<String, Object>();
@@ -299,6 +310,14 @@ public class EBusParserService implements EBusConnectorEventListener {
         return value;
     }
 
+    /**
+     * Fires an event after a telegram was successful parsed .
+     *
+     * @param registryEntry The used configuration to parse the byte data
+     * @param result The result with all values
+     * @param receivedData The raw data
+     * @param sendQueueId The sendQueue id if available
+     */
     private void fireOnTelegramResolved(EBusConfigurationTelegram registryEntry, Map<String, Object> result,
             byte[] receivedData, Integer sendQueueId) {
         for (EBusParserListener listener : listeners) {
@@ -307,7 +326,7 @@ public class EBusParserService implements EBusConnectorEventListener {
     }
 
     /**
-     * Add an eBus listener to receive valid eBus telegrams
+     * Add an eBus listener to receive parsed eBUS telegram values
      *
      * @param listener
      */
@@ -325,20 +344,24 @@ public class EBusParserService implements EBusConnectorEventListener {
         return listeners.remove(listener);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
+     */
     @Override
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
-
-        logger.info("DATA: " + EBusUtils.toHexDumpString(receivedData));
-
-        Map<String, Object> parse = parse(receivedData, sendQueueId);
-
-        if (!parse.isEmpty()) {
-            logger.trace(parse.toString());
-        }
+        parse(receivedData, sendQueueId);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramException(de.csdev.ebus.core.EBusDataException,
+     * java.lang.Integer)
+     */
     @Override
     public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
-        logger.info("ERROR: " + exception.getMessage());
+        logger.debug("ERROR: " + exception.getMessage());
     }
 }

@@ -60,8 +60,8 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
         EBusConfigurationTelegram command = configurationProvider.getCommandById("common.inquiry_of_existence");
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS,
-                masterAddress, null);
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
+                null);
 
         scanQueueId = controller.addToSendQueue(buffer);
     }
@@ -78,8 +78,8 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         EBusConfigurationTelegram command = configurationProvider.getCommandById("common.sign_of_life");
 
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS,
-                masterAddress, null);
+        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
+                null);
 
         controller.addToSendQueue(buffer);
     }
@@ -95,8 +95,6 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     @Override
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
-
-        logger.debug("EBusNNN.onTelegramReceived() {}", receivedData[0]);
 
         deviceTable.updateDevice(receivedData[0], null);
 

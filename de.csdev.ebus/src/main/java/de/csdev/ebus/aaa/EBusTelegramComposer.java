@@ -42,6 +42,7 @@ public class EBusTelegramComposer {
      */
     public static byte[] composeEBusTelegram(EBusConfigurationTelegram commandCfg, Byte dst, Byte src,
             Map<String, Object> values) {
+
         byte[] buffer = internalComposeEBusTelegram(commandCfg, dst, src, values);
 
         if (buffer == null) {

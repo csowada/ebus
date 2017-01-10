@@ -25,9 +25,6 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.EBusConfigurationProvider;
-import de.csdev.ebus.cfg.EBusConfigurationTelegram;
-
 /**
  * @author Christian Sowada
  *
@@ -55,7 +52,7 @@ public class EBusConfigurationJsonReader {
 
     /**
      * Loads a JSON configuration file by url
-     * 
+     *
      * @param url The url to a configuration file
      * @throws IOException Unable to read configuration file
      * @throws ParseException A invalid json file
@@ -82,7 +79,7 @@ public class EBusConfigurationJsonReader {
             } else {
                 loadedFilters.put(filter, fileComment);
             }
-            
+
             object.setConfigurationSource(url.toString());
         }
 
@@ -120,9 +117,9 @@ public class EBusConfigurationJsonReader {
 
             // Add data to filter string
             if (StringUtils.isNotEmpty(configurationEntry.getData())) {
-                
+
                 // only if this is no broadcast
-                if (!configurationEntry.getDst().equals("FE")) {
+                if (!StringUtils.equals(configurationEntry.getDst(), "FE")) {
                     Matcher matcher = P_BRACKETS_VALS.matcher(configurationEntry.getData());
                     filter.append(" " + matcher.replaceAll("[0-9A-Z]{2}"));
                 }

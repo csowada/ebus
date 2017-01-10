@@ -13,10 +13,13 @@ Import-Package: gnu.io,
  org.codehaus.jackson.type,
  org.slf4j
 Bundle-ActivationPolicy: lazy
-Export-Package: de.csdev.ebus.cfg,
+Export-Package: de.csdev.ebus,
+ de.csdev.ebus.aaa,
+ de.csdev.ebus.cfg,
  de.csdev.ebus.core,
  de.csdev.ebus.core.connection,
  de.csdev.ebus.main,
+ de.csdev.ebus.meta,
  de.csdev.ebus.telegram,
  de.csdev.ebus.utils
 Require-Bundle: org.junit

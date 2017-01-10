@@ -19,9 +19,13 @@ import de.csdev.ebus.meta.EBusDeviceTable;
 public class EBusHighLevelService {
 
     private EBusDeviceTable deviceTable;
+
     private EBusController controller;
+
     private EBusConfigurationProvider configurationProvider;
+
     private EBusParserService resolverService;
+
     private EBusDeviceTableService deviceTableService;
 
     public EBusHighLevelService(EBusController controller) {
