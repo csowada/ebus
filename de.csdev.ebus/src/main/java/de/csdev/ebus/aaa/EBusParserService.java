@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationProvider;
 import de.csdev.ebus.cfg.EBusConfigurationTelegram;
 import de.csdev.ebus.cfg.EBusConfigurationValue;
+import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.core.EBusConnectorEventListener;
-import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.utils.EBusCodecUtils;
 import de.csdev.ebus.utils.EBusUtils;
@@ -44,6 +44,8 @@ public class EBusParserService implements EBusConnectorEventListener {
     private static final Logger logger = LoggerFactory.getLogger(EBusParserService.class);
 
     private EBusConfigurationProvider configurationProvider;
+
+    EBusTypes t = new EBusTypes();
 
     /** the list for listeners */
     private final List<EBusParserListener> listeners = new ArrayList<EBusParserListener>();
@@ -78,24 +80,34 @@ public class EBusParserService implements EBusConnectorEventListener {
             type = "word";
         }
 
+        int index = pos - 1;
+
         if (EBusCodecUtils.getDataTypeLen(type) == 2) {
             // low byte first
-            bytes = new byte[] { byteBuffer.get(pos), byteBuffer.get(pos - 1) };
+            bytes = new byte[] { byteBuffer.get(index + 1), byteBuffer.get(index) };
 
         } else {
-            bytes = new byte[] { byteBuffer.get(pos - 1) };
+            bytes = new byte[] { byteBuffer.get(index) };
         }
+        //
+        // if (type.equals(EBusCodecUtils.BIT)) {
+        // value = EBusCodecUtils.decodeBit(bytes[0], telegramValue.getBit());
+        //
+        // } else if (type.equals(EBusCodecUtils.STRING)) {
+        // bytes = new byte[telegramValue.getLength()];
+        // System.arraycopy(byteBuffer.array(), pos - 1, bytes, 0, bytes.length);
+        // value = new String(bytes);
+        //
+        // } else {
+        // value = NumberUtils.toBigDecimal(EBusCodecUtils.decode(type, bytes, telegramValue.getReplaceValue()));
+        // }
 
-        if (type.equals(EBusCodecUtils.BIT)) {
-            value = EBusCodecUtils.decodeBit(bytes[0], telegramValue.getBit());
-
-        } else if (type.equals(EBusCodecUtils.STRING)) {
-            bytes = new byte[telegramValue.getLength()];
-            System.arraycopy(byteBuffer.array(), pos - 1, bytes, 0, bytes.length);
-            value = new String(bytes);
-
+        if (telegramValue.getBit() != null) {
+            value = t.decode(type, bytes, new Object[] { telegramValue.getBit() });
+        } else if (telegramValue.getLength() != null) {
+            value = t.decode(type, bytes, new Object[] { telegramValue.getLength() });
         } else {
-            value = NumberUtils.toBigDecimal(EBusCodecUtils.decode(type, bytes, telegramValue.getReplaceValue()));
+            value = t.decode(type, bytes, (Object[]) null);
         }
 
         // if BigDecimal check for min, max and replace value

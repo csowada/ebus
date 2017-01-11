@@ -24,12 +24,9 @@ import de.csdev.ebus.cfg.EBusConfigurationJsonReader;
 import de.csdev.ebus.cfg.EBusConfigurationTelegram;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
-import de.csdev.ebus.core.connection.EBusCaptureProxyConnection;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
-import de.csdev.ebus.core.connection.EBusTCPConnection;
 import de.csdev.ebus.core.connection.IEBusConnection;
 import de.csdev.ebus.utils.EBusUtils;
-import de.csdev.ebus.utils.EmulatorCapture;
 
 public class EBusMain {
 
@@ -39,11 +36,11 @@ public class EBusMain {
     public static void main(String[] args) {
 
         try {
-            IEBusConnection connection = new EBusEmulatorConnection(new File("src/main/resources/replay.txt"));
-            //connection = new EBusTCPConnection("openhab", 8000);
+            IEBusConnection connection = new EBusEmulatorConnection(new File("src/main/resources/test/replay.txt"));
+            // connection = new EBusTCPConnection("openhab", 8000);
 
-            //EmulatorCapture captureWriter = new EmulatorCapture(new File("src/resources/capture.txt"));
-            //connection = new EBusCaptureProxyConnection(connection, captureWriter);
+            // EmulatorCapture captureWriter = new EmulatorCapture(new File("src/resources/capture.txt"));
+            // connection = new EBusCaptureProxyConnection(connection, captureWriter);
 
             EBusController controller = new EBusController(connection);
             EBusHighLevelService service = new EBusHighLevelService(controller);
@@ -52,18 +49,18 @@ public class EBusMain {
 
             ClassLoader classLoader = controller.getClass().getClassLoader();
             URL resource = classLoader.getResource("common-configuration.json");
-            
+
             logger.info(">>>>>>>>>>>>>>>>>>" + resource.openStream().read());
 
             File filex = new File("src/main/resources/common-configuration.json");
-            jsonCfgReader.loadConfigurationFile(filex.toURL());
-            //jsonCfgReader.loadConfigurationFile(resource);
-            
+            // jsonCfgReader.loadConfigurationFile(filex.toURL());
+            jsonCfgReader.loadConfigurationFile(resource);
+
             EBusConfigurationTelegram command = service.getConfigurationProvider().getConfigurationById("common.error");
             Map<String, Object> values = new HashMap<String, Object>();
-            
+
             byte[] bytes = "HALLO WELT".getBytes();
-            
+
             values.put("_error_message1", bytes[0]);
             values.put("_error_message2", bytes[1]);
             values.put("_error_message3", bytes[2]);
@@ -74,15 +71,15 @@ public class EBusMain {
             values.put("_error_message8", bytes[7]);
             values.put("_error_message9", bytes[8]);
             values.put("_error_message10", bytes[9]);
-            
+
             values.put("_error_message10", EBusConsts.ESCAPE);
-            
+
             byte[] composeEBusTelegram2 = EBusTelegramComposer.composeEBusTelegram(command, null, (byte) 0xFF, values);
-            
+
             logger.info("TEST: Error Command {}", EBusUtils.toHexDumpString(composeEBusTelegram2).toString());
-            
+
             controller.addToSendQueue(composeEBusTelegram2);
-            
+
             controller.start();
             // service.getDeviceTableService().startDeviceScan();
 
