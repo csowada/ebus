@@ -34,6 +34,8 @@ public class EBusConfigurationTelegram {
     private Map<String, EBusConfigurationValue> computedValues;
 
     private String data;
+    
+    private int data_len;
 
     private Integer debug;
 
@@ -376,5 +378,14 @@ public class EBusConfigurationTelegram {
             return false;
         }
         return true;
+    }
+
+    public int getDataLen() {
+        return data_len;
+    }
+    
+    @JsonProperty("data-len")
+    public void setDataLen(int data_len) {
+        this.data_len = data_len;
     }
 }

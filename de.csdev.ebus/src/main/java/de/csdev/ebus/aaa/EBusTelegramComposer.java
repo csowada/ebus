@@ -9,6 +9,7 @@
 package de.csdev.ebus.aaa;
 
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -87,11 +88,19 @@ public class EBusTelegramComposer {
             byte[] bytesData = EBusUtils.toByteArray(commandCfg.getData());
             byte[] bytesCmd = EBusUtils.toByteArray(commandCfg.getCommand());
 
+//            ByteBuffer bff = ByteBuffer.allocate(32);
+//            bff.put(src);
+//            bff.put(dst);
+//            bff.put(bytesCmd);
+//            bff.put((byte) bytesData.length);
+            
             buffer = new byte[bytesData.length + 6];
             buffer[0] = src;
             buffer[1] = dst;
+            buffer[2] = bytesCmd[0];
+            buffer[3] = bytesCmd[1];
+//            System.arraycopy(bytesCmd, 0, buffer, 2, bytesCmd.length);
             buffer[4] = (byte) bytesData.length;
-            System.arraycopy(bytesCmd, 0, buffer, 2, bytesCmd.length);
 
             if (values == null || values.isEmpty()) {
                 logger.trace("No setter-values for eBUS telegram, used default data ...");

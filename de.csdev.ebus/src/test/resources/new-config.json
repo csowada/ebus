@@ -1,0 +1,43 @@
+[
+	{
+		"comment":	"Fussbodenheizung - Heizkurve",
+		"class":	"fbh",
+		"id":		"heizkurve",
+		"dst":		"50",
+		"command":	"B5 09",
+
+		"get": {
+			"data": 	"0D 35 00"
+		},
+		
+		"set": {
+			"data": 	"0E 35 00"
+
+		},
+
+		"values": [
+			{ "name": "value", "type": "word", "factor" : 0.01 }
+		]
+	},
+	
+	{
+        "comment":  "<Heating> Heating program",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "program_heating_circuit",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(FF) 74 27",
+        "dst":      "35",
+
+		"get": {
+		},
+		
+		"set": {
+		},
+
+        "values": [
+            {"name": "program", "type": "byte", "label": "Heating program", "min": 0, "max": 3,
+                "mapping": {"0": "standby", "1": "auto", "2": "heating mode", "3":"economy mode"}}
+        ]
+    }
+]

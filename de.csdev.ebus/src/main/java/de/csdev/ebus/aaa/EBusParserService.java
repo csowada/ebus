@@ -48,11 +48,7 @@ public class EBusParserService implements EBusConnectorEventListener {
     /** the list for listeners */
     private final List<EBusParserListener> listeners = new ArrayList<EBusParserListener>();
 
-    @SuppressWarnings("unused")
-    private EBusController controller;
-
-    public EBusParserService(EBusController controller, EBusConfigurationProvider configurationProvider) {
-        this.controller = controller;
+    public EBusParserService(EBusConfigurationProvider configurationProvider) {
         this.configurationProvider = configurationProvider;
     }
 

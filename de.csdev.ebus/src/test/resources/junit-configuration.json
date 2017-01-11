@@ -7,18 +7,47 @@
 		"command":	"B5 09",
 		"data": 	"0D 35 00",
 		"values": {
-			"value": { "type": "uint", "pos": 12, "factor" : 0.01 }
+			"value": { "type": "word", "pos": 12, "factor" : 0.01 }
 		}
 	},
+	
 	{
 		"comment":	"Fussbodenheizung - Heizkurve",
 		"class":	"fbh",
 		"id":		"set_heizkurve",
 		"dst":		"50",
 		"command":	"B5 09",
-		"data": 	"0E 35 00 00 00",
+		"data": 	"0E 35 00",
+		"data-len":	5,
+				
 		"values": {
-			"value": { "type": "uint", "pos": 9, "factor" : 0.01 }
+			"value": { "type": "word", "pos": 9, "factor" : 0.01 }
+		}
+	},
+	
+	{
+		"comment":	"Fussbodenheizung - Heizkurve",
+		"class":	"fbh",
+		"id":		"set_heizkurve",
+		"dst":		"50",
+		"command":	"B5 09",
+		"data": 	"0E 35 00",
+
+		"get": {
+			"data": 	"0D 35 00"
+		},
+		
+		"set": {
+			"data": 	"0E 35 00"
+
+		},
+
+		"master-values": [
+			{ "name": "value", "type": "word", "default": "00 00", "factor" : 0.01 }
+		],
+
+		"values": {
+			"value": { "type": "word", "pos": 9, "factor" : 0.01 }
 		}
 	}
 ]

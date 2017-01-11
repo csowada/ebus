@@ -38,7 +38,7 @@ public class EBusHighLevelService {
         deviceTable = new EBusDeviceTable((byte) 0x00);
         configurationProvider = new EBusConfigurationProvider();
 
-        resolverService = new EBusParserService(controller, configurationProvider);
+        resolverService = new EBusParserService(configurationProvider);
         deviceTableService = new EBusDeviceTableService(controller, configurationProvider, deviceTable);
 
         controller.addEBusEventListener(resolverService);
