@@ -1,0 +1,24 @@
+[
+	{
+		"comment":	"Fussbodenheizung - Heizkurve",
+		"class":	"fbh",
+		"id":		"heizkurve",
+		"dst":		"50",
+		"command":	"B5 09",
+		"data": 	"0D 35 00",
+		"values": {
+			"value": { "type": "uint", "pos": 12, "factor" : 0.01 }
+		}
+	},
+	{
+		"comment":	"Fussbodenheizung - Heizkurve",
+		"class":	"fbh",
+		"id":		"set_heizkurve",
+		"dst":		"50",
+		"command":	"B5 09",
+		"data": 	"0E 35 00 00 00",
+		"values": {
+			"value": { "type": "uint", "pos": 9, "factor" : 0.01 }
+		}
+	}
+]
