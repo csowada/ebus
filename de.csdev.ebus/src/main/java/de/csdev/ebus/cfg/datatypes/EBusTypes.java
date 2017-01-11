@@ -29,6 +29,8 @@ public class EBusTypes {
         add(EBusTypeData1c.class);
         add(EBusTypeData2b.class);
         add(EBusTypeData2c.class);
+
+        add(EBusTypeString.class);
     }
 
     public IEBusType getType(String type) {

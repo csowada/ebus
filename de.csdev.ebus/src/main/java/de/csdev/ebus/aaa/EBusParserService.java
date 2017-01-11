@@ -29,9 +29,9 @@ import de.csdev.ebus.cfg.EBusConfigurationProvider;
 import de.csdev.ebus.cfg.EBusConfigurationTelegram;
 import de.csdev.ebus.cfg.EBusConfigurationValue;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
+import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusDataException;
-import de.csdev.ebus.utils.EBusCodecUtils;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -82,13 +82,13 @@ public class EBusParserService implements EBusConnectorEventListener {
 
         int index = pos - 1;
 
-        if (EBusCodecUtils.getDataTypeLen(type) == 2) {
-            // low byte first
-            bytes = new byte[] { byteBuffer.get(index + 1), byteBuffer.get(index) };
-
-        } else {
-            bytes = new byte[] { byteBuffer.get(index) };
-        }
+        // if (EBusCodecUtils.getDataTypeLen(type) == 2) {
+        // // low byte first
+        // bytes = new byte[] { byteBuffer.get(index + 1), byteBuffer.get(index) };
+        //
+        // } else {
+        // bytes = new byte[] { byteBuffer.get(index) };
+        // }
         //
         // if (type.equals(EBusCodecUtils.BIT)) {
         // value = EBusCodecUtils.decodeBit(bytes[0], telegramValue.getBit());
@@ -102,12 +102,20 @@ public class EBusParserService implements EBusConnectorEventListener {
         // value = NumberUtils.toBigDecimal(EBusCodecUtils.decode(type, bytes, telegramValue.getReplaceValue()));
         // }
 
-        if (telegramValue.getBit() != null) {
-            value = t.decode(type, bytes, new Object[] { telegramValue.getBit() });
-        } else if (telegramValue.getLength() != null) {
-            value = t.decode(type, bytes, new Object[] { telegramValue.getLength() });
-        } else {
-            value = t.decode(type, bytes, (Object[]) null);
+        IEBusType dataType = t.getType(type);
+
+        if (dataType != null) {
+            byteBuffer.position(index);
+            bytes = new byte[dataType.getTypeLenght()];
+            byteBuffer.get(bytes);
+
+            if (telegramValue.getBit() != null) {
+                value = t.decode(type, bytes, new Object[] { telegramValue.getBit() });
+            } else if (telegramValue.getLength() != null) {
+                value = t.decode(type, bytes, new Object[] { telegramValue.getLength() });
+            } else {
+                value = t.decode(type, bytes, (Object[]) null);
+            }
         }
 
         // if BigDecimal check for min, max and replace value

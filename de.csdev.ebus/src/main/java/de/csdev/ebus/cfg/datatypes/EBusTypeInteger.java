@@ -23,13 +23,13 @@ public class EBusTypeInteger extends EBusTypeGeneric {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data, Object... args) {
-        return (T) BigDecimal.valueOf((short) (data[0] << 8 | data[1] & 0xFF));
+        return (T) BigDecimal.valueOf((short) (data[1] << 8 | data[0] & 0xFF));
     }
 
     @Override
     public byte[] encode(Object data, Object... args) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        return new byte[] { (byte) (b.intValue() >> 8), (byte) b.intValue() };
+        return new byte[] { (byte) b.intValue(), (byte) (b.intValue() >> 8) };
     }
 
 }
