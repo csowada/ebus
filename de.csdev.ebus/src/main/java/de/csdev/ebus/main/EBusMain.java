@@ -59,7 +59,7 @@ public class EBusMain {
             jsonCfgReader.loadConfigurationFile(filex.toURL());
             //jsonCfgReader.loadConfigurationFile(resource);
             
-            EBusConfigurationTelegram command = service.getConfigurationProvider().getCommandById("common.error");
+            EBusConfigurationTelegram command = service.getConfigurationProvider().getConfigurationById("common.error");
             Map<String, Object> values = new HashMap<String, Object>();
             
             byte[] bytes = "HALLO WELT".getBytes();

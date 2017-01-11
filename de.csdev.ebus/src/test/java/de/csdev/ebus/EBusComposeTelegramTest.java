@@ -39,7 +39,7 @@ public class EBusComposeTelegramTest {
 
     @Test
     public void composeTelegram01() {
-        EBusConfigurationTelegram command = configurationProvider.getCommandById("common.inquiry_of_existence");
+        EBusConfigurationTelegram command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
         assertNotNull("Command common.inquiry_of_existence not found", command);
 
         byte[] byteArray = EBusTelegramComposer.composeEBusTelegram(command, (byte) 0xFF, (byte) 0x00, null);
@@ -49,7 +49,7 @@ public class EBusComposeTelegramTest {
 
     @Test
     public void composeTelegram02() {
-        EBusConfigurationTelegram command = configurationProvider.getCommandById("common.error");
+        EBusConfigurationTelegram command = configurationProvider.getConfigurationById("common.error");
         assertNotNull("Command common.error not found", command);
 
         Map<String, Object> values = new HashMap<String, Object>();

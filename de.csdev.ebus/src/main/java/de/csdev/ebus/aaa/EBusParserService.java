@@ -153,7 +153,7 @@ public class EBusParserService implements EBusConnectorEventListener {
 
         // queries the configuration provider for matching registry entries
         final List<EBusConfigurationTelegram> matchedTelegramRegistry = configurationProvider
-                .getCommandsByFilter(dataStr);
+                .getAllMatchingConfigurations(dataStr);
 
         // No registry entries found, so this is a unknown telegram
         if (matchedTelegramRegistry.isEmpty()) {

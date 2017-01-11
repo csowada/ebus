@@ -59,7 +59,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-        EBusConfigurationTelegram command = configurationProvider.getCommandById("common.inquiry_of_existence");
+        EBusConfigurationTelegram command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
         byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
                 null);
 
@@ -76,7 +76,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        EBusConfigurationTelegram command = configurationProvider.getCommandById("common.sign_of_life");
+        EBusConfigurationTelegram command = configurationProvider.getConfigurationById("common.sign_of_life");
 
         byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
                 null);
@@ -86,7 +86,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        EBusConfigurationTelegram command = configurationProvider.getCommandById("common.identification");
+        EBusConfigurationTelegram command = configurationProvider.getConfigurationById("common.identification");
 
         byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, slaveAddress, masterAddress, null);
 
