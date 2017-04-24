@@ -30,7 +30,22 @@ public class EBusTypes {
         add(EBusTypeData2b.class);
         add(EBusTypeData2c.class);
 
+        add(EBusTypeBytes.class);
         add(EBusTypeString.class);
+    }
+
+    public <T extends IEBusType> T xxx(T xxxy) {
+        return xxxy;
+    }
+
+    public IEBusType getType(String type, Map<String, Object> properties) {
+        IEBusType ebusType = getType(type);
+
+        if (ebusType != null) {
+            return ebusType.getInstance(properties);
+        }
+
+        return null;
     }
 
     public IEBusType getType(String type) {
@@ -52,10 +67,10 @@ public class EBusTypes {
             return null;
         }
 
-        return eBusType.encode(data, args);
+        return eBusType.encode(data);
     }
 
-    public <T> T decode(String type, byte[] data, Object... args) {
+    public <T> T decode(String type, byte[] data) {
         IEBusType eBusType = types.get(type);
 
         if (eBusType == null) {
@@ -63,7 +78,7 @@ public class EBusTypes {
             return null;
         }
 
-        return eBusType.decode(data, args);
+        return eBusType.decode(data);
     }
 
     public <T> T decodeF(String type, byte[] data, int pos, Object... args) {
@@ -77,10 +92,10 @@ public class EBusTypes {
         byte[] b = new byte[eBusType.getTypeLenght()];
         System.arraycopy(data, pos, b, 0, b.length);
 
-        return eBusType.decode(b, args);
+        return eBusType.decode(b);
     }
 
-    protected void add(Class<?> clazz) {
+    public void add(Class<?> clazz) {
         try {
             IEBusType newInstance = (IEBusType) clazz.newInstance();
             newInstance.setTypesParent(this);

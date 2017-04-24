@@ -6,28 +6,20 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.meta;
-
-import java.math.BigDecimal;
+package de.csdev.ebus.service.device;
 
 /**
  * @author Christian Sowada
  *
  */
-public interface IEBusDevice {
+public interface EBusDeviceTableListener {
 
-    public byte getMasterAddress();
+    public enum TYPE {
+        NEW,
+        UPDATE,
+        REMOVED
+    }
 
-    public byte getSlaveAddress();
-
-    public byte getManufacturer();
-
-    public String getDeviceId();
-
-    public BigDecimal getSoftwareVersion();
-
-    public BigDecimal getHardwareVersion();
-
-    public long getLastActivity();
+    public void onEBusDeviceUpdate(TYPE type, IEBusDevice device);
 
 }

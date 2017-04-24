@@ -6,22 +6,21 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.aaa;
+package de.csdev.ebus.service.device;
 
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.aaa.EBusTelegramComposer;
 import de.csdev.ebus.cfg.EBusConfigurationProvider;
 import de.csdev.ebus.cfg.EBusConfigurationTelegram;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
-import de.csdev.ebus.meta.EBusDeviceTable;
-import de.csdev.ebus.meta.EBusDeviceTableListener;
-import de.csdev.ebus.meta.IEBusDevice;
+import de.csdev.ebus.service.parser.EBusParserListener;
 
 /**
  * @author Christian Sowada

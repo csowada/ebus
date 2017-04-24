@@ -18,13 +18,18 @@ public class EBusTypeByte extends EBusTypeGeneric {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data, Object... args) {
+    public <T> T decode(byte[] data) {
         return (T) BigDecimal.valueOf(data[0] & 0xFF);
     }
 
     @Override
-    public byte[] encode(Object data, Object... args) {
+    public byte[] encode(Object data) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
+
+        if (b == null) {
+            return new byte[] { 0x00 };
+        }
+
         return new byte[] { (byte) b.intValue() };
     }
 

@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
  * @author Christian Sowada
  *
  */
+@Deprecated
 public class EBusCodecUtils {
 
     public static String CHAR = "char";

@@ -2,11 +2,11 @@ package de.csdev.ebus.cfg.datatypes;
 
 import java.util.Map;
 
-public class EBusTypeString extends EBusTypeGeneric {
+public class EBusTypeBytes extends EBusTypeGeneric {
 
-    public static String STRING = "string";
+    public static String BYTES = "bytes";
 
-    private static String[] supportedTypes = new String[] { STRING };
+    private static String[] supportedTypes = new String[] { BYTES };
 
     private Integer length = 1;
 
@@ -18,7 +18,7 @@ public class EBusTypeString extends EBusTypeGeneric {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
-        return (T) new String(data);
+        return (T) data;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class EBusTypeString extends EBusTypeGeneric {
         byte[] b = new byte[length];
         System.arraycopy(data.toString().getBytes(), 0, b, 0, b.length);
 
-        return b;
+        return (byte[]) data;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class EBusTypeString extends EBusTypeGeneric {
     public IEBusType getInstance(Map<String, Object> properties) {
 
         if (properties.containsKey("length")) {
-            EBusTypeString x = new EBusTypeString();
+            EBusTypeBytes x = new EBusTypeBytes();
             x.length = (Integer) properties.get("length");
             return x;
         }

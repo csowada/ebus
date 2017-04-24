@@ -48,6 +48,7 @@ public class EBusQueue {
         public int id;
 
         public int sendAttempts = 0;
+        public boolean secondTry = false;
 
         public QueueEntry(byte[] buffer) {
             this.buffer = buffer;

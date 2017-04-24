@@ -12,12 +12,12 @@ public class EBusTypeData1b extends EBusTypeGeneric {
     }
 
     @Override
-    public <T> T decode(byte[] data, Object... args) {
-        return types.decode(EBusTypeChar.CHAR, data, args);
+    public <T> T decode(byte[] data) {
+        return types.decode(EBusTypeChar.CHAR, data);
     }
 
     @Override
-    public byte[] encode(Object data, Object... args) {
+    public byte[] encode(Object data) {
         return types.encode(EBusTypeChar.CHAR, data);
     }
 

@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ import de.csdev.ebus.core.EBusDataException;
  * A helper class to decode all eBus data types and telegrams.
  *
  * @author Christian Sowada
- * 
+ *
  */
 public class EBusUtils {
 
@@ -140,7 +141,7 @@ public class EBusUtils {
      * @return The new value or the unchanged byte
      */
     static private byte decodeEBusData(byte[] data, int pos) {
-        
+
         if (data[pos - 1] == EBusConsts.ESCAPE) {
             if (data[pos] == (byte) 0x00) {
                 return EBusConsts.ESCAPE;
@@ -188,6 +189,7 @@ public class EBusUtils {
 
     /**
      * Check if the address is in general valid
+     * 
      * @param address
      * @return
      */
@@ -367,6 +369,9 @@ public class EBusUtils {
      * @return
      */
     static public byte[] toByteArray(String hexDumpString) {
+        if (StringUtils.isEmpty(hexDumpString)) {
+            return new byte[0];
+        }
         return DatatypeConverter.parseHexBinary(hexDumpString.replaceAll(" ", ""));
     }
 

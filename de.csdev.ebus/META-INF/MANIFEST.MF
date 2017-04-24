@@ -14,12 +14,16 @@ Import-Package: gnu.io,
  org.slf4j
 Bundle-ActivationPolicy: lazy
 Export-Package: de.csdev.ebus,
+ de.csdev.ebus.a00,
  de.csdev.ebus.aaa,
+ de.csdev.ebus.aaoh2,
  de.csdev.ebus.cfg,
+ de.csdev.ebus.cfg.datatypes,
  de.csdev.ebus.core,
  de.csdev.ebus.core.connection,
  de.csdev.ebus.main,
- de.csdev.ebus.meta,
- de.csdev.ebus.telegram,
- de.csdev.ebus.utils
+ de.csdev.ebus.service.device,
+ de.csdev.ebus.service.parser,
+ de.csdev.ebus.utils,
+ xxx.de.csdev.ebus.telegram
 Require-Bundle: org.junit

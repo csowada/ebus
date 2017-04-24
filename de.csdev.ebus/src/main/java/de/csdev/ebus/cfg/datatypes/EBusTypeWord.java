@@ -23,13 +23,13 @@ public class EBusTypeWord extends EBusTypeGeneric {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data, Object... args) {
+    public <T> T decode(byte[] data) {
         BigDecimal value = types.decode(EBusTypeInteger.INTGER, data);
         return (T) BigDecimal.valueOf((short) (value.intValue() & 0xffff));
     }
 
     @Override
-    public byte[] encode(Object data, Object... args) {
+    public byte[] encode(Object data) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         return types.encode(EBusTypeInteger.INTGER, b.intValue() & 0xFFFF);
     }

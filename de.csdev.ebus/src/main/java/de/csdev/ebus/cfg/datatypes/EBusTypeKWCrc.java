@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 
 import de.csdev.ebus.utils.NumberUtils;
 
-public class EBusTypeBCD extends EBusTypeGeneric {
+public class EBusTypeKWCrc extends EBusTypeGeneric {
 
-    public static String BCD = "bcd";
+    public static String KW_CRC = "kw-crc";
 
-    private static String[] supportedTypes = new String[] { BCD };
+    private static String[] supportedTypes = new String[] { KW_CRC };
 
     @Override
     public String[] getSupportedTypes() {
@@ -18,13 +18,18 @@ public class EBusTypeBCD extends EBusTypeGeneric {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
-        return (T) BigDecimal.valueOf((byte) ((data[0] >> 4) * 10 + (data[0] & (byte) 0x0F)));
+        return (T) BigDecimal.valueOf(data[0] & 0xFF);
     }
 
     @Override
     public byte[] encode(Object data) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        return new byte[] { (byte) (((b.intValue() / 10) << 4) | b.intValue() % 10) };
+
+        if (b == null) {
+            return new byte[] { 0x00 };
+        }
+
+        return new byte[] { (byte) b.intValue() };
     }
 
 }

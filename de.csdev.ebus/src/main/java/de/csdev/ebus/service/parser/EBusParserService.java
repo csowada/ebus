@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.aaa;
+package de.csdev.ebus.service.parser;
 
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
@@ -102,21 +102,27 @@ public class EBusParserService implements EBusConnectorEventListener {
         // value = NumberUtils.toBigDecimal(EBusCodecUtils.decode(type, bytes, telegramValue.getReplaceValue()));
         // }
 
-        IEBusType dataType = t.getType(type);
+        // IEBusType dataType = t.getType(type);
 
-        if (dataType != null) {
-            byteBuffer.position(index);
-            bytes = new byte[dataType.getTypeLenght()];
-            byteBuffer.get(bytes);
+        // if (dataType != null) {
 
-            if (telegramValue.getBit() != null) {
-                value = t.decode(type, bytes, new Object[] { telegramValue.getBit() });
-            } else if (telegramValue.getLength() != null) {
-                value = t.decode(type, bytes, new Object[] { telegramValue.getLength() });
-            } else {
-                value = t.decode(type, bytes, (Object[]) null);
-            }
+        Map<String, Object> properties = new HashMap<String, Object>();
+
+        if (telegramValue.getBit() != null) {
+            properties.put("bit", telegramValue.getBit());
+
+        } else if (telegramValue.getLength() != null) {
+            properties.put("length", telegramValue.getLength());
+
         }
+
+        IEBusType dataType = t.getType(type, properties);
+
+        byteBuffer.position(index);
+        bytes = new byte[dataType.getTypeLenght()];
+        byteBuffer.get(bytes);
+
+        value = dataType.decode(bytes);
 
         // if BigDecimal check for min, max and replace value
         if (value instanceof BigDecimal) {

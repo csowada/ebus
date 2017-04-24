@@ -11,12 +11,7 @@ package de.csdev.ebus.core;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +24,9 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada
  *
  */
-public class EBusController extends Thread {
+public class EBusController extends EBusControllerBase {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusController.class);
-
-    /** the list for listeners */
-    private final List<EBusConnectorEventListener> listeners = new ArrayList<EBusConnectorEventListener>();
 
     private IEBusConnection connection;
 
@@ -46,20 +38,8 @@ public class EBusController extends Thread {
     /** counts the re-connection tries */
     private int reConnectCounter = 0;
 
-    /** The thread pool to execute events without blocking */
-    private ExecutorService threadPool;
-
     public EBusController(IEBusConnection connection) {
         this.connection = connection;
-    }
-
-    /**
-     * Add an eBus listener to receive valid eBus telegrams
-     *
-     * @param listener
-     */
-    public void addEBusEventListener(EBusConnectorEventListener listener) {
-        listeners.add(listener);
     }
 
     /**
@@ -109,48 +89,6 @@ public class EBusController extends Thread {
         inputBuffer.clear();
     }
 
-    /**
-     * Called if a valid eBus telegram was received. Send to event
-     * listeners via thread pool to prevent blocking.
-     *
-     * @param telegram
-     */
-    private void fireOnEBusTelegramReceived(final byte[] receivedRawData, final Integer sendQueueId) {
-
-        if (threadPool == null) {
-            logger.warn("ThreadPool not ready!");
-            return;
-        }
-
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    byte[] receivedData = EBusUtils.decodeExpandedData(receivedRawData);
-                    receivedData = receivedRawData;
-
-                    if (receivedData != null) {
-                        for (EBusConnectorEventListener listener : listeners) {
-                            listener.onTelegramReceived(receivedData, sendQueueId);
-                        }
-                    } else {
-                        logger.debug("Received telegram was invalid, skip!");
-                    }
-
-                } catch (EBusDataException e) {
-
-                    logger.trace("error!", e);
-
-                    for (EBusConnectorEventListener listener : listeners) {
-                        listener.onTelegramException(e, sendQueueId);
-                    }
-                }
-
-            }
-        });
-    }
-
     private boolean reconnect() throws IOException, InterruptedException {
         logger.trace("EBusController.reconnect()");
 
@@ -173,25 +111,15 @@ public class EBusController extends Thread {
     }
 
     /**
-     * Remove an eBus listener
-     *
-     * @param listener
-     * @return
-     */
-    public boolean removeEBusEventListener(EBusConnectorEventListener listener) {
-        return listeners.remove(listener);
-    }
-
-    /**
      * Resend data if it's the first try or call resetSend()
      *
      * @param secondTry
      * @return
      * @throws IOException
      */
-    private boolean resend(boolean secondTry) throws IOException {
-        if (!secondTry) {
-            send(true);
+    private boolean resend() throws IOException {
+        if (!queue.getCurrent().secondTry) {
+            queue.getCurrent().secondTry = true;
             return true;
 
         } else {
@@ -204,8 +132,7 @@ public class EBusController extends Thread {
     @Override
     public void run() {
 
-        // create new thread pool to send received telegrams
-        threadPool = Executors.newCachedThreadPool(new WorkerThreadFactory("ebus-send-receive"));
+        initThreadPool();
 
         int read = -1;
 
@@ -296,14 +223,7 @@ public class EBusController extends Thread {
         // *******************************
 
         // shutdown threadpool
-        if (threadPool != null && !threadPool.isShutdown()) {
-            threadPool.shutdownNow();
-            try {
-                // wait up to 10sec. for the thread pool
-                threadPool.awaitTermination(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-            }
-        }
+        shutdownThreadPool();
 
         // disconnect the connector e.g. close serial port
         try {
@@ -385,7 +305,6 @@ public class EBusController extends Thread {
                     return;
                 }
             }
-
         }
 
         // start of transfer successful
@@ -445,10 +364,8 @@ public class EBusController extends Thread {
                         if (nn2 > 16) {
                             logger.warn("slave data too long, invalid!");
 
-                            // resend telegram (max. once)
-                            if (!resend(secondTry)) {
-                                return;
-                            }
+                            // resend telegram on next send loop
+                            return;
                         }
 
                         // read slave data, be aware of 0x0A bytes
@@ -468,12 +385,8 @@ public class EBusController extends Thread {
 
                         // check slave crc
                         if (crc2 != crc) {
-                            logger.warn("Slave CRC wrong, resend!");
-
-                            // Resend telegram (max. once)
-                            if (!resend(secondTry)) {
-                                return;
-                            }
+                            logger.warn("Slave CRC wrong, resend later!");
+                            return;
                         }
 
                         // sende master sync
@@ -490,10 +403,9 @@ public class EBusController extends Thread {
                     // clear uncompleted telegram
                     sendBuffer.clear();
 
-                    // resend telegram (max. once)
-                    if (!resend(secondTry)) {
-                        return;
-                    }
+                    // directly resend telegram (max. once), not on next send loop
+                    resend();
+                    return;
 
                 } else if (ack == EBusConsts.SYN) {
                     logger.debug("No answer from slave for telegram: {}", EBusUtils.toHexDumpString(sendBuffer));
@@ -502,8 +414,7 @@ public class EBusController extends Thread {
                     // in uncomplete but valid telegram!
                     sendBuffer.clear();
 
-                    // resend instead skip ...
-                    // resetSend();
+                    // resend telegram on next send loop
                     return;
 
                 } else {
@@ -514,10 +425,8 @@ public class EBusController extends Thread {
                     // clear uncompleted telegram
                     sendBuffer.clear();
 
-                    // resend telegram (max. once)
-                    if (!resend(secondTry)) {
-                        return;
-                    }
+                    // resend telegram on next send loop
+                    return;
                 }
             }
         }

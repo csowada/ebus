@@ -1,0 +1,163 @@
+[
+    {
+        "comment":  "Fussbodenheizung - Heizkurve",
+        "id":       "fbh.heizkurve",
+        "dst":      "50",
+        "command":  "B5 09",
+
+        "templates": [
+            {"name": "value", "type": "word", "factor" : 0.01 }
+        ],
+
+        "get": {
+            "master": [
+                {"type": "static", "default": "0D 35 00"}
+            ],
+            "slave": [
+                {"type": "template", "name": "value"}
+            ]
+        },
+
+        "set": {
+            "master": [
+                {"type": "static", "default": "0E 35 00"},
+                {"type": "template", "name": "value"}
+            ]   
+        }
+        
+
+    },
+
+    {
+        "comment":  "<Heating> Heating program",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "heating.program_heating_circuit",
+        "command":  "50 22",
+        "dst":      "35",
+
+        "templates": [
+            {"name":"program", "type": "word", "label": "Heating program", "min": 0, "max": 3,
+                "mapping": {"0": "standby", "1": "auto", "2": "heating mode", "3":"economy mode"}
+            }
+        ],
+
+        "get": {
+          "master": [
+            {"type": "kw-crc"},
+            {"type": "static", "default": "74 27"}
+           ],
+          "slave": [
+            {"type": "template", "name": "program"}
+           ]
+        },
+
+        "set": {
+           "master": [
+                {"type": "kw-crc"},
+                {"type": "static", "default": "74 27"},
+                {"type": "template", "name": "program"},
+                {"type": "static", "default": "5D 01"},
+                {"type": "static", "default": "00 00"}
+           ]
+        }
+
+    },
+/**
+    {
+        "comment":  "<Solar> Solar Yield Broadcast",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "solar.solar_yield",
+        "command":  "50 18",
+        "dst":      "FE",
+
+        "get": {
+            "master": [
+                {"name": "output_current", "type": "data2c", "label": "Current output (kW)"},
+                {"name": "yield_today", "type": "dword"},
+                {"name": "yield_total", "type": "3word"}
+            ]
+        }
+
+    },
+*/
+    {
+        "comment":  "<Solar> Collector temperature (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "solar.temp_collector",
+        "command":  "50 22",
+
+        "get": {
+            "master:": [
+                {"type": "kw-crc"},
+                {"type": "static", "default": "2A 0A"}
+            ],
+            "slave": [
+                {"name":"temp_collector", "type": "word", "label": "Solar collector temperature (°C)", "factor": 0.1 , "min": -40, "max": 300}
+            ]
+        }
+    },
+
+    {
+        "comment":  "<Solar> E1 - Return temp (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "solar.e1",
+        "command":  "50 22",
+
+        "get": {
+            "master": [
+                {"type": "kw-crc"},
+                {"type": "static", "default": "2B 0A"}
+            ],
+            "slave": [
+                {"name":"e1", "type": "word", "label": "E1 - Return temp (°C)", "factor": 0.1, "min": 1, "max": 120}
+            ]
+        }
+    },
+
+    {
+        "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 1",
+        "class":    "auto_stroker",
+        "command":  "05 03",
+
+        "get": {
+            "master": [
+                {"name":"block_number", "type": "static", "default": "01"},
+                {"name":"status_auto_stroker", "type": "byte", "label": "Status indication"},
+                {"type": "byte", "bits": [
+                    {"name":"state_air_pressure", "type": "bit", "label": "Air pressure monitor"},
+                    {"name":"state_gas_pressure", "type": "bit", "label": "Gas pressure monitor"},
+                    {"name":"state_water_flow", "type": "bit", "label": "Water flow"},
+                    {"name":"state_flame", "type": "bit", "label": "Flame"},
+                    {"name":"state_valve1", "type": "bit", "label": "Valve1"},
+                    {"name":"state_valve2", "type": "bit", "label": "Valve2"},
+                    {"name":"state_pump", "type": "bit", "label": "State heating pump"},
+                    {"name":"state_alarm", "type": "bit", "label": "Alarm"}
+                ]},                
+                {"name":"performance_burner", "type": "uchar", "label": "Setting degree between min. and max. boiler performance (%)","min":0.0, "max":100.0},
+                {"name":"temp_boiler", "type": "data1c", "label": "Boiler temperature (°C)", "min":0, "max":100},
+                {"name":"temp_return", "type": "uchar", "label": "Return temperature (°C)", "min":0, "max":100},
+                {"name":"temp_dhw", "type": "uchar", "label": "DHW temperature (°C)", "min":0, "max":100},
+                {"name":"temp_outside", "type": "char", "label": "Outside temperature (°C)", "min":-30, "max":50}
+            ]
+        }
+
+    },
+
+    {
+        "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 2",
+        "class":    "auto_stroker",
+        "command":  "05 03",
+
+        "get": {
+            "master": [
+                {"name":"block_number", "type": "static", "default": "02"},
+                {"name":"temp_exhaust", "type": "data2c", "label": "Exhaust temperatur", "min": 0, "max":600},
+                {"name":"temp_bww_lead", "type": "data1c", "label": "..."},
+                {"name":"performance_eff_boiler", "type": "data1c", "label": "..."},
+                {"name":"temp_xxxx", "type": "data1c", "label": "..."},
+                {"name":"_reserve", "type": "byte", "defaut": "255"}
+            ]
+        }
+
+    }
+]

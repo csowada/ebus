@@ -1,5 +1,7 @@
 package de.csdev.ebus.cfg.datatypes;
 
+import java.util.Map;
+
 public abstract class EBusTypeGeneric implements IEBusType {
 
     @Override
@@ -14,4 +16,8 @@ public abstract class EBusTypeGeneric implements IEBusType {
         this.types = types;
     }
 
+    @Override
+    public IEBusType getInstance(Map<String, Object> properties) {
+        return this;
+    }
 }

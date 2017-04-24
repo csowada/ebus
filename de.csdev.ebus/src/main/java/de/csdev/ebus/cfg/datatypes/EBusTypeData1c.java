@@ -17,13 +17,13 @@ public class EBusTypeData1c extends EBusTypeByte {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data, Object... args) {
-        BigDecimal x = super.decode(data, args);
+    public <T> T decode(byte[] data) {
+        BigDecimal x = super.decode(data);
         return (T) x.divide(BigDecimal.valueOf(2));
     }
 
     @Override
-    public byte[] encode(Object data, Object... args) {
+    public byte[] encode(Object data) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         b = b.multiply(BigDecimal.valueOf(2));
         return new byte[] { (byte) b.intValue() };

@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.aaa;
+package de.csdev.ebus.service.parser;
 
 import java.util.Map;
 

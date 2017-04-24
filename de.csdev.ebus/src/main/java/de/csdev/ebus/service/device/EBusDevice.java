@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.meta;
+package de.csdev.ebus.service.device;
 
 import java.math.BigDecimal;
 

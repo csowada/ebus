@@ -22,13 +22,13 @@ public class EBusTypeData2c extends EBusTypeGeneric {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data, Object... args) {
+    public <T> T decode(byte[] data) {
         short x = (short) (data[0] << 8 | data[1] & 0xFF);
         return (T) BigDecimal.valueOf(x).divide(BigDecimal.valueOf(16));
     }
 
     @Override
-    public byte[] encode(Object data, Object... args) {
+    public byte[] encode(Object data) {
 
         BigDecimal b = NumberUtils.toBigDecimal(data);
         b = b.multiply(BigDecimal.valueOf(16));

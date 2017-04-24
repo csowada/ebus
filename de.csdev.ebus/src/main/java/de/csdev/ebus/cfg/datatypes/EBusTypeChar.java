@@ -17,12 +17,12 @@ public class EBusTypeChar extends EBusTypeGeneric {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data, Object... args) {
+    public <T> T decode(byte[] data) {
         return (T) BigDecimal.valueOf(data[0]);
     }
 
     @Override
-    public byte[] encode(Object data, Object... args) {
+    public byte[] encode(Object data) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         return new byte[] { (byte) ((byte) b.intValue() & 0xFF) };
     }
