@@ -13,10 +13,25 @@ import de.csdev.ebus.utils.EBusUtils;
 
 public class EBusCommand {
 
-    byte[] command;
-    List<IEBusValue> extendCommandValue;
-    List<IEBusValue> masterTypes;
-    List<IEBusValue> slaveTypes;
+    private byte[] command;
+
+    private List<IEBusValue> extendCommandValue;
+
+    private List<IEBusValue> masterTypes;
+
+    private List<IEBusValue> slaveTypes;
+
+    private String description;
+    private String configurationSource;
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setConfigurationSource(String configurationSource) {
+        this.configurationSource = configurationSource;
+    }
+
     private Type type;
     private String id;
 
@@ -101,6 +116,8 @@ public class EBusCommand {
             for (IEBusValue entry : masterTypes) {
                 IEBusType type = entry.getType();
 
+                boolean x = type instanceof EBusTypeBytes;
+
                 if (entry.getName() == null && type instanceof EBusTypeBytes && entry.getDefaultValue() != null) {
                     for (int i = 0; i < type.getTypeLenght(); i++) {
                         buf.put((byte) 0xFF);
@@ -152,6 +169,7 @@ public class EBusCommand {
                     if (entry.getDefaultValue() == null) {
                         buf.put(type.encode(0));
                     } else {
+                        byte[] encode = type.encode(entry.getDefaultValue());
                         buf.put(type.encode(entry.getDefaultValue()));
                     }
 
@@ -202,8 +220,8 @@ public class EBusCommand {
                 System.arraycopy(data, pos - 1, src, 0, src.length);
                 Object decode = ev.getType().decode(src);
 
-                if (ev instanceof EBusNumberValue) {
-                    EBusNumberValue nev = (EBusNumberValue) ev;
+                if (ev instanceof EBusCommandValue) {
+                    EBusCommandValue nev = (EBusCommandValue) ev;
                     BigDecimal multiply = (BigDecimal) decode;
 
                     if (nev.getFactor() != null) {

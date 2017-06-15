@@ -11,9 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.aaa.EBusTelegramComposer;
-import de.csdev.ebus.cfg.EBusConfigurationJsonReader;
-import de.csdev.ebus.cfg.EBusConfigurationProvider;
-import de.csdev.ebus.cfg.EBusConfigurationTelegram;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationJsonReader;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationProvider;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationTelegram;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 

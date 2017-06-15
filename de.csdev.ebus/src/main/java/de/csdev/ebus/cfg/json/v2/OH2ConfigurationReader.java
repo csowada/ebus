@@ -1,4 +1,4 @@
-package de.csdev.ebus.aaoh2;
+package de.csdev.ebus.cfg.json.v2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
-import de.csdev.ebus.command.EBusNumberValue;
+import de.csdev.ebus.command.EBusCommandValue;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -75,7 +75,7 @@ public class OH2ConfigurationReader {
 
         EBusCommand cfg = new EBusCommand();
 
-        HashMap<String, EBusNumberValue> templateMap = new HashMap<String, EBusNumberValue>();
+        HashMap<String, EBusCommandValue> templateMap = new HashMap<String, EBusCommandValue>();
 
         cfg.setId((String) element.get("id"));
         cfg.setCommand(EBusUtils.toByteArray((String) element.get("command")));
@@ -83,7 +83,7 @@ public class OH2ConfigurationReader {
         Object entry = element.get("templates");
         if (entry != null || entry instanceof List) {
             for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
-                EBusNumberValue templateCfg = parseValueConfiguration(template, null);
+                EBusCommandValue templateCfg = parseValueConfiguration(template, null);
                 templateMap.put(templateCfg.getName(), templateCfg);
             }
         }
@@ -96,7 +96,7 @@ public class OH2ConfigurationReader {
             entry = map.get("master");
             if (entry != null || entry instanceof List) {
                 for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
-                    EBusNumberValue ev = parseValueConfiguration(template, templateMap);
+                    EBusCommandValue ev = parseValueConfiguration(template, templateMap);
                     cfg.addMasterValue(ev);
                 }
             }
@@ -104,7 +104,7 @@ public class OH2ConfigurationReader {
             entry = map.get("slave");
             if (entry != null || entry instanceof List) {
                 for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
-                    EBusNumberValue ev = parseValueConfiguration(template, templateMap);
+                    EBusCommandValue ev = parseValueConfiguration(template, templateMap);
                     cfg.addSlaveValue(ev);
                 }
             }
@@ -137,8 +137,8 @@ public class OH2ConfigurationReader {
         return cfg;
     }
 
-    public EBusNumberValue parseValueConfiguration(Map<String, Object> template,
-            Map<String, EBusNumberValue> templateMap) {
+    public EBusCommandValue parseValueConfiguration(Map<String, Object> template,
+            Map<String, EBusCommandValue> templateMap) {
 
         String typeStr = (String) template.get("type");
 
@@ -151,10 +151,10 @@ public class OH2ConfigurationReader {
             properties.put("length", byteArray.length);
             final IEBusType typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
 
-            return EBusNumberValue.getInstance(typeByte, byteArray);
+            return EBusCommandValue.getInstance(typeByte, byteArray);
         }
 
-        EBusNumberValue ev = new EBusNumberValue();
+        EBusCommandValue ev = new EBusCommandValue();
 
         IEBusType type = registry.getType(typeStr);
         ev.setType(type);

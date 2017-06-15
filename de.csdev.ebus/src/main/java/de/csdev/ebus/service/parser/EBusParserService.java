@@ -25,11 +25,11 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.EBusConfigurationProvider;
-import de.csdev.ebus.cfg.EBusConfigurationTelegram;
-import de.csdev.ebus.cfg.EBusConfigurationValue;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationProvider;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationTelegram;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationValue;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.utils.EBusUtils;

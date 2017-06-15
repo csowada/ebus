@@ -17,8 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.EBusConfigurationTelegram;
-import de.csdev.ebus.cfg.EBusConfigurationValue;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationTelegram;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationValue;
 import de.csdev.ebus.utils.EBusCodecUtils;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;

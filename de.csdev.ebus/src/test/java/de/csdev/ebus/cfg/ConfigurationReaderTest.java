@@ -13,9 +13,9 @@ import java.util.Map.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.csdev.ebus.aaoh2.OH2ConfigurationReader;
 import de.csdev.ebus.cfg.datatypes.EBusTypeKWCrc;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
+import de.csdev.ebus.cfg.json.v2.OH2ConfigurationReader;
 import de.csdev.ebus.client.StaticTestTelegrams;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;

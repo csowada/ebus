@@ -6,11 +6,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.cfg;
+package de.csdev.ebus.cfg.json.v1;
 
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -34,7 +35,7 @@ public class EBusConfigurationTelegram {
     private Map<String, EBusConfigurationValue> computedValues;
 
     private String data;
-    
+
     private int data_len;
 
     private Integer debug;
@@ -50,7 +51,7 @@ public class EBusConfigurationTelegram {
     private Map<String, EBusConfigurationValue> values;
 
     private String configurationSource;
-    
+
     public String getConfigurationSource() {
         return configurationSource;
     }
@@ -61,7 +62,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The class of the eBus telegram
-     * 
+     *
      * @return
      */
     @JsonProperty("class")
@@ -71,7 +72,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The command bytes of the eBus telegram
-     * 
+     *
      * @return
      */
     public String getCommand() {
@@ -80,7 +81,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The comment of the eBus telegram
-     * 
+     *
      * @return
      */
     public String getComment() {
@@ -89,7 +90,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The computed values of the eBus telegram (optional)
-     * 
+     *
      * @return
      */
     public Map<String, EBusConfigurationValue> getComputedValues() {
@@ -98,7 +99,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The data bytes of the eBus telegram
-     * 
+     *
      * @return
      */
     public String getData() {
@@ -107,7 +108,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * A debug flag for this telegram
-     * 
+     *
      * @return
      */
     public Integer getDebug() {
@@ -116,7 +117,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The device that should work with this telegram
-     * 
+     *
      * @return
      */
     public String getDevice() {
@@ -125,7 +126,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The destination byte of the eBus telegram
-     * 
+     *
      * @return
      */
     public String getDst() {
@@ -134,7 +135,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The filter string (regex)
-     * 
+     *
      * @return
      */
     public String getFilter() {
@@ -143,7 +144,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The compiled filter pattern
-     * 
+     *
      * @return
      */
     public Pattern getFilterPattern() {
@@ -152,7 +153,7 @@ public class EBusConfigurationTelegram {
 
     /**
      * The ID of the eBus telegram
-     * 
+     *
      * @return
      */
     public String getId() {
@@ -160,12 +161,21 @@ public class EBusConfigurationTelegram {
     }
 
     public String getFullId() {
-        return clazz + "." + id;
+
+        if (StringUtils.isNotEmpty(clazz) && StringUtils.isNotEmpty(id)) {
+            return clazz + "." + id;
+        }
+
+        if (StringUtils.isNotEmpty(id)) {
+            return id;
+        }
+
+        return clazz;
     }
 
     /**
      * A list of values of the eBus telegram
-     * 
+     *
      * @return
      */
     public Map<String, EBusConfigurationValue> getValues() {
@@ -259,7 +269,7 @@ public class EBusConfigurationTelegram {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -271,7 +281,7 @@ public class EBusConfigurationTelegram {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -285,7 +295,7 @@ public class EBusConfigurationTelegram {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -383,7 +393,7 @@ public class EBusConfigurationTelegram {
     public int getDataLen() {
         return data_len;
     }
-    
+
     @JsonProperty("data-len")
     public void setDataLen(int data_len) {
         this.data_len = data_len;

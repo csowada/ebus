@@ -189,7 +189,7 @@ public class EBusUtils {
 
     /**
      * Check if the address is in general valid
-     * 
+     *
      * @param address
      * @return
      */

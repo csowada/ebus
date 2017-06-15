@@ -10,7 +10,7 @@ package de.csdev.ebus.service.parser;
 
 import java.util.Map;
 
-import de.csdev.ebus.cfg.EBusConfigurationTelegram;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationTelegram;
 
 /**
  * @author Christian Sowada

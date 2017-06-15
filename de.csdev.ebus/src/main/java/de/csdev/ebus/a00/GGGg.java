@@ -13,16 +13,16 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.EBusConfigurationTelegram;
 import de.csdev.ebus.cfg.datatypes.EBusTypeByte;
 import de.csdev.ebus.cfg.datatypes.EBusTypeWord;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationTelegram;
 import de.csdev.ebus.command.EBusCommand;
-import de.csdev.ebus.command.EBusCommandRegistry;
-import de.csdev.ebus.command.EBusNumberValue;
-import de.csdev.ebus.command.KWCrcMValue;
 import de.csdev.ebus.command.EBusCommand.Type;
+import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.EBusCommandValue;
+import de.csdev.ebus.command.KWCrcMValue;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class GGGg {
@@ -56,16 +56,16 @@ public class GGGg {
 
         EBusCommandRegistry tregistry = new EBusCommandRegistry();
 
-        OH1ConfigurationReader ohreader = new OH1ConfigurationReader();
-
-        try {
-            List<EBusCommand> list = ohreader.b(loadConfiguration(), registry);
-            tregistry.addTelegramConfigurationList(list);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        // OH1ConfigurationReader ohreader = new OH1ConfigurationReader();
+        //
+        // try {
+        //// List<EBusCommand> list = ohreader.b(loadConfiguration(), registry);
+        //// tregistry.addTelegramConfigurationList(list);
+        //
+        // } catch (IOException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
 
         /*
          * {
@@ -108,7 +108,7 @@ public class GGGg {
         IEBusType typeWord = registry.getType(EBusTypeWord.WORD);
         IEBusType typeByte = registry.getType(EBusTypeByte.BYTE);
 
-        EBusNumberValue value = new EBusNumberValue();
+        EBusCommandValue value = new EBusCommandValue();
         value.setName("program");
         value.setLabel("Heating program");
         value.setType(registry.getType(EBusTypeWord.WORD));
@@ -135,11 +135,11 @@ public class GGGg {
         // m.addMasterValue({0x74, 0x27});
 
         telegram.addExtendedCommand(new KWCrcMValue(typeByte));
-        telegram.addExtendedCommand(EBusNumberValue.getInstance(typeWord, new byte[] { 0x74, 0x27 }));
+        telegram.addExtendedCommand(EBusCommandValue.getInstance(typeWord, new byte[] { 0x74, 0x27 }));
 
         telegram.addMasterValue(value);
-        telegram.addMasterValue(EBusNumberValue.getInstance(typeWord, new byte[] { 0x5D, 0x01 }));
-        telegram.addMasterValue(EBusNumberValue.getInstance(typeWord, new byte[] { 0x00, 0x00 }));
+        telegram.addMasterValue(EBusCommandValue.getInstance(typeWord, new byte[] { 0x5D, 0x01 }));
+        telegram.addMasterValue(EBusCommandValue.getInstance(typeWord, new byte[] { 0x00, 0x00 }));
 
         tregistry.addTelegramConfiguration(telegram);
 

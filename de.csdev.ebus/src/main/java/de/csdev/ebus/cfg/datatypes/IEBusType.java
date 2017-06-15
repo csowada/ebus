@@ -15,4 +15,5 @@ public interface IEBusType {
     public int getTypeLenght();
 
     public IEBusType getInstance(Map<String, Object> properties);
+
 }

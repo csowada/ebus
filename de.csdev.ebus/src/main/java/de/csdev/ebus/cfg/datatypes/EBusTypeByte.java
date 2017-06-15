@@ -24,6 +24,11 @@ public class EBusTypeByte extends EBusTypeGeneric {
 
     @Override
     public byte[] encode(Object data) {
+
+        if (data instanceof byte[]) {
+            return (byte[]) data;
+        }
+
         BigDecimal b = NumberUtils.toBigDecimal(data);
 
         if (b == null) {

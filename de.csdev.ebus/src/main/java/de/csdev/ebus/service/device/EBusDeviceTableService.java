@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.aaa.EBusTelegramComposer;
-import de.csdev.ebus.cfg.EBusConfigurationProvider;
-import de.csdev.ebus.cfg.EBusConfigurationTelegram;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationProvider;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationTelegram;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;

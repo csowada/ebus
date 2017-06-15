@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.cfg;
+package de.csdev.ebus.cfg.json.v1;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -138,4 +138,5 @@ public class EBusConfigurationJsonReader {
             configurationEntry.setData(matcher.replaceAll(""));
         }
     }
+
 }

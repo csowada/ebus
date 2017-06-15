@@ -8,7 +8,7 @@
  */
 package de.csdev.ebus.aaa;
 
-import de.csdev.ebus.cfg.EBusConfigurationProvider;
+import de.csdev.ebus.cfg.json.v1.EBusConfigurationProvider;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.service.device.EBusDeviceTable;
 import de.csdev.ebus.service.device.EBusDeviceTableService;
