@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.csdev</groupId>
-	<artifactId>ebus</artifactId>
+	<groupId>de.csdev.ebus</groupId>
+	<artifactId>main</artifactId>
 	<packaging>jar</packaging>
 	<version>alpha</version>
-	<name>eBUS core library</name>
+	<name>eBUS main library</name>
 	<url>https://github.com/csowada/ebus</url>
 
 	<build>
@@ -19,7 +19,7 @@
 
 	<dependencies>
 	
-			<dependency>
+		<dependency>
 			<groupId>de.csdev.ebus</groupId>
 			<artifactId>core</artifactId>
 			<version>alpha</version>
