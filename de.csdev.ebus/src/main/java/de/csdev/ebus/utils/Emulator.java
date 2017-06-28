@@ -68,7 +68,6 @@ public class Emulator {
 
         Future<?> submit = pipeThreadExecutor.submit(new Runnable() {
 
-            @Override
             public void run() {
                 try {
                     synchronized (out) {
@@ -111,7 +110,6 @@ public class Emulator {
     public void play(final File inputFile, final double replaySpeed) {
         playThreadExecutor.execute(new Runnable() {
 
-            @Override
             public void run() {
                 // long lastTime = 0;
                 LineNumberReader reader = null;

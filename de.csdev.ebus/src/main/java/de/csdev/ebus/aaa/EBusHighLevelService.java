@@ -8,7 +8,7 @@
  */
 package de.csdev.ebus.aaa;
 
-import de.csdev.ebus.cfg.json.v1.EBusConfigurationProvider;
+import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.service.device.EBusDeviceTable;
 import de.csdev.ebus.service.device.EBusDeviceTableService;
@@ -24,7 +24,7 @@ public class EBusHighLevelService {
 
     private EBusController controller;
 
-    private EBusConfigurationProvider configurationProvider;
+    private EBusCommandRegistry configurationProvider;
 
     private EBusParserService resolverService;
 
@@ -38,7 +38,7 @@ public class EBusHighLevelService {
     private void init() {
 
         deviceTable = new EBusDeviceTable((byte) 0x00);
-        configurationProvider = new EBusConfigurationProvider();
+        configurationProvider = new EBusCommandRegistry();
 
         resolverService = new EBusParserService(configurationProvider);
         deviceTableService = new EBusDeviceTableService(controller, configurationProvider, deviceTable);
@@ -54,7 +54,7 @@ public class EBusHighLevelService {
         return controller;
     }
 
-    public EBusConfigurationProvider getConfigurationProvider() {
+    public EBusCommandRegistry getConfigurationProvider() {
         return configurationProvider;
     }
 

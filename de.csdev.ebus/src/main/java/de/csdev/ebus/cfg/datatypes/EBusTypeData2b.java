@@ -10,7 +10,6 @@ public class EBusTypeData2b extends EBusTypeGeneric {
 
     private static String[] supportedTypes = new String[] { DATA2B };
 
-    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
@@ -20,14 +19,12 @@ public class EBusTypeData2b extends EBusTypeGeneric {
         return 2;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
         BigDecimal intValue = types.decode(EBusTypeInteger.INTGER, data);
         return (T) intValue.divide(BigDecimal.valueOf(256));
     }
 
-    @Override
     public byte[] encode(Object data) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         b = b.multiply(BigDecimal.valueOf(256));

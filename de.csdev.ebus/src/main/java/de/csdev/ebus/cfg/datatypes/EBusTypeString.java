@@ -10,18 +10,15 @@ public class EBusTypeString extends EBusTypeGeneric {
 
     private Integer length = 1;
 
-    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
         return (T) new String(data);
     }
 
-    @Override
     public byte[] encode(Object data) {
 
         byte[] b = new byte[length];

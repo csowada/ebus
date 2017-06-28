@@ -26,7 +26,6 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.aaa.EBusTelegramComposer;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -36,7 +35,7 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class EBusDeviceTable {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusTelegramComposer.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTable.class);
 
     private Map<Byte, EBusDevice> deviceTable;
 

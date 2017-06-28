@@ -76,7 +76,7 @@ public class EBusCommandUtils {
                 byte[] src = new byte[ev.getType().getTypeLenght()];
                 System.arraycopy(data, pos - 1, src, 0, src.length);
                 Object decode = ev.getType().decode(src);
-                System.out.println("EBusTelegram.encode()" + decode);
+                System.out.println("EBusTelegram.encode()" + decode.toString());
                 result.put(ev.getName(), decode);
                 pos += ev.getType().getTypeLenght();
             }

@@ -43,7 +43,6 @@ public class EBusTCPConnection extends AbstractEBusConnection {
         this.port = port;
     }
 
-    @Override
     public boolean open() throws IOException {
         try {
             socket = new Socket(hostname, port);

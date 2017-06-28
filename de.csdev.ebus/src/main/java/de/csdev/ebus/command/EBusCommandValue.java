@@ -49,7 +49,6 @@ public class EBusCommandValue implements IEBusValue {
 
     private Object defaultValue;
 
-    @Override
     public Object getDefaultValue() {
         return defaultValue;
     }
@@ -71,12 +70,10 @@ public class EBusCommandValue implements IEBusValue {
         this.label = label;
     }
 
-    @Override
     public IEBusType getType() {
         return type;
     }
 
-    @Override
     public void setType(IEBusType type) {
         this.type = type;
     }
@@ -97,7 +94,6 @@ public class EBusCommandValue implements IEBusValue {
         this.max = max;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -113,7 +109,6 @@ public class EBusCommandValue implements IEBusValue {
         return value;
     }
 
-    @Override
     public String toString() {
         return "EBusCommandValue [name=" + name + ", label=" + label + ", type=" + type + ", min=" + min + ", max="
                 + max + ", factor=" + factor + ", mapping=" + mapping + ", step=" + step + ", defaultValue="

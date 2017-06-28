@@ -15,23 +15,19 @@ public class EBusCaptureProxyConnection implements IEBusConnection {
         this.captureWriter = captureWriter;
     }
 
-    @Override
     public boolean open() throws IOException {
         return proxyConnection.open();
     }
 
-    @Override
     public boolean close() throws IOException {
         captureWriter.close();
         return proxyConnection.close();
     }
 
-    @Override
     public boolean isOpen() throws IOException {
         return proxyConnection.isOpen();
     }
 
-    @Override
     public int readByte(boolean lowLatency) throws IOException {
         int readByte = proxyConnection.readByte(lowLatency);
 
@@ -42,24 +38,20 @@ public class EBusCaptureProxyConnection implements IEBusConnection {
         return readByte;
     }
 
-    @Override
     public boolean isReceiveBufferEmpty() throws IOException {
         return proxyConnection.isReceiveBufferEmpty();
     }
 
-    @Override
     public int readBytes(byte[] buffer) throws IOException {
         int readBytes = proxyConnection.readBytes(buffer);
         captureWriter.write(buffer, readBytes);
         return readBytes;
     }
 
-    @Override
     public void writeByte(int b) throws IOException {
         proxyConnection.writeByte(b);
     }
 
-    @Override
     public void reset() throws IOException {
         proxyConnection.reset();
     }

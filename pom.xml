@@ -35,6 +35,7 @@
 
     <modules>
         <module>de.csdev.ebus</module>
+		<module>de.csdev.ebus.conn.jssc</module>
     </modules>
 
 </project>

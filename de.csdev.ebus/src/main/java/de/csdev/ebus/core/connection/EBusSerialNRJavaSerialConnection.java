@@ -41,7 +41,6 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
         this.port = port;
     }
 
-    @Override
     public boolean open() throws IOException {
         try {
 
@@ -89,7 +88,6 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
      *
      * @see gnu.io.SerialPortEventListener#serialEvent(gnu.io.SerialPortEvent)
      */
-    @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             synchronized (inputStream) {
@@ -107,7 +105,6 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
         // run the serial.close in a new not-interrupted thread to
         // prevent an IllegalMonitorStateException error
         Thread shutdownThread = new Thread(new Runnable() {
-            @Override
             public void run() {
 
                 IOUtils.closeQuietly(inputStream);

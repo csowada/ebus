@@ -66,7 +66,6 @@ public abstract class EBusControllerBase extends Thread {
         }
 
         threadPool.execute(new Runnable() {
-            @Override
             public void run() {
 
                 try {

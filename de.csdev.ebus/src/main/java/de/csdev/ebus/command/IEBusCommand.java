@@ -3,8 +3,6 @@ package de.csdev.ebus.command;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import de.csdev.ebus.command.IEBusCommand.Type;
-
 public interface IEBusCommand {
 
     public enum Type {

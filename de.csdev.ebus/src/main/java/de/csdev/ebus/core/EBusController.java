@@ -50,6 +50,10 @@ public class EBusController extends EBusControllerBase {
         return queue.addToSendQueue(buffer);
     }
 
+    public Integer addToSendQueue(ByteBuffer buffer) {
+    	return 1;
+    }
+    
     /**
      * @return
      */

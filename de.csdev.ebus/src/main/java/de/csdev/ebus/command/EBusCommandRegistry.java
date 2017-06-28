@@ -25,6 +25,10 @@ public class EBusCommandRegistry {
         return Collections.unmodifiableList(list);
     }
 
+    public EBusCommand getConfigurationById(String id) {
+        return null;
+    }
+    
     public List<EBusCommand> find(ByteBuffer data) {
 
         ArrayList<EBusCommand> result = new ArrayList<EBusCommand>();

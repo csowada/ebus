@@ -11,18 +11,15 @@ public class EBusTypeByte extends EBusTypeGeneric {
 
     private static String[] supportedTypes = new String[] { BYTE, UCHAR };
 
-    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
         return (T) BigDecimal.valueOf(data[0] & 0xFF);
     }
 
-    @Override
     public byte[] encode(Object data) {
 
         if (data instanceof byte[]) {

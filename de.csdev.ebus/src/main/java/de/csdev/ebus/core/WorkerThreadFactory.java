@@ -24,7 +24,6 @@ public class WorkerThreadFactory implements ThreadFactory {
         this.prefix = prefix;
     }
 
-    @Override
     public Thread newThread(Runnable runnable) {
         return new Thread(runnable, prefix + "-" + counter++);
     }

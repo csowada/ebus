@@ -13,12 +13,13 @@ import java.util.Map.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.csdev.ebus.StaticTestTelegrams;
 import de.csdev.ebus.cfg.datatypes.EBusTypeKWCrc;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
-import de.csdev.ebus.cfg.json.v2.OH2ConfigurationReader;
-import de.csdev.ebus.client.StaticTestTelegrams;
+import de.csdev.ebus.cfg.json.OH2ConfigurationReader;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandWritable;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
@@ -49,7 +50,7 @@ public class ConfigurationReaderTest {
         // tr.
 
         for (IEBusCommandWritable command : tr.getConfigurationList()) {
-            ByteBuffer masterTelegram = command.buildMasterTelegram((byte) 0x00, (byte) 0xFF, null);
+            ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, (byte) 0x00, (byte) 0xFF, null);
             StringBuilder hexDumpString = EBusUtils.toHexDumpString(masterTelegram);
             System.out.println(hexDumpString);
 
@@ -67,7 +68,7 @@ public class ConfigurationReaderTest {
         List<EBusCommand> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_E1);
 
         for (IEBusCommandWritable eBusCommand : find) {
-            Map<String, Object> encode = eBusCommand.encode(StaticTestTelegrams.WOLF_SOLAR_E1);
+            Map<String, Object> encode = EBusCommandUtils.encode(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_E1);
             for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
                 System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
                         + eBusCommand2.getValue());

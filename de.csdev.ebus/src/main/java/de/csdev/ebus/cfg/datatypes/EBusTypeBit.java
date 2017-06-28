@@ -10,12 +10,10 @@ public class EBusTypeBit extends EBusTypeGeneric {
 
     private Integer bit = null;
 
-    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
         // int bit = (Integer) args[0];
@@ -24,7 +22,6 @@ public class EBusTypeBit extends EBusTypeGeneric {
         return (T) isSet;
     }
 
-    @Override
     public byte[] encode(Object data) {
 
         throw new RuntimeException("Not implemented yet!");

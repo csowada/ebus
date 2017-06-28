@@ -28,7 +28,6 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
         emu = new Emulator();
     }
 
-    @Override
     public boolean open() throws IOException {
         this.inputStream = emu.getInputStream();
 

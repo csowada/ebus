@@ -24,7 +24,6 @@ public class EBusCommand implements IEBusCommandWritable {
     
     private ByteBuffer telegramMask;
     
-    @Override
     public IEBusCommandWritable addExtendedCommand(IEBusValue value) {
         if (extendCommandValue == null) {
             extendCommandValue = new ArrayList<IEBusValue>();
@@ -35,7 +34,6 @@ public class EBusCommand implements IEBusCommandWritable {
         return this;
     }
 
-	@Override
     public IEBusCommandWritable addMasterValue(IEBusValue value) {
         if (masterTypes == null) {
             masterTypes = new ArrayList<IEBusValue>();
@@ -46,7 +44,6 @@ public class EBusCommand implements IEBusCommandWritable {
         return this;
     }
 
-	@Override
     public IEBusCommandWritable addSlaveValue(IEBusValue value) {
         if (slaveTypes == null) {
             slaveTypes = new ArrayList<IEBusValue>();
@@ -76,7 +73,6 @@ public class EBusCommand implements IEBusCommandWritable {
 		return id;
 	}
 
-	@Override
     public ByteBuffer getMasterTelegramMask() {
 		
 		if(telegramMask == null)
@@ -98,18 +94,15 @@ public class EBusCommand implements IEBusCommandWritable {
 		return type;
 	}
     
-    @Override
 	public EBusCommand setCommand(byte[] command) {
         this.command = command;
         return this;
     }
 
-    @Override
 	public void setConfigurationSource(String configurationSource) {
         this.configurationSource = configurationSource;
     }
     
-    @Override
 	public void setDescription(String description) {
         this.description = description;
     }
@@ -118,7 +111,6 @@ public class EBusCommand implements IEBusCommandWritable {
 		this.extendCommandValue = extendCommandValue;
 	}
 
-    @Override
 	public EBusCommand setId(String id) {
         this.id = id;
         return this;
@@ -132,7 +124,6 @@ public class EBusCommand implements IEBusCommandWritable {
 		this.slaveTypes = slaveTypes;
 	}
 
-    @Override
 	public IEBusCommandWritable setType(Type type) {
         this.type = type;
         return this;

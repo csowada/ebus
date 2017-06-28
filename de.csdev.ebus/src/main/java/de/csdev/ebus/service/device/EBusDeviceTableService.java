@@ -8,14 +8,16 @@
  */
 package de.csdev.ebus.service.device;
 
+import java.nio.ByteBuffer;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.aaa.EBusTelegramComposer;
-import de.csdev.ebus.cfg.json.v1.EBusConfigurationProvider;
-import de.csdev.ebus.cfg.json.v1.EBusConfigurationTelegram;
+import de.csdev.ebus.command.EBusCommand;
+import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.EBusCommandUtils;
+import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
@@ -34,12 +36,11 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     private Integer scanQueueId = -1;
 
-    private EBusConfigurationProvider configurationProvider;
+    private EBusCommandRegistry configurationProvider;
 
     private EBusDeviceTable deviceTable;
 
-    public EBusDeviceTableService(EBusController controller, EBusConfigurationProvider configurationProvider,
-            EBusDeviceTable deviceTable) {
+    public EBusDeviceTableService(EBusController controller, EBusCommandRegistry configurationProvider, EBusDeviceTable deviceTable) {
 
         this.controller = controller;
         this.configurationProvider = configurationProvider;
@@ -58,9 +59,10 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-        EBusConfigurationTelegram command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
-                null);
+        EBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
+
+        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
+        		command, EBusConsts.BROADCAST_ADDRESS, masterAddress, null);
 
         scanQueueId = controller.addToSendQueue(buffer);
     }
@@ -75,9 +77,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        EBusConfigurationTelegram command = configurationProvider.getConfigurationById("common.sign_of_life");
+        EBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life");
 
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
+        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
                 null);
 
         controller.addToSendQueue(buffer);
@@ -85,14 +87,13 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        EBusConfigurationTelegram command = configurationProvider.getConfigurationById("common.identification");
+        EBusCommand command = configurationProvider.getConfigurationById("common.identification");
 
-        byte[] buffer = EBusTelegramComposer.composeEBusTelegram(command, slaveAddress, masterAddress, null);
+        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, slaveAddress, masterAddress, null);
 
         controller.addToSendQueue(buffer);
     }
 
-    @Override
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
         deviceTable.updateDevice(receivedData[0], null);
@@ -103,7 +104,6 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
-    @Override
     public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
             logger.warn("Scan broadcast failed!");
@@ -111,11 +111,10 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
-    @Override
-    public void onTelegramResolved(EBusConfigurationTelegram registryEntry, Map<String, Object> result,
+    public void onTelegramResolved(IEBusCommand command, Map<String, Object> result,
             byte[] receivedData, Integer sendQueueId) {
 
-        String id = registryEntry.getFullId();
+        String id = command.getId();
         byte masterAddress = receivedData[0];
 
         if (id.equals("common.sign_of_life")) {
@@ -129,7 +128,6 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
-    @Override
     public void onEBusDeviceUpdate(TYPE type, IEBusDevice device) {
 
         logger.info("DATA TABLE UPDATE {}", device);

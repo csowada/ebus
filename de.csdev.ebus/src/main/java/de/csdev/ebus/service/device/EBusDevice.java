@@ -56,7 +56,6 @@ public class EBusDevice implements IEBusDevice {
         this.slaveAddress = EBusUtils.getSlaveAddress(masterAddress);
     }
 
-    @Override
     public long getLastActivity() {
         return lastActivity;
     }
@@ -65,32 +64,26 @@ public class EBusDevice implements IEBusDevice {
         this.lastActivity = lastActivity;
     }
 
-    @Override
     public byte getMasterAddress() {
         return masterAddress;
     }
 
-    @Override
     public byte getSlaveAddress() {
         return slaveAddress;
     }
 
-    @Override
     public byte getManufacturer() {
         return manufacturer;
     }
 
-    @Override
     public String getDeviceId() {
         return deviceId;
     }
 
-    @Override
     public BigDecimal getSoftwareVersion() {
         return softwareVersion;
     }
 
-    @Override
     public BigDecimal getHardwareVersion() {
         return hardwareVersion;
     }

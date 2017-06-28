@@ -10,18 +10,15 @@ public class EBusTypeChar extends EBusTypeGeneric {
 
     private static String[] supportedTypes = new String[] { CHAR };
 
-    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
         return (T) BigDecimal.valueOf(data[0]);
     }
 
-    @Override
     public byte[] encode(Object data) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         return new byte[] { (byte) ((byte) b.intValue() & 0xFF) };
