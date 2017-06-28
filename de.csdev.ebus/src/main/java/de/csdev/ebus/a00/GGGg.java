@@ -22,6 +22,7 @@ import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommand.Type;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandValue;
+import de.csdev.ebus.command.IEBusCommandWritable;
 import de.csdev.ebus.command.KWCrcMValue;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -152,7 +153,7 @@ public class GGGg {
         byte[] byteArray = EBusUtils.toByteArray("08 FE 50 22 09 00 74 27 74 27 5D 01 00 00");
         List<EBusCommand> find = tregistry.find(byteArray);
 
-        for (EBusCommand eBusTelegram : find) {
+        for (IEBusCommandWritable eBusTelegram : find) {
 
             Map<String, Object> encode = eBusTelegram.encode(byteArray);
             System.out.println("GGGg.x()");

@@ -21,8 +21,9 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeBytes;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.command.EBusCommand;
-import de.csdev.ebus.command.EBusCommand.Type;
+import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.EBusCommandValue;
+import de.csdev.ebus.command.IEBusCommandWritable;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class OH1ConfigurationReader implements IConfigurationProvider {
@@ -73,7 +74,7 @@ public class OH1ConfigurationReader implements IConfigurationProvider {
      * @param cfg
      * @return
      */
-    private EBusCommand loadSingleEbusCommandByFilter(EBusCommand command, EBusConfigurationTelegram cfg) {
+    private EBusCommand loadSingleEbusCommandByFilter(IEBusCommandWritable command, EBusConfigurationTelegram cfg) {
         System.err.println("Skip filter command " + cfg.getFullId());
 
         String f = cfg.getFilter();
@@ -291,7 +292,7 @@ public class OH1ConfigurationReader implements IConfigurationProvider {
 
         EBusCommand command = new EBusCommand();
         command.setId(cfg.getFullId());
-        command.setType(Type.READ);
+        command.setType(de.csdev.ebus.command.IEBusCommand.Type.READ);
         command.setDescription(cfg.getComment());
         command.setConfigurationSource(cfg.getConfigurationSource());
 
@@ -329,7 +330,7 @@ public class OH1ConfigurationReader implements IConfigurationProvider {
             if (telegram != null) {
                 telegramConfiguration.add(telegram);
 
-                ByteBuffer masterTelegram = telegram.buildMasterTelegram((byte) 0x00, (byte) 0xFF, null);
+                ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(telegram, (byte) 0x00, (byte) 0xFF, null);
                 System.out.println("GGGg.UUUUUU() > " + EBusUtils.toHexDumpString(masterTelegram));
 
                 ByteBuffer masterTelegramMask = telegram.getMasterTelegramMask();

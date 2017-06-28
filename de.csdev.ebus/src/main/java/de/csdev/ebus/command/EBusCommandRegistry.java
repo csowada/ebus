@@ -31,7 +31,7 @@ public class EBusCommandRegistry {
 
         for (EBusCommand telegramCfg : list) {
 
-            ByteBuffer masterTelegram = telegramCfg.buildMasterTelegram((byte) 0x00, (byte) 0xFF, null);
+            ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(telegramCfg, (byte) 0x00, (byte) 0xFF, null);
             ByteBuffer mask = telegramCfg.getMasterTelegramMask();
 
             for (int i = 0; i < mask.position(); i++) {

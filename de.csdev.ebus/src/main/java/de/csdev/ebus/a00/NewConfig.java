@@ -16,6 +16,8 @@ import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.cfg.json.v2.OH2ConfigurationReader;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.EBusCommandUtils;
+import de.csdev.ebus.command.IEBusCommandWritable;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
@@ -99,8 +101,8 @@ public class NewConfig {
                 // System.out
                 // .println("NewConfig.run().new EBusConnectorEventListener() {...}.onTelegramReceived()" + find2);
 
-                for (EBusCommand eBusCommand : find2) {
-                    Map<String, Object> encode = eBusCommand.encode(receivedData);
+                for (IEBusCommandWritable eBusCommand : find2) {
+                    Map<String, Object> encode = EBusCommandUtils.encode(eBusCommand, receivedData);
                     System.out.println(encode);
                 }
             }
