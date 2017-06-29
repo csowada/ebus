@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.aaa;
+package de.csdev.ebus.client;
 
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.core.EBusController;
@@ -18,7 +18,7 @@ import de.csdev.ebus.service.parser.EBusParserService;
  * @author Christian Sowada
  *
  */
-public class EBusHighLevelService {
+public class EBusClient {
 
     private EBusDeviceTable deviceTable;
 
@@ -30,7 +30,7 @@ public class EBusHighLevelService {
 
     private EBusDeviceTableService deviceTableService;
 
-    public EBusHighLevelService(EBusController controller) {
+    public EBusClient(EBusController controller) {
         this.controller = controller;
         init();
     }

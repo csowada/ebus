@@ -1,4 +1,4 @@
-package de.csdev.ebus.cfg.json;
+package de.csdev.ebus.cfg;
 
 import java.io.IOException;
 import java.io.InputStream;

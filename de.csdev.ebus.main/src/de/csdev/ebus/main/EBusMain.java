@@ -18,10 +18,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.aaa.EBusHighLevelService;
 import de.csdev.ebus.cfg.json.v1.EBusConfigurationJsonReader;
 import de.csdev.ebus.cfg.json.v1.EBusConfigurationTelegram;
 import de.csdev.ebus.cfg.json.v1.xxx.EBusTelegramComposer;
+import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
@@ -43,7 +43,7 @@ public class EBusMain {
             // connection = new EBusCaptureProxyConnection(connection, captureWriter);
 
             EBusController controller = new EBusController(connection);
-            EBusHighLevelService service = new EBusHighLevelService(controller);
+            EBusClient service = new EBusClient(controller);
             EBusConfigurationJsonReader jsonCfgReader = new EBusConfigurationJsonReader(
                     service.getConfigurationProvider());
 

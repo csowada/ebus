@@ -16,7 +16,6 @@ import org.junit.Test;
 import de.csdev.ebus.StaticTestTelegrams;
 import de.csdev.ebus.cfg.datatypes.EBusTypeKWCrc;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
-import de.csdev.ebus.cfg.json.OH2ConfigurationReader;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
