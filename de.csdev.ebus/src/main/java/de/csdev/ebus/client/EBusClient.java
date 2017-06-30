@@ -40,9 +40,9 @@ public class EBusClient {
 
     private void init() {
 
+    	dataTypes = new EBusTypes();
         deviceTable = new EBusDeviceTable((byte) 0x00);
         configurationProvider = new EBusCommandRegistry();
-        dataTypes = new EBusTypes();
         
         resolverService = new EBusParserService(configurationProvider);
         deviceTableService = new EBusDeviceTableService(controller, configurationProvider, deviceTable);

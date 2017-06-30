@@ -6,7 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry excluding="de/csdev/ebus/cfg/json/v1/EBusConfigurationReaderV1.java" kind="src" output="target/classes" path="src/main/java">
+	<classpathentry excluding="de/csdev/ebus/cfg/json/v1/EBusConfigurationReaderV1.java|de/csdev/ebus/cfg/json/v1/xxx/EBusParserService.java|de/csdev/ebus/cfg/json/v1/xxx/EBusTelegramComposer.java" kind="src" output="target/classes" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>

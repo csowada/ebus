@@ -62,7 +62,7 @@
         }
 
     },
-/**
+
     {
         "comment":  "<Solar> Solar Yield Broadcast",
         "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
@@ -79,7 +79,7 @@
         }
 
     },
-*/
+
     {
         "comment":  "<Solar> Collector temperature (°C)",
         "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",

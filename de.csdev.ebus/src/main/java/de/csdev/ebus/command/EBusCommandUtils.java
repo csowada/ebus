@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.command;
 
 import java.math.BigDecimal;
@@ -9,8 +17,16 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeBytes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.utils.EBusUtils;
 
+/**
+ * @author Christian Sowada
+ *
+ */
 public class EBusCommandUtils {
 
+	public static byte[] buildMasterTelegram2(IEBusCommand command, Byte source, Byte target, Map<String, Object> values) {
+		return null;
+	}
+	
     public static ByteBuffer buildMasterTelegram(IEBusCommand command, Byte source, Byte target, Map<String, Object> values) {
 
         byte len = 0;
@@ -152,7 +168,7 @@ public class EBusCommandUtils {
             for (IEBusValue entry : command.getMasterTypes()) {
                 IEBusType type = entry.getType();
 
-                boolean x = type instanceof EBusTypeBytes;
+//                boolean x = type instanceof EBusTypeBytes;
 
                 if (entry.getName() == null && type instanceof EBusTypeBytes && entry.getDefaultValue() != null) {
                     for (int i = 0; i < type.getTypeLenght(); i++) {
