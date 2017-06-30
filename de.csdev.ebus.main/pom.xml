@@ -24,6 +24,12 @@
 			<artifactId>core</artifactId>
 			<version>alpha</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>de.csdev.ebus</groupId>
+			<artifactId>jsonv1</artifactId>
+			<version>alpha</version>
+		</dependency>
 	
 		<dependency>
 			<groupId>junit</groupId>

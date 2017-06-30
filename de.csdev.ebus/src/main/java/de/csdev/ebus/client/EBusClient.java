@@ -8,6 +8,7 @@
  */
 package de.csdev.ebus.client;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.service.device.EBusDeviceTable;
@@ -30,6 +31,8 @@ public class EBusClient {
 
     private EBusDeviceTableService deviceTableService;
 
+    private EBusTypes dataTypes;
+    
     public EBusClient(EBusController controller) {
         this.controller = controller;
         init();
@@ -39,7 +42,8 @@ public class EBusClient {
 
         deviceTable = new EBusDeviceTable((byte) 0x00);
         configurationProvider = new EBusCommandRegistry();
-
+        dataTypes = new EBusTypes();
+        
         resolverService = new EBusParserService(configurationProvider);
         deviceTableService = new EBusDeviceTableService(controller, configurationProvider, deviceTable);
 
@@ -50,7 +54,11 @@ public class EBusClient {
 
     }
 
-    public EBusController getController() {
+    public EBusTypes getDataTypes() {
+		return dataTypes;
+	}
+
+	public EBusController getController() {
         return controller;
     }
 

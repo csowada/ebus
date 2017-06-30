@@ -27,6 +27,7 @@ import de.csdev.ebus.core.EBusDataException;
  * @author Christian Sowada
  *
  */
+@SuppressWarnings("restriction")
 public class EBusUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusUtils.class);

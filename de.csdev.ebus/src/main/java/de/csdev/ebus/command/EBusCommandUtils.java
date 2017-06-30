@@ -36,11 +36,11 @@ public class EBusCommandUtils {
                 // use the value from the values map if set
                 if (values != null && values.containsKey(entry.getName())) {
                     buf.put(type.encode(values.get(entry.getName())));
+                    
                 } else {
                     if (entry.getDefaultValue() == null) {
                         buf.put(type.encode(0));
                     } else {
-                        byte[] encode = type.encode(entry.getDefaultValue());
                         buf.put(type.encode(entry.getDefaultValue()));
                     }
 
@@ -121,6 +121,7 @@ public class EBusCommandUtils {
     }
     
     public static ByteBuffer getMasterTelegramMask(IEBusCommand command) {
+    	
         // byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
         buf.put((byte) 0x00); // QQ - Source

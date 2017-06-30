@@ -43,10 +43,11 @@ public class ConfigurationReaderTest {
         final URL resource = classLoader.getResource("new-cfg-format2.json");
         InputStream inputStream = resource.openConnection().getInputStream();
 
-        OH2ConfigurationReader reader = new OH2ConfigurationReader(tr, types);
-        reader.read(inputStream);
-
-        // tr.
+        ConfigurationReader reader = new ConfigurationReader();
+        reader.setEBusTypes(types);
+        
+        List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
+        tr.addTelegramConfigurationList(configurationList);
 
         for (IEBusCommandWritable command : tr.getConfigurationList()) {
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, (byte) 0x00, (byte) 0xFF, null);
