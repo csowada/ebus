@@ -72,11 +72,13 @@ public class EBusCommandUtils {
             }
         }
 
-        byte crc8 = EBusUtils.crc8(buf.array(), len);
+        
 
         // set len
         buf.put(4, len);
 
+        byte crc8 = EBusUtils.crc8(buf.array(), buf.position());
+        
         buf.put(crc8);
 
         return buf;
@@ -118,10 +120,7 @@ public class EBusCommandUtils {
 						}
                 	}
                 }
-                
-                
-                System.out.println("EBusTelegram.encode()" + decode.toString());
-                
+
                 if(StringUtils.isNoneEmpty(ev.getName())) {
                 	result.put(ev.getName(), decode);                	
                 }

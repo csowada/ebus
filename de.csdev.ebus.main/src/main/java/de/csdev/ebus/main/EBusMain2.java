@@ -9,9 +9,8 @@
 package de.csdev.ebus.main;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +24,13 @@ import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
+import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.core.connection.IEBusConnection;
+import de.csdev.ebus.service.parser.EBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class EBusMain2 {
@@ -38,8 +40,8 @@ public class EBusMain2 {
     public static void main(String[] args) {
 
         try {
-        	Reader r = new InputStreamReader(EBusMain2.class.getResourceAsStream("/replay.txt"));
-            IEBusConnection connection = new EBusEmulatorConnection(r);
+        	URL url = EBusMain2.class.getResource("/replay.txt");
+            IEBusConnection connection = new EBusEmulatorConnection(url);
 
             EBusController controller = new EBusController(connection);
             EBusClient client = new EBusClient(controller);
@@ -55,36 +57,44 @@ public class EBusMain2 {
 
             IEBusCommand command = client.getConfigurationProvider().getConfigurationById("common.error");
             Map<String, Object> values = new HashMap<String, Object>();
+            values.put("error", "1234567890");
 
-            byte[] bytes = "HALLO WELT".getBytes();
 
-            values.put("_error_message1", bytes[0]);
-            values.put("_error_message2", bytes[1]);
-            values.put("_error_message3", bytes[2]);
-            values.put("_error_message4", bytes[3]);
-            values.put("_error_message5", bytes[4]);
-            values.put("_error_message6", bytes[5]);
-            values.put("_error_message7", bytes[6]);
-            values.put("_error_message8", bytes[7]);
-            values.put("_error_message9", bytes[8]);
-            values.put("_error_message10", bytes[9]);
-
-            values.put("_error_message10", EBusConsts.ESCAPE);
-
-            ByteBuffer composeEBusTelegram2 = EBusCommandUtils.buildMasterTelegram(command, (byte)0x00, (byte) 0xFF, values);
-
+            ByteBuffer composeEBusTelegram2 = EBusCommandUtils.buildMasterTelegram(command, (byte)0x00, (byte) 0xFE, values);
             logger.info("TEST: Error Command {}", EBusUtils.toHexDumpString(composeEBusTelegram2).toString());
 
-            controller.addToSendQueue(composeEBusTelegram2);
-
-            controller.start();
             
-            Thread.sleep(3000);
-            client.getDeviceTableService().startDeviceScan();
-
-            // Thread.sleep(3000);
-
-            // service.getDeviceTableService().sendXyyy();
+            client.getResolverService().addEBusParserListener(new EBusParserListener() {
+				
+				public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
+						Integer sendQueueId) {
+					// TODO Auto-generated method stub
+					System.out.println("EBusMain2.main(...).new EBusParserListener() {...}.onTelegramResolved()");
+					System.out.println(result.toString());
+					
+				}
+			});
+//            
+//            controller.addEBusEventListener(new EBusConnectorEventListener() {
+//				
+//				public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+//					// TODO Auto-generated method stub
+//					System.out
+//							.println("EBusMain2.main(...).new EBusConnectorEventListener() {...}.onTelegramReceived()"+EBusUtils.toHexDumpString(receivedData));
+//				}
+//				
+//				public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+//					// TODO Auto-generated method stub
+//					System.out.println(
+//							"EBusMain2.main(...).new EBusConnectorEventListener() {...}.onTelegramException()" + exception.toString());
+//				}
+//			});
+            
+            
+            controller.start();
+//            Thread.sleep(3000);
+            
+            controller.addToSendQueue(composeEBusTelegram2);
 
             // main thread wait
             controller.join();

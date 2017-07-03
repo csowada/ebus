@@ -2,8 +2,6 @@ package de.csdev.ebus.a00;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +21,7 @@ import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.core.connection.IEBusConnection;
+import de.csdev.ebus.main.EBusMain2;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class NewConfig {
@@ -57,8 +56,8 @@ public class NewConfig {
 
     public void run() throws InterruptedException {
 
-    	Reader r = new InputStreamReader(NewConfig.class.getResourceAsStream("/replay.txt"));
-        IEBusConnection connection = new EBusEmulatorConnection(r);
+    	URL url0 = EBusMain2.class.getResource("/replay.txt");
+        IEBusConnection connection = new EBusEmulatorConnection(url0);
         EBusController controller = new EBusController(connection);
 
         registry = new EBusTypes();

@@ -21,6 +21,15 @@ public class EBusTypeString extends EBusTypeGeneric {
 
     public byte[] encode(Object data) {
 
+    	// return a empty string with defined len
+    	if(data instanceof Integer && (Integer)data == 0) {
+    		StringBuilder sb = new StringBuilder();
+    		for (int i = 0; i < length; i++) {
+				sb.append(' ');
+			}
+    		return sb.toString().getBytes();
+    	}
+    	
         byte[] b = new byte[length];
         System.arraycopy(data.toString().getBytes(), 0, b, 0, b.length);
 

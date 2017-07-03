@@ -9,7 +9,7 @@
 package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.net.URL;
 
 import de.csdev.ebus.utils.Emulator;
 
@@ -19,11 +19,11 @@ import de.csdev.ebus.utils.Emulator;
  */
 public class EBusEmulatorConnection extends AbstractEBusConnection {
 
-    private Reader reader;
+    private URL readerURL;
     private Emulator emu;
 
-    public EBusEmulatorConnection(Reader reader) {
-        this.reader = reader;
+    public EBusEmulatorConnection(URL readerURL) {
+        this.readerURL = readerURL;
 
         emu = new Emulator();
     }
@@ -32,11 +32,11 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
         this.inputStream = emu.getInputStream();
 
         emu.write(new byte[] { 1, 2, 3, 45, (byte) 0xAA });
-        emu.play(reader);
+        emu.play(readerURL.openStream());
         emu.write(new byte[] { 1, 2, 3, 45, (byte) 0xAA });
-        emu.play(reader);
+        emu.play(readerURL.openStream());
         emu.write(new byte[] { 2, 1, 1, 1, (byte) 200, 100, 45, (byte) 0xAA });
-        emu.play(reader);
+        emu.play(readerURL.openStream());
         return true;
     }
 

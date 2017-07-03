@@ -88,6 +88,11 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommand command = configurationProvider.getConfigurationById("common.identification");
 
+        if(command == null) {
+        	logger.warn("Unable to load command with id common.identification");
+        	return;
+        }
+        
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, slaveAddress, masterAddress, null);
 
         controller.addToSendQueue(buffer);

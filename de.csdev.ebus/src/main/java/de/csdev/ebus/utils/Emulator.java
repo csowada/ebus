@@ -11,10 +11,10 @@ package de.csdev.ebus.utils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.io.Reader;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -102,11 +102,11 @@ public class Emulator {
         }
     }
 
-    public void play(final Reader reader) {
-        this.play(reader, 1f);
+    public void play(final InputStream inputStream) {
+        this.play(inputStream, 1f);
     }
 
-    public void play(final Reader inputReader, final double replaySpeed) {
+    public void play(final InputStream inputStream, final double replaySpeed) {
         playThreadExecutor.execute(new Runnable() {
 
             public void run() {
@@ -115,7 +115,7 @@ public class Emulator {
                 String line = "";
 
                 try {
-                    reader = new LineNumberReader(inputReader);
+                    reader = new LineNumberReader(new InputStreamReader(inputStream));
 
                     while (line != null) {
 

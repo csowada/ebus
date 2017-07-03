@@ -18,7 +18,7 @@
     {
         "comment":  "<General> Error Message",
         "id":       "common.error",
-        "data":		"FE 01",
+        "command":	"FE 01",
         "dst":		"FE",
 
 		"get": {

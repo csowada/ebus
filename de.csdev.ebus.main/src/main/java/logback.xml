@@ -8,7 +8,7 @@
 
 	<logger name="de.csdev.ebus" level="TRACE" />
 
-	<root level="DEBUG">
+	<root level="TRACE">
 		<appender-ref ref="STDOUT" />
 	</root>
 

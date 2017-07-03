@@ -51,7 +51,9 @@ public class EBusController extends EBusControllerBase {
     }
 
     public Integer addToSendQueue(ByteBuffer buffer) {
-    	return 1;
+    	byte[] data = new byte[buffer.position()];
+    	((ByteBuffer) buffer.duplicate().clear()).get(data);
+    	return addToSendQueue(data);
     }
     
     /**

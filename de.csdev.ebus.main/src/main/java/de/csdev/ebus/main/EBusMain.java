@@ -9,8 +9,6 @@
 package de.csdev.ebus.main;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -39,8 +37,8 @@ public class EBusMain {
     public static void main(String[] args) {
 
         try {
-        	Reader r = new InputStreamReader(EBusMain.class.getResourceAsStream("/replay.txt"));
-            IEBusConnection connection = new EBusEmulatorConnection(r);
+        	URL url = EBusMain2.class.getResource("/replay.txt");
+            IEBusConnection connection = new EBusEmulatorConnection(url);
             // connection = new EBusTCPConnection("openhab", 8000);
 
             // EmulatorCapture captureWriter = new EmulatorCapture(new File("src/resources/capture.txt"));
