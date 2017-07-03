@@ -1,10 +1,10 @@
 package de.csdev.ebus.cfg;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.StaticTestTelegrams;
-import de.csdev.ebus.cfg.datatypes.EBusTypeKWCrc;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
@@ -32,17 +32,20 @@ public class ConfigurationReaderTest {
     public void before() {
         tr = new EBusCommandRegistry();
         types = new EBusTypes();
+        types.add(EBusTypeKWCrc.class);
+        
     }
 
-    @Test
+
     public void testIsMasterAddress() throws IOException {
 
-        types.add(EBusTypeKWCrc.class);
+       
 
-        final ClassLoader classLoader = this.getClass().getClassLoader();
-        final URL resource = classLoader.getResource("new-cfg-format2.json");
-        InputStream inputStream = resource.openConnection().getInputStream();
-
+//        final ClassLoader classLoader = this.getClass().getr.getClassLoader();
+//        final URL resource = classLoader.getResource("/new-cfg-format2.json");
+//        InputStream inputStream = resource.openConnection().getInputStream();
+        InputStream inputStream = getClass().getResourceAsStream("/new-cfg-format.json");
+        
         ConfigurationReader reader = new ConfigurationReader();
         reader.setEBusTypes(types);
         
@@ -65,16 +68,32 @@ public class ConfigurationReaderTest {
         //
         // byte[] bs3 = EBusUtils.toByteArray("30 76 50 22 03 CC 2B 0A BF 00 02 11 01 84");
 
-        List<EBusCommand> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_E1);
-
+        List<EBusCommand> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_C);
         for (IEBusCommandWritable eBusCommand : find) {
-            Map<String, Object> encode = EBusCommandUtils.encode(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_E1);
+        	System.out.println("ConfigurationReaderTest.testIsMasterAddress()");
+            Map<String, Object> encode = EBusCommandUtils.encode(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_C);
             for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
                 System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
                         + eBusCommand2.getValue());
             }
         }
 
+		Map<String, Object> encode = EBusCommandUtils.encode(
+				tr.getConfigurationById("solar.solar_yield"), 
+				StaticTestTelegrams.WOLF_SOLAR_C);
+		
+		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
+		    System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
+		            + eBusCommand2.getValue());
+		}
+
+		
+		
+
+		
+		
+		
+		
         assertFalse("Broadcast address is not a master address",
                 EBusUtils.isMasterAddress(EBusConsts.BROADCAST_ADDRESS));
 
@@ -87,6 +106,28 @@ public class ConfigurationReaderTest {
         assertTrue("0xFF address is a master address", EBusUtils.isMasterAddress((byte) 0xFF));
 
         assertFalse("0x09 address is not a master address", EBusUtils.isMasterAddress((byte) 0x09));
+    }
+    
+    @Test
+    public void xxx() throws IOException {
+    	
+        InputStream inputStream = getClass().getResourceAsStream("/new-cfg-format.json");
+        
+        ConfigurationReader reader = new ConfigurationReader();
+        reader.setEBusTypes(types);
+        
+        List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
+        tr.addTelegramConfigurationList(configurationList);
+        
+        
+		Map<String, Object> encode = EBusCommandUtils.encode(
+				tr.getConfigurationById("auto_stroker"), 
+				StaticTestTelegrams.AUTO_STROKER);
+		
+		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
+		    System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
+		            + eBusCommand2.getValue());
+		}
     }
 
 }

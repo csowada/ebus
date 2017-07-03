@@ -16,8 +16,6 @@ public class EBusTypeBit extends EBusTypeGeneric {
 
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
-        // int bit = (Integer) args[0];
-
         Boolean isSet = (data[0] >> bit & 0x1) == 1;
         return (T) isSet;
     }
@@ -34,9 +32,10 @@ public class EBusTypeBit extends EBusTypeGeneric {
     @Override
     public IEBusType getInstance(Map<String, Object> properties) {
 
-        if (properties.containsKey("bit")) {
+        if (properties.containsKey("pos")) {
             EBusTypeBit x = new EBusTypeBit();
-            x.bit = (Integer) properties.get("bit");
+            x.types = types;
+            x.bit = (Integer) properties.get("pos");
             return x;
         }
 

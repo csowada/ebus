@@ -24,6 +24,7 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeBytes;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.command.EBusCommand;
+import de.csdev.ebus.command.EBusCommandNestedValue;
 import de.csdev.ebus.command.EBusCommandValue;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
@@ -137,26 +138,58 @@ public class ConfigurationReader implements IConfigurationReader {
         return cfg;
     }
 
-    protected EBusCommandValue parseValueConfiguration(Map<String, Object> template,
+    @SuppressWarnings("unchecked")
+	protected EBusCommandValue parseValueConfiguration(Map<String, Object> template,
             Map<String, EBusCommandValue> templateMap) {
 
         String typeStr = (String) template.get("type");
 
         if (typeStr.equals("template")) {
+        	
+        	// use command value from template map
             return templateMap.get(template.get("name"));
 
         } else if (typeStr.equals("static")) {
+        	// convert static content to bytes
+        	
             byte[] byteArray = EBusUtils.toByteArray((String) template.get("default"));
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("length", byteArray.length);
             final IEBusType typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
 
             return EBusCommandValue.getInstance(typeByte, byteArray);
+
         }
 
-        EBusCommandValue ev = new EBusCommandValue();
-
-        IEBusType type = registry.getType(typeStr);
+        
+        EBusCommandValue ev = null;
+        
+        // value is a nested value
+        if(template.containsKey("children")) {
+        	EBusCommandNestedValue evc = new EBusCommandNestedValue();
+        	ev = evc;
+        	
+        	int pos = 0;
+        	for (Map<String, Object> childElem : (List<Map<String, Object>>)template.get("children")) {
+        		
+        		// add pos information from list
+        		childElem.put("pos", pos);
+        		
+        		// parse child value
+				EBusCommandValue childValue = parseValueConfiguration(childElem, templateMap);
+				evc.add(childValue);
+				
+				pos++;
+			}
+        	
+        	
+        } else {
+        	// default value
+        	ev = new EBusCommandValue();
+        }
+        
+        IEBusType type = registry.getType(typeStr, template);
+        
         ev.setType(type);
 
         ev.setName((String) template.get("name"));
@@ -175,6 +208,7 @@ public class ConfigurationReader implements IConfigurationReader {
             ev.setMax(NumberUtils.toBigDecimal(template.get("max")));
         }
 
+        // TODO missing !!!
         template.get("mapping");
 
         return ev;

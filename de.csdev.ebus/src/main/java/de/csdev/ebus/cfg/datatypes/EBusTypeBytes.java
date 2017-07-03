@@ -38,6 +38,7 @@ public class EBusTypeBytes extends EBusTypeGeneric {
         if (properties.containsKey("length")) {
             EBusTypeBytes x = new EBusTypeBytes();
             x.length = (Integer) properties.get("length");
+            x.types = this.types;
             return x;
         }
 

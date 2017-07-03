@@ -13,6 +13,8 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.csdev.ebus.cfg.datatypes.EBusTypeBytes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.utils.EBusUtils;
@@ -81,6 +83,10 @@ public class EBusCommandUtils {
         HashMap<String, Object> result = new HashMap<String, Object>();
         int pos = 6;
 
+        if(command == null) {
+        	throw new IllegalArgumentException("Parameter command is null!");
+        }
+        
         if (command.getExtendCommandValue() != null) {
             for (IEBusValue ev : command.getExtendCommandValue()) {
                 pos += ev.getType().getTypeLenght();
@@ -89,11 +95,33 @@ public class EBusCommandUtils {
 
         if (command.getMasterTypes() != null) {
             for (IEBusValue ev : command.getMasterTypes()) {
+            	
                 byte[] src = new byte[ev.getType().getTypeLenght()];
                 System.arraycopy(data, pos - 1, src, 0, src.length);
                 Object decode = ev.getType().decode(src);
+                
+                
+                if(ev instanceof IEBusNestedValue) {
+                	IEBusNestedValue evc = (IEBusNestedValue)ev;
+                	if(evc.hasChildren()) {
+                		
+                		for (IEBusValue child : evc.getChildren()) {
+                			
+							Object decode2 = child.getType().decode(src);
+							if(StringUtils.isNoneEmpty(child.getName())) {
+								result.put(child.getName(), decode2);								
+							}
+						}
+                	}
+                }
+                
+                
                 System.out.println("EBusTelegram.encode()" + decode.toString());
-                result.put(ev.getName(), decode);
+                
+                if(StringUtils.isNoneEmpty(ev.getName())) {
+                	result.put(ev.getName(), decode);                	
+                }
+                
                 pos += ev.getType().getTypeLenght();
             }
         }

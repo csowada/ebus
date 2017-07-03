@@ -37,6 +37,7 @@ public class EBusTypeString extends EBusTypeGeneric {
 
         if (properties.containsKey("length")) {
             EBusTypeString x = new EBusTypeString();
+            x.types = this.types;
             x.length = (Integer) properties.get("length");
             return x;
         }

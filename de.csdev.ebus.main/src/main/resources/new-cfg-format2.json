@@ -1,5 +1,5 @@
 [
-{
+	{
         "comment":  "<Solar> E1 - Return temp (°C)",
         "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
         "id":       "solar.e1",
@@ -14,5 +14,34 @@
                 {"name":"e1", "type": "word", "label": "E1 - Return temp (°C)", "factor": 0.1, "min": 1, "max": 12}
             ]
         }
+    },
+    
+    {
+        "comment":  "Fussbodenheizung - Heizkurve",
+        "id":       "fbh.heizkurve",
+        "dst":      "50",
+        "command":  "B5 09",
+
+        "templates": [
+            {"name": "value", "type": "word", "factor" : 0.01 }
+        ],
+
+        "get": {
+            "master": [
+                {"type": "static", "default": "0D 35 00"}
+            ],
+            "slave": [
+                {"type": "template", "name": "value"}
+            ]
+        },
+
+        "set": {
+            "master": [
+                {"type": "static", "default": "0E 35 00"},
+                {"type": "template", "name": "value"}
+            ]   
+        }
+        
+
     }
 ]

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Christian Sowada
  *
@@ -38,6 +40,12 @@ public class EBusCommandRegistry {
     }
 
     public EBusCommand getConfigurationById(String id) {
+    	
+    	for (EBusCommand command : list) {
+    		if(StringUtils.equals(command.getId(), id))
+				return command;
+		}
+    	
         return null;
     }
     

@@ -6,6 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeMultiWord;
+
 public class EBusTypes {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypes.class);
@@ -32,6 +34,8 @@ public class EBusTypes {
 
         add(EBusTypeBytes.class);
         add(EBusTypeString.class);
+        
+        add(EBusTypeMultiWord.class);
     }
 
     public <T extends IEBusType> T xxx(T xxxy) {
