@@ -8,8 +8,8 @@
  */
 package de.csdev.ebus.core.connection;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 
 import de.csdev.ebus.utils.Emulator;
 
@@ -19,11 +19,11 @@ import de.csdev.ebus.utils.Emulator;
  */
 public class EBusEmulatorConnection extends AbstractEBusConnection {
 
-    private File file;
+    private Reader reader;
     private Emulator emu;
 
-    public EBusEmulatorConnection(File file) {
-        this.file = file;
+    public EBusEmulatorConnection(Reader reader) {
+        this.reader = reader;
 
         emu = new Emulator();
     }
@@ -32,11 +32,11 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
         this.inputStream = emu.getInputStream();
 
         emu.write(new byte[] { 1, 2, 3, 45, (byte) 0xAA });
-        emu.play(file);
+        emu.play(reader);
         emu.write(new byte[] { 1, 2, 3, 45, (byte) 0xAA });
-        emu.play(file);
+        emu.play(reader);
         emu.write(new byte[] { 2, 1, 1, 1, (byte) 200, 100, 45, (byte) 0xAA });
-        emu.play(file);
+        emu.play(reader);
         return true;
     }
 

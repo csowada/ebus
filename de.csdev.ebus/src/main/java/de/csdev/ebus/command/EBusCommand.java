@@ -37,7 +37,39 @@ public class EBusCommand implements IEBusCommandWritable {
     
     private ByteBuffer telegramMask;
     
-    public IEBusCommandWritable addExtendedCommand(IEBusValue value) {
+    private String device;
+    
+    private Byte destinationAddress;
+    
+    private Byte sourceAddress;
+    
+    
+    
+    public String getDevice() {
+		return device;
+	}
+
+	public void setDevice(String device) {
+		this.device = device;
+	}
+
+	public Byte getDestinationAddress() {
+		return destinationAddress;
+	}
+
+	public void setDestinationAddress(Byte destinationAddress) {
+		this.destinationAddress = destinationAddress;
+	}
+
+	public Byte getSourceAddress() {
+		return sourceAddress;
+	}
+
+	public void setSourceAddress(Byte sourceAddress) {
+		this.sourceAddress = sourceAddress;
+	}
+
+	public IEBusCommandWritable addExtendedCommand(IEBusValue value) {
         if (extendCommandValue == null) {
             extendCommandValue = new ArrayList<IEBusValue>();
         }

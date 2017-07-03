@@ -2,7 +2,6 @@ package de.csdev.ebus;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +18,7 @@ import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
+import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -49,7 +49,7 @@ public class EBusComposeTelegramTest {
 
     @Test
     public void composeTelegram01() {
-        EBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
+        IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
         assertNotNull("Command common.inquiry_of_existence not found", command);
 
         ByteBuffer bb = EBusCommandUtils.buildMasterTelegram(command, (byte) 0xFF, (byte) 0x00, null);
@@ -62,7 +62,7 @@ public class EBusComposeTelegramTest {
 
     @Test
     public void composeTelegram02() {
-    	EBusCommand command = configurationProvider.getConfigurationById("common.error");
+    	IEBusCommand command = configurationProvider.getConfigurationById("common.error");
         assertNotNull("Command common.error not found", command);
 
         Map<String, Object> values = new HashMap<String, Object>();

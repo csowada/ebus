@@ -21,12 +21,7 @@ public class EBusTypeBit extends EBusTypeGeneric {
     }
 
     public byte[] encode(Object data) {
-
         throw new RuntimeException("Not implemented yet!");
-        // BigDecimal.valueOf(0).
-        //
-        // BigDecimal b = (BigDecimal)data;
-        // return new byte[] { (byte) b.intValue() };
     }
 
     @Override

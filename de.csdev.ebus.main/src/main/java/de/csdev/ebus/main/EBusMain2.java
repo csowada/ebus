@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
+import de.csdev.ebus.cfg.ConfigurationReader;
 import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandUtils;
@@ -32,34 +31,25 @@ import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.core.connection.IEBusConnection;
 import de.csdev.ebus.utils.EBusUtils;
 
-public class EBusMain {
+public class EBusMain2 {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusMain.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusMain2.class);
 
     public static void main(String[] args) {
 
         try {
-        	Reader r = new InputStreamReader(EBusMain.class.getResourceAsStream("/replay.txt"));
+        	Reader r = new InputStreamReader(EBusMain2.class.getResourceAsStream("/replay.txt"));
             IEBusConnection connection = new EBusEmulatorConnection(r);
-            // connection = new EBusTCPConnection("openhab", 8000);
-
-            // EmulatorCapture captureWriter = new EmulatorCapture(new File("src/resources/capture.txt"));
-            // connection = new EBusCaptureProxyConnection(connection, captureWriter);
 
             EBusController controller = new EBusController(connection);
             EBusClient client = new EBusClient(controller);
             
-            OH1ConfigurationReader jsonCfgReader = new OH1ConfigurationReader();
+            ConfigurationReader jsonCfgReader = new ConfigurationReader();
             jsonCfgReader.setEBusTypes(client.getDataTypes());
+
             
-            ClassLoader classLoader = controller.getClass().getClassLoader();
-            URL resource = classLoader.getResource("common-configuration.json");
-
-            logger.info(">>>>>>>>>>>>>>>>>>" + resource.openStream().read());
-
-//            File filex = new File("src/main/resources/common-configuration.json");
-            // jsonCfgReader.loadConfigurationFile(filex.toURL());
-            List<EBusCommand> loadConfiguration = jsonCfgReader.loadConfiguration(resource.openStream());
+            List<EBusCommand> loadConfiguration = jsonCfgReader.loadConfiguration(
+            		IEBusConnection.class.getResourceAsStream("/common-configuration2.json"));
             
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 

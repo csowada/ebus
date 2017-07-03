@@ -179,7 +179,7 @@ public class OH1ConfigurationReader implements IConfigurationReader {
                 transferEBusValue(jsonValue, value);
 
                 int typeLen = type.getTypeLenght();
-                System.out.println("GGGg.b() JA" + pos);
+//                System.out.println("GGGg.b() JA" + pos);
                 if (typeLen > 1) {
                     pos += typeLen - 1;
                 }
@@ -189,7 +189,7 @@ public class OH1ConfigurationReader implements IConfigurationReader {
             }
 
         } else {
-            System.out.println("GGGg.b() NEIN " + pos);
+//            System.out.println("GGGg.b() NEIN " + pos);
             value = EBusCommandValue.getInstance(typeBytes, new byte[] { byteArray[pos - FIRST_MASTER_DATA_POS] });
         }
 

@@ -1,8 +1,9 @@
 package de.csdev.ebus.a00;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import de.csdev.ebus.cfg.json.v1.mapper.EBusConfigurationTelegram;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.IEBusCommandWritable;
+import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
@@ -56,7 +57,8 @@ public class NewConfig {
 
     public void run() throws InterruptedException {
 
-        IEBusConnection connection = new EBusEmulatorConnection(new File("src/main/resources/test/replay.txt"));
+    	Reader r = new InputStreamReader(NewConfig.class.getResourceAsStream("/replay.txt"));
+        IEBusConnection connection = new EBusEmulatorConnection(r);
         EBusController controller = new EBusController(connection);
 
         registry = new EBusTypes();
@@ -100,12 +102,12 @@ public class NewConfig {
                 // System.out
                 // .println("NewConfig.run().new EBusConnectorEventListener() {...}.onTelegramReceived()" + find);
                 //
-                List<EBusCommand> find2 = tregistry.find(receivedData);
+                List<IEBusCommand> find2 = tregistry.find(receivedData);
                 // System.out
                 // .println("NewConfig.run().new EBusConnectorEventListener() {...}.onTelegramReceived()" + find2);
 
-                for (IEBusCommandWritable eBusCommand : find2) {
-                    Map<String, Object> encode = EBusCommandUtils.encode(eBusCommand, receivedData);
+                for (IEBusCommand eBusCommand : find2) {
+                    Map<String, Object> encode = EBusCommandUtils.decodeTelegram(eBusCommand, receivedData);
                     System.out.println(encode);
                 }
             }

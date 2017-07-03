@@ -47,7 +47,7 @@ public class EBusComposeTelegramTest2 {
 
     @Test
     public void composeTelegram01() {
-        EBusCommand command = configurationProvider.getConfigurationById("fbh.set_heizkurve");
+        IEBusCommand command = configurationProvider.getConfigurationById("fbh.set_heizkurve");
         assertNotNull("Command fbh.set_heizkurve not found", command);
 
         Map<String, Object> values = new HashMap<String, Object>();

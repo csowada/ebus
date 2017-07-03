@@ -33,7 +33,11 @@ public class EBusCommandUtils {
 
         byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
-
+        
+        if(command == null) throw new IllegalArgumentException("Parameter command is null!");
+        if(source == null) throw new IllegalArgumentException("Parameter source is null!");
+        if(target == null) throw new IllegalArgumentException("Parameter target is null!");
+        
         buf.put(source); // QQ - Source
         buf.put(target); // ZZ - Target
         buf.put(command.getCommand()); // PB SB - Command
@@ -78,7 +82,7 @@ public class EBusCommandUtils {
         return buf;
     }
     
-    public static Map<String, Object> encode(IEBusCommand command, byte[] data) {
+    public static Map<String, Object> decodeTelegram(IEBusCommand command, byte[] data) {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         int pos = 6;
@@ -155,7 +159,6 @@ public class EBusCommandUtils {
                     // nev.getMax()
                 }
 
-                System.out.println("EBusTelegram.encode()" + decode);
                 result.put(ev.getName(), decode);
                 pos += ev.getType().getTypeLenght();
             }

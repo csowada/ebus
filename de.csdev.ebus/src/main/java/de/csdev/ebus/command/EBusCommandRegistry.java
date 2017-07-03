@@ -21,27 +21,27 @@ import org.apache.commons.lang.StringUtils;
  */
 public class EBusCommandRegistry {
 
-    private List<EBusCommand> list = new ArrayList<EBusCommand>();
+    private List<IEBusCommand> list = new ArrayList<IEBusCommand>();
 
     public void addTelegramConfigurationList(List<EBusCommand> nlist) {
         list.addAll(nlist);
     }
 
-    public void addTelegramConfiguration(EBusCommand telegramCfg) {
+    public void addTelegramConfiguration(IEBusCommand telegramCfg) {
         list.add(telegramCfg);
     }
 
-    public List<EBusCommand> find(byte[] data) {
+    public List<IEBusCommand> find(byte[] data) {
         return find(ByteBuffer.wrap(data));
     }
 
-    public List<EBusCommand> getConfigurationList() {
+    public List<IEBusCommand> getConfigurationList() {
         return Collections.unmodifiableList(list);
     }
 
-    public EBusCommand getConfigurationById(String id) {
+    public IEBusCommand getConfigurationById(String id) {
     	
-    	for (EBusCommand command : list) {
+    	for (IEBusCommand command : list) {
     		if(StringUtils.equals(command.getId(), id))
 				return command;
 		}
@@ -49,11 +49,11 @@ public class EBusCommandRegistry {
         return null;
     }
     
-    public List<EBusCommand> find(ByteBuffer data) {
+    public List<IEBusCommand> find(ByteBuffer data) {
 
-        ArrayList<EBusCommand> result = new ArrayList<EBusCommand>();
+        ArrayList<IEBusCommand> result = new ArrayList<IEBusCommand>();
 
-        for (EBusCommand telegramCfg : list) {
+        for (IEBusCommand telegramCfg : list) {
 
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(telegramCfg, (byte) 0x00, (byte) 0xFF, null);
             ByteBuffer mask = telegramCfg.getMasterTelegramMask();

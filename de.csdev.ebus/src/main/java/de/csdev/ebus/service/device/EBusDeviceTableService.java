@@ -14,7 +14,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
@@ -59,7 +58,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-        EBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
+        IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
 
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
         		command, EBusConsts.BROADCAST_ADDRESS, masterAddress, null);
@@ -77,7 +76,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        EBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life");
+        IEBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life");
 
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
                 null);
@@ -87,7 +86,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        EBusCommand command = configurationProvider.getConfigurationById("common.identification");
+        IEBusCommand command = configurationProvider.getConfigurationById("common.identification");
 
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, slaveAddress, masterAddress, null);
 

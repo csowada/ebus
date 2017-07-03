@@ -19,7 +19,7 @@ import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.IEBusCommandWritable;
+import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -52,7 +52,7 @@ public class ConfigurationReaderTest {
         List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
         tr.addTelegramConfigurationList(configurationList);
 
-        for (IEBusCommandWritable command : tr.getConfigurationList()) {
+        for (IEBusCommand command : tr.getConfigurationList()) {
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, (byte) 0x00, (byte) 0xFF, null);
             StringBuilder hexDumpString = EBusUtils.toHexDumpString(masterTelegram);
             System.out.println(hexDumpString);
@@ -68,17 +68,17 @@ public class ConfigurationReaderTest {
         //
         // byte[] bs3 = EBusUtils.toByteArray("30 76 50 22 03 CC 2B 0A BF 00 02 11 01 84");
 
-        List<EBusCommand> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_C);
-        for (IEBusCommandWritable eBusCommand : find) {
+        List<IEBusCommand> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_C);
+        for (IEBusCommand eBusCommand : find) {
         	System.out.println("ConfigurationReaderTest.testIsMasterAddress()");
-            Map<String, Object> encode = EBusCommandUtils.encode(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_C);
+            Map<String, Object> encode = EBusCommandUtils.decodeTelegram(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_C);
             for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
                 System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
                         + eBusCommand2.getValue());
             }
         }
 
-		Map<String, Object> encode = EBusCommandUtils.encode(
+		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
 				tr.getConfigurationById("solar.solar_yield"), 
 				StaticTestTelegrams.WOLF_SOLAR_C);
 		
@@ -120,7 +120,7 @@ public class ConfigurationReaderTest {
         tr.addTelegramConfigurationList(configurationList);
         
         
-		Map<String, Object> encode = EBusCommandUtils.encode(
+		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
 				tr.getConfigurationById("auto_stroker"), 
 				StaticTestTelegrams.AUTO_STROKER);
 		

@@ -36,10 +36,10 @@ public class EBusTypeBytes extends EBusTypeGeneric {
     public IEBusType getInstance(Map<String, Object> properties) {
 
         if (properties.containsKey("length")) {
-            EBusTypeBytes x = new EBusTypeBytes();
-            x.length = (Integer) properties.get("length");
-            x.types = this.types;
-            return x;
+            EBusTypeBytes type = new EBusTypeBytes();
+            type.length = (Integer) properties.get("length");
+            type.types = this.types;
+            return type;
         }
 
         return this;

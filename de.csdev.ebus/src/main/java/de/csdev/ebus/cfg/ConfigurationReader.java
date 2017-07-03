@@ -55,11 +55,6 @@ public class ConfigurationReader implements IConfigurationReader {
 
         	list.add(parseTelegramConfiguration(element));
 
-            element.get("comment");
-            element.get("device");
-            element.get("id");
-            element.get("dst");
-            element.get("command");
             element.get("debug");
 
         }
@@ -80,6 +75,18 @@ public class ConfigurationReader implements IConfigurationReader {
 
         cfg.setId((String) element.get("id"));
         cfg.setCommand(EBusUtils.toByteArray((String) element.get("command")));
+
+        
+        cfg.setDescription((String) element.get("comment"));
+        cfg.setDevice((String) element.get("device"));
+        
+        if(element.containsKey("dst")) {
+        	cfg.setDestinationAddress(EBusUtils.toByte((String)element.get("dst")));
+        }
+        
+        if(element.containsKey("src")) {
+        	cfg.setSourceAddress(EBusUtils.toByte((String)element.get("src")));
+        }
 
         Object entry = element.get("templates");
         if (entry != null || entry instanceof List) {

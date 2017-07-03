@@ -6,7 +6,6 @@ import java.util.Map;
 import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.cfg.datatypes.EBusTypeWord;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
-import de.csdev.ebus.utils.NumberUtils;
 
 public class EBusTypeMultiWord extends EBusTypeGeneric {
 
@@ -45,31 +44,27 @@ public class EBusTypeMultiWord extends EBusTypeGeneric {
         	valx = valx.add(value.multiply(factor));
 		}
 
-    	System.out.println("EBusTypeDWord.decode()" + valx.toString());
         return (T) valx;
     }
 
     public byte[] encode(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
-        return new byte[] { (byte) b.intValue(), (byte) (b.intValue() >> 8), 0, 0 };
+    	throw new RuntimeException("Not implemented yet!");
     }
 
     @Override
     public IEBusType getInstance(Map<String, Object> properties) {
 
         if (properties.containsKey("length")) {
-        	EBusTypeMultiWord x = new EBusTypeMultiWord();
-        	x.types = this.types;
+        	EBusTypeMultiWord type = new EBusTypeMultiWord();
+        	type.types = this.types;
         	
-            x.length = (Integer) properties.get("length");
+        	type.length = (Integer) properties.get("length");
             
             if (properties.containsKey("pow")) {
-            	x.pow = (Integer) properties.get("pow");
+            	type.pow = (Integer) properties.get("pow");
             }
-            
-            System.out.println("EBusTypeDWord.getInstance()");
-            
-            return x;
+
+            return type;
         }
 
         return this;

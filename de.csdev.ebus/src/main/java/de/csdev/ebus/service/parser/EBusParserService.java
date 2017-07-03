@@ -2,11 +2,14 @@ package de.csdev.ebus.service.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.EBusCommandUtils;
+import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusDataException;
 
@@ -17,10 +20,10 @@ public class EBusParserService implements EBusConnectorEventListener {
     /** the list for listeners */
     private final List<EBusParserListener> listeners = new ArrayList<EBusParserListener>();
 	
-    private EBusCommandRegistry configurationProvider;
+    private EBusCommandRegistry commandRegistry;
     
     public EBusParserService(EBusCommandRegistry configurationProvider) {
-        this.configurationProvider = configurationProvider;
+        this.commandRegistry = configurationProvider;
     }
     
     /**
@@ -48,12 +51,22 @@ public class EBusParserService implements EBusConnectorEventListener {
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
-    	// TODO: Implement parser
     	
-//    	EBusCommandUtils.
-//        parse(receivedData, sendQueueId);
+    	final List<IEBusCommand> commandList = commandRegistry.find(receivedData);
+    	for (IEBusCommand command : commandList) {
+    		
+    		Map<String, Object> map = EBusCommandUtils.decodeTelegram(command, receivedData);
+			fireOnTelegramResolved(command, map, receivedData, sendQueueId);
+		}
+
     }
 
+    private void fireOnTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData, Integer sendQueueId) {
+    	for (EBusParserListener listener : listeners) {
+			listener.onTelegramResolved(command, result, receivedData, sendQueueId);
+		}
+    }
+    
     /*
      * (non-Javadoc)
      *
