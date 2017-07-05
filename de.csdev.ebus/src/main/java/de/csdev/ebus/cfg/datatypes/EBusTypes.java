@@ -6,7 +6,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeMultiWord;
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeString;
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeTime;
 
 public class EBusTypes {
 
@@ -36,6 +39,7 @@ public class EBusTypes {
         add(EBusTypeString.class);
         
         add(EBusTypeMultiWord.class);
+        add(EBusTypeTime.class);
     }
 
     public <T extends IEBusType> T xxx(T xxxy) {

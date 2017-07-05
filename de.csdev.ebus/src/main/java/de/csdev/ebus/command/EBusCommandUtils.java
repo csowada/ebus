@@ -15,8 +15,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.csdev.ebus.cfg.datatypes.EBusTypeBytes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -184,8 +184,8 @@ public class EBusCommandUtils {
     	
         // byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
-        buf.put((byte) 0x00); // QQ - Source
-        buf.put((byte) 0x00); // ZZ - Target
+        buf.put(command.getSourceAddress() == null ? (byte) 0x00 : (byte)0xFF); // QQ - Source
+        buf.put(command.getDestinationAddress() == null ? (byte) 0x00 : (byte)0xFF); // ZZ - Target
         buf.put(new byte[] { (byte) 0xFF, (byte) 0xFF }); // PB SB - Command
         buf.put((byte) 0xFF); // NN - Length
 

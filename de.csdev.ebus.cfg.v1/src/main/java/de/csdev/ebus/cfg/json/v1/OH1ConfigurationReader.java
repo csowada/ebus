@@ -16,9 +16,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import de.csdev.ebus.cfg.IConfigurationReader;
-import de.csdev.ebus.cfg.datatypes.EBusTypeBytes;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.cfg.json.v1.mapper.EBusConfigurationTelegram;
 import de.csdev.ebus.cfg.json.v1.mapper.EBusConfigurationValue;
 import de.csdev.ebus.command.EBusCommand;

@@ -16,6 +16,12 @@ public class EBusTypeBit extends EBusTypeGeneric {
 
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
+    	
+    	if(data == null) {
+    		// replace value
+    		return (T) Boolean.FALSE;
+    	}
+    	
         Boolean isSet = (data[0] >> bit & 0x1) == 1;
         return (T) isSet;
     }

@@ -4,27 +4,30 @@ import java.math.BigDecimal;
 
 import de.csdev.ebus.utils.NumberUtils;
 
-public class EBusTypeData1c extends EBusTypeByte {
+public class EBusTypeData1c extends EBusTypeGenericReplaceValue {
 
     public static String DATA1C = "data1c";
 
     private static String[] supportedTypes = new String[] { DATA1C };
 
-    @Override
+    public EBusTypeData1c() {
+    	replaceValue = new byte[] {(byte)0xFF};
+    }
+    
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data) {
-        BigDecimal x = super.decode(data);
+    public <T> T decodeInt(byte[] data) {
+        BigDecimal x = types.getType(EBusTypeByte.BYTE).decode(data);
         return (T) x.divide(BigDecimal.valueOf(2));
     }
 
     @Override
-    public byte[] encode(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
+    public byte[] encodeInt(Object data) {
+        BigDecimal b = NumberUtils.toBigDecimal(data);
         b = b.multiply(BigDecimal.valueOf(2));
         return new byte[] { (byte) b.intValue() };
     }

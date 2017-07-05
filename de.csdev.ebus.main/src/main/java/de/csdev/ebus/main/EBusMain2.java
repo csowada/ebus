@@ -20,12 +20,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.ConfigurationReader;
+import de.csdev.ebus.cfg.datatypes.IEBusType;
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeTime;
 import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.core.EBusConnectorEventListener;
-import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
@@ -90,6 +91,13 @@ public class EBusMain2 {
 				}
 			});
             
+            
+            IEBusCommand commandx = client.getConfigurationProvider().getConfigurationById("auto_stroker");
+            ByteBuffer masterTelegramMask = commandx.getMasterTelegramMask();
+            System.err.println(EBusUtils.toHexDumpString(masterTelegramMask));
+            
+            masterTelegramMask = EBusCommandUtils.buildMasterTelegram(commandx, (byte)0, (byte)0, null);
+            System.err.println(EBusUtils.toHexDumpString(masterTelegramMask));
             
             controller.start();
 //            Thread.sleep(3000);

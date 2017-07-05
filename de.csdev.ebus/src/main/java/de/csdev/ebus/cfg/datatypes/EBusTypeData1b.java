@@ -1,21 +1,25 @@
 package de.csdev.ebus.cfg.datatypes;
 
-public class EBusTypeData1b extends EBusTypeGeneric {
+public class EBusTypeData1b extends EBusTypeGenericReplaceValue {
 
     public static String DATA1B = "data1b";
 
     private static String[] supportedTypes = new String[] { DATA1B };
 
+    public EBusTypeData1b() {
+    	replaceValue = new byte[] {(byte)0x80};
+    }
+    
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
-    public <T> T decode(byte[] data) {
+    public <T> T decodeInt(byte[] data) {
         return types.decode(EBusTypeChar.CHAR, data);
     }
 
-    public byte[] encode(Object data) {
-        return types.encode(EBusTypeChar.CHAR, data == null ? 0 : data);
+    public byte[] encodeInt(Object data) {
+        return types.encode(EBusTypeChar.CHAR, data);
     }
 
     @Override

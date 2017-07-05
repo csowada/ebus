@@ -22,6 +22,12 @@ public interface IEBusCommand {
         WRITE
     }
 	
+    public String getDevice();
+    
+    public Byte getDestinationAddress();
+    
+    public Byte getSourceAddress();
+    
 	public ByteBuffer getMasterTelegramMask();
 	
 	public List<IEBusValue> getExtendCommandValue();

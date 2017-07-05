@@ -33,8 +33,14 @@ public class EbusDecodeTest {
         BigDecimal decodeBCD = types.decode(EBusTypeBCD.BCD, new byte[] { (byte) 0x50 });
         assertEquals("Decode BCD failed!", BigDecimal.valueOf(50), decodeBCD);
 
+        decodeBCD = types.decode(EBusTypeBCD.BCD, new byte[] { (byte) 0xFF });
+        assertNull("xxxx", decodeBCD);
+//        assertEquals("Decode CHAR failed!", null, decodeBCD);
+        
         BigDecimal decodeChar = types.decode(EBusTypeChar.CHAR, new byte[] { (byte) 0xFA });
         assertEquals("Decode CHAR failed!", BigDecimal.valueOf((byte) 0xFA), decodeChar);
+        
+
     }
 
     @Test
@@ -58,7 +64,7 @@ public class EbusDecodeTest {
         assertEquals("Decode DATA1B failed!", 127, decodeDATA1b.intValue());
 
         decodeDATA1b = types.decode(EBusTypeData1b.DATA1B, new byte[] { (byte) 0x80 });
-        assertEquals("Decode DATA1B failed!", -128, decodeDATA1b.intValue());
+        assertNull("Decode DATA1B failed!", decodeDATA1b);
 
         decodeDATA1b = types.decode(EBusTypeData1b.DATA1B, new byte[] { (byte) 0x81 });
         assertEquals("Decode DATA1B failed!", -127, decodeDATA1b.intValue());
@@ -171,7 +177,7 @@ public class EbusDecodeTest {
         assertEquals("Decode DATA2C failed!", -1f, value.floatValue(), 0.1f);
 
         value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0x80, (byte) 0x00 });
-        assertEquals("Decode DATA2C failed!", -2048f, value.floatValue(), 0.1f);
+        assertNull("Decode DATA2C failed!", value);
 
         value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0x80, (byte) 0x01 });
         assertEquals("Decode DATA2C failed!", -2047.9f, value.floatValue(), 0.1f);

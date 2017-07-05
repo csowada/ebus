@@ -1,6 +1,9 @@
-package de.csdev.ebus.cfg.datatypes;
+package de.csdev.ebus.cfg.datatypes.ext;
 
 import java.util.Map;
+
+import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
+import de.csdev.ebus.cfg.datatypes.IEBusType;
 
 public class EBusTypeString extends EBusTypeGeneric {
 

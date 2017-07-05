@@ -75,11 +75,10 @@
         "get": {
             "master": [
 	            {"name": "temp_ouside", "type": "data2b", "label": "Outside temperature (°C)"},
-	            {"name": "time_sec", "type": "bcd", "label": "Time sec."},
-	            {"name": "time_min", "type": "bcd", "label": "Time min"},
-	            {"name": "time_hour", "type": "bcd", "label": "Time hour"},
+	            {"name": "time", "type": "time", "label": "Time"},
 	            {"name": "date_day", "type": "bcd", "label": "Date day"},
 	            {"name": "date_month", "type": "bcd", "label": "Date month"},
+	            {"name": "date_weekday", "type": "bcd", "label": "Date weekday"},
 	            {"name": "date_year", "type": "bcd", "label": "Date year"}
         	]
         }
