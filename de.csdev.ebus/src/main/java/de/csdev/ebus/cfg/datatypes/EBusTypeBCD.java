@@ -20,7 +20,7 @@ public class EBusTypeBCD extends EBusTypeGeneric {
     }
 
     public byte[] encode(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
+        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
         return new byte[] { (byte) (((b.intValue() / 10) << 4) | b.intValue() % 10) };
     }
 

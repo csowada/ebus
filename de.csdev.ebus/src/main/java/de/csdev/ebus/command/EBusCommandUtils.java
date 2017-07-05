@@ -54,20 +54,26 @@ public class EBusCommandUtils {
         if (command.getMasterTypes() != null) {
             for (IEBusValue entry : command.getMasterTypes()) {
                 IEBusType type = entry.getType();
-
+                byte[] b = null;
+                
                 // use the value from the values map if set
                 if (values != null && values.containsKey(entry.getName())) {
-                    buf.put(type.encode(values.get(entry.getName())));
+                    b = type.encode(values.get(entry.getName()));
                     
                 } else {
                     if (entry.getDefaultValue() == null) {
-                        buf.put(type.encode(0));
+                        b = type.encode(null);
                     } else {
-                        buf.put(type.encode(entry.getDefaultValue()));
+                    	b = type.encode(entry.getDefaultValue());
                     }
 
                 }
-
+                
+                if(b == null) {
+                	throw new RuntimeException("Encoded value is null!");              	
+                }
+                
+                buf.put(b); 
                 len += type.getTypeLenght();
             }
         }
@@ -140,21 +146,29 @@ public class EBusCommandUtils {
 
                 if (ev instanceof EBusCommandValue) {
                     EBusCommandValue nev = (EBusCommandValue) ev;
-                    BigDecimal multiply = (BigDecimal) decode;
+                    
+                    if(decode instanceof BigDecimal) {
+                    	
+                        BigDecimal multiply = (BigDecimal) decode;
 
-                    if (nev.getFactor() != null) {
-                        multiply = multiply.multiply(nev.getFactor());
+                        if (nev.getFactor() != null) {
+                            multiply = multiply.multiply(nev.getFactor());
+                            decode = multiply;
+                        }
+
+                        if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
+                            System.out.println("EBusCommand.encode() >> MIN");
+                            decode = null;
+                        }
+
+                        if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
+                            System.out.println("EBusCommand.encode() >> MAX");
+                            decode = null;
+                        }
+
+//                        decode = multiply;
                     }
 
-                    if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
-                        System.out.println("EBusCommand.encode() >> MIN");
-                    }
-
-                    if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
-                        System.out.println("EBusCommand.encode() >> MAX");
-                    }
-
-                    decode = multiply;
                     // nev.getMax()
                 }
 

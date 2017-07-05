@@ -15,7 +15,7 @@ public class EBusTypeData1b extends EBusTypeGeneric {
     }
 
     public byte[] encode(Object data) {
-        return types.encode(EBusTypeChar.CHAR, data);
+        return types.encode(EBusTypeChar.CHAR, data == null ? 0 : data);
     }
 
     @Override

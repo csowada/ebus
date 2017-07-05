@@ -26,7 +26,7 @@ public class EBusTypeData2b extends EBusTypeGeneric {
     }
 
     public byte[] encode(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
+        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
         b = b.multiply(BigDecimal.valueOf(256));
         return types.encode(EBusTypeInteger.INTGER, b);
     }

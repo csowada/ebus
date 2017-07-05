@@ -22,7 +22,7 @@ public class EBusTypeString extends EBusTypeGeneric {
     public byte[] encode(Object data) {
 
     	// return a empty string with defined len
-    	if(data instanceof Integer && (Integer)data == 0) {
+    	if(data == null) {
     		StringBuilder sb = new StringBuilder();
     		for (int i = 0; i < length; i++) {
 				sb.append(' ');

@@ -40,7 +40,7 @@ public class EBusMain2 {
     public static void main(String[] args) {
 
         try {
-        	URL url = EBusMain2.class.getResource("/replay.txt");
+        	URL url = EBusMain2.class.getResource("/replay-common.txt");
             IEBusConnection connection = new EBusEmulatorConnection(url);
 
             EBusController controller = new EBusController(connection);
@@ -69,26 +69,26 @@ public class EBusMain2 {
 				public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
 						Integer sendQueueId) {
 					// TODO Auto-generated method stub
-					System.out.println("EBusMain2.main(...).new EBusParserListener() {...}.onTelegramResolved()");
+					System.out.println("Telegram Resolved: " + command.getDescription());
 					System.out.println(result.toString());
 					
 				}
 			});
-//            
-//            controller.addEBusEventListener(new EBusConnectorEventListener() {
-//				
-//				public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
-//					// TODO Auto-generated method stub
-//					System.out
-//							.println("EBusMain2.main(...).new EBusConnectorEventListener() {...}.onTelegramReceived()"+EBusUtils.toHexDumpString(receivedData));
-//				}
-//				
-//				public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
-//					// TODO Auto-generated method stub
-//					System.out.println(
-//							"EBusMain2.main(...).new EBusConnectorEventListener() {...}.onTelegramException()" + exception.toString());
-//				}
-//			});
+            
+            controller.addEBusEventListener(new EBusConnectorEventListener() {
+				
+				public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+					// TODO Auto-generated method stub
+					System.out
+							.println("EBusMain2.main(...).new EBusConnectorEventListener() {...}.onTelegramReceived()"+EBusUtils.toHexDumpString(receivedData));
+				}
+				
+				public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+					// TODO Auto-generated method stub
+					System.out.println(
+							"EBusMain2.main(...).new EBusConnectorEventListener() {...}.onTelegramException()" + exception.toString());
+				}
+			});
             
             
             controller.start();

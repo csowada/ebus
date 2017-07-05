@@ -26,7 +26,7 @@ public class EBusTypeByte extends EBusTypeGeneric {
             return (byte[]) data;
         }
 
-        BigDecimal b = NumberUtils.toBigDecimal(data);
+        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
 
         if (b == null) {
             return new byte[] { 0x00 };

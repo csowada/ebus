@@ -24,7 +24,7 @@ public class EBusTypeData1c extends EBusTypeByte {
 
     @Override
     public byte[] encode(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
+        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
         b = b.multiply(BigDecimal.valueOf(2));
         return new byte[] { (byte) b.intValue() };
     }

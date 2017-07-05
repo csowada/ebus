@@ -22,9 +22,12 @@ public class EBusTypeBytes extends EBusTypeGeneric {
     public byte[] encode(Object data) {
 
         byte[] b = new byte[length];
-        System.arraycopy(data.toString().getBytes(), 0, b, 0, b.length);
+        
+        if(data != null) {
+        	System.arraycopy(data.toString().getBytes(), 0, b, 0, b.length);        	
+        }
 
-        return (byte[]) data;
+        return (byte[]) b;
     }
 
     @Override

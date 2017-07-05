@@ -116,7 +116,7 @@
 
     {
         "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 1",
-        "id":    "auto_stroker",
+        "id":       "auto_stroker",
         "command":  "05 03",
 
         "get": {

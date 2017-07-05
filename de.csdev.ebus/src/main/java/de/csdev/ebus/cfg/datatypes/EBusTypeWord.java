@@ -27,7 +27,7 @@ public class EBusTypeWord extends EBusTypeGeneric {
     }
 
     public byte[] encode(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
+        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
         return types.encode(EBusTypeInteger.INTGER, b.intValue() & 0xFFFF);
     }
 
