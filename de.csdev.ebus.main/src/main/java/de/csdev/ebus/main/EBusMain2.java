@@ -52,7 +52,7 @@ public class EBusMain2 {
 
             
             List<EBusCommand> loadConfiguration = jsonCfgReader.loadConfiguration(
-            		IEBusConnection.class.getResourceAsStream("/common-configuration2.json"));
+            		IEBusConnection.class.getResourceAsStream("/common-configuration.json"));
             
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 
@@ -102,8 +102,13 @@ public class EBusMain2 {
             controller.start();
 //            Thread.sleep(3000);
             
+            controller.addToSendQueue(EBusUtils.toByteArray("30 08 50 22 03 CC 1A 27 59 00 02 97 00 E2 00 AA"));
             controller.addToSendQueue(composeEBusTelegram2);
 
+//            commandx = client.getConfigurationProvider().getConfigurationById("auto_stroker");
+            
+            
+            
             // main thread wait
             controller.join();
 

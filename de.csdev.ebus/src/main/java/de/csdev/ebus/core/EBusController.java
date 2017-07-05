@@ -138,6 +138,7 @@ public class EBusController extends EBusControllerBase {
     @Override
     public void run() {
 
+    	EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
         initThreadPool();
 
         int read = -1;
@@ -177,6 +178,8 @@ public class EBusController extends EBusControllerBase {
                         for (int i = 0; i < read; i++) {
                             byte receivedByte = buffer[i];
 
+                            machine.update(receivedByte);
+                            
                             // write received byte to input buffer
                             inputBuffer.put(receivedByte);
 

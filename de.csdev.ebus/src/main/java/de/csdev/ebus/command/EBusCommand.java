@@ -11,6 +11,7 @@ package de.csdev.ebus.command;
 import java.nio.ByteBuffer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -174,4 +175,15 @@ public class EBusCommand implements IEBusCommandWritable {
         return this;
     }
 
+	@Override
+	public String toString() {
+		return "EBusCommand [description=" + description + ", command=" + Arrays.toString(command) + ", configurationSource=" + configurationSource
+				+ ", extendCommandValue=" + extendCommandValue + ", id=" + id
+				+ ", masterTypes=" + masterTypes + ", slaveTypes=" + slaveTypes + ", type=" + type + ", telegramMask="
+				+ telegramMask + ", device=" + device + ", destinationAddress=" + destinationAddress
+				+ ", sourceAddress=" + sourceAddress + "]";
+	}
+
+	
+	
 }

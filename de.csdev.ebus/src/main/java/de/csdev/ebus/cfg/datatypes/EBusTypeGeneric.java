@@ -17,4 +17,11 @@ public abstract class EBusTypeGeneric implements IEBusType {
     public IEBusType getInstance(Map<String, Object> properties) {
         return this;
     }
+
+	@Override
+	public String toString() {
+		return "EBusTypeGeneric [types=" + types + "]";
+	}
+    
+    
 }

@@ -127,7 +127,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         } else if (id.equals("common.inquiry_of_existence")) {
             sendSignOfLife();
 
-        } else if (id.equals("common.identification") || id.equals("common.identification_broadcast")) {
+        } else if (id.equals("common.identification")) {
             deviceTable.updateDevice(masterAddress, result);
         }
     }

@@ -34,6 +34,14 @@ public class EBusCommandUtils {
         byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
         
+        if(source == null && command.getSourceAddress() != null) {
+        	source = command.getSourceAddress();
+        }
+        
+        if(target == null && command.getDestinationAddress() != null) {
+        	target = command.getDestinationAddress();
+        }
+        
         if(command == null) throw new IllegalArgumentException("Parameter command is null!");
         if(source == null) throw new IllegalArgumentException("Parameter source is null!");
         if(target == null) throw new IllegalArgumentException("Parameter target is null!");

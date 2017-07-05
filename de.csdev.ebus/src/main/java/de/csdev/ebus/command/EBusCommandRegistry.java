@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -50,30 +51,45 @@ public class EBusCommandRegistry {
     }
     
     public List<IEBusCommand> find(ByteBuffer data) {
-
         ArrayList<IEBusCommand> result = new ArrayList<IEBusCommand>();
-
         for (IEBusCommand telegramCfg : list) {
-
-            ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(telegramCfg, (byte) 0x00, (byte) 0xFF, null);
-            ByteBuffer mask = telegramCfg.getMasterTelegramMask();
-
-            for (int i = 0; i < mask.position(); i++) {
-                byte b = mask.get(i);
-
-                if (b == (byte) 0xFF) {
-                    if (masterTelegram.get(i) != data.get(i)) {
-                        break;
-                    }
-                }
-                if (i == mask.position() - 1) {
-                    result.add(telegramCfg);
-                }
-            }
+        	
+        	if(matchesCommand(telegramCfg, data)) {
+        		result.add(telegramCfg);
+        	}
         }
 
         return result;
 
+    }
+    
+    public boolean matchesCommand(IEBusCommand command, ByteBuffer data) {
+
+    	Byte sourceAddress = (Byte) ObjectUtils.defaultIfNull(
+    			command.getSourceAddress(), Byte.valueOf((byte) 0x00));
+    	
+    	Byte targetAddress = (Byte) ObjectUtils.defaultIfNull(
+    			command.getDestinationAddress(), Byte.valueOf((byte) 0x00));
+    	
+        ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, sourceAddress, targetAddress, null);
+        
+        
+        ByteBuffer mask = command.getMasterTelegramMask();
+        
+        for (int i = 0; i < mask.position(); i++) {
+            byte b = mask.get(i);
+
+            if (b == (byte) 0xFF) {
+                if (masterTelegram.get(i) != data.get(i)) {
+                    break;
+                }
+            }
+            if (i == mask.position() - 1) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 }

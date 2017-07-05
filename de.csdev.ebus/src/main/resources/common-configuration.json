@@ -44,7 +44,25 @@
             ]
         }
     },
+    
+    {
+        "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 2",
+        "class":    "auto_stroker",
+        "command":  "05 03",
 
+        "get": {
+            "master": [
+                {"name":"block_number", "type": "static", "default": "02"},
+                {"name":"temp_exhaust", "type": "data2c", "label": "Exhaust temperatur", "min": 0, "max":600},
+                {"name":"temp_bww_lead", "type": "data1c", "label": "..."},
+                {"name":"performance_eff_boiler", "type": "data1c", "label": "..."},
+                {"name":"temp_xxxx", "type": "data1c", "label": "..."},
+                {"name":"_reserve", "type": "byte", "defaut": "255"}
+            ]
+        }
+
+    },
+    
     {
         "comment":  "<Burner Control> Operational Data from Room Controller to Burner Control Unit",
         "id":    "controller",
@@ -124,7 +142,6 @@
     {
         "comment":  "<System Data> Inquiry of Existence",
         "id":       "common.inquiry_of_existence",
-        "class":    "common",
         "command":  "07 FE",
         "dst":      "FE"
     },
@@ -132,29 +149,10 @@
     {
         "comment":  "<System Data> Inquiry of Existence",
         "id":       "common.sign_of_life",
-        "class":    "common",
         "command":  "07 FF",
         "dst":      "FE"
     },
 
-    {
-        "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 2",
-        "class":    "auto_stroker",
-        "command":  "05 03",
-
-        "get": {
-            "master": [
-                {"name":"block_number", "type": "static", "default": "02"},
-                {"name":"temp_exhaust", "type": "data2c", "label": "Exhaust temperatur", "min": 0, "max":600},
-                {"name":"temp_bww_lead", "type": "data1c", "label": "..."},
-                {"name":"performance_eff_boiler", "type": "data1c", "label": "..."},
-                {"name":"temp_xxxx", "type": "data1c", "label": "..."},
-                {"name":"_reserve", "type": "byte", "defaut": "255"}
-            ]
-        }
-
-    },
-    
     {
         "comment":  "<Room Controller> Transmission of Target Values of the Room Controllers to other Room Controllers",
         "id":       "controller2",

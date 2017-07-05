@@ -40,6 +40,10 @@ public class ConfigurationReader implements IConfigurationReader {
 
 	public List<EBusCommand> loadConfiguration(InputStream inputStream) throws IOException {
 
+		if(registry == null) {
+			throw new RuntimeException("Unable to load configuration without EBusType set!");
+		}
+		
 		List<EBusCommand> list = new ArrayList<EBusCommand>();
 		
         if (mapper == null) {
