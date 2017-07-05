@@ -233,6 +233,7 @@ public class EBusUtils {
      * @return A valid object or null if the data was incorrect
      * @throws EBusDataException
      */
+    @Deprecated
     static public byte[] decodeExpandedData(byte[] data) throws EBusDataException {
 
         if (data.length < 7) {

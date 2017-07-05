@@ -31,8 +31,10 @@ public class EBusController extends EBusControllerBase {
     private IEBusConnection connection;
 
     /** serial receive buffer */
-    private final ByteBuffer inputBuffer = ByteBuffer.allocate(100);
+//    private final ByteBuffer inputBuffer = ByteBuffer.allocate(100);
 
+    private EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+    
     private EBusQueue queue = new EBusQueue();
 
     /** counts the re-connection tries */
@@ -64,35 +66,35 @@ public class EBusController extends EBusControllerBase {
     }
 
     /**
-     * Called event if a SYN packet has been received
+     * Called event if a packet has been received
      *
      * @throws IOException
      */
-    private void onEBusSyncReceived() throws IOException {
+    private void onEBusDataReceived(byte data) throws IOException {
 
-        send(false);
+		machine.update(data);
+		
+		if(machine.isReadyForAnswer()) {
+			logger.info("x");
+		}
+		
+		if(machine.isSync()) {
 
-        // afterwards check for next sending slot
-        queue.checkSendStatus();
+	        send(false);
 
-        if (inputBuffer.position() == 1 && inputBuffer.get(0) == EBusConsts.SYN) {
-            logger.trace("Auto-SYN byte received");
+	        // afterwards check for next sending slot
+	        queue.checkSendStatus();
+	        
+	        if(machine.isTelegramAvailable()) {
 
-        } else if (inputBuffer.position() == 2 && inputBuffer.get(0) == EBusConsts.SYN) {
-            logger.warn("Collision on eBUS detected (SYN DATA SYNC Sequence) ...");
+	        	byte[] telegramData = machine.getTelegramData();
 
-        } else if (inputBuffer.position() < 7) {
-            logger.trace("Telegram too small, skip! Buffer: {}", EBusUtils.toHexDumpString(inputBuffer));
-
-        } else {
-            byte[] receivedRawData = Arrays.copyOf(inputBuffer.array(), inputBuffer.position());
-
-            // execute event
-            fireOnEBusTelegramReceived(receivedRawData, null);
-        }
-
-        // reset receive buffer
-        inputBuffer.clear();
+	        	// execute event
+	            fireOnEBusTelegramReceived(telegramData, null);
+	            machine.reset();
+	        }
+		}
+		
     }
 
     private boolean reconnect() throws IOException, InterruptedException {
@@ -138,7 +140,7 @@ public class EBusController extends EBusControllerBase {
     @Override
     public void run() {
 
-    	EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+    	
         initThreadPool();
 
         int read = -1;
@@ -175,26 +177,11 @@ public class EBusController extends EBusControllerBase {
 
                     } else {
 
-                        for (int i = 0; i < read; i++) {
-                            byte receivedByte = buffer[i];
+                    	for (int i = 0; i < read; i++) {
+                    		onEBusDataReceived(buffer[i]);
+                    		
+						}
 
-                            machine.update(receivedByte);
-                            
-                            // write received byte to input buffer
-                            inputBuffer.put(receivedByte);
-
-                            // the 0xAA byte is a end of a packet
-                            if (receivedByte == EBusConsts.SYN) {
-
-                                // check if the buffer is empty and ready for
-                                // sending data
-                                try {
-                                    onEBusSyncReceived();
-                                } catch (Exception e) {
-                                    logger.error("Error while processing event sync received!", e);
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -212,16 +199,16 @@ public class EBusController extends EBusControllerBase {
             } catch (BufferOverflowException e) {
                 logger.error(
                         "eBUS telegram buffer overflow - not enough sync bytes received! Try to adjust eBus adapter.");
-                inputBuffer.clear();
+                machine.reset();
 
             } catch (InterruptedException e) {
                 logger.error(e.toString(), e);
                 Thread.currentThread().interrupt();
-                inputBuffer.clear();
+                machine.reset();
 
             } catch (Exception e) {
                 logger.error(e.toString(), e);
-                inputBuffer.clear();
+                machine.reset();
             }
         }
 

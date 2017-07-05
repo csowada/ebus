@@ -17,8 +17,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.utils.EBusUtils;
-
 /**
  * @author Christian Sowada
  *
@@ -68,8 +66,8 @@ public abstract class EBusControllerBase extends Thread {
         threadPool.execute(new Runnable() {
             public void run() {
 
-                try {
-                    byte[] receivedData = EBusUtils.decodeExpandedData(receivedRawData);
+//                try {
+                    byte[] receivedData = null;//EBusUtils.decodeExpandedData(receivedRawData);
                     receivedData = receivedRawData;
 
                     if (receivedData != null) {
@@ -80,14 +78,14 @@ public abstract class EBusControllerBase extends Thread {
                         logger.debug("Received telegram was invalid, skip!");
                     }
 
-                } catch (EBusDataException e) {
-
-                    logger.trace("error!", e);
-
-                    for (EBusConnectorEventListener listener : listeners) {
-                        listener.onTelegramException(e, sendQueueId);
-                    }
-                }
+//                } catch (EBusDataException e) {
+//
+//                    logger.trace("error!", e);
+//
+//                    for (EBusConnectorEventListener listener : listeners) {
+//                        listener.onTelegramException(e, sendQueueId);
+//                    }
+//                }
 
             }
         });

@@ -12,6 +12,8 @@ public class EBusReceiveStateMachine {
 	private static final Logger logger = LoggerFactory.getLogger(EBusReceiveStateMachine.class);
 
     public enum State {
+        UNKNOWN,
+        SYN,
         SRC_ADDR,
         TGT_ADDR,
         PRIMARY_CMD,
@@ -23,9 +25,7 @@ public class EBusReceiveStateMachine {
         LENGTH2,
         DATA2,
         CRC2,
-        ACK2,
-        SYN,
-        UNKNOWN
+        ACK2
     }
 	
     private State state = State.UNKNOWN;
@@ -36,22 +36,78 @@ public class EBusReceiveStateMachine {
 	
 	private boolean isEscapedByte = false;
 	
+	private boolean telegramAvailable = false;
+	
 	private byte crc = 0;
 	
+	public boolean isSync() {
+		return state == State.SYN;
+	}
+	
+	public boolean isReceivingTelegram() {
+		return state.compareTo(State.SYN) > 1;
+	}
+	
+	public boolean isReadyForAnswer() {
+		// after master crc byte
+		return state == State.CRC1 && bb.get(1) != EBusConsts.BROADCAST_ADDRESS;
+	}
+	
+	public boolean isTelegramAvailable() {
+		return telegramAvailable;
+	}
+
+	public byte[] getTelegramData() {
+		
+		byte[] receivedRawData = new byte[bb.position()];
+		bb.position(0);
+		bb.get(receivedRawData);
+		
+		return receivedRawData;
+	}
+	
+	public State getState() {
+		return state;
+	}
     
+	private void reset(boolean ignoreState) {
+		len = 0;
+		crc = 0;
+		isEscapedByte = false;
+		telegramAvailable = false;
+		
+		bb.clear();
+		
+		if(!ignoreState) {
+			setState(State.UNKNOWN);
+		}
+	}
+	
+	public void reset() {
+		reset(false);
+	}
+	
 	public void update(byte data) {
 		
+		// check syn bytes
 		if(data == EBusConsts.SYN) {
-			if(state != State.UNKNOWN && state != State.SYN) {
+			if(state != State.UNKNOWN && state != State.SYN && state != State.CRC1) {
 				logger.warn("Reset state machine because SYN byte!");
-				setState(State.UNKNOWN);
+				reset();
 			}
 		}
+		
+		if(!bb.hasRemaining()) {
+			logger.warn("Input buffer full, reset!");
+			reset();
+		}
+		
+		// state machine
 		
 		switch (state) {
 		
 		case UNKNOWN:
-			// unknwon > syn
+			// unknown > syn
 			
 			// waiting for next sync byte
 			if(data == EBusConsts.SYN) {
@@ -63,17 +119,21 @@ public class EBusReceiveStateMachine {
 		case SYN:
 			// syn > source address
 			if(EBusUtils.isMasterAddress(data)) {
-				// start telegram
-				bb.clear();
+				// start telegram, reset old data
+				reset(true);
+				
 				bb.put(data);
 				crc = EBusUtils.crc8_tab(data, (byte)0);
 				setState(State.SRC_ADDR);
 				
 			} else if(data == EBusConsts.SYN) {
-				logger.info("Leave in state SYN");
+				logger.trace("Auto-SYN byte received");
+				// keep in this state
 				
 			} else {
-				setState(State.UNKNOWN);
+				// unknown data
+				reset();
+				
 			}
 			
 			break;
@@ -103,8 +163,8 @@ public class EBusReceiveStateMachine {
 			// secondary command > nn1
 			
 			if(data > 16) {
-				setState(State.UNKNOWN);
 				logger.warn("Master Data len too large!");
+				reset();
 				break;
 			}
 			
@@ -112,7 +172,10 @@ public class EBusReceiveStateMachine {
 			logger.info("Data Length: " + len);
 			bb.put(data);
 			crc = EBusUtils.crc8_tab(data, crc);
-			setState(State.LENGTH1);
+			
+//			if(len == 0)
+			
+			setState(len == 0 ? State.DATA1 : State.LENGTH1);
 			break;
 			
 		case LENGTH1:
@@ -144,13 +207,26 @@ public class EBusReceiveStateMachine {
 			
 		case DATA1:
 			// after data
+			
+			// escaped crc value
+			if(!isEscapedByte && crc == EBusConsts.ESCAPE) {
+				isEscapedByte = true;
+				break;
+			}
+			
+			// overwrite data with new value
+			if(isEscapedByte) {
+				data = data == (byte) 0x00 ? EBusConsts.ESCAPE : 
+					data == (byte) 0x01 ? EBusConsts.SYN : data;
+				isEscapedByte = false;
+			}
+			
 			if(data == crc) {
 				logger.info("Jehaaaaaaaaaaaaaaaaaaaaaaa");
 				setState(State.CRC1);
 			} else {
 				logger.warn("Wrong Master CRC! " + EBusUtils.toHexDumpString(bb));
-				
-				setState(State.UNKNOWN);
+				reset();
 			}
 			
 			break;
@@ -161,7 +237,13 @@ public class EBusReceiveStateMachine {
 			logger.info("nuuuuuuuuuuuuuuuuuuuuuuuuu?");
 			
 			if(data == EBusConsts.SYN) {
-				logger.info("telegram end");
+				if(bb.get(1) == EBusConsts.BROADCAST_ADDRESS) {
+					logger.info("broadcast end");
+					fireTelegramAvailable();
+					
+				} else {
+					logger.warn("unexpected telegram end!");
+				}
 				setState(State.SYN);
 				
 			} else if(data == EBusConsts.ACK_OK) {
@@ -169,8 +251,8 @@ public class EBusReceiveStateMachine {
 				
 				
 			} else if(data == EBusConsts.ACK_FAIL) {
-				
-				
+				logger.warn("Slave answered NACK!");
+				reset();
 			}
 			break;
 
@@ -187,7 +269,8 @@ public class EBusReceiveStateMachine {
 			len = data;
 			logger.info("xData Length: " + len);
 			
-			setState(State.LENGTH2);
+//			setState(State.LENGTH2);
+			setState(len == 0 ? State.DATA2 : State.LENGTH2);
 			break;
 			
 		case LENGTH2:
@@ -224,8 +307,7 @@ public class EBusReceiveStateMachine {
 				setState(State.CRC2);
 			} else {
 				logger.warn("Wrong Master CRC! " + EBusUtils.toHexDumpString(bb));
-				
-				setState(State.UNKNOWN);
+				reset();
 			}
 			
 			break;
@@ -239,7 +321,7 @@ public class EBusReceiveStateMachine {
 					setState(State.SYN);
 				} else {
 					logger.warn("no answer from master or slave!");
-					setState(State.UNKNOWN);
+					reset();
 				}
 
 			} else if(data == EBusConsts.ACK_OK) {
@@ -248,7 +330,7 @@ public class EBusReceiveStateMachine {
 				
 			} else if(data == EBusConsts.ACK_FAIL) {
 				logger.warn("slave answerd with NACK!");
-				setState(State.SYN);
+				reset();
 				
 			}
 			break;
@@ -256,14 +338,21 @@ public class EBusReceiveStateMachine {
 		case ACK2:
 			// ACK1 > SYN
 			setState(State.SYN);
+			
+			fireTelegramAvailable();
+			
 			break;
 			
 		default:
-			logger.warn("Unnown state!");
+			logger.warn("Unknown state!");
 			setState(State.UNKNOWN);
 			break;
 		}
 
+	}
+	
+	private void fireTelegramAvailable() {
+		telegramAvailable = true;
 	}
 	
 	private void setState(State newState) {
