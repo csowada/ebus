@@ -34,9 +34,9 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
 //        emu.write(new byte[] { 1, 2, 3, 45, (byte) 0xAA });
         emu.play(readerURL.openStream());
 //        emu.write(new byte[] { 1, 2, 3, 45, (byte) 0xAA });
-        emu.play(readerURL.openStream());
+//        emu.play(readerURL.openStream());
 //        emu.write(new byte[] { 2, 1, 1, 1, (byte) 200, 100, 45, (byte) 0xAA });
-        emu.play(readerURL.openStream());
+//        emu.play(readerURL.openStream());
         return true;
     }
 

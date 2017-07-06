@@ -40,6 +40,10 @@ public class EBusReceiveStateMachine {
 	
 	private byte crc = 0;
 	
+	public String toDumpString() {
+		return EBusUtils.toHexDumpString(bb).toString();
+	}
+	
 	public boolean isSync() {
 		return state == State.SYN;
 	}
@@ -87,19 +91,30 @@ public class EBusReceiveStateMachine {
 		reset(false);
 	}
 	
-	public void update(byte data) {
-		
-		// check syn bytes
+	private boolean checkSYN(byte data) {
 		if(data == EBusConsts.SYN) {
-			if(state != State.UNKNOWN && state != State.SYN && state != State.CRC1) {
-				logger.warn("Reset state machine because SYN byte!");
-				reset();
-			}
+			logger.warn("Reset state machine because SYN byte!");
+			reset();
+			return true;
 		}
 		
+		return false;
+	}
+	
+	public void update(byte data) throws EBusDataException {
+		
+		// check syn bytes
+//		if(data == EBusConsts.SYN) {
+//			if(state != State.UNKNOWN && state != State.SYN && state != State.CRC1) {
+//				logger.warn("Reset state machine because SYN byte!");
+//				reset();
+//			}
+//		}
+		
 		if(!bb.hasRemaining()) {
-			logger.warn("Input buffer full, reset!");
 			reset();
+			logger.warn("Input buffer full, reset!");
+			throw new EBusDataException("", EBusDataException.EBusError.INDEX_OUT_OF_BOUNDS);
 		}
 		
 		// state machine
@@ -140,6 +155,11 @@ public class EBusReceiveStateMachine {
 			
 		case SRC_ADDR:
 			// source address > target address
+			
+			if(checkSYN(data)) {
+				break;
+			}
+			
 			bb.put(data);
 			crc = EBusUtils.crc8_tab(data, crc);
 			setState(State.TGT_ADDR);
@@ -147,6 +167,11 @@ public class EBusReceiveStateMachine {
 			
 		case TGT_ADDR:
 			// target address > primary command
+			
+			if(checkSYN(data)) {
+				break;
+			}
+			
 			bb.put(data);
 			crc = EBusUtils.crc8_tab(data, crc);
 			setState(State.PRIMARY_CMD);
@@ -154,6 +179,11 @@ public class EBusReceiveStateMachine {
 			
 		case PRIMARY_CMD:
 			// primary command > secondary command
+			
+			if(checkSYN(data)) {
+				break;
+			}
+			
 			bb.put(data);
 			crc = EBusUtils.crc8_tab(data, crc);
 			setState(State.SECONDARY_CMD);
@@ -161,6 +191,10 @@ public class EBusReceiveStateMachine {
 
 		case SECONDARY_CMD:
 			// secondary command > nn1
+			
+			if(checkSYN(data)) {
+				break;
+			}
 			
 			if(data > 16) {
 				logger.warn("Master Data len too large!");
@@ -180,6 +214,11 @@ public class EBusReceiveStateMachine {
 			
 		case LENGTH1:
 			// nn1 > db1 (end)
+			
+			if(checkSYN(data)) {
+				break;
+			}
+			
 			crc = EBusUtils.crc8_tab(data, crc);
 			
 			if(data == EBusConsts.ESCAPE) {
@@ -207,6 +246,10 @@ public class EBusReceiveStateMachine {
 			
 		case DATA1:
 			// after data
+			
+			if(checkSYN(data)) {
+				break;
+			}
 			
 			// escaped crc value
 			if(!isEscapedByte && crc == EBusConsts.ESCAPE) {
@@ -258,6 +301,11 @@ public class EBusReceiveStateMachine {
 
 		case ACK1:
 			// ACK1 > NN2
+			
+			if(checkSYN(data)) {
+				break;
+			}
+			
 			crc = EBusUtils.crc8_tab(data, (byte)0);
 			
 			if(data > 16) {
@@ -275,6 +323,11 @@ public class EBusReceiveStateMachine {
 			
 		case LENGTH2:
 			// NN2 > DB2 (end)
+			
+			if(checkSYN(data)) {
+				break;
+			}
+			
 			crc = EBusUtils.crc8_tab(data, crc);
 			
 			if(data == EBusConsts.ESCAPE) {
@@ -302,6 +355,11 @@ public class EBusReceiveStateMachine {
 			
 		case DATA2:
 			// after data
+			
+			if(checkSYN(data)) {
+				break;
+			}
+			
 			if(data == crc) {
 				logger.info("Jehaaaaaaaaaaaaaaaaaaaaaaa");
 				setState(State.CRC2);
@@ -352,6 +410,7 @@ public class EBusReceiveStateMachine {
 	}
 	
 	private void fireTelegramAvailable() {
+		logger.info("fireTelegramAvailable ...");
 		telegramAvailable = true;
 	}
 	
