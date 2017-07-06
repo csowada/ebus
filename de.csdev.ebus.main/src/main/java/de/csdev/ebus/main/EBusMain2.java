@@ -20,8 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.ConfigurationReader;
-import de.csdev.ebus.cfg.datatypes.IEBusType;
-import de.csdev.ebus.cfg.datatypes.ext.EBusTypeTime;
 import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandUtils;
@@ -70,8 +68,8 @@ public class EBusMain2 {
 				public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
 						Integer sendQueueId) {
 					// TODO Auto-generated method stub
-					System.out.println("Telegram Resolved: " + command.getDescription());
-					System.out.println(result.toString());
+					logger.info("Telegram Resolved: " + command.getDescription());
+					logger.info(result.toString());
 					
 				}
 			});
@@ -94,10 +92,10 @@ public class EBusMain2 {
             
             IEBusCommand commandx = client.getConfigurationProvider().getConfigurationById("auto_stroker");
             ByteBuffer masterTelegramMask = commandx.getMasterTelegramMask();
-            System.err.println(EBusUtils.toHexDumpString(masterTelegramMask));
+            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());
             
             masterTelegramMask = EBusCommandUtils.buildMasterTelegram(commandx, (byte)0, (byte)0, null);
-            System.err.println(EBusUtils.toHexDumpString(masterTelegramMask));
+            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());
             
             controller.start();
 //            Thread.sleep(3000);

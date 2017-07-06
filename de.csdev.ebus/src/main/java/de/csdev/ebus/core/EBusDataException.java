@@ -9,6 +9,7 @@
 package de.csdev.ebus.core;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -27,9 +28,21 @@ public class EBusDataException extends IOException {
         
         NO_SLAVE_RESPONSE,
         
-        UNEXSPECTED_RESPONSE,
+        UNEXPECTED_RESPONSE,
         
-        INDEX_OUT_OF_BOUNDS
+        BUFFER_FULL,
+        
+        INVALID_SYN,
+        
+        INVALID_SOURCE_ADDRESS,
+        
+        INVALID_MASTER_LEN,
+        
+        INVALID_SLAVE_LEN,
+        
+        MASTER_ACK_FAIL,
+        
+        SLAVE_ACK_FAIL
     }
 
     /**
@@ -55,6 +68,15 @@ public class EBusDataException extends IOException {
         this.data = data;
     }
 
+    public EBusDataException(String message, EBusError errorCode, ByteBuffer data) {
+        this(message, errorCode);
+        
+        this.data = new byte[data.position()];
+        ByteBuffer duplicate = data.duplicate();
+        duplicate.clear();
+        duplicate.get(this.data);
+    }
+    
     public EBusError getErrorCode() {
         return error;
     }

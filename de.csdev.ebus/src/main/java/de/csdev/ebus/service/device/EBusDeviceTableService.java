@@ -61,7 +61,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
 
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
-        		command, EBusConsts.BROADCAST_ADDRESS, masterAddress, null);
+        		command, masterAddress, EBusConsts.BROADCAST_ADDRESS, null);
 
         scanQueueId = controller.addToSendQueue(buffer);
     }
@@ -78,7 +78,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life");
 
-        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, EBusConsts.BROADCAST_ADDRESS, masterAddress,
+        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, EBusConsts.BROADCAST_ADDRESS,
                 null);
 
         controller.addToSendQueue(buffer);
@@ -93,7 +93,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         	return;
         }
         
-        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, slaveAddress, masterAddress, null);
+        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
 
         controller.addToSendQueue(buffer);
     }

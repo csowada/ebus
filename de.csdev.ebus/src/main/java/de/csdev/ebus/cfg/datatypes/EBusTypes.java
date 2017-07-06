@@ -109,7 +109,7 @@ public class EBusTypes {
             newInstance.setTypesParent(this);
 
             for (String typeName : newInstance.getSupportedTypes()) {
-                logger.info("Add eBUS type {}", typeName);
+                logger.trace("Add eBUS type {}", typeName);
                 types.put(typeName, newInstance);
             }
 

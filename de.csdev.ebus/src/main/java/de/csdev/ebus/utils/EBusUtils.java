@@ -237,7 +237,7 @@ public class EBusUtils {
     static public byte[] decodeExpandedData(byte[] data) throws EBusDataException {
 
         if (data.length < 7) {
-            throw new EBusDataException("To short. ..", EBusDataException.EBusError.INDEX_OUT_OF_BOUNDS, data);
+            throw new EBusDataException("To short. ..", EBusDataException.EBusError.BUFFER_FULL, data);
         }
 
         try {
@@ -312,7 +312,7 @@ public class EBusUtils {
 
                 // Unexpected value on this position
                 throw new EBusDataException("Unexpect ACK value in eBUS telegram!",
-                        EBusDataException.EBusError.UNEXSPECTED_RESPONSE, data);
+                        EBusDataException.EBusError.UNEXPECTED_RESPONSE, data);
             }
 
             // ok, read slave answer
@@ -350,7 +350,7 @@ public class EBusUtils {
             return buffer.array();
 
         } catch (IndexOutOfBoundsException e) {
-            throw new EBusDataException("Index out of bounds!", EBusDataException.EBusError.INDEX_OUT_OF_BOUNDS, data);
+            throw new EBusDataException("Index out of bounds!", EBusDataException.EBusError.BUFFER_FULL, data);
         }
     }
 

@@ -11,7 +11,6 @@ package de.csdev.ebus.core;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,9 +79,9 @@ public class EBusController extends EBusControllerBase {
 
 		if (machine.isSync()) {
 
-			// check if empty
-			if (queue.getCurrent() == null)
-				queue.checkSendStatus();
+//			// check if empty
+//			if (queue.getCurrent() == null)
+//				queue.checkSendStatus();
 
 			send(false);
 
@@ -242,265 +241,154 @@ public class EBusController extends EBusControllerBase {
 	 */
 	private void send(boolean secondTry) throws IOException {
 
-		QueueEntry sendEntry = queue.getCurrent();
+		try {
+			QueueEntry sendEntry = queue.getCurrent();
 
-		if (sendEntry == null) {
-			return;
-		}
-
-		byte[] dataOutputBuffers = sendEntry.buffer;
-		// ByteBuffer sendBuffer = ByteBuffer.allocate(100);
-		EBusReceiveStateMachine sendMachine = new EBusReceiveStateMachine();
-
-		// start machine
-		sendMachine.update(EBusConsts.SYN);
-
-		// count as send attempt
-		sendEntry.sendAttempts++;
-
-		int read = 0;
-		byte readByte = 0;
-		long readWriteDelay = 0;
-
-		// clear input buffer to start by zero
-		// resetInputBuffer();
-		connection.reset();
-
-		// send command
-		// for (int i = 0; i < dataOutputBuffers.length; i++) {
-		byte b = dataOutputBuffers[0];
-
-		logger.trace("Send {}", b);
-		connection.writeByte(b);
-
-		// if (i == 0) {
-
-		readByte = (byte) (connection.readByte(true) & 0xFF);
-		sendMachine.update(readByte);
-		// sendBuffer.put(readByte);
-
-		if (b != readByte) {
-
-			// written and read byte not identical, that's
-			// a collision
-			if (readByte == EBusConsts.SYN) {
-				logger.debug("eBus collision with SYN detected!");
-			} else {
-				logger.debug("eBus collision detected! 0x{}", EBusUtils.toHexDumpString(readByte));
-			}
-
-			// last send try was a collision
-			if (queue.isLastSendCollisionDetected()) {
-				logger.warn("A second collision occured!");
-				queue.resetSendQueue();
+			if (sendEntry == null) {
 				return;
 			}
-			// priority class identical
-			else if ((byte) (readByte & 0x0F) == (byte) (b & 0x0F)) {
-				logger.trace("Priority class match, restart after next SYN ...");
-				queue.setLastSendCollisionDetected(true);
 
-			} else {
-				logger.trace("Priority class doesn't match, blocked for next SYN ...");
-				queue.setBlockNextSend(true);
+			byte[] dataOutputBuffers = sendEntry.buffer;
+			EBusReceiveStateMachine sendMachine = new EBusReceiveStateMachine();
+
+			logger.info("Send: " + EBusUtils.toHexDumpString(dataOutputBuffers));
+			
+			// start machine
+			sendMachine.update(EBusConsts.SYN);
+
+			// count as send attempt
+			sendEntry.sendAttempts++;
+
+			int read = 0;
+			byte readByte = 0;
+			long readWriteDelay = 0;
+
+			// clear input buffer to start by zero
+			connection.reset();
+
+			// send command
+			// for (int i = 0; i < dataOutputBuffers.length; i++) {
+			byte b = dataOutputBuffers[0];
+
+			logger.trace("Send {}", b);
+			connection.writeByte(b);
+
+			// if (i == 0) {
+
+			readByte = (byte) (connection.readByte(true) & 0xFF);
+			sendMachine.update(readByte);
+
+			if (b != readByte) {
+
+				// written and read byte not identical, that's
+				// a collision
+				if (readByte == EBusConsts.SYN) {
+					logger.debug("eBus collision with SYN detected!");
+				} else {
+					logger.debug("eBus collision detected! 0x{}", EBusUtils.toHexDumpString(readByte));
+				}
+
+				// last send try was a collision
+				if (queue.isLastSendCollisionDetected()) {
+					logger.warn("A second collision occured!");
+					queue.resetSendQueue();
+					return;
+				}
+				// priority class identical
+				else if ((byte) (readByte & 0x0F) == (byte) (b & 0x0F)) {
+					logger.trace("Priority class match, restart after next SYN ...");
+					queue.setLastSendCollisionDetected(true);
+
+				} else {
+					logger.trace("Priority class doesn't match, blocked for next SYN ...");
+					queue.setBlockNextSend(true);
+				}
+
+				// stop after a collision
+				return;
 			}
 
-			// stop after a collision
-			return;
-		}
-		// }
-		// }
+			// send rest of the buffer
+			for (int i = 1; i < dataOutputBuffers.length; i++) {
+				byte b0 = dataOutputBuffers[i];
 
-		for (int i = 1; i < dataOutputBuffers.length; i++) {
-			byte b0 = dataOutputBuffers[i];
+				logger.trace("Send {}", b0);
+				connection.writeByte(b0);
+				sendMachine.update(b0);
+			}
 
-			logger.trace("Send {}", b0);
-			connection.writeByte(b0);
-			sendMachine.update(b0);
-		}
+			// start of transfer successful
 
-		// start of transfer successful
+			// reset global variables
+			queue.setLastSendCollisionDetected(false);
+			queue.setBlockNextSend(false);
 
-		// reset global variables
-		queue.setLastSendCollisionDetected(false);
-		queue.setBlockNextSend(false);
+			// skip next bytes
+			for (int i = 0; i < dataOutputBuffers.length - 1; i++) {
+				connection.readByte(true);
+			}
 
-		// skip next bytes
-		for (int i = 0; i < dataOutputBuffers.length - 1; i++) {
-			connection.readByte(true);
-		}
+			// send rest of master telegram
+			readWriteDelay = System.nanoTime();
 
-		// send rest of master telegram
-		readWriteDelay = System.nanoTime();
+			if (sendMachine.isReadyForAnswer()) {
+				System.out.println("EBusController.send() WARTE");
 
-		if (sendMachine.isReadyForAnswer()) {
-			System.out.println("EBusController.send() WARTE");
+				// if this telegram a broadcast?
+				if (dataOutputBuffers[1] == EBusConsts.BROADCAST_ADDRESS) {
 
-			// if this telegram a broadcast?
-			if (dataOutputBuffers[1] == EBusConsts.BROADCAST_ADDRESS) {
+					logger.trace("Broadcast send ..............");
 
-				logger.trace("Broadcast send ..............");
+					// sende master sync
+					connection.writeByte(EBusConsts.SYN);
+					sendMachine.update(EBusConsts.SYN);
+				}
+			}
 
+			if (sendMachine.isReadyForAnswer()) {
+				System.out.println("EBusController.send() WARTE IMMER NOCH");
+				
+				// read input data until the telegram is complete or fails
+				while(!sendMachine.isTelegramAvailable()) {
+					read = connection.readByte(true);
+					if (read != -1) {
+
+						byte ack = (byte) (read & 0xFF);
+						sendMachine.update(ack);
+					}
+				}
+				
+			}
+//
+			if(sendMachine.isWaitingForMasterSYN()) {
 				// sende master sync
 				connection.writeByte(EBusConsts.SYN);
 				sendMachine.update(EBusConsts.SYN);
 			}
-		}
-
-		if (sendMachine.isReadyForAnswer()) {
-			System.out.println("EBusController.send() WARTE IMMER NOCH");
 			
-			while(!sendMachine.isTelegramAvailable()) {
-				read = connection.readByte(true);
-				if (read != -1) {
-
-					byte ack = (byte) (read & 0xFF);
-					sendMachine.update(ack);
-				}
-			}
+//			// connection.readBytes(new byte[dataOutputBuffers.length - 1]);
+//			readWriteDelay = (System.nanoTime() - readWriteDelay) / 1000;
+//
+//			logger.trace("readin delay " + readWriteDelay);
 			
-		}
-
-		if (sendMachine.isTelegramAvailable()) {
-			System.out.println("EBusController.send() FERTIG");
-		}
-
-		// connection.readBytes(new byte[dataOutputBuffers.length - 1]);
-		readWriteDelay = (System.nanoTime() - readWriteDelay) / 1000;
-
-		logger.trace("readin delay " + readWriteDelay);
-
-		// sending master data finish
-
-		// if this telegram a broadcast?
-		if (dataOutputBuffers[1] == EBusConsts.BROADCAST_ADDRESS) {
-
-			logger.trace("Broadcast send ..............");
-
-			// sende master sync
-			connection.writeByte(EBusConsts.SYN);
-			sendMachine.update(EBusConsts.SYN);
-			// sendBuffer.put(EBusConsts.SYN);
-
-		} else {
-
-			// read slave answer
-
-			read = connection.readByte(true);
-			if (read != -1) {
-
-				byte ack = (byte) (read & 0xFF);
-				sendMachine.update(ack);
-				// sendBuffer.put(ack);
-
-				if (ack == EBusConsts.ACK_OK) {
-
-					// if the telegram is a slave telegram we will
-					// get data from slave
-					if (!EBusUtils.isMasterAddress(dataOutputBuffers[1])) {
-
-						// len of answer
-						byte nn2 = (byte) (connection.readByte(true) & 0xFF);
-						sendMachine.update(nn2);
-						// sendBuffer.put(nn2);
-
-						byte crc = EBusUtils.crc8_tab(nn2, (byte) 0);
-
-						if (nn2 > 16) {
-							logger.warn("slave data too long, invalid!");
-
-							// resend telegram on next send loop
-							return;
-						}
-
-						// read slave data, be aware of 0x0A bytes
-						while (nn2 > 0) {
-							byte d = (byte) (connection.readByte(true) & 0xFF);
-							sendMachine.update(d);
-							// sendBuffer.put(d);
-							crc = EBusUtils.crc8_tab(d, crc);
-
-							if (d != (byte) 0xA) {
-								nn2--;
-							}
-						}
-
-						// read slave crc
-						byte crc2 = (byte) (connection.readByte(true) & 0xFF);
-						sendMachine.update(crc2);
-						// sendBuffer.put(crc2);
-
-						// check slave crc
-						if (crc2 != crc) {
-							logger.warn("Slave CRC wrong, resend later!");
-							return;
-						}
-
-						// sende master sync
-						connection.writeByte(EBusConsts.ACK_OK);
-
-						// sendBuffer.put(EBusConsts.ACK_OK);
-					} // isMasterAddr check
-
-					// send SYN byte
-					connection.writeByte(EBusConsts.SYN);
-					sendMachine.update(EBusConsts.SYN);
-					// sendBuffer.put(EBusConsts.SYN);
-
-				} else if (ack == EBusConsts.ACK_FAIL) {
-
-					// clear uncompleted telegram
-					sendMachine.reset();
-					// sendBuffer.clear();
-
-					// directly resend telegram (max. once), not on next send loop
-					resend();
-					return;
-
-				} else if (ack == EBusConsts.SYN) {
-					logger.debug("No answer from slave for telegram: {}", sendMachine.toDumpString());
-					// logger.debug("No answer from slave for telegram: {}",
-					// EBusUtils.toHexDumpString(sendBuffer));
-
-					// clear uncompleted telegram or it will result
-					// in uncomplete but valid telegram!
-					sendMachine.reset();
-					// sendBuffer.clear();
-
-					// resend telegram on next send loop
-					return;
-
-				} else {
-					// Wow, wrong answer, and now?
-					logger.debug("Received wrong byte{}, telegram: {}", sendMachine.toDumpString(),
-							EBusUtils.toHexDumpString(ack));
-					// logger.debug("Received wrong byte{}, telegram: {}",
-					// EBusUtils.toHexDumpString(sendBuffer),
-					// EBusUtils.toHexDumpString(ack));
-
-					// clear uncompleted telegram
-					sendMachine.reset();
-					// sendBuffer.clear();
-
-					// resend telegram on next send loop
-					return;
-				}
+			// after send process the received telegram
+			if (sendMachine.isTelegramAvailable()) {
+				logger.debug("Succcesful send: {}", sendMachine.toDumpString());
+				fireOnEBusTelegramReceived(sendMachine.getTelegramData(), sendEntry.id);
+//				sendMachine.reset();
 			}
+
+			// reset send module
+			queue.resetSendQueue();
+			
+		} catch (EBusDataException e) {
+
+			if(e.getErrorCode().equals(EBusDataException.EBusError.SLAVE_ACK_FAIL)) {
+				// directly resend telegram (max. once), not on next send loop
+				resend();
+			}
+
+			logger.error("error!", e);
 		}
-
-		// after send process the received telegram
-		if (sendMachine.isTelegramAvailable()) {
-			logger.debug("Succcesful send: {}", sendMachine.toDumpString());
-			fireOnEBusTelegramReceived(sendMachine.getTelegramData(), sendEntry.id);
-		}
-
-		// if (sendBuffer.position() > 0) {
-		// byte[] buffer = Arrays.copyOf(sendBuffer.array(), sendBuffer.position());
-		// logger.debug("Succcesful send: {}", EBusUtils.toHexDumpString(buffer));
-		// fireOnEBusTelegramReceived(buffer, sendEntry.id);
-		// }
-
-		// reset send module
-		queue.resetSendQueue();
 	}
 }
