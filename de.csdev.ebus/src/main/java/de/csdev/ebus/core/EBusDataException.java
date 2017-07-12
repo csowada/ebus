@@ -8,7 +8,6 @@
  */
 package de.csdev.ebus.core;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import de.csdev.ebus.utils.EBusUtils;
@@ -17,7 +16,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada
  *
  */
-public class EBusDataException extends IOException {
+public class EBusDataException extends Exception {
 
     public enum EBusError {
         NONE,

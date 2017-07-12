@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.main;
+package de.csdev.ebus.astart;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -91,19 +91,18 @@ public class EBusMain2 {
 			});
             
             
-            IEBusCommand commandx = client.getConfigurationProvider().getConfigurationById("common.identification");
-            ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandx, (byte)0, (byte)0x35, null);
+            IEBusCommand commandx = client.getConfigurationProvider().getConfigurationById("auto_stroker");
+            ByteBuffer masterTelegramMask = commandx.getMasterTelegramMask();
+            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());
             
-//            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());
-//            
-//            masterTelegramMask = EBusCommandUtils.buildMasterTelegram(commandx, (byte)0, (byte)0, null);
-//            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());
+            masterTelegramMask = EBusCommandUtils.buildMasterTelegram(commandx, (byte)0, (byte)0, null);
+            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());
             
             controller.start();
-            Thread.sleep(3000);
+//            Thread.sleep(3000);
             
-            controller.addToSendQueue(masterTelegram);
-//            controller.addToSendQueue(composeEBusTelegram2);
+            controller.addToSendQueue(EBusUtils.toByteArray("30 08 50 22 03 CC 1A 27 59 00 02 97 00 E2 00 AA"));
+            controller.addToSendQueue(composeEBusTelegram2);
 
 //            commandx = client.getConfigurationProvider().getConfigurationById("auto_stroker");
             

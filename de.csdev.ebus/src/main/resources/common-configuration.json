@@ -102,24 +102,7 @@
         }
     },
 
-    {
-        "comment":  "<System Data> Identification of eBUS devices - Request Broadcast",
-        "id":       "common.identification",
-        "command":  "07 04",
-        "dst":		"FE",
-        "type":		"master broadcast",
 
-        "get": {
-            "master": [
-            	{"name": "vendor", "type": "byte", "label": "Vendor"},
-            	{"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
-            	{"name": "_software_ver", "type": "bcd", "label": "Software Version"},
-            	{"name": "_software_rev", "type": "bcd", "label": "Software Revision"},
-            	{"name": "_hardware_ver", "type": "bcd", "label": "Hardware Version"},
-            	{"name": "_hardware_rev", "type": "bcd", "label": "Hardware Revision"}
-            ]
-        }
-    },
 
     {
         "comment":  "<System Data> Identification of eBUS devices - Request",

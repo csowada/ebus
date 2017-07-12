@@ -6,6 +6,7 @@
 		</encoder>
 	</appender>
 
+	<logger name="de.csdev.ebus.core.EBusReceiveStateMachine" level="DEBUG" />
 	<logger name="de.csdev.ebus" level="TRACE" />
 
 	<root level="TRACE">

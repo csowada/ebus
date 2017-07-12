@@ -35,7 +35,10 @@
 
     <modules>
         <module>de.csdev.ebus</module>
-		<module>de.csdev.ebus.conn.jssc</module>
+		<!--
+        <module>de.csdev.ebus.conn.jssc</module>
+        <module>de.csdev.ebus.cfg.v1</module>
+        <module>de.csdev.ebus.main</module>-->
     </modules>
 
 </project>

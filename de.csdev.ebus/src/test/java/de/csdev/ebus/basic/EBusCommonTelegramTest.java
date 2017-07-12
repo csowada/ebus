@@ -46,7 +46,14 @@ public class EBusCommonTelegramTest {
     }
 	
 
+    @Test
+    public void yyy() {
+    	IEBusCommand command = commandRegistry.getConfigurationById("common.identification");
+    	ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, (byte)0x00, (byte)0xFF, null);
+    	
+    	System.out.println("EBusCommonTelegramTest.yyy()" + EBusUtils.toHexDumpString(buffer));
 
+    }
     
     @Test
     public void xxx() {

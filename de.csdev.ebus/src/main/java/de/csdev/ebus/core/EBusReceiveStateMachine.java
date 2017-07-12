@@ -40,12 +40,6 @@ public class EBusReceiveStateMachine {
 	
 	private boolean telegramAvailable = false;
 	
-	private void throwExceptionIfSYN(byte data) throws EBusDataException {
-		if(data == EBusConsts.SYN) {
-			throw new EBusDataException("Received SYN byte while receiving telegram!", EBusDataException.EBusError.INVALID_SYN, bb);
-		}
-	}
-	
 	private void fireTelegramAvailable() {
 		logger.debug("fireTelegramAvailable ...");
 		telegramAvailable = true;
@@ -64,21 +58,38 @@ public class EBusReceiveStateMachine {
 		return receivedRawData;
 	}
 	
-	public boolean isReadyForAnswer() {
+	public boolean isWaitingForSlaveAnswer() {
 		// after master crc byte
 		return state == State.CRC1 && bb.get(1) != EBusConsts.BROADCAST_ADDRESS;
 	}
-
+	
 	public boolean isReceivingTelegram() {
 		return state.compareTo(State.SYN) > 1;
 	}
-	
+
 	public boolean isSync() {
 		return state == State.SYN;
 	}
-    
+	
 	public boolean isTelegramAvailable() {
 		return telegramAvailable;
+	}
+    
+	public boolean isWaitingForMasterACK() {
+		return state.equals(State.CRC2);
+	}
+	
+	public boolean isWaitingForMasterSYN() {
+		
+		if(state.equals(State.CRC1) && bb.get(1) == EBusConsts.BROADCAST_ADDRESS) {
+			return true;
+		}
+		
+		if(state.equals(State.ACK2)) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public void reset() {
@@ -101,6 +112,12 @@ public class EBusReceiveStateMachine {
 	private void setState(State newState) {
 		logger.trace("Update state from " + state.name() + " to " + newState.name());
 		state = newState;
+	}
+	
+	private void throwExceptionIfSYN(byte data) throws EBusDataException {
+		if(data == EBusConsts.SYN) {
+			throw new EBusDataException("Received SYN byte while receiving telegram!", EBusDataException.EBusError.INVALID_SYN, bb);
+		}
 	}
 	
 	public String toDumpString() {
@@ -192,7 +209,7 @@ public class EBusReceiveStateMachine {
 				}
 				
 				len = data;
-				logger.info("Data Length: " + len);
+				logger.trace("Data Length: " + len);
 				bb.put(data);
 				crc = EBusUtils.crc8_tab(data, crc);
 
@@ -224,7 +241,7 @@ public class EBusReceiveStateMachine {
 				if(len == 0) {
 					setState(State.DATA1);
 				} else {
-					logger.info("Data " + len);
+					logger.trace("Data " + len);
 				}
 
 				break;
@@ -248,7 +265,7 @@ public class EBusReceiveStateMachine {
 				}
 				
 				if(data == crc) {
-					logger.info("Jehaaaaaaaaaaaaaaaaaaaaaaa");
+					logger.trace("Master CRC correct");
 					setState(State.CRC1);
 					
 				} else {
@@ -256,17 +273,16 @@ public class EBusReceiveStateMachine {
 							EBusUtils.toHexDumpString(data), EBusDataException.EBusError.MASTER_CRC_INVALID, bb);
 					
 				}
-				
+				bb.put(data);
 				break;
 
 				
 			case CRC1:
 				// CRC > SYN / NACK / ACK
-				logger.info("nuuuuuuuuuuuuuuuuuuuuuuuuu?");
 				
 				if(data == EBusConsts.SYN) {
 					if(bb.get(1) == EBusConsts.BROADCAST_ADDRESS) {
-						logger.info("broadcast end");
+						logger.trace("broadcast end");
 						fireTelegramAvailable();
 						
 					} else {
@@ -282,6 +298,7 @@ public class EBusReceiveStateMachine {
 					throw new EBusDataException("Slave answered with FAIL ACK!", EBusDataException.EBusError.SLAVE_ACK_FAIL, bb);
 
 				}
+				bb.put(data);
 				break;
 
 			case ACK1:
@@ -296,8 +313,8 @@ public class EBusReceiveStateMachine {
 				}
 				
 				len = data;
-				logger.info("xData Length: " + len);
-
+				logger.trace("xData Length: " + len);
+				bb.put(data);
 				setState(len == 0 ? State.DATA2 : State.LENGTH2);
 				break;
 				
@@ -326,7 +343,7 @@ public class EBusReceiveStateMachine {
 				if(len == 0) {
 					setState(State.DATA2);
 				} else {
-					logger.info("Data " + len);
+					logger.trace("Data " + len);
 				}
 
 				break;
@@ -337,25 +354,19 @@ public class EBusReceiveStateMachine {
 				throwExceptionIfSYN(data);
 				
 				if(data == crc) {
-					logger.info("Jehaaaaaaaaaaaaaaaaaaaaaaa");
 					setState(State.CRC2);
 				} else {
 					throw new EBusDataException("Slave CRC invalid! IS:" + EBusUtils.toHexDumpString(crc) + " SHOULD:" + 
 							EBusUtils.toHexDumpString(data), EBusDataException.EBusError.SLAVE_CRC_INVALID, bb);
 				}
-				
+				bb.put(data);
 				break;
 				
 			case CRC2:
 				// CRC > SYN / NACK / ACK
 
 				if(data == EBusConsts.SYN) {
-//					if(bb.get(1) == EBusConsts.BROADCAST_ADDRESS) {
-//						logger.info("telegram end (broadcast)");
-//						setState(State.SYN);
-//					} else {
-					throw new EBusDataException("Slave CRC invalid!", EBusDataException.EBusError.NO_SLAVE_RESPONSE, bb);
-//					}
+					throw new EBusDataException("xxxxxSlave CRC invalid!", EBusDataException.EBusError.NO_SLAVE_RESPONSE, bb);
 
 				} else if(data == EBusConsts.ACK_OK) {
 					setState(State.ACK2);
@@ -384,25 +395,9 @@ public class EBusReceiveStateMachine {
 			
 			// reset machine
 			reset();
-			
-//			logger.error("error!", e);
 			throw e;
-
 		}
 
-	}
-	
-	public boolean isWaitingForMasterSYN() {
-		
-		if(state.equals(State.CRC1) && bb.get(1) == EBusConsts.BROADCAST_ADDRESS) {
-			return true;
-		}
-		
-		if(state.equals(State.ACK2)) {
-			return true;
-		}
-		
-		return false;
 	}
 
 
