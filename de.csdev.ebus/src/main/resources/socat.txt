@@ -1,0 +1,1 @@
+socat /dev/ttyUSB_EB,raw,b2400,echo=0 tcp-listen:8000,fork
