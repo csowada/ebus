@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypeBCD;
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.utils.NumberUtils;
@@ -30,7 +31,7 @@ public class EBusTypeTime extends EBusTypeGeneric {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T decode(byte[] data) {
+	public <T> T decode(byte[] data) throws EBusTypeException {
 
 		if(data == null) {
 			// TODO replace value

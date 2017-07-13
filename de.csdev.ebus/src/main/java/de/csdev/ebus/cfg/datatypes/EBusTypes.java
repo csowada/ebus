@@ -67,7 +67,7 @@ public class EBusTypes {
         return eBusType;
     }
 
-    public byte[] encode(String type, Object data, Object... args) {
+    public byte[] encode(String type, Object data, Object... args) throws EBusTypeException {
         IEBusType eBusType = types.get(type);
 
         if (eBusType == null) {
@@ -78,7 +78,7 @@ public class EBusTypes {
         return eBusType.encode(data);
     }
 
-    public <T> T decode(String type, byte[] data) {
+    public <T> T decode(String type, byte[] data) throws EBusTypeException {
         IEBusType eBusType = types.get(type);
 
         if (eBusType == null) {
@@ -89,7 +89,7 @@ public class EBusTypes {
         return eBusType.decode(data);
     }
 
-    public <T> T decodeF(String type, byte[] data, int pos, Object... args) {
+    public <T> T decodeF(String type, byte[] data, int pos, Object... args) throws EBusTypeException {
         IEBusType eBusType = types.get(type);
 
         if (eBusType == null) {

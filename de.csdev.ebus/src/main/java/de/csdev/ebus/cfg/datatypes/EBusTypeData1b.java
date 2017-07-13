@@ -14,11 +14,11 @@ public class EBusTypeData1b extends EBusTypeGenericReplaceValue {
         return supportedTypes;
     }
 
-    public <T> T decodeInt(byte[] data) {
+    public <T> T decodeInt(byte[] data) throws EBusTypeException {
         return types.decode(EBusTypeChar.CHAR, data);
     }
 
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
         return types.encode(EBusTypeChar.CHAR, data);
     }
 

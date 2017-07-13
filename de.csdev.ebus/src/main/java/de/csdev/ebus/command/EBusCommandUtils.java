@@ -15,6 +15,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
+import de.csdev.ebus.cfg.datatypes.IEBusRawData;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.utils.EBusUtils;
@@ -24,12 +26,8 @@ import de.csdev.ebus.utils.EBusUtils;
  *
  */
 public class EBusCommandUtils {
-
-	public static byte[] buildMasterTelegram2(IEBusCommand command, Byte source, Byte target, Map<String, Object> values) {
-		return null;
-	}
 	
-    public static ByteBuffer buildMasterTelegram(IEBusCommand command, Byte source, Byte target, Map<String, Object> values) {
+    public static ByteBuffer buildMasterTelegram(IEBusCommand command, Byte source, Byte target, Map<String, Object> values) throws EBusTypeException {
 
         byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
@@ -69,7 +67,10 @@ public class EBusCommandUtils {
                     b = type.encode(values.get(entry.getName()));
                     
                 } else {
-                    if (entry.getDefaultValue() == null) {
+                	if(entry instanceof IEBusRawData) {
+                		b = type.encode(buf);
+                		
+                	} else if (entry.getDefaultValue() == null) {
                         b = type.encode(null);
                     } else {
                     	b = type.encode(entry.getDefaultValue());
@@ -98,7 +99,7 @@ public class EBusCommandUtils {
         return buf;
     }
     
-    public static Map<String, Object> decodeTelegram(IEBusCommand command, byte[] data) {
+    public static Map<String, Object> decodeTelegram(IEBusCommand command, byte[] data) throws EBusTypeException {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         int pos = 6;
@@ -116,8 +117,20 @@ public class EBusCommandUtils {
         if (command.getMasterTypes() != null) {
             for (IEBusValue ev : command.getMasterTypes()) {
             	
-                byte[] src = new byte[ev.getType().getTypeLenght()];
-                System.arraycopy(data, pos - 1, src, 0, src.length);
+            	byte[] src = null;
+            	
+            	// use the raw buffer up to this position, used for custom crc calculation etc.
+            	// see kw-crc type
+            	if(ev.getType() instanceof IEBusRawData) {
+            		src = new byte[pos-1];
+                    System.arraycopy(data, 0, src, 0, src.length);
+            	} else {
+            		// default encoding
+            		src = new byte[ev.getType().getTypeLenght()];
+                    System.arraycopy(data, pos - 1, src, 0, src.length);
+            	}
+            	
+                
                 Object decode = ev.getType().decode(src);
                 
                 
@@ -225,7 +238,6 @@ public class EBusCommandUtils {
                 if (entry.getName() == null && type instanceof EBusTypeBytes && entry.getDefaultValue() != null) {
                     for (int i = 0; i < type.getTypeLenght(); i++) {
                         buf.put((byte) 0xFF);
-
                     }
                 } else {
                     for (int i = 0; i < type.getTypeLenght(); i++) {

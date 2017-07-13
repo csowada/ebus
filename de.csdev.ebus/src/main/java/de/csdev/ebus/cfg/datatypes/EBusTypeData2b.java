@@ -24,12 +24,12 @@ public class EBusTypeData2b extends EBusTypeGenericReplaceValue {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T decodeInt(byte[] data) {
+    public <T> T decodeInt(byte[] data) throws EBusTypeException {
         BigDecimal intValue = types.decode(EBusTypeInteger.INTGER, data);
         return (T) intValue.divide(BigDecimal.valueOf(256));
     }
 
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         b = b.multiply(BigDecimal.valueOf(256));
         return types.encode(EBusTypeInteger.INTGER, b);

@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.StaticTestTelegrams;
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.command.EBusCommand;
@@ -38,7 +39,7 @@ public class ConfigurationReaderTest {
     }
 
 
-    public void testIsMasterAddress() throws IOException {
+    public void testIsMasterAddress() throws IOException, EBusTypeException {
 
        
 
@@ -110,7 +111,7 @@ public class ConfigurationReaderTest {
     }
     
     @Test
-    public void xxx() throws IOException {
+    public void xxx() throws IOException, EBusTypeException {
     	
         InputStream inputStream = getClass().getResourceAsStream("/new-cfg-format.json");
         

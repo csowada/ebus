@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.ConfigurationReader;
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
@@ -50,9 +51,13 @@ public class EBusCommonTelegramTest {
     @Test
     public void yyy() {
     	IEBusCommand command = commandRegistry.getConfigurationById("common.identification", Type.GET);
-    	ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, (byte)0x00, (byte)0xFF, null);
-    	
-    	System.out.println("EBusCommonTelegramTest.yyy()" + EBusUtils.toHexDumpString(buffer));
+    	try {
+			ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, (byte)0x00, (byte)0xFF, null);
+			
+			System.out.println("EBusCommonTelegramTest.yyy()" + EBusUtils.toHexDumpString(buffer));
+		} catch (EBusTypeException e) {
+			logger.error("error!", e);
+		}
 
     }
     
@@ -148,13 +153,18 @@ public class EBusCommonTelegramTest {
     	ByteBuffer wrap = ByteBuffer.wrap(data);
     	IEBusCommand command = commandRegistry.getConfigurationById(commandId, type);
     	
-        ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, (byte) 0x00, (byte) 0xFF, null);
-        ByteBuffer mask = command.getMasterTelegramMask();
-        
-        System.out.println("MASK:     " + EBusUtils.toHexDumpString(mask));
-        System.out.println("DATA:     " + EBusUtils.toHexDumpString(data));
-        System.out.println("COMPOSED: " + EBusUtils.toHexDumpString(masterTelegram));
-        System.out.println("MATCHS?   " + commandRegistry.matchesCommand(command, wrap));
+        try {
+			ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, (byte) 0x00, (byte) 0xFF, null);
+			ByteBuffer mask = command.getMasterTelegramMask();
+			
+			System.out.println("MASK:     " + EBusUtils.toHexDumpString(mask));
+			System.out.println("DATA:     " + EBusUtils.toHexDumpString(data));
+			System.out.println("COMPOSED: " + EBusUtils.toHexDumpString(masterTelegram));
+			System.out.println("MATCHS?   " + commandRegistry.matchesCommand(command, wrap));
+			
+		} catch (EBusTypeException e) {
+			logger.error("error!", e);
+		}
     }
     
     
@@ -168,14 +178,18 @@ public class EBusCommonTelegramTest {
     	
     	for (IEBusCommand command : list) {
     		logger.info(">>> " + command.toString());
-			Map<String, Object> map = EBusCommandUtils.decodeTelegram(command, data);
-			if(map.isEmpty()) {
-				Assert.fail("Expected a result map!");
-			} else {
-				
-				for (Entry<String, Object> entry : map.entrySet()) {
-					logger.info(entry.getKey() + " > " + entry.getValue());
+			try {
+				Map<String, Object> map = EBusCommandUtils.decodeTelegram(command, data);
+				if(map.isEmpty()) {
+					Assert.fail("Expected a result map!");
+				} else {
+					
+					for (Entry<String, Object> entry : map.entrySet()) {
+						logger.info(entry.getKey() + " > " + entry.getValue());
+					}
 				}
+			} catch (EBusTypeException e) {
+				logger.error("error!", e);
 			}
 		}
     	

@@ -25,12 +25,12 @@ public class EBusTypeWord extends EBusTypeGenericReplaceValue {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T decodeInt(byte[] data) {
+    public <T> T decodeInt(byte[] data) throws EBusTypeException {
         BigDecimal value = types.decode(EBusTypeInteger.INTGER, data);
         return (T) BigDecimal.valueOf((short) (value.intValue() & 0xffff));
     }
 
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         return types.encode(EBusTypeInteger.INTGER, b.intValue() & 0xFFFF);
     }

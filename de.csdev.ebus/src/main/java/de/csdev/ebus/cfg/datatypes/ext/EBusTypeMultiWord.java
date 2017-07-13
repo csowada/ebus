@@ -3,6 +3,7 @@ package de.csdev.ebus.cfg.datatypes.ext;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.cfg.datatypes.EBusTypeWord;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
@@ -26,7 +27,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data) {
+    public <T> T decode(byte[] data) throws EBusTypeException {
     	
     	
     	byte[] dataNew = new byte[2];

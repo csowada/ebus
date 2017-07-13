@@ -14,6 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
@@ -61,10 +62,14 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence", Type.GET);
 
-        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
-        		command, masterAddress, EBusConsts.BROADCAST_ADDRESS, null);
+        try {
+			ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
+					command, masterAddress, EBusConsts.BROADCAST_ADDRESS, null);
 
-        scanQueueId = controller.addToSendQueue(buffer);
+			scanQueueId = controller.addToSendQueue(buffer);
+		} catch (EBusTypeException e) {
+			logger.error("error!", e);
+		}
     }
 
     /**
@@ -79,10 +84,14 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life", Type.BROADCAST);
 
-        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, EBusConsts.BROADCAST_ADDRESS,
-                null);
+        try {
+			ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
+					command, masterAddress, EBusConsts.BROADCAST_ADDRESS, null);
 
-        controller.addToSendQueue(buffer);
+			controller.addToSendQueue(buffer);
+		} catch (EBusTypeException e) {
+			logger.error("error!", e);
+		}
     }
 
     public void sendIdentificationRequest(byte slaveAddress) {
@@ -94,9 +103,13 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         	return;
         }
         
-        ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
+        try {
+			ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
 
-        controller.addToSendQueue(buffer);
+			controller.addToSendQueue(buffer);
+		} catch (EBusTypeException e) {
+			logger.error("error!", e);
+		}
     }
 
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {

@@ -13,6 +13,7 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeData1b;
 import de.csdev.ebus.cfg.datatypes.EBusTypeData1c;
 import de.csdev.ebus.cfg.datatypes.EBusTypeData2b;
 import de.csdev.ebus.cfg.datatypes.EBusTypeData2c;
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 
 public class EbusDecodeTest {
@@ -25,7 +26,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_PRIMARY() {
+    public void test_PRIMARY() throws EBusTypeException {
 
         // Boolean decodeBit = types.decode(EBusTypeBit.BIT, new byte[] { (byte) 0x01 }, 1);
         // assertEquals("Decode BIT failed!", false, decodeBit);
@@ -44,7 +45,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_PRIMARY_encode() {
+    public void test_PRIMARY_encode() throws EBusTypeException {
 
         byte[] encode = types.encode(EBusTypeBCD.BCD, 50, (Object[]) null);
         assertArrayEquals("Encode BCD failed!", new byte[] { 0x50 }, encode);
@@ -52,7 +53,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_decode_DATA1B() {
+    public void test_decode_DATA1B() throws EBusTypeException {
 
         BigDecimal decodeDATA1b = types.decode(EBusTypeData1b.DATA1B, new byte[] { (byte) 0x00 });
         assertEquals("Decode DATA1B failed!", 0, decodeDATA1b.intValue());
@@ -71,7 +72,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test__endcode_DATA1B() {
+    public void test__endcode_DATA1B() throws EBusTypeException {
 
         byte[] encode = types.encode(EBusTypeData1b.DATA1B, 0, (Object[]) null);
         assertArrayEquals("Encode DATA1B failed!", new byte[] { 0x00 }, encode);
@@ -90,7 +91,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_decode_DATA1C() {
+    public void test_decode_DATA1C() throws EBusTypeException {
         BigDecimal decodeDATA1c = types.decode(EBusTypeData1c.DATA1C, new byte[] { (byte) 0x00 });
         assertEquals("Decode DATA1B failed!", 0f, decodeDATA1c.floatValue(), 0.1f);
 
@@ -102,7 +103,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_encode_DATA1C() {
+    public void test_encode_DATA1C() throws EBusTypeException {
 
         byte[] encode = types.encode(EBusTypeData1c.DATA1C, 0f, (Object[]) null);
         assertArrayEquals("Encode DATA1C failed!", new byte[] { 0x00 }, encode);
@@ -115,7 +116,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_decode_DATA2B() {
+    public void test_decode_DATA2B() throws EBusTypeException {
         BigDecimal value = types.decode(EBusTypeData2b.DATA2B, new byte[] { 0x00, 0x00 });
         assertEquals("Decode DATA2B failed!", 0f, value.floatValue(), 0.1f);
 
@@ -139,7 +140,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_encode_DATA2B() {
+    public void test_encode_DATA2B() throws EBusTypeException {
         byte[] encode = types.encode(EBusTypeData2b.DATA2B, 0f, (Object[]) null);
         assertArrayEquals("Encode DATA2B failed!", new byte[] { 0x00, 0x00 }, encode);
 
@@ -163,7 +164,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_decode_DATA2C() {
+    public void test_decode_DATA2C() throws EBusTypeException {
         BigDecimal value = types.decode(EBusTypeData2c.DATA2C, new byte[] { 0x00, 0x00 });
         assertEquals("Decode DATA2C failed!", 0f, value.floatValue(), 0.1f);
 
@@ -187,7 +188,7 @@ public class EbusDecodeTest {
     }
 
     @Test
-    public void test_encode_DATA2C() {
+    public void test_encode_DATA2C() throws EBusTypeException {
         byte[] encode = types.encode(EBusTypeData2c.DATA2C, 0f, (Object[]) null);
         assertArrayEquals("Encode DATA2C failed!", new byte[] { 0x00, 0x00 }, encode);
 

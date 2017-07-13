@@ -18,7 +18,7 @@ public interface IEBusCommandWritable extends IEBusCommand {
 	
 	public IEBusCommandWritable addMasterValue(IEBusValue value);
 	
-	public IEBusCommandWritable addExtendedCommand(IEBusValue value);
+//	public IEBusCommandWritable addExtendedCommand(IEBusValue value);
 
 	public IEBusCommandWritable setType(Type type);
 

@@ -10,7 +10,7 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric {
 		return ArrayUtils.isEquals(data, this.replaceValue);
 	}
 
-	public <T> T decode(byte[] data) {
+	public <T> T decode(byte[] data) throws EBusTypeException {
 		
 		if(equalsReplaceValue(data))
 			return null;
@@ -18,7 +18,7 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric {
 		return decodeInt(data);
 	}
 
-	public byte[] encode(Object data) {
+	public byte[] encode(Object data) throws EBusTypeException {
 		
 		if(data == null)
 			return replaceValue;
@@ -26,6 +26,6 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric {
 		return encodeInt(data);
 	}
 
-	public abstract <T> T decodeInt(byte[] data);
-	public abstract byte[] encodeInt(Object data);
+	public abstract <T> T decodeInt(byte[] data) throws EBusTypeException;
+	public abstract byte[] encodeInt(Object data) throws EBusTypeException;
 }

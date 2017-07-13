@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
@@ -55,8 +56,12 @@ public class EBusParserService implements EBusConnectorEventListener {
     	final List<IEBusCommand> commandList = commandRegistry.find(receivedData);
     	for (IEBusCommand command : commandList) {
     		
-    		Map<String, Object> map = EBusCommandUtils.decodeTelegram(command, receivedData);
-			fireOnTelegramResolved(command, map, receivedData, sendQueueId);
+    		try {
+				Map<String, Object> map = EBusCommandUtils.decodeTelegram(command, receivedData);
+				fireOnTelegramResolved(command, map, receivedData, sendQueueId);
+			} catch (EBusTypeException e) {
+				logger.error("error!", e);
+			}
 		}
 
     }
