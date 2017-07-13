@@ -12,6 +12,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.command.EBusCommand;
@@ -47,7 +48,7 @@ public class EBusComposeTelegramTest2 {
     }
 
     @Test
-    public void composeTelegram01() {
+    public void composeTelegram01() throws EBusTypeException {
         IEBusCommand command = configurationProvider.getConfigurationById("fbh.set_heizkurve", Type.GET);
         assertNotNull("Command fbh.set_heizkurve not found", command);
 

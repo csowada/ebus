@@ -13,6 +13,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.command.EBusCommand;
@@ -49,7 +50,7 @@ public class EBusComposeTelegramTest {
     }
 
     @Test
-    public void composeTelegram01() {
+    public void composeTelegram01() throws EBusTypeException {
         IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence", Type.GET);
         assertNotNull("Command common.inquiry_of_existence not found", command);
 
@@ -62,7 +63,7 @@ public class EBusComposeTelegramTest {
     }
 
     @Test
-    public void composeTelegram02() {
+    public void composeTelegram02() throws EBusTypeException {
     	IEBusCommand command = configurationProvider.getConfigurationById("common.error", Type.GET);
         assertNotNull("Command common.error not found", command);
 

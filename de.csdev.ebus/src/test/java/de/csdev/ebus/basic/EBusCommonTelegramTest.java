@@ -34,7 +34,7 @@ public class EBusCommonTelegramTest {
 
     	types = new EBusTypes();
 
-        InputStream inputStream = ConfigurationReader.class.getResourceAsStream("/common-configuration.json");
+        InputStream inputStream = ConfigurationReader.class.getResourceAsStream("/commands/common-configuration.json");
     	
         if(inputStream == null) {
         	throw new RuntimeException("Unable to load json file ...");

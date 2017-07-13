@@ -1,11 +1,9 @@
 package de.csdev.ebus.cfg.datatypes.ext;
 
-import java.math.BigDecimal;
-
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
-import de.csdev.ebus.utils.NumberUtils;
 
-public class EBusTypeKWCrc extends EBusTypeGeneric {
+public class EBusTypeKWCrc extends EBusTypeGeneric implements IEBusComplexType {
 
     public static String KW_CRC = "kw-crc";
 
@@ -15,19 +13,22 @@ public class EBusTypeKWCrc extends EBusTypeGeneric {
         return supportedTypes;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) {
-        return (T) BigDecimal.valueOf(data[0] & 0xFF);
+    	throw new RuntimeException("Not implmented!");
     }
 
     public byte[] encode(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
-
-        if (b == null) {
-            return new byte[] { 0x00 };
-        }
-
-        return new byte[] { (byte) b.intValue() };
+        throw new RuntimeException("Not implmented!");
     }
+
+	public <T> T decodeComplex(byte[] rawData, int pos) throws EBusTypeException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public byte[] encodeComplex(Object data) throws EBusTypeException {
+		// TODO Auto-generated method stub
+		return new byte[] {0x11};
+	}
 
 }

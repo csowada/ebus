@@ -1,4 +1,4 @@
-package de.csdev.ebus.cfg;
+package de.csdev.ebus.wip;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.StaticTestTelegrams;
+import de.csdev.ebus.cfg.ConfigurationReader;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;

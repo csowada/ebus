@@ -16,6 +16,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import de.csdev.ebus.cfg.IConfigurationReader;
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
@@ -329,11 +330,16 @@ public class OH1ConfigurationReader implements IConfigurationReader {
             if (telegram != null) {
                 telegramConfiguration.add(telegram);
 
-                ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(telegram, (byte) 0x00, (byte) 0xFF, null);
-                System.out.println("GGGg.UUUUUU() > " + EBusUtils.toHexDumpString(masterTelegram));
+                try {
+					ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(telegram, (byte) 0x00, (byte) 0xFF, null);
+					System.out.println("GGGg.UUUUUU() > " + EBusUtils.toHexDumpString(masterTelegram));
 
-                ByteBuffer masterTelegramMask = telegram.getMasterTelegramMask();
-                System.out.println("GGGg.YYYYYY() > " + EBusUtils.toHexDumpString(masterTelegramMask));
+					ByteBuffer masterTelegramMask = telegram.getMasterTelegramMask();
+					System.out.println("GGGg.YYYYYY() > " + EBusUtils.toHexDumpString(masterTelegramMask));
+				} catch (EBusTypeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
 
         } // loop

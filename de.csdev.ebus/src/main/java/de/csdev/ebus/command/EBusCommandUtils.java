@@ -12,13 +12,14 @@ import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
-import de.csdev.ebus.cfg.datatypes.IEBusRawData;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
+import de.csdev.ebus.cfg.datatypes.ext.IEBusComplexType;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -57,6 +58,8 @@ public class EBusCommandUtils {
             }
         }
 
+        Map<Integer, IEBusComplexType> complexTypes = new HashMap<Integer, IEBusComplexType>();
+        
         if (command.getMasterTypes() != null) {
             for (IEBusValue entry : command.getMasterTypes()) {
                 IEBusType type = entry.getType();
@@ -67,13 +70,20 @@ public class EBusCommandUtils {
                     b = type.encode(values.get(entry.getName()));
                     
                 } else {
-                	if(entry instanceof IEBusRawData) {
-                		b = type.encode(buf);
+                	if(type instanceof IEBusComplexType) {
+                		
+                		// add the complex to the list for post processing
+                		complexTypes.put(buf.position(), (IEBusComplexType)type);
+                		
+                		// add placeholder
+                		b = new byte[entry.getType().getTypeLenght()];
                 		
                 	} else if (entry.getDefaultValue() == null) {
                         b = type.encode(null);
+                        
                     } else {
                     	b = type.encode(entry.getDefaultValue());
+                    	
                     }
 
                 }
@@ -81,21 +91,36 @@ public class EBusCommandUtils {
                 if(b == null) {
                 	throw new RuntimeException("Encoded value is null!");              	
                 }
-                
+                //buf.p
                 buf.put(b); 
                 len += type.getTypeLenght();
             }
         }
 
-        
-
         // set len
         buf.put(4, len);
 
+        System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
+        
+        // replace the placeholders with the complex values
+        if(!complexTypes.isEmpty()) {
+            int orgPos = buf.position();
+            for (Entry<Integer, IEBusComplexType> entry : complexTypes.entrySet()) {
+    			// jump to position
+    			buf.position(entry.getKey());
+    			// put new value
+    			buf.put(entry.getValue().encodeComplex(buf));
+
+    		}
+            buf.position(orgPos);
+            System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
+        }
+
+        // calculate crc
         byte crc8 = EBusUtils.crc8(buf.array(), buf.position());
         
         buf.put(crc8);
-
+        System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
         return buf;
     }
     
@@ -118,23 +143,22 @@ public class EBusCommandUtils {
             for (IEBusValue ev : command.getMasterTypes()) {
             	
             	byte[] src = null;
+            	Object decode = null;
             	
             	// use the raw buffer up to this position, used for custom crc calculation etc.
             	// see kw-crc type
-            	if(ev.getType() instanceof IEBusRawData) {
-            		src = new byte[pos-1];
-                    System.arraycopy(data, 0, src, 0, src.length);
+            	if(ev.getType() instanceof IEBusComplexType) {
+                    decode = ((IEBusComplexType)ev.getType()).decodeComplex(data, pos);
+                    
             	} else {
             		// default encoding
             		src = new byte[ev.getType().getTypeLenght()];
                     System.arraycopy(data, pos - 1, src, 0, src.length);
+                    decode = ev.getType().decode(src);
             	}
-            	
-                
-                Object decode = ev.getType().decode(src);
-                
-                
-                if(ev instanceof IEBusNestedValue) {
+
+            	// not allowed for complex types!
+                if(ev instanceof IEBusNestedValue && src != null) {
                 	IEBusNestedValue evc = (IEBusNestedValue)ev;
                 	if(evc.hasChildren()) {
                 		

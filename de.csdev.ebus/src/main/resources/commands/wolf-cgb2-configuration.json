@@ -1,0 +1,32 @@
+[
+    {
+        "comment":  "<Heating> Heating program",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "heating.program_heating_circuit",
+        "command":  "50 23",
+
+        "template": [
+        	{"name": "program", "type": "byte", "pos": 12, "label": "Heating program", "min": 0, "max": 3,
+				"mapping": {"0": "standby", "1": "auto", "2": "heating mode", "3":"economy mode"}
+			}
+        ],
+
+        "set": {
+            "master": [
+                {"type": "kw-crc"},
+        		{"type": "static", "default": "74 27"},
+                {"type": "template-block"}
+            ]
+        },
+
+        "get": {
+        	"master": [
+	        	{"type": "kw-crc"},
+	        	{"type": "static", "default": "74 27"}
+        	],
+            "slave": [
+                {"type": "template-block"}
+            ]
+        }
+    }
+]

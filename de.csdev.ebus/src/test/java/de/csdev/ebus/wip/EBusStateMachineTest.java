@@ -1,4 +1,4 @@
-package de.csdev.ebus.basic;
+package de.csdev.ebus.wip;
 
 import org.junit.Rule;
 import org.junit.Test;
