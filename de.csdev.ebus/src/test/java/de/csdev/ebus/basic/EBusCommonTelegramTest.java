@@ -18,6 +18,7 @@ import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class EBusCommonTelegramTest {
@@ -48,7 +49,7 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void yyy() {
-    	IEBusCommand command = commandRegistry.getConfigurationById("common.identification");
+    	IEBusCommand command = commandRegistry.getConfigurationById("common.identification", Type.GET);
     	ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, (byte)0x00, (byte)0xFF, null);
     	
     	System.out.println("EBusCommonTelegramTest.yyy()" + EBusUtils.toHexDumpString(buffer));
@@ -142,10 +143,10 @@ public class EBusCommonTelegramTest {
     	canResolve(bs);
     }
     
-    protected void checkMask(String commandId, byte[] data) {
+    protected void checkMask(String commandId, byte[] data, IEBusCommand.Type type) {
     	
     	ByteBuffer wrap = ByteBuffer.wrap(data);
-    	IEBusCommand command = commandRegistry.getConfigurationById(commandId);
+    	IEBusCommand command = commandRegistry.getConfigurationById(commandId, type);
     	
         ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, (byte) 0x00, (byte) 0xFF, null);
         ByteBuffer mask = command.getMasterTelegramMask();

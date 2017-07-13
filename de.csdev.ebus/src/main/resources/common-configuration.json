@@ -1,25 +1,25 @@
 [
 
-	{
+    {
         "comment":  "<Service Data> Aussentemperatur (°C)",
-        "id":	    "burner",
-        "command":	"03 01",
-        "dst":		"FE",
-        "type":		"master broadcast",
+        "id":       "burner",
+        "command":  "03 01",
+        "dst":      "FE",
+        "type":     "master broadcast",
         
 
-		"get": {
+        "get": {
             "master": [
-            	{"name":"temp_outside", "type": "word", "label": "Aussentemperatur", "factor": 0.1}
+                {"name":"temp_outside", "type": "word", "label": "Aussentemperatur", "factor": 0.1}
             ]
         }
     },
 
     {
         "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 1",
-        "id":    "auto_stroker",
+        "id":       "auto_stroker",
         "command":  "05 03",
-        "type":		"master",
+        "type":     "master",
         
 
         "get": {
@@ -60,64 +60,70 @@
                 {"name":"_reserve", "type": "byte", "defaut": "255"}
             ]
         }
-
     },
     
     {
         "comment":  "<Burner Control> Operational Data from Room Controller to Burner Control Unit",
-        "id":    "controller",
-        "command":	"05 07",
-        "type":		"master",
-        
-        
+        "id":       "controller",
+        "command":  "05 07",
+        "type":     "master",
+
         "get": {
             "master": [
-            	{"name": "status_heat_req1", "type": "byte", "label": "Status heat request 1"},
-            	{"name": "status_heat_req2", "type": "byte", "label": "Status heat request 2"},
-            	{"name": "temp_d_boiler", "type": "data2c", "label": "Boiler desire temperature (°C)", "min":0, "max":100},
-            	{"name": "pressure_d_boiler", "type": "data2b", "label": "Boiler desire pressure (bar)", "min":0, "max":100},
-            	{"name": "modulation", "type": "data1c", "label": "Setting degree", "min":0, "max":100, "step": 0.5},
-            	{"name": "temp_d_dhw", "type": "data1c", "label": "DWH desire temperature (°C)", "min":0, "max":100},
-            	{"name": "value_fuel", "type": "byte", "label": "Election of fuel", "replaceValue": 255}
+                {"name": "status_heat_req1", "type": "byte", "label": "Status heat request 1"},
+                {"name": "status_heat_req2", "type": "byte", "label": "Status heat request 2"},
+                {"name": "temp_d_boiler", "type": "data2c", "label": "Boiler desire temperature (°C)", "min":0, "max":100},
+                {"name": "pressure_d_boiler", "type": "data2b", "label": "Boiler desire pressure (bar)", "min":0, "max":100},
+                {"name": "modulation", "type": "data1c", "label": "Setting degree", "min":0, "max":100, "step": 0.5},
+                {"name": "temp_d_dhw", "type": "data1c", "label": "DWH desire temperature (°C)", "min":0, "max":100},
+                {"name": "value_fuel", "type": "byte", "label": "Election of fuel", "replaceValue": 255}
             ]
         }
     },
 
     {
         "comment":  "<System Data> Date/Time of an eBUS Master",
-        "id":		"common",
+        "id":       "common",
         "command":  "07 00",
-        "dst":		"FE",
-        "type":		"master broadcast",
+        "dst":      "FE",
+        "type":     "master broadcast",
 
         "get": {
             "master": [
-	            {"name": "temp_ouside", "type": "data2b", "label": "Outside temperature (°C)"},
-	            {"name": "time", "type": "time", "label": "Time"},
-	            {"name": "date_day", "type": "bcd", "label": "Date day"},
-	            {"name": "date_month", "type": "bcd", "label": "Date month"},
-	            {"name": "date_weekday", "type": "bcd", "label": "Date weekday"},
-	            {"name": "date_year", "type": "bcd", "label": "Date year"}
-        	]
+                {"name": "temp_ouside", "type": "data2b", "label": "Outside temperature (°C)"},
+                {"name": "time", "type": "time", "label": "Time"},
+                {"name": "date_day", "type": "bcd", "label": "Date day"},
+                {"name": "date_month", "type": "bcd", "label": "Date month"},
+                {"name": "date_weekday", "type": "bcd", "label": "Date weekday"},
+                {"name": "date_year", "type": "bcd", "label": "Date year"}
+            ]
         }
     },
-
-
 
     {
         "comment":  "<System Data> Identification of eBUS devices - Request",
         "id":       "common.identification",
         "command":  "07 04",
-        "type":		"master-slave",
+        "type":     "master-slave",
+
+        "template": [
+            {"name": "vendor", "type": "byte", "label": "Vendor"},
+            {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
+            {"name": "_software_ver", "type": "bcd", "label": "Software Version"},
+            {"name": "_software_rev", "type": "bcd", "label": "Software Revision"},
+            {"name": "_hardware_ver", "type": "bcd", "label": "Hardware Version"},
+            {"name": "_hardware_rev", "type": "bcd", "label": "Hardware Revision"}
+        ],
+
+        "broadcast": {
+            "master": [
+                {"type": "template-block"}
+            ]
+        },
 
         "get": {
             "slave": [
-            	{"name": "vendor", "type": "byte", "label": "Vendor"},
-            	{"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
-            	{"name": "_software_ver", "type": "bcd", "label": "Software Version"},
-            	{"name": "_software_rev", "type": "bcd", "label": "Software Revision"},
-            	{"name": "_hardware_ver", "type": "bcd", "label": "Hardware Version"},
-            	{"name": "_hardware_rev", "type": "bcd", "label": "Hardware Revision"}
+                {"type": "template-block"}
             ]
         }
     },
@@ -139,33 +145,33 @@
     {
         "comment":  "<Room Controller> Transmission of Target Values of the Room Controllers to other Room Controllers",
         "id":       "controller2",
-        "command":	"08 00",
-        
-		"get": {
-			"master": [
-            	{"name": "temp_d_boiler", "type": "data2b", "label": "Boiler desire temperature (°C)", "min":0, "max":100},
-            	{"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "min":-30, "max":50},
-            	{"name": "performance_forced", "type": "data1b", "label": "Forced performance"},
-            	{"name":"bits", "type": "byte", "children": [
+        "command":  "08 00",
+
+        "get": {
+            "master": [
+                {"name": "temp_d_boiler", "type": "data2b", "label": "Boiler desire temperature (°C)", "min":0, "max":100},
+                {"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "min":-30, "max":50},
+                {"name": "performance_forced", "type": "data1b", "label": "Forced performance"},
+                {"name":"bits", "type": "byte", "children": [
                     {"name": "state_dhw", "type": "bit", "label": "State DHW(?) active"},
-            		{"name": "state_hc", "type": "bit", "label": "State heating circuit active"}
-            	]},
-            	{"name": "temp_d_dhw", "type": "data2b", "label": "DWH desire temperature (°C)", "min":0, "max":100}
+                    {"name": "state_hc", "type": "bit", "label": "State heating circuit active"}
+                ]},
+                {"name": "temp_d_dhw", "type": "data2b", "label": "DWH desire temperature (°C)", "min":0, "max":100}
             ]
         }
     },
-    
+
     {
         "comment":  "<General> Error Message",
         "id":       "common.error",
-        "command":	"FE 01",
-        "dst":		"FE",
+        "command":  "FE 01",
+        "dst":      "FE",
 
-		"get": {
-			"master": [
-				{"type": "string", "name":"error", "length": 10}
-				
-			]
-		}
+        "get": {
+            "master": [
+                {"type": "string", "name":"error", "length": 10}
+                
+            ]
+        }
     }
 ]

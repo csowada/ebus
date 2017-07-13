@@ -19,6 +19,7 @@ import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -49,7 +50,7 @@ public class EBusComposeTelegramTest {
 
     @Test
     public void composeTelegram01() {
-        IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
+        IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence", Type.GET);
         assertNotNull("Command common.inquiry_of_existence not found", command);
 
         ByteBuffer bb = EBusCommandUtils.buildMasterTelegram(command, (byte) 0xFF, (byte) 0x00, null);
@@ -62,7 +63,7 @@ public class EBusComposeTelegramTest {
 
     @Test
     public void composeTelegram02() {
-    	IEBusCommand command = configurationProvider.getConfigurationById("common.error");
+    	IEBusCommand command = configurationProvider.getConfigurationById("common.error", Type.GET);
         assertNotNull("Command common.error not found", command);
 
         Map<String, Object> values = new HashMap<String, Object>();

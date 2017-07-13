@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
@@ -58,7 +59,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-        IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence");
+        IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence", Type.GET);
 
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
         		command, masterAddress, EBusConsts.BROADCAST_ADDRESS, null);
@@ -76,7 +77,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life");
+        IEBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life", Type.BROADCAST);
 
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, EBusConsts.BROADCAST_ADDRESS,
                 null);
@@ -86,7 +87,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommand command = configurationProvider.getConfigurationById("common.identification");
+        IEBusCommand command = configurationProvider.getConfigurationById("common.identification", Type.GET);
 
         if(command == null) {
         	logger.warn("Unable to load command with id common.identification");

@@ -383,7 +383,9 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte toByte(String hexDumpString) {
+    static public Byte toByte(String hexDumpString) {
+    	if(StringUtils.isEmpty(hexDumpString))
+    		return null;
         return toByteArray(hexDumpString)[0];
     }
 

@@ -18,6 +18,7 @@ import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.service.parser.EBusParserListener;
 import de.csdev.ebus.service.parser.EBusParserService;
 import de.csdev.ebus.utils.EBusUtils;
@@ -47,7 +48,7 @@ public class EBusComposeTelegramTest2 {
 
     @Test
     public void composeTelegram01() {
-        IEBusCommand command = configurationProvider.getConfigurationById("fbh.set_heizkurve");
+        IEBusCommand command = configurationProvider.getConfigurationById("fbh.set_heizkurve", Type.GET);
         assertNotNull("Command fbh.set_heizkurve not found", command);
 
         Map<String, Object> values = new HashMap<String, Object>();

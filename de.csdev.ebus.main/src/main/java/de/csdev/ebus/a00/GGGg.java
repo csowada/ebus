@@ -130,7 +130,7 @@ public class GGGg {
 
         EBusCommand telegram = new EBusCommand();
         telegram.setId("heating.program_heating_circuit");
-        telegram.setType(Type.WRITE);
+        telegram.setType(Type.SET);
         telegram.setCommand(new byte[] { 0x50, 0x22 });
         // m.addExtendedCommand();
         // m.addExtendedCommand(new byte[] { (byte) 0xFF, 0x74, 0x27 });

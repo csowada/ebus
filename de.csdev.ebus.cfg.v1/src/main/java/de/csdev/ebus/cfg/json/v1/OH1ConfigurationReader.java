@@ -293,7 +293,7 @@ public class OH1ConfigurationReader implements IConfigurationReader {
 
         EBusCommand command = new EBusCommand();
         command.setId(cfg.getFullId());
-        command.setType(de.csdev.ebus.command.IEBusCommand.Type.READ);
+        command.setType(de.csdev.ebus.command.IEBusCommand.Type.GET);
         command.setDescription(cfg.getComment());
         command.setConfigurationSource(cfg.getConfigurationSource());
 

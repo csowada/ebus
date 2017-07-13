@@ -18,32 +18,81 @@ import java.util.List;
 public interface IEBusCommand {
 
     public enum Type {
-        READ,
-        WRITE
+    	/** xxx */
+        GET,
+        
+        SET,
+        
+        BROADCAST
     }
 	
+    /**
+     * Returns device information from database
+     * @return
+     */
     public String getDevice();
     
+    /**
+     * Returns defined destination address or null if not defined
+     * @return
+     */
     public Byte getDestinationAddress();
     
+    /**
+     * Returns defined source address or null if not defined
+     * @return
+     */
     public Byte getSourceAddress();
     
+    
+	/**
+	 * Returns the telegram mask
+	 * @return
+	 */
 	public ByteBuffer getMasterTelegramMask();
 	
 	public List<IEBusValue> getExtendCommandValue();
 	
+	/**
+	 * Get ordered list of eBus data types for the master part
+	 * @return
+	 */
 	public List<IEBusValue> getMasterTypes();
 	
+	/**
+	 * Get ordered list of eBus data types for the slave part
+	 * @return
+	 */
 	public List<IEBusValue> getSlaveTypes();
 	
+	/**
+	 * Returns the eBus command bytes
+	 * @return
+	 */
 	public byte[] getCommand();
 	
+	/**
+	 * Returns the source (file) of this command
+	 * @return
+	 */
 	public String getConfigurationSource();
 	
+	/**
+	 * Get a short description to this command
+	 * @return
+	 */
 	public String getDescription();
 	
+	/**
+	 * Returns the id of this command
+	 * @return
+	 */
 	public String getId();
 	
+	/**
+	 * Returns the type of this command
+	 * @return
+	 */
 	public Type getType();
 	
 }

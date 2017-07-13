@@ -24,6 +24,7 @@ import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
@@ -55,7 +56,7 @@ public class EBusMain2 {
             
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 
-            IEBusCommand command = client.getConfigurationProvider().getConfigurationById("common.error");
+            IEBusCommand command = client.getConfigurationProvider().getConfigurationById("common.error", Type.BROADCAST);
             Map<String, Object> values = new HashMap<String, Object>();
             values.put("error", "1234567890");
 
@@ -91,7 +92,7 @@ public class EBusMain2 {
 			});
             
             
-            IEBusCommand commandx = client.getConfigurationProvider().getConfigurationById("common.identification");
+            IEBusCommand commandx = client.getConfigurationProvider().getConfigurationById("common.identification", Type.GET);
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandx, (byte)0, (byte)0x35, null);
             
 //            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());

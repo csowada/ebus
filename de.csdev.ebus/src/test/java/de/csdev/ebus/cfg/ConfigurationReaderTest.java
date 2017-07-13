@@ -20,6 +20,7 @@ import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -79,7 +80,7 @@ public class ConfigurationReaderTest {
         }
 
 		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-				tr.getConfigurationById("solar.solar_yield"), 
+				tr.getConfigurationById("solar.solar_yield", Type.BROADCAST), 
 				StaticTestTelegrams.WOLF_SOLAR_C);
 		
 		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
@@ -121,7 +122,7 @@ public class ConfigurationReaderTest {
         
         
 		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-				tr.getConfigurationById("auto_stroker"), 
+				tr.getConfigurationById("auto_stroker", Type.GET), 
 				StaticTestTelegrams.AUTO_STROKER);
 		
 		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {

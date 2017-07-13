@@ -30,8 +30,6 @@ public class EBusController extends EBusControllerBase {
 	private IEBusConnection connection;
 
 	/** serial receive buffer */
-	// private final ByteBuffer inputBuffer = ByteBuffer.allocate(100);
-
 	private EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
 	private EBusQueue queue = new EBusQueue();
@@ -81,17 +79,20 @@ public class EBusController extends EBusControllerBase {
 			logger.info("x");
 		}
 
+		// we received a SYN byte
 		if (machine.isSync()) {
 
 //			// check if empty
 //			if (queue.getCurrent() == null)
 //				queue.checkSendStatus();
 
+			// try to send someting if the send queue is not empty
 			send(false);
 
 			// afterwards check for next sending slot
 			queue.checkSendStatus();
 
+			// check of a complete and valid telegram is available
 			if (machine.isTelegramAvailable()) {
 
 				byte[] telegramData = machine.getTelegramData();
@@ -317,7 +318,7 @@ public class EBusController extends EBusControllerBase {
 
 				logger.trace("Send {}", EBusUtils.toHexDumpString(b0));
 				connection.writeByte(b0);
-				sendMachine.update(b0);
+				
 			}
 
 			// start of transfer successful
@@ -326,28 +327,15 @@ public class EBusController extends EBusControllerBase {
 			queue.setLastSendCollisionDetected(false);
 			queue.setBlockNextSend(false);
 
-			// skip next bytes
+			// read all send bytes from input buffer
 			for (int i = 0; i < dataOutputBuffers.length - 1; i++) {
-				connection.readByte(true);
+				byte b0  = (byte) (connection.readByte(true) & 0xFF);
+				sendMachine.update(b0);
 			}
-
-//			if (sendMachine.isReadyForAnswer()) {
-//				logger.debug("EBusController.send() WARTE");
-//
-//				// if this telegram a broadcast?
-//				if (dataOutputBuffers[1] == EBusConsts.BROADCAST_ADDRESS) {
-//
-//					logger.trace("Broadcast send ..............");
-//
-//					// sende master sync
-//					connection.writeByte(EBusConsts.SYN);
-//					sendMachine.update(EBusConsts.SYN);
-//				}
-//			}
 
 			// read slave data if this is a master/slave telegram
 			if (sendMachine.isWaitingForSlaveAnswer()) {
-				logger.debug("Waiting for slave answer ...");
+				logger.trace("Waiting for slave answer ...");
 				
 				// read input data until the telegram is complete or fails
 				while(!sendMachine.isWaitingForMasterACK()) {
@@ -358,17 +346,19 @@ public class EBusController extends EBusControllerBase {
 						sendMachine.update(ack);
 					}
 				}
-				logger.debug("Slave answer received ...");
+				logger.trace("Slave answer received ...");
 			}
 
 			// sende master ack
 			if(sendMachine.isWaitingForMasterACK()) {
+				logger.trace("Send Master ACK to Slave ...");
 				connection.writeByte(EBusConsts.ACK_OK);
 				sendMachine.update(EBusConsts.ACK_OK);
 			}
 			
 			// sende master sync
 			if(sendMachine.isWaitingForMasterSYN()) {
+				logger.trace("Send SYN to bus ...");
 				connection.writeByte(EBusConsts.SYN);
 				sendMachine.update(EBusConsts.SYN);
 			}
@@ -377,7 +367,6 @@ public class EBusController extends EBusControllerBase {
 			if (sendMachine.isTelegramAvailable()) {
 				logger.debug("Succesful send: {}", sendMachine.toDumpString());
 				fireOnEBusTelegramReceived(sendMachine.getTelegramData(), sendEntry.id);
-//				sendMachine.reset();
 			}
 
 			// reset send module

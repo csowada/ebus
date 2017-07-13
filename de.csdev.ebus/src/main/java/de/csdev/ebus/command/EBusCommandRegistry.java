@@ -16,6 +16,8 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
+import de.csdev.ebus.command.IEBusCommand.Type;
+
 /**
  * @author Christian Sowada
  *
@@ -40,7 +42,7 @@ public class EBusCommandRegistry {
         return Collections.unmodifiableList(list);
     }
 
-    public IEBusCommand getConfigurationById(String id) {
+    public IEBusCommand getConfigurationById(String id, IEBusCommand.Type type) {
     	
     	for (IEBusCommand command : list) {
     		if(StringUtils.equals(command.getId(), id))
