@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.ConfigurationReader;
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandUtils;
@@ -52,24 +53,26 @@ public class EBusMain2 {
 
             
             List<EBusCommand> loadConfiguration = jsonCfgReader.loadConfiguration(
-            		IEBusConnection.class.getResourceAsStream("/common-configuration.json"));
+            		IEBusConnection.class.getResourceAsStream("/commands/common-configuration.json"));
             
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 
-            IEBusCommand command = client.getConfigurationProvider().getConfigurationById("common.error", Type.BROADCAST);
-            Map<String, Object> values = new HashMap<String, Object>();
-            values.put("error", "1234567890");
+            loadConfiguration = jsonCfgReader.loadConfiguration(
+            		IEBusConnection.class.getResourceAsStream("/commands/wolf-cgb2-configuration.json"));
+            
+            client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 
-
-            ByteBuffer composeEBusTelegram2 = EBusCommandUtils.buildMasterTelegram(command, (byte)0x00, (byte) 0xFE, values);
-            logger.info("TEST: Error Command {}", EBusUtils.toHexDumpString(composeEBusTelegram2).toString());
-
+            
+            loadConfiguration = jsonCfgReader.loadConfiguration(
+            		IEBusConnection.class.getResourceAsStream("/commands/wolf-sm1-configuration.json"));
+            
+            client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
             
             client.getResolverService().addEBusParserListener(new EBusParserListener() {
 				
 				public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
 						Integer sendQueueId) {
-					// TODO Auto-generated method stub
+
 					logger.info("Telegram Resolved: " + command.getDescription());
 					logger.info(result.toString());
 					
@@ -79,37 +82,26 @@ public class EBusMain2 {
             controller.addEBusEventListener(new EBusConnectorEventListener() {
 				
 				public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
-					// TODO Auto-generated method stub
-					System.out
-							.println("EBusMain2.main(...).new EBusConnectorEventListener() {...}.onTelegramReceived()"+EBusUtils.toHexDumpString(receivedData));
+					logger.trace("onTelegramReceived > " + EBusUtils.toHexDumpString(receivedData));
 				}
 				
 				public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
-					// TODO Auto-generated method stub
-					System.out.println(
-							"EBusMain2.main(...).new EBusConnectorEventListener() {...}.onTelegramException()" + exception.toString());
+					logger.trace("onTelegramException > " + exception.toString());
 				}
 			});
-            
-            
-            IEBusCommand commandx = client.getConfigurationProvider().getConfigurationById("common.identification", Type.GET);
-            ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandx, (byte)0, (byte)0x35, null);
-            
-//            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());
+
+//            byte[] byteArray = EBusUtils.toByteArray("71 FE 50 17 10 08 91 05 01 C8 01 00 80 00 80 00 80 00 80 00 80 A0 AA");
+//            IEBusCommand command = client.getConfigurationProvider().getConfigurationById("solar.solar_data", Type.BROADCAST);
+//            ByteBuffer mask = EBusCommandUtils.getMasterTelegramMask(command);
 //            
-//            masterTelegramMask = EBusCommandUtils.buildMasterTelegram(commandx, (byte)0, (byte)0, null);
-//            logger.info(EBusUtils.toHexDumpString(masterTelegramMask).toString());
+//            logger.warn(EBusUtils.toHexDumpString(mask).toString());
             
+//            if(true)
+//            	return;
+            			
             controller.start();
             Thread.sleep(3000);
-            
-            controller.addToSendQueue(masterTelegram);
-//            controller.addToSendQueue(composeEBusTelegram2);
 
-//            commandx = client.getConfigurationProvider().getConfigurationById("auto_stroker");
-            
-            
-            
             // main thread wait
             controller.join();
 
@@ -121,7 +113,7 @@ public class EBusMain2 {
             
         } catch (IOException e) {
             logger.error("errro1", e);
-        }
+		}
 
     }
 

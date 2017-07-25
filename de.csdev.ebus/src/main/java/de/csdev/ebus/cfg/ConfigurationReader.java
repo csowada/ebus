@@ -78,7 +78,7 @@ public class ConfigurationReader implements IConfigurationReader {
 		List<String> channels = new ArrayList<String>();
 		if(commandElement.containsKey("get")) channels.add("get");
 		if(commandElement.containsKey("set")) channels.add("set");
-		if(commandElement.containsKey("boadcast")) channels.add("boadcast");
+		if(commandElement.containsKey("broadcast")) channels.add("broadcast");
 		
 		// extract default values
 		String id = (String) commandElement.get("id");

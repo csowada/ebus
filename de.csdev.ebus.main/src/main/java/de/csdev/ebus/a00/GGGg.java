@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypeByte;
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeWord;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
@@ -35,7 +36,12 @@ public class GGGg {
     private EBusTypes registry;
 
     public static void main(String[] args) {
-        new GGGg().x();
+        try {
+			new GGGg().x();
+		} catch (EBusTypeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public List<EBusConfigurationTelegram> loadConfiguration() throws IOException {
@@ -53,7 +59,7 @@ public class GGGg {
         return loadedTelegramRegistry;
     }
 
-    public void x() {
+    public void x() throws EBusTypeException {
 
         registry = new EBusTypes();
 
@@ -137,8 +143,8 @@ public class GGGg {
         // m.addMasterValue(new KWCrc());
         // m.addMasterValue({0x74, 0x27});
 
-        telegram.addExtendedCommand(new KWCrcMValue(typeByte));
-        telegram.addExtendedCommand(EBusCommandValue.getInstance(typeWord, new byte[] { 0x74, 0x27 }));
+//        telegram.addExtendedCommand(new KWCrcMValue(typeByte));
+//        telegram.addExtendedCommand(EBusCommandValue.getInstance(typeWord, new byte[] { 0x74, 0x27 }));
 
         telegram.addMasterValue(value);
         telegram.addMasterValue(EBusCommandValue.getInstance(typeWord, new byte[] { 0x5D, 0x01 }));

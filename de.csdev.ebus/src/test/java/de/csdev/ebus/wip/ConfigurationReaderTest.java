@@ -39,7 +39,7 @@ public class ConfigurationReaderTest {
         
     }
 
-
+    @Test
     public void testIsMasterAddress() throws IOException, EBusTypeException {
 
        
@@ -47,7 +47,7 @@ public class ConfigurationReaderTest {
 //        final ClassLoader classLoader = this.getClass().getr.getClassLoader();
 //        final URL resource = classLoader.getResource("/new-cfg-format2.json");
 //        InputStream inputStream = resource.openConnection().getInputStream();
-        InputStream inputStream = getClass().getResourceAsStream("/new-cfg-format.json");
+        InputStream inputStream = ConfigurationReader.class.getResourceAsStream("/commands/wolf-sm1-configuration.json");
         
         ConfigurationReader reader = new ConfigurationReader();
         reader.setEBusTypes(types);
@@ -71,10 +71,10 @@ public class ConfigurationReaderTest {
         //
         // byte[] bs3 = EBusUtils.toByteArray("30 76 50 22 03 CC 2B 0A BF 00 02 11 01 84");
 
-        List<IEBusCommand> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_C);
+        List<IEBusCommand> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_B);
         for (IEBusCommand eBusCommand : find) {
         	System.out.println("ConfigurationReaderTest.testIsMasterAddress()");
-            Map<String, Object> encode = EBusCommandUtils.decodeTelegram(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_C);
+            Map<String, Object> encode = EBusCommandUtils.decodeTelegram(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_B);
             for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
                 System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
                         + eBusCommand2.getValue());
@@ -82,8 +82,8 @@ public class ConfigurationReaderTest {
         }
 
 		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-				tr.getConfigurationById("solar.solar_yield", Type.BROADCAST), 
-				StaticTestTelegrams.WOLF_SOLAR_C);
+				tr.getConfigurationById("solar.solar_data", Type.BROADCAST), 
+				StaticTestTelegrams.WOLF_SOLAR_B);
 		
 		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
 		    System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
@@ -111,26 +111,26 @@ public class ConfigurationReaderTest {
         assertFalse("0x09 address is not a master address", EBusUtils.isMasterAddress((byte) 0x09));
     }
     
-    @Test
-    public void xxx() throws IOException, EBusTypeException {
-    	
-        InputStream inputStream = getClass().getResourceAsStream("/new-cfg-format.json");
-        
-        ConfigurationReader reader = new ConfigurationReader();
-        reader.setEBusTypes(types);
-        
-        List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
-        tr.addTelegramConfigurationList(configurationList);
-        
-        
-		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-				tr.getConfigurationById("auto_stroker", Type.GET), 
-				StaticTestTelegrams.AUTO_STROKER);
-		
-		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
-		    System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
-		            + eBusCommand2.getValue());
-		}
-    }
+//    @Test
+//    public void xxx() throws IOException, EBusTypeException {
+//    	
+//        InputStream inputStream = getClass().getResourceAsStream("/commands/wolf-sm1-configuration.json");
+//        
+//        ConfigurationReader reader = new ConfigurationReader();
+//        reader.setEBusTypes(types);
+//        
+//        List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
+//        tr.addTelegramConfigurationList(configurationList);
+//        
+//        
+//		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
+//				tr.getConfigurationById("auto_stroker", Type.GET), 
+//				StaticTestTelegrams.AUTO_STROKER);
+//		
+//		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
+//		    System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
+//		            + eBusCommand2.getValue());
+//		}
+//    }
 
 }

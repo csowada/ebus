@@ -76,7 +76,7 @@ public class EBusController extends EBusControllerBase {
 		}
 
 		if (machine.isWaitingForSlaveAnswer()) {
-			logger.info("x");
+			logger.trace("waiting for slave answer ...");
 		}
 
 		// we received a SYN byte

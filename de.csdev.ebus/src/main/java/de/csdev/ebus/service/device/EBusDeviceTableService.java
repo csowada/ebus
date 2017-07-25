@@ -41,6 +41,8 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     private EBusDeviceTable deviceTable;
 
+    private boolean disableIdentificationRequests = true;
+    
     public EBusDeviceTableService(EBusController controller, EBusCommandRegistry configurationProvider, EBusDeviceTable deviceTable) {
 
         this.controller = controller;
@@ -49,6 +51,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         this.controller.addEBusEventListener(this);
     }
 
+    /**
+     * 
+     */
     public void startDeviceScan() {
 
         if (scanQueueId != -1) {
@@ -80,6 +85,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         this.controller = null;
     }
 
+    /**
+     * 
+     */
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life", Type.BROADCAST);
@@ -94,6 +102,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 		}
     }
 
+    /**
+     * @param slaveAddress
+     */
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommand command = configurationProvider.getConfigurationById("common.identification", Type.GET);
@@ -112,6 +123,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 		}
     }
 
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
+     */
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
         deviceTable.updateDevice(receivedData[0], null);
@@ -122,6 +136,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramException(de.csdev.ebus.core.EBusDataException, java.lang.Integer)
+     */
     public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
             logger.warn("Scan broadcast failed!");
@@ -129,6 +146,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.service.parser.EBusParserListener#onTelegramResolved(de.csdev.ebus.command.IEBusCommand, java.util.Map, byte[], java.lang.Integer)
+     */
     public void onTelegramResolved(IEBusCommand command, Map<String, Object> result,
             byte[] receivedData, Integer sendQueueId) {
 
@@ -146,13 +166,17 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.service.device.EBusDeviceTableListener#onEBusDeviceUpdate(de.csdev.ebus.service.device.EBusDeviceTableListener.TYPE, de.csdev.ebus.service.device.IEBusDevice)
+     */
     public void onEBusDeviceUpdate(TYPE type, IEBusDevice device) {
 
         logger.info("DATA TABLE UPDATE {}", device);
 
         // identify new devices
         if (type.equals(TYPE.NEW)) {
-            sendIdentificationRequest(device.getSlaveAddress());
+        	if(!disableIdentificationRequests)
+        		sendIdentificationRequest(device.getSlaveAddress());
         }
     }
 }

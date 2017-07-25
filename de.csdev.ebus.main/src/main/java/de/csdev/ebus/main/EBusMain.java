@@ -19,6 +19,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommand;
@@ -106,7 +107,9 @@ public class EBusMain {
             
         } catch (IOException e) {
             logger.error("errro1", e);
-        }
+        } catch (EBusTypeException e) {
+        	logger.error("errro1", e);
+		}
 
     }
 

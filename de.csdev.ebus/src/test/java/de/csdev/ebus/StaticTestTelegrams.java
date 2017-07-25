@@ -20,7 +20,7 @@ public class StaticTestTelegrams {
             .toByteArray("71 FE 50 18 0E 00 00 D0 01 05 00 E2 03 0F 01 01 00 00 00 18");
 
     public static byte[] WOLF_SOLAR_B = EBusUtils
-            .toByteArray("71 FE 50 17 10 08 95 F8 00 C3 02 00 80 00 80 00 80 00 80 00 80 DB");
+            .toByteArray("71 FE 50 17 10 08 91 05 01 CA 01 00 80 00 80 00 80 00 80 00 80 9B");
     
     /**
      * Wolf Solar Solar Yield Broadcast >> Value 0.0, 7.686, 2.451.675

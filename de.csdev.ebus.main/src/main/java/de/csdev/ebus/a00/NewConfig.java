@@ -9,6 +9,7 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
+import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.cfg.json.v1.mapper.EBusConfigurationTelegram;
@@ -106,7 +107,13 @@ public class NewConfig {
                 // .println("NewConfig.run().new EBusConnectorEventListener() {...}.onTelegramReceived()" + find2);
 
                 for (IEBusCommand eBusCommand : find2) {
-                    Map<String, Object> encode = EBusCommandUtils.decodeTelegram(eBusCommand, receivedData);
+                    Map<String, Object> encode = null;
+					try {
+						encode = EBusCommandUtils.decodeTelegram(eBusCommand, receivedData);
+					} catch (EBusTypeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                     System.out.println(encode);
                 }
             }

@@ -100,7 +100,7 @@ public class EBusCommandUtils {
         // set len
         buf.put(4, len);
 
-        System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
+//        System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
         
         // replace the placeholders with the complex values
         if(!complexTypes.isEmpty()) {
@@ -113,14 +113,14 @@ public class EBusCommandUtils {
 
     		}
             buf.position(orgPos);
-            System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
+//            System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
         }
 
         // calculate crc
         byte crc8 = EBusUtils.crc8(buf.array(), buf.position());
         
         buf.put(crc8);
-        System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
+//        System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
         return buf;
     }
     
