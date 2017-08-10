@@ -28,4 +28,6 @@ public interface EBusConnectorEventListener {
      * @param telegram
      */
     public void onTelegramException(EBusDataException exception, Integer sendQueueId);
+
+    public void onConnectionException(Exception e);
 }

@@ -9,7 +9,6 @@
 package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.Socket;
 
 import org.slf4j.Logger;
@@ -58,9 +57,6 @@ public class EBusTCPConnection extends AbstractEBusConnection {
 
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
-
-        } catch (ConnectException e) {
-            logger.error(e.toString());
 
         } catch (Exception e) {
             logger.error(e.toString(), e);

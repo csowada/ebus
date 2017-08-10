@@ -9,6 +9,7 @@
 package de.csdev.ebus.command;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 
@@ -37,7 +38,30 @@ public class KWCrcMValue implements IEBusValue {
     }
 
     public String getName() {
-        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Map<String, String> getMapping() {
+        return null;
+    }
+
+    public String getStep() {
+        return null;
+    }
+
+    public BigDecimal getFactor() {
+        return null;
+    }
+
+    public String getLabel() {
+        return null;
+    }
+
+    public BigDecimal getMax() {
+        return null;
+    }
+
+    public BigDecimal getMin() {
         return null;
     }
 

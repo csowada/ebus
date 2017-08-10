@@ -69,11 +69,6 @@ public class EBusCommandValue implements IEBusValue {
         this.defaultValue = defaultValue;
     }
 
-    // public void setDefaultValue(byte[] defaultValue) {
-    // this.defaultValue = this.type.decode(defaultValue);
-    // // this.defaultValue = defaultValue;
-    // }
-
     public String getLabel() {
         return label;
     }
@@ -121,6 +116,7 @@ public class EBusCommandValue implements IEBusValue {
         return value;
     }
 
+    @Override
     public String toString() {
         return "EBusCommandValue [name=" + name + ", label=" + label + ", type=" + type + ", min=" + min + ", max="
                 + max + ", factor=" + factor + ", mapping=" + mapping + ", step=" + step + ", defaultValue="

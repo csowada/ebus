@@ -32,18 +32,18 @@ public class EBusClient {
     private EBusDeviceTableService deviceTableService;
 
     private EBusTypes dataTypes;
-    
-    public EBusClient(EBusController controller) {
+
+    public EBusClient(EBusController controller, byte masterAddress) {
         this.controller = controller;
-        init();
+        init(masterAddress);
     }
 
-    private void init() {
+    private void init(byte masterAddress) {
 
-    	dataTypes = new EBusTypes();
-        deviceTable = new EBusDeviceTable((byte) 0x00);
+        dataTypes = new EBusTypes();
+        deviceTable = new EBusDeviceTable(masterAddress);
         configurationProvider = new EBusCommandRegistry();
-        
+
         resolverService = new EBusParserService(configurationProvider);
         deviceTableService = new EBusDeviceTableService(controller, configurationProvider, deviceTable);
 
@@ -55,10 +55,10 @@ public class EBusClient {
     }
 
     public EBusTypes getDataTypes() {
-		return dataTypes;
-	}
+        return dataTypes;
+    }
 
-	public EBusController getController() {
+    public EBusController getController() {
         return controller;
     }
 

@@ -50,6 +50,21 @@ public abstract class EBusControllerBase extends Thread {
         return listeners.remove(listener);
     }
 
+    protected void fireOnConnectionException(final Exception e) {
+        if (threadPool == null) {
+            logger.warn("ThreadPool not ready!");
+            return;
+        }
+
+        threadPool.execute(new Runnable() {
+            public void run() {
+                for (EBusConnectorEventListener listener : listeners) {
+                    listener.onConnectionException(e);
+                }
+            }
+        });
+    }
+
     /**
      * Called if a valid eBus telegram was received. Send to event
      * listeners via thread pool to prevent blocking.
@@ -66,26 +81,26 @@ public abstract class EBusControllerBase extends Thread {
         threadPool.execute(new Runnable() {
             public void run() {
 
-//                try {
-                    byte[] receivedData = null;//EBusUtils.decodeExpandedData(receivedRawData);
-                    receivedData = receivedRawData;
+                // try {
+                byte[] receivedData = null;// EBusUtils.decodeExpandedData(receivedRawData);
+                receivedData = receivedRawData;
 
-                    if (receivedData != null) {
-                        for (EBusConnectorEventListener listener : listeners) {
-                            listener.onTelegramReceived(receivedData, sendQueueId);
-                        }
-                    } else {
-                        logger.debug("Received telegram was invalid, skip!");
+                if (receivedData != null) {
+                    for (EBusConnectorEventListener listener : listeners) {
+                        listener.onTelegramReceived(receivedData, sendQueueId);
                     }
+                } else {
+                    logger.debug("Received telegram was invalid, skip!");
+                }
 
-//                } catch (EBusDataException e) {
-//
-//                    logger.trace("error!", e);
-//
-//                    for (EBusConnectorEventListener listener : listeners) {
-//                        listener.onTelegramException(e, sendQueueId);
-//                    }
-//                }
+                // } catch (EBusDataException e) {
+                //
+                // logger.trace("error!", e);
+                //
+                // for (EBusConnectorEventListener listener : listeners) {
+                // listener.onTelegramException(e, sendQueueId);
+                // }
+                // }
 
             }
         });

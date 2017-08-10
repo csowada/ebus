@@ -8,6 +8,9 @@
  */
 package de.csdev.ebus.command;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 
 /**
@@ -23,5 +26,17 @@ public interface IEBusValue {
     public Object getDefaultValue();
 
     public String getName();
+
+    public Map<String, String> getMapping();
+
+    public String getStep();
+
+    public BigDecimal getFactor();
+
+    public String getLabel();
+
+    public BigDecimal getMax();
+
+    public BigDecimal getMin();
 
 }

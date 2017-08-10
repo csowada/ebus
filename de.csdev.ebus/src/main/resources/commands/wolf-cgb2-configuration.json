@@ -1,289 +1,300 @@
-[
-    {
-        "comment":  "<Heating> Heating program",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "heating.program_heating_circuit",
-
-        "template": [
-            {"name": "program", "type": "byte", "label": "Heating program", "min": 0, "max": 3,
-                "mapping": {"0": "standby", "1": "auto", "2": "heating mode", "3":"economy mode"}
-            }
-        ],
-
-        "set": {
-            "command":  "50 23",
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "74 27"},
-                {"type": "template-block"}
-            ]
-        },
-
-        "get": {
-            "command":  "50 22",
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "74 27"}
-            ],
-            "slave": [
-                {"type": "template-block"}
-            ]
-        }
-    },
+{
+    "id":       "wolf-cgb2",
+    "vendor":   "Wolf",
+    "label":    "Wolf CGB-2",
+    "description":  "Condensing gas boiler Wolf CGB-2",
     
-    {
-        "comment":  "<DHW> DHW program",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "dhw.program_dhw_circuit",
-        "command":  "50 23",
-
-        "template": [
-            {"name": "program", "type": "byte", "label": "DHW program", "min": 0, "max": 2,
-                "mapping": {"0": "standby", "1": "auto", "2": "always on"}
-            }
-        ],
-
-        "set": {
-            "command":  "50 23",
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "75 27"},
-                {"type": "template-block"}
-            ]
-        },
-
-        "get": {
-            "command":  "50 22",
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "75 27"}
-            ],
-            "slave": [
-                {"type": "template-block"}
-            ]
-        }
-    },
-
-
-
-    {
-        "comment":  "<Boiler> Modulation level (%)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.modulation",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "6F 01"}
-            ],
-            "slave": [
-                {"name": "modulation", "type": "word", "label": "Modulation level (%)", "min":0, "max":100}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Heating> Heating circuit pump speed (%)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.modulation_pump",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "57 27"}
-            ],
-            "slave": [
-                {"name": "modulation_pump", "type": "word", "label": "Heating circuit pump speed (%)", "min":0, "max":100}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> System pressure (bar)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.pressure",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "1A 27"}
-            ],
-            "slave": [
-                {"name": "pressure", "type": "word", "label": "System pressure (bar)", "factor": 0.01, "min": 0, "max": 10}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> Burner starts",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.fw_version",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "9A 01"}
-            ],
-            "slave": [
-                {"name": "software_version", "type": "word", "label": "Software Version HCM2", "factor": 0.01}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> Burner starts",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.starts",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "26 02"}
-            ],
-            "slave": [
-                {"name": "starts", "type": "word", "label": "Burner starts"}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> Actual I/O value",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.value_io",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "4F 27"}
-            ],
-            "slave": [
-                {"name": "value_io", "type": "word", "label": "Actual I/O value"}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> Power ON count",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.count_power_on",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "5E 27"}
-            ],
-            "slave": [
-                {"name": "count_power_on", "type": "word", "label": "Power ON count"}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> Burner hours run (h)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "burner.runtime",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "2A 02"}
-            ],
-            "slave": [
-                {"name": "runtime", "type": "word", "label": "Burner hours run (h)"}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> Current flue gas temperature (°C)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.temp_exhaust",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "1D 27"}
-            ],
-            "slave": [
-                {"name": "temp_exhaust", "type": "word", "label": "Current flue gas temperature (°C)", "factor": 0.1 , "min": 1, "max":140}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> Mains hours (h)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "boiler.runtime",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "28 02"}
-            ],
-            "slave": [
-                {"name": "runtime", "type": "word", "label": "Mains hours (h)"}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<Boiler> Boiler temperature (°C)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "dhw.temp_flow",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "0D 00"}
-            ],
-            "slave": [
-                {"name": "temp_flow", "type": "word", "label": "Boiler temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
-            ]
-        }
-    },
-
-    {
-        "comment":  "<DHW> DHW temperature (°C)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "dhw.temp_dhw",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "0E 00"}
-            ],
-            "slave": [
-                {"name": "temp_dhw", "type": "word", "label": "DHW temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
-            ]
-        }
-    },
+    "authors":  ["Christian Sowada, opensource@cs-dev.de"],
+    "identification": "",
     
-    {
-        "comment":  "<Boiler> Boiler return temperature (°C)",
-        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
-        "id":       "dhw.temp_return",
-        "command":  "50 22",
-
-        "get": {
-            "master": [
-                {"type": "kw-crc"},
-                {"type": "static", "default": "16 00"}
+    "commands":
+    [
+        {
+            "comment":  "<Heating> Heating program",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "heating.program_heating_circuit",
+    
+            "template": [
+                {"name": "program", "type": "byte", "label": "Heating program", "min": 0, "max": 3,
+                    "mapping": {"0": "standby", "1": "auto", "2": "heating mode", "3":"economy mode"}
+                }
             ],
-            "slave": [
-                {"name": "temp_return", "type": "word", "label": "Boiler return temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
-            ]
+    
+            "set": {
+                "command":  "50 23",
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "74 27"},
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "command":  "50 22",
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "74 27"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
+        {
+            "comment":  "<DHW> DHW program",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "dhw.program_dhw_circuit",
+            "command":  "50 23",
+    
+            "template": [
+                {"name": "program", "type": "byte", "label": "DHW program", "min": 0, "max": 2,
+                    "mapping": {"0": "standby", "1": "auto", "2": "always on"}
+                }
+            ],
+    
+            "set": {
+                "command":  "50 23",
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "75 27"},
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "command":  "50 22",
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "75 27"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        },
+    
+    
+    
+        {
+            "comment":  "<Boiler> Modulation level (%)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.modulation",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "6F 01"}
+                ],
+                "slave": [
+                    {"name": "modulation", "type": "word", "label": "Modulation level (%)", "min":0, "max":100}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Heating> Heating circuit pump speed (%)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.modulation_pump",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "57 27"}
+                ],
+                "slave": [
+                    {"name": "modulation_pump", "type": "word", "label": "Heating circuit pump speed (%)", "min":0, "max":100}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> System pressure (bar)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.pressure",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "1A 27"}
+                ],
+                "slave": [
+                    {"name": "pressure", "type": "word", "label": "System pressure (bar)", "factor": 0.01, "min": 0, "max": 10}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> Burner starts",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.fw_version",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "9A 01"}
+                ],
+                "slave": [
+                    {"name": "software_version", "type": "word", "label": "Software Version HCM2", "factor": 0.01}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> Burner starts",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.starts",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "26 02"}
+                ],
+                "slave": [
+                    {"name": "starts", "type": "word", "label": "Burner starts"}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> Actual I/O value",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.value_io",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "4F 27"}
+                ],
+                "slave": [
+                    {"name": "value_io", "type": "word", "label": "Actual I/O value"}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> Power ON count",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.count_power_on",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "5E 27"}
+                ],
+                "slave": [
+                    {"name": "count_power_on", "type": "word", "label": "Power ON count"}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> Burner hours run (h)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "burner.runtime",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "2A 02"}
+                ],
+                "slave": [
+                    {"name": "runtime", "type": "word", "label": "Burner hours run (h)"}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> Current flue gas temperature (°C)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.temp_exhaust",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "1D 27"}
+                ],
+                "slave": [
+                    {"name": "temp_exhaust", "type": "word", "label": "Current flue gas temperature (°C)", "factor": 0.1 , "min": 1, "max":140}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> Mains hours (h)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "boiler.runtime",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "28 02"}
+                ],
+                "slave": [
+                    {"name": "runtime", "type": "word", "label": "Mains hours (h)"}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<Boiler> Boiler temperature (°C)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "dhw.temp_flow",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "0D 00"}
+                ],
+                "slave": [
+                    {"name": "temp_flow", "type": "word", "label": "Boiler temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                ]
+            }
+        },
+    
+        {
+            "comment":  "<DHW> DHW temperature (°C)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "dhw.temp_dhw",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "0E 00"}
+                ],
+                "slave": [
+                    {"name": "temp_dhw", "type": "word", "label": "DHW temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                ]
+            }
+        },
+        
+        {
+            "comment":  "<Boiler> Boiler return temperature (°C)",
+            "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+            "id":       "dhw.temp_return",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "16 00"}
+                ],
+                "slave": [
+                    {"name": "temp_return", "type": "word", "label": "Boiler return temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                ]
+            }
         }
-    }
-]
+    ]
+}

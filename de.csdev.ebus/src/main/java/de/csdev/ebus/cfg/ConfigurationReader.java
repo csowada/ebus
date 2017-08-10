@@ -18,16 +18,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonParser.Feature;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.command.EBusCommand;
+import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandNestedValue;
 import de.csdev.ebus.command.EBusCommandValue;
+import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
@@ -38,203 +40,234 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class ConfigurationReader implements IConfigurationReader {
 
-	private ObjectMapper mapper;
-	private EBusTypes registry;
+    private ObjectMapper mapper;
+    private EBusTypes registry;
 
-	public List<EBusCommand> loadConfiguration(InputStream inputStream) throws IOException {
+    public List<IEBusCommand> loadConfiguration(InputStream inputStream) throws IOException {
 
-		if(registry == null) {
-			throw new RuntimeException("Unable to load configuration without EBusType set!");
-		}
+        // if (registry == null) {
+        // throw new RuntimeException("Unable to load configuration without EBusType set!");
+        // }
+        //
+        // List<EBusCommand> list = new ArrayList<EBusCommand>();
+        //
+        // if (mapper == null) {
+        // mapper = new ObjectMapper();
+        // mapper.configure(Feature.ALLOW_COMMENTS, true);
+        // }
+        //
+        // final Map<String, Object> json = mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {
+        // });
+        //
+        // @SuppressWarnings("unchecked")
+        // List<Map<String, Object>> commands = (List<Map<String, Object>>) json.get("commands");
+        //
+        // for (Map<String, Object> element : commands) {
+        // list.addAll(parseTelegramConfiguration(element));
+        // }
+        EBusCommandCollection collection = loadConfigurationCollection(inputStream);
+        return collection.getCommands();
+    }
 
-		List<EBusCommand> list = new ArrayList<EBusCommand>();
+    public EBusCommandCollection loadConfigurationCollection(InputStream inputStream) throws IOException {
 
-		if (mapper == null) {
-			mapper = new ObjectMapper();
-			mapper.configure(Feature.ALLOW_COMMENTS, true);
-		}
+        if (registry == null) {
+            throw new RuntimeException("Unable to load configuration without EBusType set!");
+        }
 
-		final List<Map<String, Object>> json = mapper.readValue(inputStream,
-				new TypeReference<List<Map<String, Object>>>() {});
+        List<IEBusCommand> list = new ArrayList<IEBusCommand>();
 
-		for (Map<String, Object> element : json) {
-			list.addAll(parseTelegramConfiguration(element));
-		}
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+            mapper.configure(Feature.ALLOW_COMMENTS, true);
+        }
 
-		return list;
-	}
+        final Map<String, Object> json = mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {
+        });
 
-	public void setEBusTypes(EBusTypes ebusTypes) {
-		registry = ebusTypes;
-	}
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> commands = (List<Map<String, Object>>) json.get("commands");
+        for (Map<String, Object> element : commands) {
+            list.addAll(parseTelegramConfiguration(element));
+        }
 
-	@SuppressWarnings({ "unchecked" })
-	protected List<EBusCommand> parseTelegramConfiguration(Map<String, Object> commandElement) {
+        return new EBusCommandCollection(json, list);
+    }
 
-		final ArrayList<EBusCommand> result = new ArrayList<EBusCommand>();
-		LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<String, EBusCommandValue>();
+    public void setEBusTypes(EBusTypes ebusTypes) {
+        registry = ebusTypes;
+    }
 
-		// collect available channels
-		List<String> channels = new ArrayList<String>();
-		if(commandElement.containsKey("get")) channels.add("get");
-		if(commandElement.containsKey("set")) channels.add("set");
-		if(commandElement.containsKey("broadcast")) channels.add("broadcast");
-		
-		// extract default values
-		String id = (String) commandElement.get("id");
-		byte[] command = EBusUtils.toByteArray((String) commandElement.get("command"));
-		String comment = (String) commandElement.get("comment");
-		String device = (String) commandElement.get("device");
-		Byte destination = EBusUtils.toByte((String)commandElement.get("dst"));
-		Byte source = EBusUtils.toByte((String)commandElement.get("src"));
+    @SuppressWarnings({ "unchecked" })
+    protected List<EBusCommand> parseTelegramConfiguration(Map<String, Object> commandElement) {
 
-		// read in template block
-		Object entry = commandElement.get("template");
-		if (entry != null || entry instanceof List) {
-			for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
-				for (EBusCommandValue templateCfg : parseValueConfiguration(template, null)) {
-					templateMap.put(templateCfg.getName(), templateCfg);
-				}
-			}
-		}
+        final ArrayList<EBusCommand> result = new ArrayList<EBusCommand>();
+        LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<String, EBusCommandValue>();
 
-		// loop all available channnels
-		for (String channel : channels) {
+        // collect available channels
+        List<String> channels = new ArrayList<String>();
+        if (commandElement.containsKey("get")) {
+            channels.add("get");
+        }
+        if (commandElement.containsKey("set")) {
+            channels.add("set");
+        }
+        if (commandElement.containsKey("broadcast")) {
+            channels.add("broadcast");
+        }
 
-			entry = commandElement.get(channel);
+        // extract default values
+        String id = (String) commandElement.get("id");
+        byte[] command = EBusUtils.toByteArray((String) commandElement.get("command"));
+        String comment = (String) commandElement.get("comment");
+        String device = (String) commandElement.get("device");
+        Byte destination = EBusUtils.toByte((String) commandElement.get("dst"));
+        Byte source = EBusUtils.toByte((String) commandElement.get("src"));
 
-			if (entry != null || entry instanceof Map) {
+        // read in template block
+        Object entry = commandElement.get("template");
+        if (entry instanceof List) {
+            for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
+                for (EBusCommandValue templateCfg : parseValueConfiguration(template, null)) {
+                    templateMap.put(templateCfg.getName(), templateCfg);
+                }
+            }
+        }
 
-				EBusCommand cfg = new EBusCommand();
+        // loop all available channnels
+        for (String channel : channels) {
 
-				cfg.setId(id);
-				cfg.setCommand(command);
-				cfg.setDescription(comment);
-				cfg.setDevice(device);
-				
-				cfg.setDestinationAddress(destination);
-				cfg.setSourceAddress(source);
-				
-				Map<String, Object> map = (Map<String, Object>) entry;
+            entry = commandElement.get(channel);
 
-				entry = map.get("master");
-				if (entry != null || entry instanceof List) {
-					for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
-						for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
-							cfg.addMasterValue(ev);							
-						}
-					}
-				}
+            if (entry instanceof Map) {
+                Map<String, Object> map = (Map<String, Object>) entry;
 
-				entry = map.get("slave");
-				if (entry != null || entry instanceof List) {
-					for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
-						for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
-							cfg.addSlaveValue(ev);
-						}
-					}
-				}
-				
-				if(channel.equals("get")) {
-					cfg.setType(Type.GET);
-					
-				} else if(channel.equals("set")) {
-					cfg.setType(Type.SET);
-					
-				} else if(channel.equals("broadcast")) {
-					cfg.setType(Type.BROADCAST);
-					
-				}
-				
-				result.add(cfg);
-			}
-		}
+                EBusCommand cfg = new EBusCommand();
 
-		return result;
-	}
+                cfg.setId(id);
+                cfg.setCommand(command);
+                cfg.setDescription(comment);
+                cfg.setDevice(device);
 
-	@SuppressWarnings("unchecked")
-	protected Collection<EBusCommandValue> parseValueConfiguration(Map<String, Object> template,
-			Map<String, EBusCommandValue> templateMap) {
+                cfg.setDestinationAddress(destination);
+                cfg.setSourceAddress(source);
 
-		Collection<EBusCommandValue> result = new ArrayList<EBusCommandValue>();
-		String typeStr = (String) template.get("type");
-		
-		if (typeStr.equals("template-block")) {
-			// return the complete template block
-			return templateMap.values();
-			
-		} else if (typeStr.equals("template")) {
+                entry = map.get("master");
+                if (entry instanceof List) {
+                    for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
+                        for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
+                            cfg.addMasterValue(ev);
+                        }
+                    }
+                }
 
-			// use command value from template map
-			result.add(templateMap.get(template.get("name")));
-			return result;
+                entry = map.get("slave");
+                if (entry instanceof List) {
+                    for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
+                        for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
+                            cfg.addSlaveValue(ev);
+                        }
+                    }
+                }
 
-		} else if (typeStr.equals("static")) {
-			// convert static content to bytes
+                if (channel.equals("get")) {
+                    cfg.setType(Type.GET);
 
-			byte[] byteArray = EBusUtils.toByteArray((String) template.get("default"));
-			Map<String, Object> properties = new HashMap<String, Object>();
-			properties.put("length", byteArray.length);
-			final IEBusType typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
+                } else if (channel.equals("set")) {
+                    cfg.setType(Type.SET);
 
-			result.add(EBusCommandValue.getInstance(typeByte, byteArray));
-			return result;
-		}
+                } else if (channel.equals("broadcast")) {
+                    cfg.setType(Type.BROADCAST);
 
+                }
 
-		EBusCommandValue ev = null;
+                result.add(cfg);
+            }
+        }
 
-		// value is a nested value
-		if(template.containsKey("children")) {
-			EBusCommandNestedValue evc = new EBusCommandNestedValue();
-			ev = evc;
+        return result;
+    }
 
-			int pos = 0;
-			for (Map<String, Object> childElem : (List<Map<String, Object>>)template.get("children")) {
+    @SuppressWarnings("unchecked")
+    protected Collection<EBusCommandValue> parseValueConfiguration(Map<String, Object> template,
+            Map<String, EBusCommandValue> templateMap) {
 
-				// add pos information from list
-				childElem.put("pos", pos);
+        Collection<EBusCommandValue> result = new ArrayList<EBusCommandValue>();
+        String typeStr = (String) template.get("type");
 
-				// parse child value
-				for (EBusCommandValue childValue : parseValueConfiguration(childElem, templateMap)) {
-					evc.add(childValue);
-				}
+        if (typeStr.equals("template-block")) {
+            // return the complete template block
+            return templateMap.values();
 
-				pos++;
-			}
+        } else if (typeStr.equals("template")) {
 
+            // use command value from template map
+            result.add(templateMap.get(template.get("name")));
+            return result;
 
-		} else {
-			// default value
-			ev = new EBusCommandValue();
-		}
+        } else if (typeStr.equals("static")) {
+            // convert static content to bytes
 
-		IEBusType type = registry.getType(typeStr, template);
+            byte[] byteArray = EBusUtils.toByteArray((String) template.get("default"));
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("length", byteArray.length);
+            final IEBusType typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
 
-		ev.setType(type);
+            result.add(EBusCommandValue.getInstance(typeByte, byteArray));
+            return result;
+        }
 
-		ev.setName((String) template.get("name"));
-		ev.setLabel((String) template.get("label"));
+        EBusCommandValue ev = null;
 
-		Double factor = (Double) template.get("factor");
-		if (factor != null) {
-			ev.setFactor(BigDecimal.valueOf(factor));
-		}
+        // value is a nested value
+        if (template.containsKey("children")) {
+            EBusCommandNestedValue evc = new EBusCommandNestedValue();
+            ev = evc;
 
-		if (template.containsKey("min")) {
-			ev.setMin(NumberUtils.toBigDecimal(template.get("min")));
-		}
+            int pos = 0;
+            for (Map<String, Object> childElem : (List<Map<String, Object>>) template.get("children")) {
 
-		if (template.containsKey("max")) {
-			ev.setMax(NumberUtils.toBigDecimal(template.get("max")));
-		}
+                // add pos information from list
+                childElem.put("pos", pos);
 
-		// TODO missing !!!
-		template.get("mapping");
+                // parse child value
+                for (EBusCommandValue childValue : parseValueConfiguration(childElem, templateMap)) {
+                    evc.add(childValue);
+                }
 
-		result.add(ev);
-		return result;
-	}
+                pos++;
+            }
+
+        } else {
+            // default value
+            ev = new EBusCommandValue();
+        }
+
+        IEBusType type = registry.getType(typeStr, template);
+
+        ev.setType(type);
+
+        ev.setName((String) template.get("name"));
+        ev.setLabel((String) template.get("label"));
+
+        Double factor = (Double) template.get("factor");
+        if (factor != null) {
+            ev.setFactor(BigDecimal.valueOf(factor));
+        }
+
+        if (template.containsKey("min")) {
+            ev.setMin(NumberUtils.toBigDecimal(template.get("min")));
+        }
+
+        if (template.containsKey("max")) {
+            ev.setMax(NumberUtils.toBigDecimal(template.get("max")));
+        }
+
+        // TODO missing !!!
+        template.get("mapping");
+
+        result.add(ev);
+        return result;
+    }
 
 }

@@ -42,8 +42,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
     private EBusDeviceTable deviceTable;
 
     private boolean disableIdentificationRequests = true;
-    
-    public EBusDeviceTableService(EBusController controller, EBusCommandRegistry configurationProvider, EBusDeviceTable deviceTable) {
+
+    public EBusDeviceTableService(EBusController controller, EBusCommandRegistry configurationProvider,
+            EBusDeviceTable deviceTable) {
 
         this.controller = controller;
         this.configurationProvider = configurationProvider;
@@ -52,7 +53,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
     }
 
     /**
-     * 
+     *
      */
     public void startDeviceScan() {
 
@@ -68,13 +69,13 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence", Type.GET);
 
         try {
-			ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
-					command, masterAddress, EBusConsts.BROADCAST_ADDRESS, null);
+            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
+                    EBusConsts.BROADCAST_ADDRESS, null);
 
-			scanQueueId = controller.addToSendQueue(buffer);
-		} catch (EBusTypeException e) {
-			logger.error("error!", e);
-		}
+            scanQueueId = controller.addToSendQueue(buffer);
+        } catch (EBusTypeException e) {
+            logger.error("error!", e);
+        }
     }
 
     /**
@@ -86,20 +87,20 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
     }
 
     /**
-     * 
+     *
      */
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life", Type.BROADCAST);
 
         try {
-			ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(
-					command, masterAddress, EBusConsts.BROADCAST_ADDRESS, null);
+            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
+                    EBusConsts.BROADCAST_ADDRESS, null);
 
-			controller.addToSendQueue(buffer);
-		} catch (EBusTypeException e) {
-			logger.error("error!", e);
-		}
+            controller.addToSendQueue(buffer);
+        } catch (EBusTypeException e) {
+            logger.error("error!", e);
+        }
     }
 
     /**
@@ -109,21 +110,23 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommand command = configurationProvider.getConfigurationById("common.identification", Type.GET);
 
-        if(command == null) {
-        	logger.warn("Unable to load command with id common.identification");
-        	return;
+        if (command == null) {
+            logger.warn("Unable to load command with id common.identification");
+            return;
         }
-        
-        try {
-			ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
 
-			controller.addToSendQueue(buffer);
-		} catch (EBusTypeException e) {
-			logger.error("error!", e);
-		}
+        try {
+            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
+
+            controller.addToSendQueue(buffer);
+        } catch (EBusTypeException e) {
+            logger.error("error!", e);
+        }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
@@ -136,8 +139,11 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
-    /* (non-Javadoc)
-     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramException(de.csdev.ebus.core.EBusDataException, java.lang.Integer)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramException(de.csdev.ebus.core.EBusDataException,
+     * java.lang.Integer)
      */
     public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
@@ -146,11 +152,14 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
-    /* (non-Javadoc)
-     * @see de.csdev.ebus.service.parser.EBusParserListener#onTelegramResolved(de.csdev.ebus.command.IEBusCommand, java.util.Map, byte[], java.lang.Integer)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.service.parser.EBusParserListener#onTelegramResolved(de.csdev.ebus.command.IEBusCommand,
+     * java.util.Map, byte[], java.lang.Integer)
      */
-    public void onTelegramResolved(IEBusCommand command, Map<String, Object> result,
-            byte[] receivedData, Integer sendQueueId) {
+    public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
+            Integer sendQueueId) {
 
         String id = command.getId();
         byte masterAddress = receivedData[0];
@@ -166,8 +175,11 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         }
     }
 
-    /* (non-Javadoc)
-     * @see de.csdev.ebus.service.device.EBusDeviceTableListener#onEBusDeviceUpdate(de.csdev.ebus.service.device.EBusDeviceTableListener.TYPE, de.csdev.ebus.service.device.IEBusDevice)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.service.device.EBusDeviceTableListener#onEBusDeviceUpdate(de.csdev.ebus.service.device.
+     * EBusDeviceTableListener.TYPE, de.csdev.ebus.service.device.IEBusDevice)
      */
     public void onEBusDeviceUpdate(TYPE type, IEBusDevice device) {
 
@@ -175,8 +187,13 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         // identify new devices
         if (type.equals(TYPE.NEW)) {
-        	if(!disableIdentificationRequests)
-        		sendIdentificationRequest(device.getSlaveAddress());
+            if (!disableIdentificationRequests) {
+                sendIdentificationRequest(device.getSlaveAddress());
+            }
         }
+    }
+
+    public void onConnectionException(Exception e) {
+        // noop
     }
 }

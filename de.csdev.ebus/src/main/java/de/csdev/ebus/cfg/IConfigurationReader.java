@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
-import de.csdev.ebus.command.EBusCommand;
+import de.csdev.ebus.command.IEBusCommand;
 
 /**
  * @author Christian Sowada
@@ -21,7 +21,7 @@ import de.csdev.ebus.command.EBusCommand;
  */
 public interface IConfigurationReader {
 
-    public List<EBusCommand> loadConfiguration(InputStream inputStream) throws IOException;
+    public List<IEBusCommand> loadConfiguration(InputStream inputStream) throws IOException;
 
     public void setEBusTypes(EBusTypes ebusTypes);
 
