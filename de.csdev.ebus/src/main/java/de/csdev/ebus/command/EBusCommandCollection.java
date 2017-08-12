@@ -2,34 +2,37 @@ package de.csdev.ebus.command;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+
+import de.csdev.ebus.utils.CollectionUtils;
 
 public class EBusCommandCollection {
 
-    private Map<String, Object> properties = new HashMap<String, Object>();
     private List<IEBusCommand> commands = new ArrayList<IEBusCommand>();
+    private Map<String, Object> properties;
+    private String id;
+    private String label;
 
-    public EBusCommandCollection(Map<String, Object> properties, List<IEBusCommand> commands) {
+    public EBusCommandCollection(String id, String label, Map<String, Object> properties, List<IEBusCommand> commands) {
 
-        // copy over all execpt commands block
-        for (Entry<String, Object> entry : properties.entrySet()) {
-            if (!entry.getKey().equals("commands")) {
-                this.properties.put(entry.getKey(), entry.getValue());
-            }
+        this.id = id;
+        this.label = label;
+
+        if (properties != null) {
+            this.properties = CollectionUtils.newMapIfNull(this.properties);
+            this.properties.putAll(properties);
         }
 
         this.commands.addAll(commands);
     }
 
     public String getId() {
-        return getAsString("id");
+        return id;
     }
 
     public String getLabel() {
-        return getAsString("label");
+        return label;
     }
 
     public String getAsString(String key) {
@@ -38,11 +41,18 @@ public class EBusCommandCollection {
     }
 
     public Object get(String key) {
-        return properties.get(key);
+        return CollectionUtils.get(properties, key);
     }
 
     public List<IEBusCommand> getCommands() {
         return Collections.unmodifiableList(commands);
     }
 
+    public Map<String, Object> getProperties() {
+        return CollectionUtils.unmodifiableNotNullMap(properties);
+    }
+
+    public Object getProperty(String key) {
+        return CollectionUtils.get(properties, key);
+    }
 }

@@ -11,10 +11,11 @@ package de.csdev.ebus.command;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.csdev.ebus.utils.CollectionUtils;
 
 /**
  * @author Christian Sowada
@@ -34,7 +35,7 @@ public class EBusCommand implements IEBusCommandWritable {
 
     private List<IEBusValue> extendCommandValue;
 
-    private Map<String, String> properties;
+    private Map<String, Object> properties;
 
     private String id;
 
@@ -262,8 +263,18 @@ public class EBusCommand implements IEBusCommandWritable {
                 + ", sourceAddress=" + sourceAddress + "]";
     }
 
-    public Map<String, String> getProperties() {
-        return Collections.unmodifiableMap(properties == null ? new HashMap<String, String>() : properties);
+    public Map<String, Object> getProperties() {
+        return CollectionUtils.unmodifiableNotNullMap(properties);
+    }
+
+    public void setProperty(String key, String value) {
+        properties = CollectionUtils.newMapIfNull(properties);
+        properties.put(key, value);
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = new HashMap<String, Object>();
+        this.properties.putAll(properties);
     }
 
 }

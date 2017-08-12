@@ -108,8 +108,8 @@ public interface IEBusCommand {
 
     /**
      * Returns a map of additional properties
-     * 
+     *
      * @return
      */
-    public Map<String, String> getProperties();
+    public Map<String, Object> getProperties();
 }

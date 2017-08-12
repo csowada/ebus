@@ -9,7 +9,7 @@
 package de.csdev.ebus.command;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import de.csdev.ebus.cfg.datatypes.IEBusType;
@@ -19,8 +19,6 @@ import de.csdev.ebus.cfg.datatypes.IEBusType;
  *
  */
 public class EBusKWCrcMValue implements IEBusValue {
-
-    private static final Map<String, String> EMPTY_MAP = new HashMap<String, String>();
 
     private IEBusType type;
 
@@ -45,7 +43,7 @@ public class EBusKWCrcMValue implements IEBusValue {
     }
 
     public Map<String, String> getMapping() {
-        return EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     public String getStep() {
@@ -68,8 +66,9 @@ public class EBusKWCrcMValue implements IEBusValue {
         return null;
     }
 
-    public Map<String, String> getProperties() {
-        return EMPTY_MAP;
+    public Map<String, Object> getProperties() {
+        return Collections.emptyMap();
+
     }
 
 }

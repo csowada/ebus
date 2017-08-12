@@ -76,7 +76,7 @@ public class ConfigurationReader implements IConfigurationReader {
             throw new RuntimeException("Unable to load configuration without EBusType set!");
         }
 
-        List<IEBusCommand> list = new ArrayList<IEBusCommand>();
+        List<IEBusCommand> commandList = new ArrayList<IEBusCommand>();
 
         if (mapper == null) {
             mapper = new ObjectMapper();
@@ -86,14 +86,11 @@ public class ConfigurationReader implements IConfigurationReader {
         EBusCollectionDTO collection = mapper.readValue(inputStream, EBusCollectionDTO.class);
 
         for (EBusCommandDTO command : collection.getCommands()) {
-            list.addAll(parseTelegramConfiguration(command));
+            commandList.addAll(parseTelegramConfiguration(command));
         }
 
-        Map<String, Object> json = new HashMap<String, Object>();
-        json.put("id", collection.getId());
-        json.put("label", collection.getLabel());
-
-        return new EBusCommandCollection(json, list);
+        return new EBusCommandCollection(collection.getId(), collection.getLabel(), collection.getProperties(),
+                commandList);
     }
 
     public void setEBusTypes(EBusTypes ebusTypes) {

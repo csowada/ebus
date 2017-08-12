@@ -27,24 +27,31 @@ import de.csdev.ebus.utils.EBusUtils;
  *
  */
 public class EBusCommandUtils {
-	
-    public static ByteBuffer buildMasterTelegram(IEBusCommand command, Byte source, Byte target, Map<String, Object> values) throws EBusTypeException {
+
+    public static ByteBuffer buildMasterTelegram(IEBusCommand command, Byte source, Byte target,
+            Map<String, Object> values) throws EBusTypeException {
 
         byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
-        
-        if(source == null && command.getSourceAddress() != null) {
-        	source = command.getSourceAddress();
+
+        if (source == null && command.getSourceAddress() != null) {
+            source = command.getSourceAddress();
         }
-        
-        if(target == null && command.getDestinationAddress() != null) {
-        	target = command.getDestinationAddress();
+
+        if (target == null && command.getDestinationAddress() != null) {
+            target = command.getDestinationAddress();
         }
-        
-        if(command == null) throw new IllegalArgumentException("Parameter command is null!");
-        if(source == null) throw new IllegalArgumentException("Parameter source is null!");
-        if(target == null) throw new IllegalArgumentException("Parameter target is null!");
-        
+
+        if (command == null) {
+            throw new IllegalArgumentException("Parameter command is null!");
+        }
+        if (source == null) {
+            throw new IllegalArgumentException("Parameter source is null!");
+        }
+        if (target == null) {
+            throw new IllegalArgumentException("Parameter target is null!");
+        }
+
         buf.put(source); // QQ - Source
         buf.put(target); // ZZ - Target
         buf.put(command.getCommand()); // PB SB - Command
@@ -59,40 +66,40 @@ public class EBusCommandUtils {
         }
 
         Map<Integer, IEBusComplexType> complexTypes = new HashMap<Integer, IEBusComplexType>();
-        
+
         if (command.getMasterTypes() != null) {
             for (IEBusValue entry : command.getMasterTypes()) {
                 IEBusType type = entry.getType();
                 byte[] b = null;
-                
+
                 // use the value from the values map if set
                 if (values != null && values.containsKey(entry.getName())) {
                     b = type.encode(values.get(entry.getName()));
-                    
+
                 } else {
-                	if(type instanceof IEBusComplexType) {
-                		
-                		// add the complex to the list for post processing
-                		complexTypes.put(buf.position(), (IEBusComplexType)type);
-                		
-                		// add placeholder
-                		b = new byte[entry.getType().getTypeLenght()];
-                		
-                	} else if (entry.getDefaultValue() == null) {
+                    if (type instanceof IEBusComplexType) {
+
+                        // add the complex to the list for post processing
+                        complexTypes.put(buf.position(), (IEBusComplexType) type);
+
+                        // add placeholder
+                        b = new byte[entry.getType().getTypeLenght()];
+
+                    } else if (entry.getDefaultValue() == null) {
                         b = type.encode(null);
-                        
+
                     } else {
-                    	b = type.encode(entry.getDefaultValue());
-                    	
+                        b = type.encode(entry.getDefaultValue());
+
                     }
 
                 }
-                
-                if(b == null) {
-                	throw new RuntimeException("Encoded value is null!");              	
+
+                if (b == null) {
+                    throw new RuntimeException("Encoded value is null!");
                 }
-                //buf.p
-                buf.put(b); 
+                // buf.p
+                buf.put(b);
                 len += type.getTypeLenght();
             }
         }
@@ -100,39 +107,39 @@ public class EBusCommandUtils {
         // set len
         buf.put(4, len);
 
-//        System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
-        
+        // System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
+
         // replace the placeholders with the complex values
-        if(!complexTypes.isEmpty()) {
+        if (!complexTypes.isEmpty()) {
             int orgPos = buf.position();
             for (Entry<Integer, IEBusComplexType> entry : complexTypes.entrySet()) {
-    			// jump to position
-    			buf.position(entry.getKey());
-    			// put new value
-    			buf.put(entry.getValue().encodeComplex(buf));
+                // jump to position
+                buf.position(entry.getKey());
+                // put new value
+                buf.put(entry.getValue().encodeComplex(buf));
 
-    		}
+            }
             buf.position(orgPos);
-//            System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
+            // System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
         }
 
         // calculate crc
         byte crc8 = EBusUtils.crc8(buf.array(), buf.position());
-        
+
         buf.put(crc8);
-//        System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
+        // System.out.println("EBusCommandUtils.buildMasterTelegram()" + EBusUtils.toHexDumpString(buf).toString());
         return buf;
     }
-    
+
     public static Map<String, Object> decodeTelegram(IEBusCommand command, byte[] data) throws EBusTypeException {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         int pos = 6;
 
-        if(command == null) {
-        	throw new IllegalArgumentException("Parameter command is null!");
+        if (command == null) {
+            throw new IllegalArgumentException("Parameter command is null!");
         }
-        
+
         if (command.getExtendCommandValue() != null) {
             for (IEBusValue ev : command.getExtendCommandValue()) {
                 pos += ev.getType().getTypeLenght();
@@ -141,41 +148,41 @@ public class EBusCommandUtils {
 
         if (command.getMasterTypes() != null) {
             for (IEBusValue ev : command.getMasterTypes()) {
-            	
-            	byte[] src = null;
-            	Object decode = null;
-            	
-            	// use the raw buffer up to this position, used for custom crc calculation etc.
-            	// see kw-crc type
-            	if(ev.getType() instanceof IEBusComplexType) {
-                    decode = ((IEBusComplexType)ev.getType()).decodeComplex(data, pos);
-                    
-            	} else {
-            		// default encoding
-            		src = new byte[ev.getType().getTypeLenght()];
+
+                byte[] src = null;
+                Object decode = null;
+
+                // use the raw buffer up to this position, used for custom crc calculation etc.
+                // see kw-crc type
+                if (ev.getType() instanceof IEBusComplexType) {
+                    decode = ((IEBusComplexType) ev.getType()).decodeComplex(data, pos);
+
+                } else {
+                    // default encoding
+                    src = new byte[ev.getType().getTypeLenght()];
                     System.arraycopy(data, pos - 1, src, 0, src.length);
                     decode = ev.getType().decode(src);
-            	}
-
-            	// not allowed for complex types!
-                if(ev instanceof IEBusNestedValue && src != null) {
-                	IEBusNestedValue evc = (IEBusNestedValue)ev;
-                	if(evc.hasChildren()) {
-                		
-                		for (IEBusValue child : evc.getChildren()) {
-                			
-							Object decode2 = child.getType().decode(src);
-							if(StringUtils.isNoneEmpty(child.getName())) {
-								result.put(child.getName(), decode2);								
-							}
-						}
-                	}
                 }
 
-                if(StringUtils.isNoneEmpty(ev.getName())) {
-                	result.put(ev.getName(), decode);                	
+                // not allowed for complex types!
+                if (ev instanceof IEBusNestedValue && src != null) {
+                    IEBusNestedValue evc = (IEBusNestedValue) ev;
+                    if (evc.hasChildren()) {
+
+                        for (IEBusValue child : evc.getChildren()) {
+
+                            Object decode2 = child.getType().decode(src);
+                            if (StringUtils.isNoneEmpty(child.getName())) {
+                                result.put(child.getName(), decode2);
+                            }
+                        }
+                    }
                 }
-                
+
+                if (StringUtils.isNoneEmpty(ev.getName())) {
+                    result.put(ev.getName(), decode);
+                }
+
                 pos += ev.getType().getTypeLenght();
             }
         }
@@ -191,9 +198,9 @@ public class EBusCommandUtils {
 
                 if (ev instanceof EBusCommandValue) {
                     EBusCommandValue nev = (EBusCommandValue) ev;
-                    
-                    if(decode instanceof BigDecimal) {
-                    	
+
+                    if (decode instanceof BigDecimal) {
+
                         BigDecimal multiply = (BigDecimal) decode;
 
                         if (nev.getFactor() != null) {
@@ -211,7 +218,7 @@ public class EBusCommandUtils {
                             decode = null;
                         }
 
-//                        decode = multiply;
+                        // decode = multiply;
                     }
 
                     // nev.getMax()
@@ -224,13 +231,13 @@ public class EBusCommandUtils {
 
         return result;
     }
-    
+
     public static ByteBuffer getMasterTelegramMask(IEBusCommand command) {
-    	
+
         // byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
-        buf.put(command.getSourceAddress() == null ? (byte) 0x00 : (byte)0xFF); // QQ - Source
-        buf.put(command.getDestinationAddress() == null ? (byte) 0x00 : (byte)0xFF); // ZZ - Target
+        buf.put(command.getSourceAddress() == null ? (byte) 0x00 : (byte) 0xFF); // QQ - Source
+        buf.put(command.getDestinationAddress() == null ? (byte) 0x00 : (byte) 0xFF); // ZZ - Target
         buf.put(new byte[] { (byte) 0xFF, (byte) 0xFF }); // PB SB - Command
         buf.put((byte) 0xFF); // NN - Length
 
@@ -257,7 +264,7 @@ public class EBusCommandUtils {
             for (IEBusValue entry : command.getMasterTypes()) {
                 IEBusType type = entry.getType();
 
-//                boolean x = type instanceof EBusTypeBytes;
+                // boolean x = type instanceof EBusTypeBytes;
 
                 if (entry.getName() == null && type instanceof EBusTypeBytes && entry.getDefaultValue() != null) {
                     for (int i = 0; i < type.getTypeLenght(); i++) {
@@ -279,5 +286,5 @@ public class EBusCommandUtils {
 
         return buf;
     }
-	
+
 }

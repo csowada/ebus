@@ -44,6 +44,6 @@ public interface IEBusValue {
      *
      * @return
      */
-    public Map<String, String> getProperties();
+    public Map<String, Object> getProperties();
 
 }

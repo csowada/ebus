@@ -1,6 +1,5 @@
 package de.csdev.ebus.cfg.dto;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+
+import de.csdev.ebus.utils.CollectionUtils;
 
 public class EBusCollectionDTO {
 
@@ -26,11 +27,16 @@ public class EBusCollectionDTO {
     @JsonAnySetter
     public void setProperty(String key, Object value) {
         logger.info("Add custom property \"{}\" with value \"{}\"", key, value);
-        if (properties == null) {
-            properties = new HashMap<String, Object>();
-        }
-
+        properties = CollectionUtils.newMapIfNull(properties);
         properties.put(key, value);
+    }
+
+    public Object getProperty(String key) {
+        return CollectionUtils.get(properties, key);
+    }
+
+    public Map<String, Object> getProperties() {
+        return CollectionUtils.unmodifiableNotNullMap(properties);
     }
 
     public List<String> getAuthors() {
