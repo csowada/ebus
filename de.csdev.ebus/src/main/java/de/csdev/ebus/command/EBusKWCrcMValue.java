@@ -46,7 +46,7 @@ public class EBusKWCrcMValue implements IEBusValue {
         return Collections.emptyMap();
     }
 
-    public String getStep() {
+    public BigDecimal getStep() {
         return null;
     }
 

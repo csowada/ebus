@@ -37,7 +37,7 @@ public class EBusCommandValue implements IEBusValue {
 
     private Map<String, Object> properties;
 
-    private String step;
+    private BigDecimal step;
 
     public Map<String, String> getMapping() {
         return mapping;
@@ -47,11 +47,11 @@ public class EBusCommandValue implements IEBusValue {
         this.mapping = mapping;
     }
 
-    public String getStep() {
+    public BigDecimal getStep() {
         return step;
     }
 
-    public void setStep(String step) {
+    public void setStep(BigDecimal step) {
         this.step = step;
     }
 

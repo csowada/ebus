@@ -26,14 +26,10 @@ public class EBusCommandChannel implements IEBusCommandChannelWriteable {
 
     private Type type;
 
-    public EBusCommandChannel(EBusCommand parent) {
+    public EBusCommandChannel(EBusCommand parent, Type type) {
         this.parent = parent;
-        parent.addCommandChannel(this);
-    }
-
-    public IEBusCommandChannelWriteable setType(Type type) {
         this.type = type;
-        return this;
+        parent.addCommandChannel(this);
     }
 
     /*

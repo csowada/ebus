@@ -29,7 +29,7 @@ public interface IEBusValue {
 
     public Map<String, String> getMapping();
 
-    public String getStep();
+    public BigDecimal getStep();
 
     public BigDecimal getFactor();
 

@@ -141,19 +141,26 @@ public class ConfigurationReader implements IConfigurationReader {
         for (String channel : channels) {
 
             EBusCommandTypeDTO commandChannel = null;
+            Type type = null;
 
             if (channel.equals("get")) {
                 commandChannel = commandElement.getGet();
+                type = Type.GET;
+
             } else if (channel.equals("set")) {
                 commandChannel = commandElement.getSet();
+                type = Type.SET;
+
             } else if (channel.equals("broadcast")) {
                 commandChannel = commandElement.getBroadcast();
+                type = Type.BROADCAST;
+
             }
 
             if (commandChannel != null) {
                 // Map<String, Object> map = (Map<String, Object>) entry;
 
-                EBusCommandChannel c = new EBusCommandChannel(cfg);
+                EBusCommandChannel c = new EBusCommandChannel(cfg, type);
 
                 c.setCommand(command);
                 c.setDestinationAddress(destination);
@@ -174,17 +181,6 @@ public class ConfigurationReader implements IConfigurationReader {
                             c.addSlaveValue(ev);
                         }
                     }
-                }
-
-                if (channel.equals("get")) {
-                    c.setType(Type.GET);
-
-                } else if (channel.equals("set")) {
-                    c.setType(Type.SET);
-
-                } else if (channel.equals("broadcast")) {
-                    c.setType(Type.BROADCAST);
-
                 }
 
             }
