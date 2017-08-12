@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommand.Type;
+import de.csdev.ebus.command.IEBusCommandChannel;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
@@ -66,7 +66,8 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-        IEBusCommand command = configurationProvider.getConfigurationById("common.inquiry_of_existence", Type.GET);
+        IEBusCommandChannel command = configurationProvider.getConfigurationById("common.inquiry_of_existence",
+                Type.GET);
 
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
@@ -91,7 +92,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
      */
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommand command = configurationProvider.getConfigurationById("common.sign_of_life", Type.BROADCAST);
+        IEBusCommandChannel command = configurationProvider.getConfigurationById("common.sign_of_life", Type.BROADCAST);
 
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
@@ -108,7 +109,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
      */
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommand command = configurationProvider.getConfigurationById("common.identification", Type.GET);
+        IEBusCommandChannel command = configurationProvider.getConfigurationById("common.identification", Type.GET);
 
         if (command == null) {
             logger.warn("Unable to load command with id common.identification");
@@ -126,7 +127,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
@@ -141,7 +142,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramException(de.csdev.ebus.core.EBusDataException,
      * java.lang.Integer)
      */
@@ -154,14 +155,14 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.service.parser.EBusParserListener#onTelegramResolved(de.csdev.ebus.command.IEBusCommand,
      * java.util.Map, byte[], java.lang.Integer)
      */
-    public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
+    public void onTelegramResolved(IEBusCommandChannel commandChannel, Map<String, Object> result, byte[] receivedData,
             Integer sendQueueId) {
 
-        String id = command.getId();
+        String id = commandChannel.getParent().getId();
         byte masterAddress = receivedData[0];
 
         if (id.equals("common.sign_of_life")) {
@@ -177,7 +178,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.service.device.EBusDeviceTableListener#onEBusDeviceUpdate(de.csdev.ebus.service.device.
      * EBusDeviceTableListener.TYPE, de.csdev.ebus.service.device.IEBusDevice)
      */

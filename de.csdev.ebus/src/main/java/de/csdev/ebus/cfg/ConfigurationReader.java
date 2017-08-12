@@ -28,6 +28,7 @@ import de.csdev.ebus.cfg.dto.EBusCommandDTO;
 import de.csdev.ebus.cfg.dto.EBusCommandTypeDTO;
 import de.csdev.ebus.cfg.dto.EBusValueDTO;
 import de.csdev.ebus.command.EBusCommand;
+import de.csdev.ebus.command.EBusCommandChannel;
 import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandNestedValue;
 import de.csdev.ebus.command.EBusCommandValue;
@@ -131,6 +132,11 @@ public class ConfigurationReader implements IConfigurationReader {
             }
         }
 
+        EBusCommand cfg = new EBusCommand();
+        cfg.setId(id);
+        cfg.setDescription(comment);
+        cfg.setDevice(device);
+
         // loop all available channnels
         for (String channel : channels) {
 
@@ -138,7 +144,7 @@ public class ConfigurationReader implements IConfigurationReader {
 
             if (channel.equals("get")) {
                 commandChannel = commandElement.getGet();
-            } else if (channel.equals("wet")) {
+            } else if (channel.equals("set")) {
                 commandChannel = commandElement.getSet();
             } else if (channel.equals("broadcast")) {
                 commandChannel = commandElement.getBroadcast();
@@ -147,21 +153,17 @@ public class ConfigurationReader implements IConfigurationReader {
             if (commandChannel != null) {
                 // Map<String, Object> map = (Map<String, Object>) entry;
 
-                EBusCommand cfg = new EBusCommand();
+                EBusCommandChannel c = new EBusCommandChannel(cfg);
 
-                cfg.setId(id);
-                cfg.setCommand(command);
-                cfg.setDescription(comment);
-                cfg.setDevice(device);
-
-                cfg.setDestinationAddress(destination);
-                cfg.setSourceAddress(source);
+                c.setCommand(command);
+                c.setDestinationAddress(destination);
+                c.setSourceAddress(source);
 
                 // entry = map.get("master");
                 if (commandChannel.getMaster() != null) {
                     for (EBusValueDTO template : commandChannel.getMaster()) {
                         for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
-                            cfg.addMasterValue(ev);
+                            c.addMasterValue(ev);
                         }
                     }
                 }
@@ -169,24 +171,25 @@ public class ConfigurationReader implements IConfigurationReader {
                 if (commandChannel.getSlave() != null) {
                     for (EBusValueDTO template : commandChannel.getSlave()) {
                         for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
-                            cfg.addSlaveValue(ev);
+                            c.addSlaveValue(ev);
                         }
                     }
                 }
 
                 if (channel.equals("get")) {
-                    cfg.setType(Type.GET);
+                    c.setType(Type.GET);
 
                 } else if (channel.equals("set")) {
-                    cfg.setType(Type.SET);
+                    c.setType(Type.SET);
 
                 } else if (channel.equals("broadcast")) {
-                    cfg.setType(Type.BROADCAST);
+                    c.setType(Type.BROADCAST);
 
                 }
 
-                result.add(cfg);
             }
+            // add command to result list
+            result.add(cfg);
         }
 
         return result;

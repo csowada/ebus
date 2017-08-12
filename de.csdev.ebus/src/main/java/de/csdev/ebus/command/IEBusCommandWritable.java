@@ -14,20 +14,12 @@ package de.csdev.ebus.command;
  */
 public interface IEBusCommandWritable extends IEBusCommand {
 
-	public IEBusCommandWritable addSlaveValue(IEBusValue value);
-	
-	public IEBusCommandWritable addMasterValue(IEBusValue value);
-	
-//	public IEBusCommandWritable addExtendedCommand(IEBusValue value);
+    public IEBusCommandWritable setId(String id);
 
-	public IEBusCommandWritable setType(Type type);
+    public void setConfigurationSource(String configurationSource);
 
-	public IEBusCommandWritable setId(String id);
+    public void setDescription(String description);
 
-	public IEBusCommandWritable setCommand(byte[] command);
+    public void addCommandChannel(IEBusCommandChannel channel);
 
-	public void setConfigurationSource(String configurationSource);
-
-	public void setDescription(String description);
-	
 }

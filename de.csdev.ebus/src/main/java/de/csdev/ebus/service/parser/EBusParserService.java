@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommandChannel;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusDataException;
 
@@ -53,12 +53,12 @@ public class EBusParserService implements EBusConnectorEventListener {
      */
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
-        final List<IEBusCommand> commandList = commandRegistry.find(receivedData);
-        for (IEBusCommand command : commandList) {
+        final List<IEBusCommandChannel> commandChannelList = commandRegistry.find(receivedData);
+        for (IEBusCommandChannel commandChannel : commandChannelList) {
 
             try {
-                Map<String, Object> map = EBusCommandUtils.decodeTelegram(command, receivedData);
-                fireOnTelegramResolved(command, map, receivedData, sendQueueId);
+                Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, receivedData);
+                fireOnTelegramResolved(commandChannel, map, receivedData, sendQueueId);
             } catch (EBusTypeException e) {
                 logger.error("error!", e);
             }
@@ -66,10 +66,10 @@ public class EBusParserService implements EBusConnectorEventListener {
 
     }
 
-    private void fireOnTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
-            Integer sendQueueId) {
+    private void fireOnTelegramResolved(IEBusCommandChannel commandChannel, Map<String, Object> result,
+            byte[] receivedData, Integer sendQueueId) {
         for (EBusParserListener listener : listeners) {
-            listener.onTelegramResolved(command, result, receivedData, sendQueueId);
+            listener.onTelegramResolved(commandChannel, result, receivedData, sendQueueId);
         }
     }
 

@@ -3,7 +3,18 @@ package de.csdev.ebus.command;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import de.csdev.ebus.command.IEBusCommand.Type;
+
 public interface IEBusCommandChannel {
+
+    public IEBusCommand getParent();
+
+    /**
+     * Returns the type of this command
+     *
+     * @return
+     */
+    public Type getType();
 
     /**
      * Returns defined destination address or null if not defined
@@ -48,12 +59,5 @@ public interface IEBusCommandChannel {
      * @return
      */
     public byte[] getCommand();
-
-    /**
-     * Returns the source (file) of this command
-     *
-     * @return
-     */
-    public String getConfigurationSource();
 
 }
