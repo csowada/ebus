@@ -13,7 +13,6 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.cfg.json.v1.mapper.EBusConfigurationTelegram;
-import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
@@ -57,7 +56,7 @@ public class NewConfig {
 
     public void run() throws InterruptedException {
 
-    	URL url0 = EBusMain2.class.getResource("/replay.txt");
+        URL url0 = EBusMain2.class.getResource("/replay.txt");
         IEBusConnection connection = new EBusEmulatorConnection(url0);
         EBusController controller = new EBusController(connection);
 
@@ -67,11 +66,10 @@ public class NewConfig {
 
         OH1ConfigurationReader ohreader = new OH1ConfigurationReader();
         ohreader.setEBusTypes(registry);
-        
-//        ConfigurationReader oh2reader = new ConfigurationReader();
-//        oh2reader.setEBusTypes(registry);
-//        tregistry.addTelegramConfigurationList(nlist);
-        
+
+        // ConfigurationReader oh2reader = new ConfigurationReader();
+        // oh2reader.setEBusTypes(registry);
+        // tregistry.addTelegramConfigurationList(nlist);
 
         try {
             // oh2reader.aaaa();
@@ -81,7 +79,7 @@ public class NewConfig {
             URL url = classLoader.getResource("common-configuration.json");
 
             ohreader.setEBusTypes(registry);
-            List<EBusCommand> loadConfiguration = ohreader.loadConfiguration(url.openStream());
+            List<IEBusCommand> loadConfiguration = ohreader.loadConfiguration(url.openStream());
             tregistry.addTelegramConfigurationList(loadConfiguration);
 
             // List<EBusCommand> list = ohreader.b(loadConfiguration(), registry);
@@ -108,12 +106,12 @@ public class NewConfig {
 
                 for (IEBusCommand eBusCommand : find2) {
                     Map<String, Object> encode = null;
-					try {
-						encode = EBusCommandUtils.decodeTelegram(eBusCommand, receivedData);
-					} catch (EBusTypeException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+                    try {
+                        encode = EBusCommandUtils.decodeTelegram(eBusCommand, receivedData);
+                    } catch (EBusTypeException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     System.out.println(encode);
                 }
             }
@@ -121,6 +119,11 @@ public class NewConfig {
             public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
                 System.out.println(
                         "NewConfig.run().new EBusConnectorEventListener() {...}.onTelegramException()" + exception);
+                // TODO Auto-generated method stub
+
+            }
+
+            public void onConnectionException(Exception e) {
                 // TODO Auto-generated method stub
 
             }

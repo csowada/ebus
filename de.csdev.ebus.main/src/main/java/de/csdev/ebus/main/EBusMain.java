@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.client.EBusClient;
-import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommand.Type;
@@ -39,7 +38,7 @@ public class EBusMain {
     public static void main(String[] args) {
 
         try {
-        	URL url = EBusMain2.class.getResource("/replay.txt");
+            URL url = EBusMain2.class.getResource("/replay.txt");
             IEBusConnection connection = new EBusEmulatorConnection(url);
             // connection = new EBusTCPConnection("openhab", 8000);
 
@@ -47,20 +46,20 @@ public class EBusMain {
             // connection = new EBusCaptureProxyConnection(connection, captureWriter);
 
             EBusController controller = new EBusController(connection);
-            EBusClient client = new EBusClient(controller);
-            
+            EBusClient client = new EBusClient(controller, (byte) 0xFF);
+
             OH1ConfigurationReader jsonCfgReader = new OH1ConfigurationReader();
             jsonCfgReader.setEBusTypes(client.getDataTypes());
-            
+
             ClassLoader classLoader = controller.getClass().getClassLoader();
             URL resource = classLoader.getResource("common-configuration.json");
 
             logger.info(">>>>>>>>>>>>>>>>>>" + resource.openStream().read());
 
-//            File filex = new File("src/main/resources/common-configuration.json");
+            // File filex = new File("src/main/resources/common-configuration.json");
             // jsonCfgReader.loadConfigurationFile(filex.toURL());
-            List<EBusCommand> loadConfiguration = jsonCfgReader.loadConfiguration(resource.openStream());
-            
+            List<IEBusCommand> loadConfiguration = jsonCfgReader.loadConfiguration(resource.openStream());
+
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 
             IEBusCommand command = client.getConfigurationProvider().getConfigurationById("common.error", Type.GET);
@@ -81,14 +80,15 @@ public class EBusMain {
 
             values.put("_error_message10", EBusConsts.ESCAPE);
 
-            ByteBuffer composeEBusTelegram2 = EBusCommandUtils.buildMasterTelegram(command, (byte)0x00, (byte) 0xFF, values);
+            ByteBuffer composeEBusTelegram2 = EBusCommandUtils.buildMasterTelegram(command, (byte) 0x00, (byte) 0xFF,
+                    values);
 
             logger.info("TEST: Error Command {}", EBusUtils.toHexDumpString(composeEBusTelegram2).toString());
 
             controller.addToSendQueue(composeEBusTelegram2);
 
             controller.start();
-            
+
             Thread.sleep(3000);
             client.getDeviceTableService().startDeviceScan();
 
@@ -101,15 +101,15 @@ public class EBusMain {
 
         } catch (InterruptedException e) {
             logger.error("errro1", e);
-            
+
         } catch (MalformedURLException e) {
             logger.error("errro1", e);
-            
+
         } catch (IOException e) {
             logger.error("errro1", e);
         } catch (EBusTypeException e) {
-        	logger.error("errro1", e);
-		}
+            logger.error("errro1", e);
+        }
 
     }
 

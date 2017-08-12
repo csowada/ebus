@@ -11,8 +11,6 @@ package de.csdev.ebus.main;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,12 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.ConfigurationReader;
-import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.client.EBusClient;
-import de.csdev.ebus.command.EBusCommand;
-import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
-import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
@@ -42,63 +36,67 @@ public class EBusMain2 {
     public static void main(String[] args) {
 
         try {
-        	URL url = EBusMain2.class.getResource("/replay-common.txt");
+            URL url = EBusMain2.class.getResource("/replay-common.txt");
             IEBusConnection connection = new EBusEmulatorConnection(url);
             connection = new EBusTCPConnection("openhab", 8000);
             EBusController controller = new EBusController(connection);
-            EBusClient client = new EBusClient(controller);
-            
+            EBusClient client = new EBusClient(controller, (byte) 0xFF);
+
             ConfigurationReader jsonCfgReader = new ConfigurationReader();
             jsonCfgReader.setEBusTypes(client.getDataTypes());
 
-            
-            List<EBusCommand> loadConfiguration = jsonCfgReader.loadConfiguration(
-            		IEBusConnection.class.getResourceAsStream("/commands/common-configuration.json"));
-            
+            List<IEBusCommand> loadConfiguration = jsonCfgReader.loadConfiguration(
+                    IEBusConnection.class.getResourceAsStream("/commands/common-configuration.json"));
+
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 
             loadConfiguration = jsonCfgReader.loadConfiguration(
-            		IEBusConnection.class.getResourceAsStream("/commands/wolf-cgb2-configuration.json"));
-            
+                    IEBusConnection.class.getResourceAsStream("/commands/wolf-cgb2-configuration.json"));
+
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 
-            
             loadConfiguration = jsonCfgReader.loadConfiguration(
-            		IEBusConnection.class.getResourceAsStream("/commands/wolf-sm1-configuration.json"));
-            
+                    IEBusConnection.class.getResourceAsStream("/commands/wolf-sm1-configuration.json"));
+
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
-            
+
             client.getResolverService().addEBusParserListener(new EBusParserListener() {
-				
-				public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
-						Integer sendQueueId) {
 
-					logger.info("Telegram Resolved: " + command.getDescription());
-					logger.info(result.toString());
-					
-				}
-			});
-            
+                public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
+                        Integer sendQueueId) {
+
+                    logger.info("Telegram Resolved: " + command.getDescription());
+                    logger.info(result.toString());
+
+                }
+            });
+
             controller.addEBusEventListener(new EBusConnectorEventListener() {
-				
-				public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
-					logger.trace("onTelegramReceived > " + EBusUtils.toHexDumpString(receivedData));
-				}
-				
-				public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
-					logger.trace("onTelegramException > " + exception.toString());
-				}
-			});
 
-//            byte[] byteArray = EBusUtils.toByteArray("71 FE 50 17 10 08 91 05 01 C8 01 00 80 00 80 00 80 00 80 00 80 A0 AA");
-//            IEBusCommand command = client.getConfigurationProvider().getConfigurationById("solar.solar_data", Type.BROADCAST);
-//            ByteBuffer mask = EBusCommandUtils.getMasterTelegramMask(command);
-//            
-//            logger.warn(EBusUtils.toHexDumpString(mask).toString());
-            
-//            if(true)
-//            	return;
-            			
+                public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+                    logger.trace("onTelegramReceived > " + EBusUtils.toHexDumpString(receivedData));
+                }
+
+                public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+                    logger.trace("onTelegramException > " + exception.toString());
+                }
+
+                public void onConnectionException(Exception e) {
+
+                }
+            });
+
+            // byte[] byteArray = EBusUtils.toByteArray("71 FE 50 17 10 08 91 05 01 C8 01 00 80 00 80 00 80 00 80 00 80
+            // A0 AA");
+            // IEBusCommand command = client.getConfigurationProvider().getConfigurationById("solar.solar_data",
+            // Type.BROADCAST);
+            // ByteBuffer mask = EBusCommandUtils.getMasterTelegramMask(command);
+            //
+            // logger.warn(EBusUtils.toHexDumpString(mask).toString());
+
+            // if(true)
+            // return;
+
             controller.start();
             Thread.sleep(3000);
 
@@ -107,13 +105,13 @@ public class EBusMain2 {
 
         } catch (InterruptedException e) {
             logger.error("errro1", e);
-            
+
         } catch (MalformedURLException e) {
             logger.error("errro1", e);
-            
+
         } catch (IOException e) {
             logger.error("errro1", e);
-		}
+        }
 
     }
 

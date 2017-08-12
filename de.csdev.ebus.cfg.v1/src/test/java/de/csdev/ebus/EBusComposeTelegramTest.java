@@ -1,7 +1,6 @@
 package de.csdev.ebus;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,15 +33,15 @@ public class EBusComposeTelegramTest {
         configurationProvider = new EBusCommandRegistry();
         jsonCfgReader = new OH1ConfigurationReader();
         jsonCfgReader.setEBusTypes(new EBusTypes());
-        
-//        configurationProvider
+
+        // configurationProvider
 
         try {
-        	InputStream inputStream = EBusCommand.class.getResourceAsStream("/common-configuration.json");
-//            File filex = new File("src/main/resources/common-configuration.json");
-            List<EBusCommand> list = jsonCfgReader.loadConfiguration(inputStream);
+            InputStream inputStream = EBusCommand.class.getResourceAsStream("/common-configuration.json");
+            // File filex = new File("src/main/resources/common-configuration.json");
+            List<IEBusCommand> list = jsonCfgReader.loadConfiguration(inputStream);
             configurationProvider.addTelegramConfigurationList(list);
-            
+
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -58,13 +57,13 @@ public class EBusComposeTelegramTest {
 
         byte[] byteArray = new byte[bb.remaining()];
         bb.get(byteArray);
-        
+
         assertArrayEquals("Composed byte data wrong!", byteArray, EBusUtils.toByteArray("00 FF 07 FE 00 44"));
     }
 
     @Test
     public void composeTelegram02() throws EBusTypeException {
-    	IEBusCommand command = configurationProvider.getConfigurationById("common.error", Type.GET);
+        IEBusCommand command = configurationProvider.getConfigurationById("common.error", Type.GET);
         assertNotNull("Command common.error not found", command);
 
         Map<String, Object> values = new HashMap<String, Object>();
@@ -89,7 +88,7 @@ public class EBusComposeTelegramTest {
 
         byte[] byteArray = new byte[bb.remaining()];
         bb.get(byteArray);
-        
+
         assertArrayEquals("Composed byte data wrong!", byteArray,
                 EBusUtils.toByteArray("FF FE FE 01 0A 48 41 4C 4C 4F 20 57 45 4C A9 00 BB"));
 
@@ -97,10 +96,10 @@ public class EBusComposeTelegramTest {
 
         values.put("error", "Hallo Welt");
         bb = EBusCommandUtils.buildMasterTelegram(command, null, (byte) 0xFF, values);
-        
+
         byteArray = new byte[bb.remaining()];
         bb.get(byteArray);
-        
+
         assertArrayEquals("Composed byte data wrong!", byteArray,
                 EBusUtils.toByteArray("FF FE FE 01 0A 48 61 6C 6C 6F 20 57 65 6C 74 99"));
     }

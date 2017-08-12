@@ -25,6 +25,7 @@ import de.csdev.ebus.cfg.json.v1.mapper.EBusConfigurationValue;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.EBusCommandValue;
+import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommandWritable;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -180,7 +181,7 @@ public class OH1ConfigurationReader implements IConfigurationReader {
                 transferEBusValue(jsonValue, value);
 
                 int typeLen = type.getTypeLenght();
-//                System.out.println("GGGg.b() JA" + pos);
+                // System.out.println("GGGg.b() JA" + pos);
                 if (typeLen > 1) {
                     pos += typeLen - 1;
                 }
@@ -190,7 +191,7 @@ public class OH1ConfigurationReader implements IConfigurationReader {
             }
 
         } else {
-//            System.out.println("GGGg.b() NEIN " + pos);
+            // System.out.println("GGGg.b() NEIN " + pos);
             value = EBusCommandValue.getInstance(typeBytes, new byte[] { byteArray[pos - FIRST_MASTER_DATA_POS] });
         }
 
@@ -313,7 +314,7 @@ public class OH1ConfigurationReader implements IConfigurationReader {
      *
      * @see de.csdev.ebus.cfg.IConfigurationX#loadConfiguration(java.net.URL)
      */
-    public List<EBusCommand> loadConfiguration(InputStream inputStream) throws IOException {
+    public List<IEBusCommand> loadConfiguration(InputStream inputStream) throws IOException {
 
         final ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
 
@@ -321,7 +322,7 @@ public class OH1ConfigurationReader implements IConfigurationReader {
                 new TypeReference<List<EBusConfigurationTelegram>>() {
                 });
 
-        List<EBusCommand> telegramConfiguration = new ArrayList<EBusCommand>();
+        List<IEBusCommand> telegramConfiguration = new ArrayList<IEBusCommand>();
 
         for (EBusConfigurationTelegram cfg : cfgs) {
 
@@ -331,15 +332,16 @@ public class OH1ConfigurationReader implements IConfigurationReader {
                 telegramConfiguration.add(telegram);
 
                 try {
-					ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(telegram, (byte) 0x00, (byte) 0xFF, null);
-					System.out.println("GGGg.UUUUUU() > " + EBusUtils.toHexDumpString(masterTelegram));
+                    ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(telegram, (byte) 0x00, (byte) 0xFF,
+                            null);
+                    System.out.println("GGGg.UUUUUU() > " + EBusUtils.toHexDumpString(masterTelegram));
 
-					ByteBuffer masterTelegramMask = telegram.getMasterTelegramMask();
-					System.out.println("GGGg.YYYYYY() > " + EBusUtils.toHexDumpString(masterTelegramMask));
-				} catch (EBusTypeException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    ByteBuffer masterTelegramMask = telegram.getMasterTelegramMask();
+                    System.out.println("GGGg.YYYYYY() > " + EBusUtils.toHexDumpString(masterTelegramMask));
+                } catch (EBusTypeException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
 
         } // loop
@@ -347,11 +349,9 @@ public class OH1ConfigurationReader implements IConfigurationReader {
         return telegramConfiguration;
     }
 
-
     public EBusTypes getEBusTypes() {
         return ebusTypes;
     }
-
 
     public void setEBusTypes(EBusTypes ebusTypes) {
         this.ebusTypes = ebusTypes;
