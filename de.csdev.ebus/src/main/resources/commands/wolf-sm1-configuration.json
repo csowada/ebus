@@ -1,10 +1,10 @@
 {
-    "id":       "wolf-sm1",
-    "vendor":   "Wolf",
-    "label":    "Wolf SM1",
+    "id":           "wolf-sm1",
+    "vendor":       "Wolf",
+    "label":        "Wolf SM1",
     "description":  "Solar Module Wolf CGB-2",
     
-    "authors":  ["Christian Sowada, opensource@cs-dev.de"],
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
     "identification": "",
     
     "commands":

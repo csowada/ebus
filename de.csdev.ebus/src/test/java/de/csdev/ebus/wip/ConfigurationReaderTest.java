@@ -1,7 +1,6 @@
 package de.csdev.ebus.wip;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +17,6 @@ import de.csdev.ebus.cfg.ConfigurationReader;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
-import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
@@ -36,23 +34,22 @@ public class ConfigurationReaderTest {
         tr = new EBusCommandRegistry();
         types = new EBusTypes();
         types.add(EBusTypeKWCrc.class);
-        
+
     }
 
     @Test
     public void testIsMasterAddress() throws IOException, EBusTypeException {
 
-       
+        // final ClassLoader classLoader = this.getClass().getr.getClassLoader();
+        // final URL resource = classLoader.getResource("/new-cfg-format2.json");
+        // InputStream inputStream = resource.openConnection().getInputStream();
+        InputStream inputStream = ConfigurationReader.class
+                .getResourceAsStream("/commands/wolf-sm1-configuration.json");
 
-//        final ClassLoader classLoader = this.getClass().getr.getClassLoader();
-//        final URL resource = classLoader.getResource("/new-cfg-format2.json");
-//        InputStream inputStream = resource.openConnection().getInputStream();
-        InputStream inputStream = ConfigurationReader.class.getResourceAsStream("/commands/wolf-sm1-configuration.json");
-        
         ConfigurationReader reader = new ConfigurationReader();
         reader.setEBusTypes(types);
-        
-        List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
+
+        List<IEBusCommand> configurationList = reader.loadConfiguration(inputStream);
         tr.addTelegramConfigurationList(configurationList);
 
         for (IEBusCommand command : tr.getConfigurationList()) {
@@ -73,7 +70,7 @@ public class ConfigurationReaderTest {
 
         List<IEBusCommand> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_B);
         for (IEBusCommand eBusCommand : find) {
-        	System.out.println("ConfigurationReaderTest.testIsMasterAddress()");
+            System.out.println("ConfigurationReaderTest.testIsMasterAddress()");
             Map<String, Object> encode = EBusCommandUtils.decodeTelegram(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_B);
             for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
                 System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
@@ -81,22 +78,14 @@ public class ConfigurationReaderTest {
             }
         }
 
-		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-				tr.getConfigurationById("solar.solar_data", Type.BROADCAST), 
-				StaticTestTelegrams.WOLF_SOLAR_B);
-		
-		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
-		    System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
-		            + eBusCommand2.getValue());
-		}
+        Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
+                tr.getConfigurationById("solar.solar_data", Type.BROADCAST), StaticTestTelegrams.WOLF_SOLAR_B);
 
-		
-		
+        for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
+            System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
+                    + eBusCommand2.getValue());
+        }
 
-		
-		
-		
-		
         assertFalse("Broadcast address is not a master address",
                 EBusUtils.isMasterAddress(EBusConsts.BROADCAST_ADDRESS));
 
@@ -110,27 +99,27 @@ public class ConfigurationReaderTest {
 
         assertFalse("0x09 address is not a master address", EBusUtils.isMasterAddress((byte) 0x09));
     }
-    
-//    @Test
-//    public void xxx() throws IOException, EBusTypeException {
-//    	
-//        InputStream inputStream = getClass().getResourceAsStream("/commands/wolf-sm1-configuration.json");
-//        
-//        ConfigurationReader reader = new ConfigurationReader();
-//        reader.setEBusTypes(types);
-//        
-//        List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
-//        tr.addTelegramConfigurationList(configurationList);
-//        
-//        
-//		Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-//				tr.getConfigurationById("auto_stroker", Type.GET), 
-//				StaticTestTelegrams.AUTO_STROKER);
-//		
-//		for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
-//		    System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
-//		            + eBusCommand2.getValue());
-//		}
-//    }
+
+    // @Test
+    // public void xxx() throws IOException, EBusTypeException {
+    //
+    // InputStream inputStream = getClass().getResourceAsStream("/commands/wolf-sm1-configuration.json");
+    //
+    // ConfigurationReader reader = new ConfigurationReader();
+    // reader.setEBusTypes(types);
+    //
+    // List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
+    // tr.addTelegramConfigurationList(configurationList);
+    //
+    //
+    // Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
+    // tr.getConfigurationById("auto_stroker", Type.GET),
+    // StaticTestTelegrams.AUTO_STROKER);
+    //
+    // for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
+    // System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
+    // + eBusCommand2.getValue());
+    // }
+    // }
 
 }

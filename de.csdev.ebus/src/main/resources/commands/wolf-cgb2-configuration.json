@@ -1,10 +1,10 @@
 {
-    "id":       "wolf-cgb2",
-    "vendor":   "Wolf",
-    "label":    "Wolf CGB-2",
+    "id":           "wolf-cgb2",
+    "vendor":       "Wolf",
+    "label":        "Wolf CGB-2",
     "description":  "Condensing gas boiler Wolf CGB-2",
     
-    "authors":  ["Christian Sowada, opensource@cs-dev.de"],
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
     "identification": "",
     
     "commands":

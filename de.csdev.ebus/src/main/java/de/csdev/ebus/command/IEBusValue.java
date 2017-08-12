@@ -39,4 +39,11 @@ public interface IEBusValue {
 
     public BigDecimal getMin();
 
+    /**
+     * Returns a map of additional properties
+     *
+     * @return
+     */
+    public Map<String, String> getProperties();
+
 }

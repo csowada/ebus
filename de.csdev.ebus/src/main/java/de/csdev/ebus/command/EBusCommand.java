@@ -9,10 +9,12 @@
 package de.csdev.ebus.command;
 
 import java.nio.ByteBuffer;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Christian Sowada
@@ -29,24 +31,26 @@ public class EBusCommand implements IEBusCommandWritable {
     private Byte destinationAddress;
 
     private String device;
-    
+
     private List<IEBusValue> extendCommandValue;
+
+    private Map<String, String> properties;
 
     private String id;
 
     private List<IEBusValue> masterTypes;
-    
+
     private List<IEBusValue> slaveTypes;
-    
+
     private Byte sourceAddress;
-    
+
     private ByteBuffer telegramMask;
-    
+
     private Type type;
-    
-    
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see de.csdev.ebus.command.IEBusCommandWritable#addMasterValue(de.csdev.ebus.command.IEBusValue)
      */
     public IEBusCommandWritable addMasterValue(IEBusValue value) {
@@ -59,7 +63,9 @@ public class EBusCommand implements IEBusCommandWritable {
         return this;
     }
 
-	/* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see de.csdev.ebus.command.IEBusCommandWritable#addSlaveValue(de.csdev.ebus.command.IEBusValue)
      */
     public IEBusCommandWritable addSlaveValue(IEBusValue value) {
@@ -71,164 +77,193 @@ public class EBusCommand implements IEBusCommandWritable {
         return this;
     }
 
-	/* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getCommand()
-	 */
-	public byte[] getCommand() {
-		return command;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getCommand()
+     */
+    public byte[] getCommand() {
+        return command;
+    }
 
-	/* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getConfigurationSource()
-	 */
-	public String getConfigurationSource() {
-		return configurationSource;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getConfigurationSource()
+     */
+    public String getConfigurationSource() {
+        return configurationSource;
+    }
 
-	/* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getDescription()
-	 */
-	public String getDescription() {
-		return description;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getDescription()
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	/* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getDestinationAddress()
-	 */
-	public Byte getDestinationAddress() {
-		return destinationAddress;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getDestinationAddress()
+     */
+    public Byte getDestinationAddress() {
+        return destinationAddress;
+    }
 
-//	public IEBusCommandWritable addExtendedCommand(IEBusValue value) {
-//        if (extendCommandValue == null) {
-//            extendCommandValue = new ArrayList<IEBusValue>();
-//        }
-//
-//        extendCommandValue.add(value);
-//
-//        return this;
-//    }
+    // public IEBusCommandWritable addExtendedCommand(IEBusValue value) {
+    // if (extendCommandValue == null) {
+    // extendCommandValue = new ArrayList<IEBusValue>();
+    // }
+    //
+    // extendCommandValue.add(value);
+    //
+    // return this;
+    // }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see de.csdev.ebus.command.IEBusCommand#getDevice()
      */
     public String getDevice() {
-		return device;
-	}
+        return device;
+    }
 
-    /* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getExtendCommandValue()
-	 */
-	public List<IEBusValue> getExtendCommandValue() {
-		return extendCommandValue;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getExtendCommandValue()
+     */
+    public List<IEBusValue> getExtendCommandValue() {
+        return extendCommandValue;
+    }
 
-	/* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getId()
-	 */
-	public String getId() {
-		return id;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getId()
+     */
+    public String getId() {
+        return id;
+    }
 
-	/* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTelegramMask()
      */
     public ByteBuffer getMasterTelegramMask() {
-		
-		if(telegramMask == null)
-			telegramMask = EBusCommandUtils.getMasterTelegramMask(this);
-		
-		return telegramMask;
-		
+
+        if (telegramMask == null) {
+            telegramMask = EBusCommandUtils.getMasterTelegramMask(this);
+        }
+
+        return telegramMask;
+
     }
 
-	/* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getMasterTypes()
-	 */
-	public List<IEBusValue> getMasterTypes() {
-		return masterTypes;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getMasterTypes()
+     */
+    public List<IEBusValue> getMasterTypes() {
+        return masterTypes;
+    }
 
-	/* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getSlaveTypes()
-	 */
-	public List<IEBusValue> getSlaveTypes() {
-		return slaveTypes;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getSlaveTypes()
+     */
+    public List<IEBusValue> getSlaveTypes() {
+        return slaveTypes;
+    }
 
-	/* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getSourceAddress()
-	 */
-	public Byte getSourceAddress() {
-		return sourceAddress;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getSourceAddress()
+     */
+    public Byte getSourceAddress() {
+        return sourceAddress;
+    }
 
-    /* (non-Javadoc)
-	 * @see de.csdev.ebus.command.IEBusCommand#getType()
-	 */
-	public Type getType() {
-		return type;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommand#getType()
+     */
+    public Type getType() {
+        return type;
+    }
 
-	public EBusCommand setCommand(byte[] command) {
+    public EBusCommand setCommand(byte[] command) {
         this.command = command;
         return this;
     }
 
-	public void setConfigurationSource(String configurationSource) {
+    public void setConfigurationSource(String configurationSource) {
         this.configurationSource = configurationSource;
     }
 
-	public void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
-    
-	public void setDestinationAddress(Byte destinationAddress) {
-		this.destinationAddress = destinationAddress;
-	}
 
-	public void setDevice(String device) {
-		this.device = device;
-	}
-    
-	public void setExtendCommandValue(List<IEBusValue> extendCommandValue) {
-		this.extendCommandValue = extendCommandValue;
-	}
+    public void setDestinationAddress(Byte destinationAddress) {
+        this.destinationAddress = destinationAddress;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
+
+    public void setExtendCommandValue(List<IEBusValue> extendCommandValue) {
+        this.extendCommandValue = extendCommandValue;
+    }
 
     public EBusCommand setId(String id) {
         this.id = id;
         return this;
     }
 
-	public void setMasterTypes(List<IEBusValue> masterTypes) {
-		this.masterTypes = masterTypes;
-	}
+    public void setMasterTypes(List<IEBusValue> masterTypes) {
+        this.masterTypes = masterTypes;
+    }
 
     public void setSlaveTypes(List<IEBusValue> slaveTypes) {
-		this.slaveTypes = slaveTypes;
-	}
+        this.slaveTypes = slaveTypes;
+    }
 
     public void setSourceAddress(Byte sourceAddress) {
-		this.sourceAddress = sourceAddress;
-	}
+        this.sourceAddress = sourceAddress;
+    }
 
-	public IEBusCommandWritable setType(Type type) {
+    public IEBusCommandWritable setType(Type type) {
         this.type = type;
         return this;
     }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "EBusCommand [description=" + description + ", command=" + Arrays.toString(command) + ", configurationSource=" + configurationSource
-				+ ", extendCommandValue=" + extendCommandValue + ", id=" + id
-				+ ", masterTypes=" + masterTypes + ", slaveTypes=" + slaveTypes + ", type=" + type + ", telegramMask="
-				+ telegramMask + ", device=" + device + ", destinationAddress=" + destinationAddress
-				+ ", sourceAddress=" + sourceAddress + "]";
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "EBusCommand [description=" + description + ", command=" + Arrays.toString(command)
+                + ", configurationSource=" + configurationSource + ", extendCommandValue=" + extendCommandValue
+                + ", id=" + id + ", masterTypes=" + masterTypes + ", slaveTypes=" + slaveTypes + ", type=" + type
+                + ", telegramMask=" + telegramMask + ", device=" + device + ", destinationAddress=" + destinationAddress
+                + ", sourceAddress=" + sourceAddress + "]";
+    }
 
-	
-	
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(properties == null ? new HashMap<String, String>() : properties);
+    }
+
 }

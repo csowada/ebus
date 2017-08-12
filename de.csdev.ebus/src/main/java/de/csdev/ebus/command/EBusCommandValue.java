@@ -9,6 +9,8 @@
 package de.csdev.ebus.command;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.csdev.ebus.cfg.datatypes.IEBusType;
@@ -32,6 +34,8 @@ public class EBusCommandValue implements IEBusValue {
     private BigDecimal factor;
 
     private Map<String, String> mapping;
+
+    private Map<String, String> properties;
 
     private String step;
 
@@ -107,6 +111,11 @@ public class EBusCommandValue implements IEBusValue {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = new HashMap<String, String>();
+        this.properties.putAll(properties);
     }
 
     public static EBusCommandValue getInstance(IEBusType type, byte[] data) {
@@ -215,6 +224,10 @@ public class EBusCommandValue implements IEBusValue {
             return false;
         }
         return true;
+    }
+
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(properties == null ? new HashMap<String, String>() : properties);
     }
 
 }

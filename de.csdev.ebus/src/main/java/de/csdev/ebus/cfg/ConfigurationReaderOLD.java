@@ -10,6 +10,7 @@ package de.csdev.ebus.cfg;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,15 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.cfg.dto.EBusCollectionDTO;
-import de.csdev.ebus.cfg.dto.EBusCommandDTO;
-import de.csdev.ebus.cfg.dto.EBusCommandTypeDTO;
-import de.csdev.ebus.cfg.dto.EBusValueDTO;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandNestedValue;
@@ -34,12 +33,13 @@ import de.csdev.ebus.command.EBusCommandValue;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada
  *
  */
-public class ConfigurationReader implements IConfigurationReader {
+public class ConfigurationReaderOLD implements IConfigurationReader {
 
     private ObjectMapper mapper;
     private EBusTypes registry;
@@ -83,15 +83,15 @@ public class ConfigurationReader implements IConfigurationReader {
             mapper.configure(Feature.ALLOW_COMMENTS, true);
         }
 
-        EBusCollectionDTO collection = mapper.readValue(inputStream, EBusCollectionDTO.class);
+        EBusCollectionDTO readValue = mapper.readValue(inputStream, EBusCollectionDTO.class);
+        final Map<String, Object> json = mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {
+        });
 
-        for (EBusCommandDTO command : collection.getCommands()) {
-            list.addAll(parseTelegramConfiguration(command));
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> commands = (List<Map<String, Object>>) json.get("commands");
+        for (Map<String, Object> element : commands) {
+            list.addAll(parseTelegramConfiguration(element));
         }
-
-        Map<String, Object> json = new HashMap<String, Object>();
-        json.put("id", collection.getId());
-        json.put("label", collection.getLabel());
 
         return new EBusCommandCollection(json, list);
     }
@@ -100,34 +100,36 @@ public class ConfigurationReader implements IConfigurationReader {
         registry = ebusTypes;
     }
 
-    protected List<EBusCommand> parseTelegramConfiguration(EBusCommandDTO commandElement) {
+    @SuppressWarnings({ "unchecked" })
+    protected List<EBusCommand> parseTelegramConfiguration(Map<String, Object> commandElement) {
 
         final ArrayList<EBusCommand> result = new ArrayList<EBusCommand>();
         LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<String, EBusCommandValue>();
 
         // collect available channels
         List<String> channels = new ArrayList<String>();
-        if (commandElement.getGet() != null) {
+        if (commandElement.containsKey("get")) {
             channels.add("get");
         }
-        if (commandElement.getSet() != null) {
+        if (commandElement.containsKey("set")) {
             channels.add("set");
         }
-        if (commandElement.getBroadcast() != null) {
+        if (commandElement.containsKey("broadcast")) {
             channels.add("broadcast");
         }
 
         // extract default values
-        String id = commandElement.getId();
-        byte[] command = EBusUtils.toByteArray(commandElement.getCommand());
-        String comment = commandElement.getComment();
-        String device = commandElement.getDevice();
-        Byte destination = EBusUtils.toByte(commandElement.getDst());
-        Byte source = EBusUtils.toByte(commandElement.getSrc());
+        String id = (String) commandElement.get("id");
+        byte[] command = EBusUtils.toByteArray((String) commandElement.get("command"));
+        String comment = (String) commandElement.get("comment");
+        String device = (String) commandElement.get("device");
+        Byte destination = EBusUtils.toByte((String) commandElement.get("dst"));
+        Byte source = EBusUtils.toByte((String) commandElement.get("src"));
 
         // read in template block
-        if (commandElement.getTemplate() != null) {
-            for (EBusValueDTO template : commandElement.getTemplate()) {
+        Object entry = commandElement.get("template");
+        if (entry instanceof List) {
+            for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
                 for (EBusCommandValue templateCfg : parseValueConfiguration(template, null)) {
                     templateMap.put(templateCfg.getName(), templateCfg);
                 }
@@ -137,18 +139,10 @@ public class ConfigurationReader implements IConfigurationReader {
         // loop all available channnels
         for (String channel : channels) {
 
-            EBusCommandTypeDTO commandChannel = null;
+            entry = commandElement.get(channel);
 
-            if (channel.equals("get")) {
-                commandChannel = commandElement.getGet();
-            } else if (channel.equals("wet")) {
-                commandChannel = commandElement.getSet();
-            } else if (channel.equals("broadcast")) {
-                commandChannel = commandElement.getBroadcast();
-            }
-
-            if (commandChannel != null) {
-                // Map<String, Object> map = (Map<String, Object>) entry;
+            if (entry instanceof Map) {
+                Map<String, Object> map = (Map<String, Object>) entry;
 
                 EBusCommand cfg = new EBusCommand();
 
@@ -160,17 +154,18 @@ public class ConfigurationReader implements IConfigurationReader {
                 cfg.setDestinationAddress(destination);
                 cfg.setSourceAddress(source);
 
-                // entry = map.get("master");
-                if (commandChannel.getMaster() != null) {
-                    for (EBusValueDTO template : commandChannel.getMaster()) {
+                entry = map.get("master");
+                if (entry instanceof List) {
+                    for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
                         for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
                             cfg.addMasterValue(ev);
                         }
                     }
                 }
 
-                if (commandChannel.getSlave() != null) {
-                    for (EBusValueDTO template : commandChannel.getSlave()) {
+                entry = map.get("slave");
+                if (entry instanceof List) {
+                    for (Map<String, Object> template : (List<Map<String, Object>>) entry) {
                         for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
                             cfg.addSlaveValue(ev);
                         }
@@ -195,11 +190,12 @@ public class ConfigurationReader implements IConfigurationReader {
         return result;
     }
 
-    protected Collection<EBusCommandValue> parseValueConfiguration(EBusValueDTO template,
+    @SuppressWarnings("unchecked")
+    protected Collection<EBusCommandValue> parseValueConfiguration(Map<String, Object> template,
             Map<String, EBusCommandValue> templateMap) {
 
         Collection<EBusCommandValue> result = new ArrayList<EBusCommandValue>();
-        String typeStr = template.getType();
+        String typeStr = (String) template.get("type");
 
         if (typeStr.equals("template-block")) {
             // return the complete template block
@@ -208,13 +204,13 @@ public class ConfigurationReader implements IConfigurationReader {
         } else if (typeStr.equals("template")) {
 
             // use command value from template map
-            result.add(templateMap.get(template.getName()));
+            result.add(templateMap.get(template.get("name")));
             return result;
 
         } else if (typeStr.equals("static")) {
             // convert static content to bytes
 
-            byte[] byteArray = EBusUtils.toByteArray(template.getDefault());
+            byte[] byteArray = EBusUtils.toByteArray((String) template.get("default"));
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("length", byteArray.length);
             final IEBusType typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
@@ -226,15 +222,15 @@ public class ConfigurationReader implements IConfigurationReader {
         EBusCommandValue ev = null;
 
         // value is a nested value
-        if (template.getChildren() != null) {
+        if (template.containsKey("children")) {
             EBusCommandNestedValue evc = new EBusCommandNestedValue();
             ev = evc;
 
             int pos = 0;
-            for (EBusValueDTO childElem : template.getChildren()) {
+            for (Map<String, Object> childElem : (List<Map<String, Object>>) template.get("children")) {
 
                 // add pos information from list
-                childElem.setPos(pos);
+                childElem.put("pos", pos);
 
                 // parse child value
                 for (EBusCommandValue childValue : parseValueConfiguration(childElem, templateMap)) {
@@ -249,20 +245,28 @@ public class ConfigurationReader implements IConfigurationReader {
             ev = new EBusCommandValue();
         }
 
-        Map<String, Object> map = template.getAsMap();
-        IEBusType type = registry.getType(typeStr, map);
+        IEBusType type = registry.getType(typeStr, template);
 
         ev.setType(type);
 
-        ev.setName(template.getName());
-        ev.setLabel(template.getLabel());
+        ev.setName((String) template.get("name"));
+        ev.setLabel((String) template.get("label"));
 
-        ev.setFactor(template.getFactor());
-        ev.setMin(template.getMin());
-        ev.setMax(template.getMax());
+        Double factor = (Double) template.get("factor");
+        if (factor != null) {
+            ev.setFactor(BigDecimal.valueOf(factor));
+        }
+
+        if (template.containsKey("min")) {
+            ev.setMin(NumberUtils.toBigDecimal(template.get("min")));
+        }
+
+        if (template.containsKey("max")) {
+            ev.setMax(NumberUtils.toBigDecimal(template.get("max")));
+        }
 
         // TODO missing !!!
-        template.getMapping();
+        template.get("mapping");
 
         result.add(ev);
         return result;

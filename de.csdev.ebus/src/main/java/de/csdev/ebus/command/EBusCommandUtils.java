@@ -239,7 +239,7 @@ public class EBusCommandUtils {
             for (IEBusValue entry : command.getExtendCommandValue()) {
                 IEBusType type = entry.getType();
 
-                if (entry instanceof KWCrcMValue) {
+                if (entry instanceof EBusKWCrcMValue) {
                     buf.put(new byte[type.getTypeLenght()]);
                 } else {
                     for (int i = 0; i < type.getTypeLenght(); i++) {

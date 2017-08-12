@@ -26,7 +26,7 @@ import de.csdev.ebus.command.EBusCommandValue;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommand.Type;
 import de.csdev.ebus.command.IEBusCommandWritable;
-import de.csdev.ebus.command.KWCrcMValue;
+import de.csdev.ebus.command.EBusKWCrcMValue;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class GGGg {

@@ -4,7 +4,7 @@
     "label":        "eBus Standard",
     "description":  "A node that only uses the eBus Grup Standard",
     
-    "authors":  ["Christian Sowada, opensource@cs-dev.de"],
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
     "identification": "",
     
     "commands":
@@ -57,7 +57,7 @@
         
         {
             "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 2",
-            "class":    "auto_stroker",
+            "id":       "auto_stroker",
             "command":  "05 03",
     
             "get": {
@@ -67,7 +67,7 @@
                     {"name":"temp_bww_lead", "type": "data1c", "label": "..."},
                     {"name":"performance_eff_boiler", "type": "data1c", "label": "..."},
                     {"name":"temp_xxxx", "type": "data1c", "label": "..."},
-                    {"name":"_reserve", "type": "byte", "defaut": "255"}
+                    {"name":"_reserve", "type": "byte", "default": "255"}
                 ]
             }
         },
