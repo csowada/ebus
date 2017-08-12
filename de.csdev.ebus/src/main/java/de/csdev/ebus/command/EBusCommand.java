@@ -105,11 +105,17 @@ public class EBusCommand implements IEBusCommandWritable {
     }
 
     public Collection<Type> getCommandChannelTypes() {
-        return Collections.unmodifiableCollection(channels.keySet());
+        if (channels != null) {
+            return Collections.unmodifiableCollection(channels.keySet());
+        }
+        return Collections.emptyList();
     }
 
     public Collection<IEBusCommandChannel> getCommandChannels() {
-        return Collections.unmodifiableCollection(channels.values());
+        if (channels != null) {
+            return Collections.unmodifiableCollection(channels.values());
+        }
+        return Collections.emptyList();
     }
 
     public void addCommandChannel(IEBusCommandChannel channel) {

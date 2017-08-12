@@ -46,27 +46,6 @@ public class ConfigurationReader implements IConfigurationReader {
     private EBusTypes registry;
 
     public List<IEBusCommand> loadConfiguration(InputStream inputStream) throws IOException {
-
-        // if (registry == null) {
-        // throw new RuntimeException("Unable to load configuration without EBusType set!");
-        // }
-        //
-        // List<EBusCommand> list = new ArrayList<EBusCommand>();
-        //
-        // if (mapper == null) {
-        // mapper = new ObjectMapper();
-        // mapper.configure(Feature.ALLOW_COMMENTS, true);
-        // }
-        //
-        // final Map<String, Object> json = mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {
-        // });
-        //
-        // @SuppressWarnings("unchecked")
-        // List<Map<String, Object>> commands = (List<Map<String, Object>>) json.get("commands");
-        //
-        // for (Map<String, Object> element : commands) {
-        // list.addAll(parseTelegramConfiguration(element));
-        // }
         EBusCommandCollection collection = loadConfigurationCollection(inputStream);
         return collection.getCommands();
     }
@@ -87,7 +66,7 @@ public class ConfigurationReader implements IConfigurationReader {
         EBusCollectionDTO collection = mapper.readValue(inputStream, EBusCollectionDTO.class);
 
         for (EBusCommandDTO command : collection.getCommands()) {
-            commandList.addAll(parseTelegramConfiguration(command));
+            commandList.add(parseTelegramConfiguration(command));
         }
 
         return new EBusCommandCollection(collection.getId(), collection.getLabel(), collection.getProperties(),
@@ -98,9 +77,8 @@ public class ConfigurationReader implements IConfigurationReader {
         registry = ebusTypes;
     }
 
-    protected List<EBusCommand> parseTelegramConfiguration(EBusCommandDTO commandElement) {
+    protected EBusCommand parseTelegramConfiguration(EBusCommandDTO commandElement) {
 
-        final ArrayList<EBusCommand> result = new ArrayList<EBusCommand>();
         LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<String, EBusCommandValue>();
 
         // collect available channels
@@ -184,11 +162,9 @@ public class ConfigurationReader implements IConfigurationReader {
                 }
 
             }
-            // add command to result list
-            result.add(cfg);
         }
 
-        return result;
+        return cfg;
     }
 
     protected Collection<EBusCommandValue> parseValueConfiguration(EBusValueDTO template,
@@ -257,8 +233,7 @@ public class ConfigurationReader implements IConfigurationReader {
         ev.setMin(template.getMin());
         ev.setMax(template.getMax());
 
-        // TODO missing !!!
-        template.getMapping();
+        ev.setMapping(template.getMapping());
 
         result.add(ev);
         return result;
