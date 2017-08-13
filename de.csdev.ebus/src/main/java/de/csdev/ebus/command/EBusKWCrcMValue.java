@@ -71,4 +71,8 @@ public class EBusKWCrcMValue implements IEBusValue {
 
     }
 
+    public String getFormat() {
+        return null;
+    }
+
 }

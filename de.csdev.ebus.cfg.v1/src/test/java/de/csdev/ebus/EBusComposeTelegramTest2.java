@@ -19,6 +19,7 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommand.Type;
+import de.csdev.ebus.command.IEBusCommandChannel;
 import de.csdev.ebus.service.parser.EBusParserListener;
 import de.csdev.ebus.service.parser.EBusParserService;
 import de.csdev.ebus.utils.EBusUtils;
@@ -48,7 +49,7 @@ public class EBusComposeTelegramTest2 {
 
     @Test
     public void composeTelegram01() throws EBusTypeException {
-        IEBusCommand command = configurationProvider.getConfigurationById("fbh.set_heizkurve", Type.GET);
+        IEBusCommandChannel command = configurationProvider.getConfigurationById("fbh.set_heizkurve", Type.GET);
         assertNotNull("Command fbh.set_heizkurve not found", command);
 
         Map<String, Object> values = new HashMap<String, Object>();
@@ -67,7 +68,7 @@ public class EBusComposeTelegramTest2 {
         EBusParserService parserService = new EBusParserService(configurationProvider);
         parserService.addEBusParserListener(new EBusParserListener() {
 
-            public void onTelegramResolved(IEBusCommand command, Map<String, Object> result, byte[] receivedData,
+            public void onTelegramResolved(IEBusCommandChannel command, Map<String, Object> result, byte[] receivedData,
                     Integer sendQueueId) {
                 System.out.println(
                         "EBusComposeTelegramTest2.composeTelegram01().new EBusParserListener() {...}.onTelegramResolved()");

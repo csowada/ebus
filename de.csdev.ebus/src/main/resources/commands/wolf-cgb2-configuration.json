@@ -88,7 +88,7 @@
                     {"type": "static", "default": "6F 01"}
                 ],
                 "slave": [
-                    {"name": "modulation", "type": "word", "label": "Modulation level (%)", "min":0, "max":100}
+                    {"name": "modulation", "type": "word", "label": "Modulation level (%)", "min":0, "max":100, "format":"%d%%"}
                 ]
             }
         },
@@ -105,7 +105,7 @@
                     {"type": "static", "default": "57 27"}
                 ],
                 "slave": [
-                    {"name": "modulation_pump", "type": "word", "label": "Heating circuit pump speed (%)", "min":0, "max":100}
+                    {"name": "modulation_pump", "type": "word", "label": "Heating circuit pump speed (%)", "min":0, "max":100, "format":"%d%%"}
                 ]
             }
         },
@@ -122,7 +122,7 @@
                     {"type": "static", "default": "1A 27"}
                 ],
                 "slave": [
-                    {"name": "pressure", "type": "word", "label": "System pressure (bar)", "factor": 0.01, "min": 0, "max": 10}
+                    {"name": "pressure", "type": "word", "label": "System pressure (bar)", "factor": 0.01, "min": 0, "max": 10, "format":"%.2f bar"}
                 ]
             }
         },
@@ -139,7 +139,7 @@
                     {"type": "static", "default": "9A 01"}
                 ],
                 "slave": [
-                    {"name": "software_version", "type": "word", "label": "Software Version HCM2", "factor": 0.01}
+                    {"name": "software_version", "type": "word", "label": "Software Version HCM2", "factor": 0.01, "format":"%.2f"}
                 ]
             }
         },
@@ -156,7 +156,7 @@
                     {"type": "static", "default": "26 02"}
                 ],
                 "slave": [
-                    {"name": "starts", "type": "word", "label": "Burner starts"}
+                    {"name": "starts", "type": "word", "label": "Burner starts", "format":"%d"}
                 ]
             }
         },
@@ -173,7 +173,7 @@
                     {"type": "static", "default": "4F 27"}
                 ],
                 "slave": [
-                    {"name": "value_io", "type": "word", "label": "Actual I/O value"}
+                    {"name": "value_io", "type": "word", "label": "Actual I/O value", "format":"%d"}
                 ]
             }
         },
@@ -190,7 +190,7 @@
                     {"type": "static", "default": "5E 27"}
                 ],
                 "slave": [
-                    {"name": "count_power_on", "type": "word", "label": "Power ON count"}
+                    {"name": "count_power_on", "type": "word", "label": "Power ON count", "format":"%d"}
                 ]
             }
         },
@@ -207,7 +207,7 @@
                     {"type": "static", "default": "2A 02"}
                 ],
                 "slave": [
-                    {"name": "runtime", "type": "word", "label": "Burner hours run (h)"}
+                    {"name": "runtime", "type": "word", "label": "Burner hours run (h)", "format":"%d hours"}
                 ]
             }
         },
@@ -224,7 +224,7 @@
                     {"type": "static", "default": "1D 27"}
                 ],
                 "slave": [
-                    {"name": "temp_exhaust", "type": "word", "label": "Current flue gas temperature (°C)", "factor": 0.1 , "min": 1, "max":140}
+                    {"name": "temp_exhaust", "type": "word", "label": "Current flue gas temperature (°C)", "factor": 0.1 , "min": 1, "max":140, "format":"%.1f°C"}
                 ]
             }
         },
@@ -241,7 +241,7 @@
                     {"type": "static", "default": "28 02"}
                 ],
                 "slave": [
-                    {"name": "runtime", "type": "word", "label": "Mains hours (h)"}
+                    {"name": "runtime", "type": "word", "label": "Mains hours (h)", "format":"%d hours"}
                 ]
             }
         },
@@ -258,7 +258,7 @@
                     {"type": "static", "default": "0D 00"}
                 ],
                 "slave": [
-                    {"name": "temp_flow", "type": "word", "label": "Boiler temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                    {"name": "temp_flow", "type": "word", "label": "Boiler temperature (°C)", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -275,7 +275,7 @@
                     {"type": "static", "default": "0E 00"}
                 ],
                 "slave": [
-                    {"name": "temp_dhw", "type": "word", "label": "DHW temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                    {"name": "temp_dhw", "type": "word", "label": "DHW temperature (°C)", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -292,7 +292,7 @@
                     {"type": "static", "default": "16 00"}
                 ],
                 "slave": [
-                    {"name": "temp_return", "type": "word", "label": "Boiler return temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                    {"name": "temp_return", "type": "word", "label": "Boiler return temperature (°C)", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
                 ]
             }
         }

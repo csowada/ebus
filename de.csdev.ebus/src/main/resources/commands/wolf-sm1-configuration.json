@@ -22,7 +22,7 @@
                     {"type": "static", "default": "29 0A"}
                 ],
                 "slave": [
-                    {"name": "temp_cylinder", "type": "word", "label": "Solar cylinder temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                    {"name": "temp_cylinder", "type": "word", "label": "Solar cylinder temperature (°C)", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -39,7 +39,7 @@
                     {"type": "static", "default": "FB 02"}
                 ],
                 "slave": [
-                    {"name": "temp_return", "type": "word", "label": "Solar return temperature (°C)", "factor": 0.1 , "min": -30, "max": 150}
+                    {"name": "temp_return", "type": "word", "label": "Solar return temperature (°C)", "factor": 0.1 , "min": -30, "max": 150, "format":"%.1f°C"}
                 ]
             }
         },
@@ -56,7 +56,7 @@
                     {"type": "static", "default": "2B 0A"}
                 ],
                 "slave": [
-                    {"name": "e1", "type": "word", "label": "E1 - Return temp (°C)", "factor": 0.1, "min": 1, "max": 120}
+                    {"name": "e1", "type": "word", "label": "E1 - Return temp (°C)", "factor": 0.1, "min": 1, "max": 120, "format":"%.1f°C"}
                 ]
             }
         },
@@ -73,7 +73,7 @@
                     {"type": "static", "default": "F9 02"}
                 ],
                 "slave": [
-                    {"name": "runtime_pump", "type": "word", "label": "Runtime solar circuit pump 1 (h)"}
+                    {"name": "runtime_pump", "type": "word", "label": "Runtime solar circuit pump 1 (h)", "format":"%d hours"}
                 ]
             }
         },
@@ -90,7 +90,7 @@
                     {"type": "static", "default": "2A 0A"}
                 ],
                 "slave": [
-                    {"name": "temp_collector", "type": "word", "label": "Solar collector temperature (°C)", "factor": 0.1 , "min": -40, "max": 300}
+                    {"name": "temp_collector", "type": "word", "label": "Solar collector temperature (°C)", "factor": 0.1 , "min": -40, "max": 300, "format":"%.1f°C"}
                 ]
             }
         },
@@ -107,7 +107,7 @@
                     {"type": "static", "default": "7B 09"}
                 ],
                 "slave": [
-                    {"name": "temp_cylinder_24h_min", "type": "word", "label": "Min. cylinder temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                    {"name": "temp_cylinder_24h_min", "type": "word", "label": "Min. cylinder temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -124,7 +124,7 @@
                     {"type": "static", "default": "7C 09"}
                 ],
                 "slave": [
-                    {"name": "temp_cylinder_24h_max", "type": "word", "label": "Max. cylinder temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                    {"name": "temp_cylinder_24h_max", "type": "word", "label": "Max. cylinder temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -141,7 +141,7 @@
                     {"type": "static", "default": "77 09"}
                 ],
                 "slave": [
-                    {"name": "temp_collector_24h_min", "type": "word", "label": "Min. collector temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                    {"name": "temp_collector_24h_min", "type": "word", "label": "Min. collector temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -158,7 +158,7 @@
                     {"type": "static", "default": "78 09"}
                 ],
                 "slave": [
-                    {"name": "temp_collector_24h_max", "type": "word", "label": "Max. collector temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100}
+                    {"name": "temp_collector_24h_max", "type": "word", "label": "Max. collector temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -176,13 +176,14 @@
                     ]},
                     {"name": "_unknown1", "type": "byte"},
                     {"name": "_unknown2", "type": "byte"},
-                    {"name": "temp_collector", "type": "data2c", "label": "Temperature, collector 1 °C", "min":-20, "max":160},
-                    {"name": "temp_cylinder", "type": "data2c", "label": "Temperature, solar cylinder 1 °C", "min":1, "max":100},
+                    {"name": "temp_collector", "type": "data2c", "label": "Temperature, collector 1 °C", "min":-20, "max":160, "format":"%.1f°C"},
+                    {"name": "temp_cylinder", "type": "data2c", "label": "Temperature, solar cylinder 1 °C", "min":1, "max":100, "format":"%.1f°C"},
     
-                    {"name": "temp_cylinder2", "type": "data2c", "label": "Temperature, solar cylinder 2 °C", "min":1, "max":100},
-                    {"name": "temp_cylinder2a", "type": "data2c", "label": "Temperature, solar cylinder 2 °C", "min":1, "max":100},
-                    {"name": "temp_cylinder3b", "type": "data2c", "label": "Temperature, solar cylinder 3 °C", "min":1, "max":100},
-                    {"name": "temp_cylinder3", "type": "data2c", "label": "Temperature, solar cylinder 3 °C", "min":1, "max":100}
+                    {"name": "temp_cylinder2", "type": "data2c", "label": "Temperature, solar cylinder 2 °C", "min":1, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_cylinder2a", "type": "data2c", "label": "Temperature, solar cylinder 2 °C", "min":1, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_cylinder3b", "type": "data2c", "label": "Temperature, solar cylinder 3 °C", "min":1, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_cylinder3", "type": "data2c", "label": "Temperature, solar cylinder 3 °C", "min":1, "max":100, "format":"%.1f°C"},
+                    {"name": "unknown", "type": "byte"}
                 ]
             }
         },
@@ -195,12 +196,13 @@
     
             "broadcast": {
                 "master": [
-                    {"name": "output_current", "type": "data2c", "label": "Current output (kW)"},
+                    {"name": "output_current", "type": "data2c", "label": "Current output (kW)", "format":"%d kW"},
                     {"name": "_yield_today_l", "type": "word"},
                     {"name": "_yield_today_h", "type": "word"},
                     {"name": "_yield_total_l", "type": "word"},
                     {"name": "_yield_total_h", "type": "word"},
-                    {"name": "_yield_total_m", "type": "word"}
+                    {"name": "_yield_total_m", "type": "word"},
+                    {"name": "unknown", "type": "word"}
                 ]
             }
         }

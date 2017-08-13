@@ -39,6 +39,16 @@ public class EBusCommandValue implements IEBusValue {
 
     private BigDecimal step;
 
+    private String format;
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
     public Map<String, String> getMapping() {
         return mapping;
     }

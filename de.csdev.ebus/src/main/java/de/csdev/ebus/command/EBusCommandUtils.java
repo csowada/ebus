@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
@@ -173,14 +173,14 @@ public class EBusCommandUtils {
                         for (IEBusValue child : evc.getChildren()) {
 
                             Object decode2 = child.getType().decode(src);
-                            if (StringUtils.isNoneEmpty(child.getName())) {
+                            if (StringUtils.isNotEmpty(child.getName())) {
                                 result.put(child.getName(), decode2);
                             }
                         }
                     }
                 }
 
-                if (StringUtils.isNoneEmpty(ev.getName())) {
+                if (StringUtils.isNotEmpty(ev.getName())) {
                     result.put(ev.getName(), decode);
                 }
 

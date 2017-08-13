@@ -26,6 +26,15 @@ public class EBusValueDTO {
     private String type;
     private String xdefault;
     private Integer pos;
+    private String format;
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
 
     public Integer getPos() {
         return pos;

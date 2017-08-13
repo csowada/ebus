@@ -39,6 +39,8 @@ public interface IEBusValue {
 
     public BigDecimal getMin();
 
+    public String getFormat();
+
     /**
      * Returns a map of additional properties
      *

@@ -234,6 +234,7 @@ public class ConfigurationReader implements IConfigurationReader {
         ev.setMax(template.getMax());
 
         ev.setMapping(template.getMapping());
+        ev.setFormat(template.getFormat());
 
         result.add(ev);
         return result;
