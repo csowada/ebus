@@ -11,7 +11,7 @@ public class EBusTypeData2c extends EBusTypeGenericReplaceValue {
     private static String[] supportedTypes = new String[] { DATA2C };
 
     public EBusTypeData2c() {
-        replaceValue = new byte[] { (byte) 0x80, (byte) 0x00 };
+        replaceValue = new byte[] { (byte) 0x00, (byte) 0x80 };
     }
 
     public String[] getSupportedTypes() {
@@ -26,7 +26,10 @@ public class EBusTypeData2c extends EBusTypeGenericReplaceValue {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T decodeInt(byte[] data) throws EBusTypeException {
-        BigDecimal intValue = types.decode(EBusTypeInteger.INTGER, data);
+        BigDecimal intValue = types.decode(EBusTypeInteger.INTEGER, data);
+        if (intValue == null) {
+            return null;
+        }
         return (T) intValue.divide(BigDecimal.valueOf(16));
     }
 
@@ -34,7 +37,7 @@ public class EBusTypeData2c extends EBusTypeGenericReplaceValue {
     public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         b = b.multiply(BigDecimal.valueOf(16));
-        return types.encode(EBusTypeInteger.INTGER, b);
+        return types.encode(EBusTypeInteger.INTEGER, b);
     }
 
 }
