@@ -174,16 +174,16 @@
                     {"name": "_solar_status", "type": "byte", "label": "Solar status (Multiple bits)", "children": [
                         {"name": "state_pump", "type": "bit", "label": "Pump status"}
                     ]},
-                    {"name": "_unknown1", "type": "byte"},
-                    {"name": "_unknown2", "type": "byte"},
+                    
+                    {"name": "unknown1", "type": "data1b"},
                     {"name": "temp_collector", "type": "data2c", "label": "Temperature, collector 1 °C", "min":-20, "max":160, "format":"%.1f°C"},
                     {"name": "temp_cylinder", "type": "data2c", "label": "Temperature, solar cylinder 1 °C", "min":1, "max":100, "format":"%.1f°C"},
-    
+
+                    {"name": "xxx", "type": "word", "label": "Temperature, solar cylinder 2 °C"},
                     {"name": "temp_cylinder2", "type": "data2c", "label": "Temperature, solar cylinder 2 °C", "min":1, "max":100, "format":"%.1f°C"},
                     {"name": "temp_cylinder2a", "type": "data2c", "label": "Temperature, solar cylinder 2 °C", "min":1, "max":100, "format":"%.1f°C"},
                     {"name": "temp_cylinder3b", "type": "data2c", "label": "Temperature, solar cylinder 3 °C", "min":1, "max":100, "format":"%.1f°C"},
-                    {"name": "temp_cylinder3", "type": "data2c", "label": "Temperature, solar cylinder 3 °C", "min":1, "max":100, "format":"%.1f°C"},
-                    {"name": "unknown", "type": "byte"}
+                    {"name": "temp_cylinder3", "type": "data2c", "label": "Temperature, solar cylinder 3 °C", "min":1, "max":100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -197,11 +197,11 @@
             "broadcast": {
                 "master": [
                     {"name": "output_current", "type": "data2c", "label": "Current output (kW)", "format":"%d kW"},
-                    {"name": "_yield_today_l", "type": "word"},
-                    {"name": "_yield_today_h", "type": "word"},
-                    {"name": "_yield_total_l", "type": "word"},
-                    {"name": "_yield_total_h", "type": "word"},
-                    {"name": "_yield_total_m", "type": "word"},
+                    {"name": "x_yield_today_l", "type": "word"},
+                    {"name": "x_yield_today_h", "type": "word"},
+                    {"name": "x_yield_total_l", "type": "word"},
+                    {"name": "x_yield_total_h", "type": "word"},
+                    {"name": "x_yield_total_m", "type": "word"},
                     {"name": "unknown", "type": "word"}
                 ]
             }
