@@ -11,6 +11,7 @@ package de.csdev.ebus.command;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -131,24 +132,44 @@ public class EBusCommandUtils {
         return buf;
     }
 
-    public static Map<String, Object> decodeTelegram(IEBusCommandChannel commandChannel, byte[] data)
-            throws EBusTypeException {
+    private static Object applyNumberOperations(Object decode, IEBusValue ev) {
 
-        HashMap<String, Object> result = new HashMap<String, Object>();
-        int pos = 6;
+        if (ev instanceof EBusCommandValue) {
+            EBusCommandValue nev = (EBusCommandValue) ev;
 
-        if (commandChannel == null) {
-            throw new IllegalArgumentException("Parameter command is null!");
-        }
+            if (decode instanceof BigDecimal) {
 
-        if (commandChannel.getExtendCommandValue() != null) {
-            for (IEBusValue ev : commandChannel.getExtendCommandValue()) {
-                pos += ev.getType().getTypeLenght();
+                BigDecimal multiply = (BigDecimal) decode;
+
+                if (nev.getFactor() != null) {
+                    multiply = multiply.multiply(nev.getFactor());
+                    decode = multiply;
+                }
+
+                if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
+                    System.out.println("EBusCommand.encode() >> MIN");
+                    decode = null;
+                }
+
+                if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
+                    System.out.println("EBusCommand.encode() >> MAX");
+                    decode = null;
+                }
+
+                // decode = multiply;
             }
         }
 
-        if (commandChannel.getMasterTypes() != null) {
-            for (IEBusValue ev : commandChannel.getMasterTypes()) {
+        return decode;
+    }
+
+    private static int decodeValueList(List<IEBusValue> values, byte[] data, HashMap<String, Object> result, int pos)
+            throws EBusTypeException {
+
+        // HashMap<String, Object> result = new HashMap<String, Object>();
+
+        if (values != null) {
+            for (IEBusValue ev : values) {
 
                 byte[] src = null;
                 Object decode = null;
@@ -173,7 +194,9 @@ public class EBusCommandUtils {
                         for (IEBusValue child : evc.getChildren()) {
 
                             Object decode2 = child.getType().decode(src);
+
                             if (StringUtils.isNotEmpty(child.getName())) {
+                                decode2 = applyNumberOperations(decode2, ev);
                                 result.put(child.getName(), decode2);
                             }
                         }
@@ -181,6 +204,7 @@ public class EBusCommandUtils {
                 }
 
                 if (StringUtils.isNotEmpty(ev.getName())) {
+                    decode = applyNumberOperations(decode, ev);
                     result.put(ev.getName(), decode);
                 }
 
@@ -188,47 +212,30 @@ public class EBusCommandUtils {
             }
         }
 
-        pos += 3;
+        return pos;
+    }
 
-        if (commandChannel.getSlaveTypes() != null) {
+    public static Map<String, Object> decodeTelegram(IEBusCommandChannel commandChannel, byte[] data)
+            throws EBusTypeException {
 
-            for (IEBusValue ev : commandChannel.getSlaveTypes()) {
-                byte[] src = new byte[ev.getType().getTypeLenght()];
-                System.arraycopy(data, pos - 1, src, 0, src.length);
-                Object decode = ev.getType().decode(src);
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        int pos = 6;
 
-                if (ev instanceof EBusCommandValue) {
-                    EBusCommandValue nev = (EBusCommandValue) ev;
+        if (commandChannel == null) {
+            throw new IllegalArgumentException("Parameter command is null!");
+        }
 
-                    if (decode instanceof BigDecimal) {
-
-                        BigDecimal multiply = (BigDecimal) decode;
-
-                        if (nev.getFactor() != null) {
-                            multiply = multiply.multiply(nev.getFactor());
-                            decode = multiply;
-                        }
-
-                        if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
-                            System.out.println("EBusCommand.encode() >> MIN");
-                            decode = null;
-                        }
-
-                        if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
-                            System.out.println("EBusCommand.encode() >> MAX");
-                            decode = null;
-                        }
-
-                        // decode = multiply;
-                    }
-
-                    // nev.getMax()
-                }
-
-                result.put(ev.getName(), decode);
+        if (commandChannel.getExtendCommandValue() != null) {
+            for (IEBusValue ev : commandChannel.getExtendCommandValue()) {
                 pos += ev.getType().getTypeLenght();
             }
         }
+
+        pos = decodeValueList(commandChannel.getMasterTypes(), data, result, pos);
+
+        pos += 3;
+
+        pos = decodeValueList(commandChannel.getSlaveTypes(), data, result, pos);
 
         return result;
     }
