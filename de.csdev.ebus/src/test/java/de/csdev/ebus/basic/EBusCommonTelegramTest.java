@@ -141,6 +141,14 @@ public class EBusCommonTelegramTest {
         canResolve(bs);
     }
 
+    @Test
+    public void s() {
+        byte[] bs = EBusUtils.toByteArray("30 FE 07 00 09 00 80 10 54 21 16 08 03 17 02 AA");
+        xxx("common", bs, IEBusCommand.Type.GET);
+        canResolve(bs);
+
+    }
+
     protected void checkMask(String commandId, byte[] data, IEBusCommand.Type type) {
 
         ByteBuffer wrap = ByteBuffer.wrap(data);
@@ -187,6 +195,24 @@ public class EBusCommonTelegramTest {
         }
 
         return true;
+    }
+
+    protected void xxx(String commandId, byte[] data, IEBusCommand.Type type) {
+
+        IEBusCommandChannel commandChannel = commandRegistry.getConfigurationById(commandId, type);
+
+        try {
+
+            Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, data);
+            if (map != null) {
+                for (Entry<String, Object> entry : map.entrySet()) {
+                    System.out.println(entry.getKey() + " -> " + entry.getValue());
+                }
+            }
+
+        } catch (EBusTypeException e) {
+            logger.error("error!", e);
+        }
     }
 
 }

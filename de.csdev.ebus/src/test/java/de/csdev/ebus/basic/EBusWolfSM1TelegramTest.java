@@ -48,7 +48,6 @@ public class EBusWolfSM1TelegramTest {
         commandRegistry.addTelegramConfigurationList(cfg.loadConfiguration(inputStream));
     }
 
-    @Test
     public void xxx() {
         byte[] bs = null;
 
@@ -63,14 +62,13 @@ public class EBusWolfSM1TelegramTest {
     public void xxx2() {
         byte[] bs = null;
 
-        bs = EBusUtils.toByteArray("71 FE 50 17 10 08 91 45 01 FE 01 00 80 00 80 00 80 00 80 00 80 9E AA");
+        bs = EBusUtils.toByteArray("71 FE 50 17 10 08 91 F0 01 0A 04 00 80 00 80 00 80 00 80 00 80 F7 AA");
         checkMask("solar.solar_data", bs, IEBusCommand.Type.BROADCAST);
         xxx("solar.solar_data", bs, IEBusCommand.Type.BROADCAST);
         canResolve(bs);
 
     }
 
-    @Test
     public void xxx3() {
         byte[] bs = null;
 
