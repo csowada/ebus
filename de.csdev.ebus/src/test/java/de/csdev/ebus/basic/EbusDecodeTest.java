@@ -36,11 +36,10 @@ public class EbusDecodeTest {
 
         decodeBCD = types.decode(EBusTypeBCD.BCD, new byte[] { (byte) 0xFF });
         assertNull("xxxx", decodeBCD);
-//        assertEquals("Decode CHAR failed!", null, decodeBCD);
-        
+        // assertEquals("Decode CHAR failed!", null, decodeBCD);
+
         BigDecimal decodeChar = types.decode(EBusTypeChar.CHAR, new byte[] { (byte) 0xFA });
         assertEquals("Decode CHAR failed!", BigDecimal.valueOf((byte) 0xFA), decodeChar);
-        
 
     }
 
@@ -130,7 +129,7 @@ public class EbusDecodeTest {
         assertEquals("Decode DATA2B failed!", -1f, value.floatValue(), 0.1f);
 
         value = types.decode(EBusTypeData2b.DATA2B, new byte[] { (byte) 0x00, (byte) 0x80 });
-        assertEquals("Decode DATA2B failed!", -128f, value.floatValue(), 0.1f);
+        assertNull("Decode DATA2B failed!", value);
 
         value = types.decode(EBusTypeData2b.DATA2B, new byte[] { (byte) 0x01, (byte) 0x80 });
         assertEquals("Decode DATA2B failed!", -127.99f, value.floatValue(), 0.1f);
@@ -168,22 +167,22 @@ public class EbusDecodeTest {
         BigDecimal value = types.decode(EBusTypeData2c.DATA2C, new byte[] { 0x00, 0x00 });
         assertEquals("Decode DATA2C failed!", 0f, value.floatValue(), 0.1f);
 
-        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { 0x00, 0x01 });
+        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { 0x01, 0x00 });
         assertEquals("Decode DATA2C failed!", 0.0625f, value.floatValue(), 0.1f);
 
         value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0xFF, (byte) 0xFF });
         assertEquals("Decode DATA2C failed!", -0.0625f, value.floatValue(), 0.1f);
 
-        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0xFF, (byte) 0xF0 });
+        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0xF0, (byte) 0xFF });
         assertEquals("Decode DATA2C failed!", -1f, value.floatValue(), 0.1f);
 
-        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0x80, (byte) 0x00 });
+        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0x00, (byte) 0x80 });
         assertNull("Decode DATA2C failed!", value);
 
-        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0x80, (byte) 0x01 });
+        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0x01, (byte) 0x80 });
         assertEquals("Decode DATA2C failed!", -2047.9f, value.floatValue(), 0.1f);
 
-        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0x7F, (byte) 0xFF });
+        value = types.decode(EBusTypeData2c.DATA2C, new byte[] { (byte) 0xFF, (byte) 0x7F });
         assertEquals("Decode DATA2C failed!", 2047.9f, value.floatValue(), 0.1f);
     }
 
@@ -193,22 +192,22 @@ public class EbusDecodeTest {
         assertArrayEquals("Encode DATA2C failed!", new byte[] { 0x00, 0x00 }, encode);
 
         encode = types.encode(EBusTypeData2c.DATA2C, 0.0625f, (Object[]) null);
-        assertArrayEquals("Encode DATA2C failed!", new byte[] { 0x00, 0x01 }, encode);
+        assertArrayEquals("Encode DATA2C failed!", new byte[] { 0x01, 0x00 }, encode);
 
         encode = types.encode(EBusTypeData2c.DATA2C, -0.0625f, (Object[]) null);
         assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0xFF, (byte) 0xFF }, encode);
 
         encode = types.encode(EBusTypeData2c.DATA2C, -1f, (Object[]) null);
-        assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0xFF, (byte) 0xF0 }, encode);
+        assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0xF0, (byte) 0xFF }, encode);
 
         encode = types.encode(EBusTypeData2c.DATA2C, -2048f, (Object[]) null);
-        assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0x80, (byte) 0x00 }, encode);
+        assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0x00, (byte) 0x80 }, encode);
 
         encode = types.encode(EBusTypeData2c.DATA2C, -2047.99f, (Object[]) null);
-        assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0x80, (byte) 0x01 }, encode);
+        assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0x01, (byte) 0x80 }, encode);
 
         encode = types.encode(EBusTypeData2c.DATA2C, 2047.99f, (Object[]) null);
-        assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0x7F, (byte) 0xFF }, encode);
+        assertArrayEquals("Encode DATA2C failed!", new byte[] { (byte) 0xFF, (byte) 0x7F }, encode);
     }
 
 }
