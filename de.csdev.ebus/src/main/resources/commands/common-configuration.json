@@ -162,7 +162,7 @@
                     {"name": "temp_d_boiler", "type": "data2b", "label": "Boiler desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
                     {"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "min":-30, "max":50, "format":"%.1f°C"},
                     {"name": "performance_forced", "type": "data1b", "label": "Forced performance"},
-                    {"name":"bits", "type": "byte", "children": [
+                    {"type": "byte", "children": [
                         {"name": "state_dhw", "type": "bit", "label": "State DHW(?) active"},
                         {"name": "state_hc", "type": "bit", "label": "State heating circuit active"}
                     ]},
