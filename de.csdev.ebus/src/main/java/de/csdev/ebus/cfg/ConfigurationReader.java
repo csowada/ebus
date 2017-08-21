@@ -25,15 +25,15 @@ import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.cfg.dto.EBusCollectionDTO;
 import de.csdev.ebus.cfg.dto.EBusCommandDTO;
-import de.csdev.ebus.cfg.dto.EBusCommandTypeDTO;
+import de.csdev.ebus.cfg.dto.EBusCommandMethodDTO;
 import de.csdev.ebus.cfg.dto.EBusValueDTO;
 import de.csdev.ebus.command.EBusCommand;
-import de.csdev.ebus.command.EBusCommandChannel;
 import de.csdev.ebus.command.EBusCommandCollection;
+import de.csdev.ebus.command.EBusCommandMethod;
 import de.csdev.ebus.command.EBusCommandNestedValue;
 import de.csdev.ebus.command.EBusCommandValue;
 import de.csdev.ebus.command.IEBusCommand;
-import de.csdev.ebus.command.IEBusCommand.Type;
+import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -45,12 +45,14 @@ public class ConfigurationReader implements IConfigurationReader {
     private ObjectMapper mapper;
     private EBusTypes registry;
 
-    public List<IEBusCommand> loadConfiguration(InputStream inputStream) throws IOException {
+    public List<IEBusCommand> loadConfiguration(InputStream inputStream)
+            throws IOException, ConfigurationReaderException {
         EBusCommandCollection collection = loadConfigurationCollection(inputStream);
         return collection.getCommands();
     }
 
-    public EBusCommandCollection loadConfigurationCollection(InputStream inputStream) throws IOException {
+    public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
+            throws IOException, ConfigurationReaderException {
 
         if (registry == null) {
             throw new RuntimeException("Unable to load configuration without EBusType set!");
@@ -77,20 +79,21 @@ public class ConfigurationReader implements IConfigurationReader {
         registry = ebusTypes;
     }
 
-    protected EBusCommand parseTelegramConfiguration(EBusCommandDTO commandElement) {
+    protected EBusCommand parseTelegramConfiguration(EBusCommandDTO commandElement)
+            throws ConfigurationReaderException {
 
         LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<String, EBusCommandValue>();
 
         // collect available channels
-        List<String> channels = new ArrayList<String>();
+        List<String> methods = new ArrayList<String>();
         if (commandElement.getGet() != null) {
-            channels.add("get");
+            methods.add("get");
         }
         if (commandElement.getSet() != null) {
-            channels.add("set");
+            methods.add("set");
         }
         if (commandElement.getBroadcast() != null) {
-            channels.add("broadcast");
+            methods.add("broadcast");
         }
 
         // extract default values
@@ -116,47 +119,57 @@ public class ConfigurationReader implements IConfigurationReader {
         cfg.setDevice(device);
 
         // loop all available channnels
-        for (String channel : channels) {
+        for (String channel : methods) {
 
-            EBusCommandTypeDTO commandChannel = null;
-            Type type = null;
+            EBusCommandMethodDTO commandMethodElement = null;
+            IEBusCommandMethod.Method method = null;
 
             if (channel.equals("get")) {
-                commandChannel = commandElement.getGet();
-                type = Type.GET;
+                commandMethodElement = commandElement.getGet();
+                method = IEBusCommandMethod.Method.GET;
 
             } else if (channel.equals("set")) {
-                commandChannel = commandElement.getSet();
-                type = Type.SET;
+                commandMethodElement = commandElement.getSet();
+                method = IEBusCommandMethod.Method.SET;
 
             } else if (channel.equals("broadcast")) {
-                commandChannel = commandElement.getBroadcast();
-                type = Type.BROADCAST;
+                commandMethodElement = commandElement.getBroadcast();
+                method = IEBusCommandMethod.Method.BROADCAST;
 
             }
 
-            if (commandChannel != null) {
-                // Map<String, Object> map = (Map<String, Object>) entry;
+            if (commandMethodElement != null) {
 
-                EBusCommandChannel c = new EBusCommandChannel(cfg, type);
+                // String t = commandMethodElement.getType();
+                // IEBusCommandMethod.Type type = t == null ? null
+                // : t.equalsIgnoreCase("ms") ? IEBusCommandMethod.Type.MASTER_SLAVE
+                // : t.equalsIgnoreCase("mm") ? IEBusCommandMethod.Type.MASTER_MASTER
+                // : t.equalsIgnoreCase("ms") ? IEBusCommandMethod.Type.BROADCAST : null;
 
-                c.setCommand(command);
-                c.setDestinationAddress(destination);
-                c.setSourceAddress(source);
+                // if (type == null) {
+                // throw new ConfigurationReaderException("Property \"type\" is missing for command %s !",
+                // commandElement.getId());
+                // }
+
+                EBusCommandMethod commandMethod = new EBusCommandMethod(cfg, method);
+
+                commandMethod.setCommand(command);
+                commandMethod.setDestinationAddress(destination);
+                commandMethod.setSourceAddress(source);
 
                 // entry = map.get("master");
-                if (commandChannel.getMaster() != null) {
-                    for (EBusValueDTO template : commandChannel.getMaster()) {
+                if (commandMethodElement.getMaster() != null) {
+                    for (EBusValueDTO template : commandMethodElement.getMaster()) {
                         for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
-                            c.addMasterValue(ev);
+                            commandMethod.addMasterValue(ev);
                         }
                     }
                 }
 
-                if (commandChannel.getSlave() != null) {
-                    for (EBusValueDTO template : commandChannel.getSlave()) {
+                if (commandMethodElement.getSlave() != null) {
+                    for (EBusValueDTO template : commandMethodElement.getSlave()) {
                         for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
-                            c.addSlaveValue(ev);
+                            commandMethod.addSlaveValue(ev);
                         }
                     }
                 }

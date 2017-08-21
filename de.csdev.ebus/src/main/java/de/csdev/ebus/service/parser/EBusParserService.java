@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.IEBusCommandChannel;
+import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusDataException;
 
@@ -53,8 +53,8 @@ public class EBusParserService implements EBusConnectorEventListener {
      */
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
-        final List<IEBusCommandChannel> commandChannelList = commandRegistry.find(receivedData);
-        for (IEBusCommandChannel commandChannel : commandChannelList) {
+        final List<IEBusCommandMethod> commandChannelList = commandRegistry.find(receivedData);
+        for (IEBusCommandMethod commandChannel : commandChannelList) {
 
             try {
                 Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, receivedData);
@@ -66,7 +66,7 @@ public class EBusParserService implements EBusConnectorEventListener {
 
     }
 
-    private void fireOnTelegramResolved(IEBusCommandChannel commandChannel, Map<String, Object> result,
+    private void fireOnTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
             byte[] receivedData, Integer sendQueueId) {
         for (EBusParserListener listener : listeners) {
             listener.onTelegramResolved(commandChannel, result, receivedData, sendQueueId);

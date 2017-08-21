@@ -10,7 +10,7 @@ package de.csdev.ebus.service.parser;
 
 import java.util.Map;
 
-import de.csdev.ebus.command.IEBusCommandChannel;
+import de.csdev.ebus.command.IEBusCommandMethod;
 
 /**
  * @author Christian Sowada
@@ -26,7 +26,7 @@ public interface EBusParserListener {
      * @param receivedData The raw data
      * @param sendQueueId The sendQueue id if available
      */
-    public void onTelegramResolved(IEBusCommandChannel commandChannel, Map<String, Object> result, byte[] receivedData,
+    public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
             Integer sendQueueId);
 
 }

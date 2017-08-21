@@ -14,12 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.ConfigurationReader;
+import de.csdev.ebus.cfg.ConfigurationReaderException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.IEBusCommand;
-import de.csdev.ebus.command.IEBusCommandChannel;
+import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class EBusWolfSM1TelegramTest {
@@ -30,7 +30,7 @@ public class EBusWolfSM1TelegramTest {
     EBusCommandRegistry commandRegistry;
 
     @Before
-    public void before() throws IOException {
+    public void before() throws IOException, ConfigurationReaderException {
 
         types = new EBusTypes();
 
@@ -52,8 +52,8 @@ public class EBusWolfSM1TelegramTest {
         byte[] bs = null;
 
         bs = EBusUtils.toByteArray("71 FE 50 18 0E 00 00 F9 00 07 00 3D 02 88 01 05 00 00 00 B8 AA");
-        checkMask("solar.solar_yield", bs, IEBusCommand.Type.BROADCAST);
-        xxx("solar.solar_yield", bs, IEBusCommand.Type.BROADCAST);
+        checkMask("solar.solar_yield", bs, IEBusCommandMethod.Method.BROADCAST);
+        xxx("solar.solar_yield", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
 
     }
@@ -63,8 +63,8 @@ public class EBusWolfSM1TelegramTest {
         byte[] bs = null;
 
         bs = EBusUtils.toByteArray("71 FE 50 17 10 08 91 F0 01 0A 04 00 80 00 80 00 80 00 80 00 80 F7 AA");
-        checkMask("solar.solar_data", bs, IEBusCommand.Type.BROADCAST);
-        xxx("solar.solar_data", bs, IEBusCommand.Type.BROADCAST);
+        checkMask("solar.solar_data", bs, IEBusCommandMethod.Method.BROADCAST);
+        xxx("solar.solar_data", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
 
     }
@@ -73,15 +73,15 @@ public class EBusWolfSM1TelegramTest {
         byte[] bs = null;
 
         bs = EBusUtils.toByteArray("30 76 50 22 03 CC 2B 0A BF 00 02 07 01 DA");
-        checkMask("solar.e1", bs, IEBusCommand.Type.GET);
-        xxx("solar.e1", bs, IEBusCommand.Type.GET);
+        checkMask("solar.e1", bs, IEBusCommandMethod.Method.GET);
+        xxx("solar.e1", bs, IEBusCommandMethod.Method.GET);
         canResolve(bs);
 
     }
 
-    protected void xxx(String commandId, byte[] data, IEBusCommand.Type type) {
+    protected void xxx(String commandId, byte[] data, IEBusCommandMethod.Method type) {
 
-        IEBusCommandChannel commandChannel = commandRegistry.getConfigurationById(commandId, type);
+        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(commandId, type);
 
         try {
 
@@ -97,10 +97,10 @@ public class EBusWolfSM1TelegramTest {
         }
     }
 
-    protected void checkMask(String commandId, byte[] data, IEBusCommand.Type type) {
+    protected void checkMask(String commandId, byte[] data, IEBusCommandMethod.Method type) {
 
         ByteBuffer wrap = ByteBuffer.wrap(data);
-        IEBusCommandChannel commandChannel = commandRegistry.getConfigurationById(commandId, type);
+        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(commandId, type);
 
         try {
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00, (byte) 0xFF,
@@ -126,13 +126,13 @@ public class EBusWolfSM1TelegramTest {
 
     private boolean canResolve(byte[] data) {
 
-        List<IEBusCommandChannel> list = commandRegistry.find(data);
+        List<IEBusCommandMethod> list = commandRegistry.find(data);
 
         if (list.isEmpty()) {
             Assert.fail("Expected an filled array!");
         }
 
-        for (IEBusCommandChannel commandChannel : list) {
+        for (IEBusCommandMethod commandChannel : list) {
             logger.info(">>> " + commandChannel.toString());
             try {
                 Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, data);

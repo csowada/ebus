@@ -29,7 +29,7 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusCommandUtils {
 
-    public static ByteBuffer buildMasterTelegram(IEBusCommandChannel commandChannel, Byte source, Byte target,
+    public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandChannel, Byte source, Byte target,
             Map<String, Object> values) throws EBusTypeException {
 
         byte len = 0;
@@ -215,7 +215,7 @@ public class EBusCommandUtils {
         return pos;
     }
 
-    public static Map<String, Object> decodeTelegram(IEBusCommandChannel commandChannel, byte[] data)
+    public static Map<String, Object> decodeTelegram(IEBusCommandMethod commandChannel, byte[] data)
             throws EBusTypeException {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
@@ -240,7 +240,7 @@ public class EBusCommandUtils {
         return result;
     }
 
-    public static ByteBuffer getMasterTelegramMask(IEBusCommandChannel commandChannel) {
+    public static ByteBuffer getMasterTelegramMask(IEBusCommandMethod commandChannel) {
 
         // byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);

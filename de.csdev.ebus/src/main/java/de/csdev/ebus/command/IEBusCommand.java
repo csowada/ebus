@@ -17,20 +17,11 @@ import java.util.Map;
  */
 public interface IEBusCommand {
 
-    public enum Type {
-        /** xxx */
-        GET,
+    public Collection<IEBusCommandMethod> getCommandMethods();
 
-        SET,
+    public IEBusCommandMethod getCommandMethod(IEBusCommandMethod.Method method);
 
-        BROADCAST
-    }
-
-    public Collection<IEBusCommandChannel> getCommandChannels();
-
-    public IEBusCommandChannel getCommandChannel(Type channel);
-
-    public Collection<Type> getCommandChannelTypes();
+    public Collection<IEBusCommandMethod.Method> getCommandChannelMethods();
 
     /**
      * Returns device information from database

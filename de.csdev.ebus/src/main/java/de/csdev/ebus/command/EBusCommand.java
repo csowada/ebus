@@ -31,7 +31,7 @@ public class EBusCommand implements IEBusCommandWritable {
 
     private Map<String, Object> properties;
 
-    private Map<Type, IEBusCommandChannel> channels;
+    private Map<IEBusCommandMethod.Method, IEBusCommandMethod> channels;
 
     /*
      * (non-Javadoc)
@@ -100,27 +100,27 @@ public class EBusCommand implements IEBusCommandWritable {
         properties.put(key, value);
     }
 
-    public IEBusCommandChannel getCommandChannel(Type channel) {
+    public IEBusCommandMethod getCommandMethod(IEBusCommandMethod.Method channel) {
         return CollectionUtils.get(channels, channel);
     }
 
-    public Collection<Type> getCommandChannelTypes() {
+    public Collection<IEBusCommandMethod.Method> getCommandChannelMethods() {
         if (channels != null) {
             return Collections.unmodifiableCollection(channels.keySet());
         }
         return Collections.emptyList();
     }
 
-    public Collection<IEBusCommandChannel> getCommandChannels() {
+    public Collection<IEBusCommandMethod> getCommandMethods() {
         if (channels != null) {
             return Collections.unmodifiableCollection(channels.values());
         }
         return Collections.emptyList();
     }
 
-    public void addCommandChannel(IEBusCommandChannel channel) {
+    public void addCommandChannel(IEBusCommandMethod channel) {
         channels = CollectionUtils.newMapIfNull(channels);
-        channels.put(channel.getType(), channel);
+        channels.put(channel.getMethod(), channel);
     }
 
 }

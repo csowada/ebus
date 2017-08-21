@@ -21,7 +21,8 @@ import de.csdev.ebus.command.IEBusCommand;
  */
 public interface IConfigurationReader {
 
-    public List<IEBusCommand> loadConfiguration(InputStream inputStream) throws IOException;
+    public List<IEBusCommand> loadConfiguration(InputStream inputStream)
+            throws ConfigurationReaderException, IOException;
 
     public void setEBusTypes(EBusTypes ebusTypes);
 

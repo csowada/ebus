@@ -20,6 +20,6 @@ public interface IEBusCommandWritable extends IEBusCommand {
 
     public void setDescription(String description);
 
-    public void addCommandChannel(IEBusCommandChannel channel);
+    public void addCommandChannel(IEBusCommandMethod channel);
 
 }

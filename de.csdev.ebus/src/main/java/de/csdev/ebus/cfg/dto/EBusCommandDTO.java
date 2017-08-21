@@ -4,14 +4,14 @@ import java.util.List;
 
 public class EBusCommandDTO {
 
-    private EBusCommandTypeDTO broadcast;
+    private EBusCommandMethodDTO broadcast;
     private String command;
     private String comment;
     private String device;
     private String dst;
-    private EBusCommandTypeDTO get;
+    private EBusCommandMethodDTO get;
     private String id;
-    private EBusCommandTypeDTO set;
+    private EBusCommandMethodDTO set;
     private List<EBusValueDTO> template;
     private String type;
     private String src;
@@ -24,7 +24,7 @@ public class EBusCommandDTO {
         this.src = src;
     }
 
-    public EBusCommandTypeDTO getBroadcast() {
+    public EBusCommandMethodDTO getBroadcast() {
         return broadcast;
     }
 
@@ -44,7 +44,7 @@ public class EBusCommandDTO {
         return dst;
     }
 
-    public EBusCommandTypeDTO getGet() {
+    public EBusCommandMethodDTO getGet() {
         return get;
     }
 
@@ -52,7 +52,7 @@ public class EBusCommandDTO {
         return id;
     }
 
-    public EBusCommandTypeDTO getSet() {
+    public EBusCommandMethodDTO getSet() {
         return set;
     }
 
@@ -64,7 +64,7 @@ public class EBusCommandDTO {
         return type;
     }
 
-    public void setBroadcast(EBusCommandTypeDTO broadcast) {
+    public void setBroadcast(EBusCommandMethodDTO broadcast) {
         this.broadcast = broadcast;
     }
 
@@ -84,7 +84,7 @@ public class EBusCommandDTO {
         this.dst = dst;
     }
 
-    public void setGet(EBusCommandTypeDTO get) {
+    public void setGet(EBusCommandMethodDTO get) {
         this.get = get;
     }
 
@@ -92,7 +92,7 @@ public class EBusCommandDTO {
         this.id = id;
     }
 
-    public void setSet(EBusCommandTypeDTO set) {
+    public void setSet(EBusCommandMethodDTO set) {
         this.set = set;
     }
 

@@ -92,6 +92,12 @@ public class EBusQueue {
         sendEntry = outputQueue.peek();
     }
 
+    /**
+     * Adds a raw telegram to the sending queue.
+     * 
+     * @param buffer
+     * @return The unique send id, id is later available on event
+     */
     public Integer addToSendQueue(byte[] buffer) {
 
         if (buffer == null) {
@@ -112,8 +118,6 @@ public class EBusQueue {
 
             outputQueue.add(entry);
         }
-
-        // checkSendStatus();
 
         return entry.id;
     }

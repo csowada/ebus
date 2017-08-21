@@ -13,8 +13,7 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.IEBusCommand.Type;
-import de.csdev.ebus.command.IEBusCommandChannel;
+import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class KW_CRC_Test {
@@ -26,7 +25,7 @@ public class KW_CRC_Test {
     EBusCommandRegistry commandRegistry;
 
     @Before
-    public void before() throws IOException {
+    public void before() throws IOException, ConfigurationReaderException {
 
         types = new EBusTypes();
 
@@ -46,8 +45,8 @@ public class KW_CRC_Test {
 
     @Test
     public void xxx() throws EBusTypeException {
-        IEBusCommandChannel commandChannel = commandRegistry.getConfigurationById("heating.program_heating_circuit",
-                Type.GET);
+        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById("heating.program_heating_circuit",
+                IEBusCommandMethod.Method.GET);
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00, (byte) 0x0FF, null);
 
         System.out.println(EBusUtils.toHexDumpString(buffer).toString());

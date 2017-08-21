@@ -38,7 +38,7 @@ public class EBusCommandRegistry {
         list.add(telegramCfg);
     }
 
-    public List<IEBusCommandChannel> find(byte[] data) {
+    public List<IEBusCommandMethod> find(byte[] data) {
         return find(ByteBuffer.wrap(data));
     }
 
@@ -46,21 +46,21 @@ public class EBusCommandRegistry {
         return Collections.unmodifiableList(list);
     }
 
-    public IEBusCommandChannel getConfigurationById(String id, IEBusCommand.Type type) {
+    public IEBusCommandMethod getConfigurationById(String id, IEBusCommandMethod.Method type) {
 
         for (IEBusCommand command : list) {
             if (StringUtils.equals(command.getId(), id)) {
-                return command.getCommandChannel(type);
+                return command.getCommandMethod(type);
             }
         }
 
         return null;
     }
 
-    public List<IEBusCommandChannel> find(ByteBuffer data) {
-        ArrayList<IEBusCommandChannel> result = new ArrayList<IEBusCommandChannel>();
+    public List<IEBusCommandMethod> find(ByteBuffer data) {
+        ArrayList<IEBusCommandMethod> result = new ArrayList<IEBusCommandMethod>();
         for (IEBusCommand command : list) {
-            for (IEBusCommandChannel commandChannel : command.getCommandChannels()) {
+            for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
                 if (matchesCommand(commandChannel, data)) {
                     result.add(commandChannel);
                 }
@@ -72,7 +72,7 @@ public class EBusCommandRegistry {
 
     }
 
-    public boolean matchesCommand(IEBusCommandChannel command, ByteBuffer data) {
+    public boolean matchesCommand(IEBusCommandMethod command, ByteBuffer data) {
 
         Byte sourceAddress = (Byte) ObjectUtils.defaultIfNull(command.getSourceAddress(), Byte.valueOf((byte) 0x00));
 

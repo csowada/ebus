@@ -14,14 +14,14 @@ import org.junit.Test;
 
 import de.csdev.ebus.StaticTestTelegrams;
 import de.csdev.ebus.cfg.ConfigurationReader;
+import de.csdev.ebus.cfg.ConfigurationReaderException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
-import de.csdev.ebus.command.IEBusCommand.Type;
-import de.csdev.ebus.command.IEBusCommandChannel;
+import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -39,7 +39,7 @@ public class ConfigurationReaderTest {
     }
 
     @Test
-    public void testIsMasterAddress() throws IOException, EBusTypeException {
+    public void testIsMasterAddress() throws IOException, EBusTypeException, ConfigurationReaderException {
 
         // final ClassLoader classLoader = this.getClass().getr.getClassLoader();
         // final URL resource = classLoader.getResource("/new-cfg-format2.json");
@@ -54,7 +54,7 @@ public class ConfigurationReaderTest {
         tr.addTelegramConfigurationList(configurationList);
 
         for (IEBusCommand command : tr.getConfigurationList()) {
-            for (IEBusCommandChannel commandChannel : command.getCommandChannels()) {
+            for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
                 ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00,
                         (byte) 0xFF, null);
                 StringBuilder hexDumpString = EBusUtils.toHexDumpString(masterTelegram);
@@ -73,8 +73,8 @@ public class ConfigurationReaderTest {
         //
         // byte[] bs3 = EBusUtils.toByteArray("30 76 50 22 03 CC 2B 0A BF 00 02 11 01 84");
 
-        List<IEBusCommandChannel> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_B);
-        for (IEBusCommandChannel eBusCommand : find) {
+        List<IEBusCommandMethod> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_B);
+        for (IEBusCommandMethod eBusCommand : find) {
             System.out.println("ConfigurationReaderTest.testIsMasterAddress()");
             Map<String, Object> encode = EBusCommandUtils.decodeTelegram(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_B);
             for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
@@ -84,7 +84,8 @@ public class ConfigurationReaderTest {
         }
 
         Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-                tr.getConfigurationById("solar.solar_data", Type.BROADCAST), StaticTestTelegrams.WOLF_SOLAR_B);
+                tr.getConfigurationById("solar.solar_data", IEBusCommandMethod.Method.BROADCAST),
+                StaticTestTelegrams.WOLF_SOLAR_B);
 
         for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
             System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
