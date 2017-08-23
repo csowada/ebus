@@ -25,7 +25,7 @@ import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.service.parser.EBusParserListener;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusDeviceTableService implements EBusConnectorEventListener, EBusParserListener, EBusDeviceTableListener {

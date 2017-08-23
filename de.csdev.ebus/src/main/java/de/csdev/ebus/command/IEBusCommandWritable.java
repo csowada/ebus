@@ -9,7 +9,7 @@
 package de.csdev.ebus.command;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public interface IEBusCommandWritable extends IEBusCommand {

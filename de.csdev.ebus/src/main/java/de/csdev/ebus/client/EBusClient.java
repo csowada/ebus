@@ -24,7 +24,7 @@ import de.csdev.ebus.service.device.EBusDeviceTableService;
 import de.csdev.ebus.service.parser.EBusParserService;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusClient {

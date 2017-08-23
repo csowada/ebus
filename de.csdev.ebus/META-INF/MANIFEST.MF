@@ -15,16 +15,15 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.slf4j
 Bundle-ActivationPolicy: lazy
 Export-Package: de.csdev.ebus,
- de.csdev.ebus.basic,
  de.csdev.ebus.cfg,
  de.csdev.ebus.cfg.datatypes,
  de.csdev.ebus.cfg.datatypes.ext,
+ de.csdev.ebus.cfg.dto,
  de.csdev.ebus.client,
  de.csdev.ebus.command,
  de.csdev.ebus.core,
  de.csdev.ebus.core.connection,
  de.csdev.ebus.service.device,
  de.csdev.ebus.service.parser,
- de.csdev.ebus.utils,
- de.csdev.ebus.wip
+ de.csdev.ebus.utils
 Require-Bundle: org.junit;resolution:=optional

@@ -1,12 +1,22 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.command;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.csdev.ebus.command.IEBusCommand.Type;
-
-public class EBusCommandChannel implements IEBusCommandChannelWriteable {
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
+public class EBusCommandMethod implements IEBusCommandMethodWriteable {
 
     private byte[] command;
 
@@ -24,11 +34,12 @@ public class EBusCommandChannel implements IEBusCommandChannelWriteable {
 
     private IEBusCommand parent;
 
-    private Type type;
+    private IEBusCommandMethod.Method method;
 
-    public EBusCommandChannel(EBusCommand parent, Type type) {
+    public EBusCommandMethod(EBusCommand parent, IEBusCommandMethod.Method method) {
         this.parent = parent;
-        this.type = type;
+        this.method = method;
+
         parent.addCommandChannel(this);
     }
 
@@ -37,8 +48,8 @@ public class EBusCommandChannel implements IEBusCommandChannelWriteable {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getType()
      */
-    public Type getType() {
-        return type;
+    public IEBusCommandMethod.Method getMethod() {
+        return method;
     }
 
     /*
@@ -46,7 +57,7 @@ public class EBusCommandChannel implements IEBusCommandChannelWriteable {
      *
      * @see de.csdev.ebus.command.IEBusCommandWritable#addMasterValue(de.csdev.ebus.command.IEBusValue)
      */
-    public IEBusCommandChannelWriteable addMasterValue(IEBusValue value) {
+    public IEBusCommandMethodWriteable addMasterValue(IEBusValue value) {
         if (masterTypes == null) {
             masterTypes = new ArrayList<IEBusValue>();
         }
@@ -61,7 +72,7 @@ public class EBusCommandChannel implements IEBusCommandChannelWriteable {
      *
      * @see de.csdev.ebus.command.IEBusCommandWritable#addSlaveValue(de.csdev.ebus.command.IEBusValue)
      */
-    public IEBusCommandChannelWriteable addSlaveValue(IEBusValue value) {
+    public IEBusCommandMethodWriteable addSlaveValue(IEBusValue value) {
         if (slaveTypes == null) {
             slaveTypes = new ArrayList<IEBusValue>();
         }
@@ -153,7 +164,7 @@ public class EBusCommandChannel implements IEBusCommandChannelWriteable {
         return sourceAddress;
     }
 
-    public IEBusCommandChannelWriteable setCommand(byte[] command) {
+    public IEBusCommandMethodWriteable setCommand(byte[] command) {
         this.command = command;
         return this;
     }
@@ -176,6 +187,19 @@ public class EBusCommandChannel implements IEBusCommandChannelWriteable {
 
     public void setSourceAddress(Byte sourceAddress) {
         this.sourceAddress = sourceAddress;
+    }
+
+    public Type getType() {
+
+        if (method.equals(Method.BROADCAST)) {
+            return Type.BROADCAST;
+        }
+
+        if (slaveTypes != null && !slaveTypes.isEmpty()) {
+            return Type.MASTER_SLAVE;
+        }
+
+        return Type.MASTER_MASTER;
     }
 
 }

@@ -24,7 +24,8 @@ import de.csdev.ebus.cfg.json.v1.OH1ConfigurationReader;
 import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
-import de.csdev.ebus.command.IEBusCommand.Type;
+import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.IEBusCommandMethod.Method;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
@@ -62,7 +63,7 @@ public class EBusMain {
 
             client.getConfigurationProvider().addTelegramConfigurationList(loadConfiguration);
 
-            IEBusCommand command = client.getConfigurationProvider().getConfigurationById("common.error", Type.GET);
+            IEBusCommand command = client.getConfigurationProvider().getConfigurationById("common.error", IEBusCommandMethod.Method.GET);
             Map<String, Object> values = new HashMap<String, Object>();
 
             byte[] bytes = "HALLO WELT".getBytes();

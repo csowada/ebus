@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.basic;
 
 import java.io.IOException;
@@ -22,6 +30,10 @@ import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.utils.EBusUtils;
 
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EBusWolfSM1TelegramTest {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusWolfSM1TelegramTest.class);
@@ -112,12 +124,12 @@ public class EBusWolfSM1TelegramTest {
             System.out.println("COMPOSED: " + EBusUtils.toHexDumpString(masterTelegram));
             System.out.println("MATCHS?   " + commandRegistry.matchesCommand(commandChannel, wrap));
 
-            Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, data);
-            if (map != null) {
-                for (byte b : data) {
-
-                }
-            }
+            // Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, data);
+            // if (map != null) {
+            // for (byte b : data) {
+            //
+            // }
+            // }
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);

@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public interface IEBusCommand {

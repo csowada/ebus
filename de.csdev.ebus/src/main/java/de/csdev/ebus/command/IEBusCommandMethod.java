@@ -1,11 +1,42 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.command;
 
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import de.csdev.ebus.command.IEBusCommand.Type;
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
+public interface IEBusCommandMethod {
 
-public interface IEBusCommandChannel {
+    enum Type {
+
+        MASTER_SLAVE,
+
+        MASTER_MASTER,
+
+        BROADCAST
+
+    }
+
+    enum Method {
+
+        GET,
+
+        SET,
+
+        BROADCAST
+    }
+
+    public IEBusCommandMethod.Type getType();
 
     public IEBusCommand getParent();
 
@@ -14,7 +45,7 @@ public interface IEBusCommandChannel {
      *
      * @return
      */
-    public Type getType();
+    public IEBusCommandMethod.Method getMethod();
 
     /**
      * Returns defined destination address or null if not defined

@@ -13,7 +13,7 @@ import java.util.Map;
 import de.csdev.ebus.command.IEBusCommandMethod;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public interface EBusParserListener {

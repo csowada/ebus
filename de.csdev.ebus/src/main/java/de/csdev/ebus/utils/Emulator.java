@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Emulates a virtual connection like a serial connection an replays data from a text file.
- * 
- * @author csowada
- * 
+ *
+ * @author Christian Sowada - Initial contribution
+ *
  */
 public class Emulator {
 
@@ -60,7 +60,7 @@ public class Emulator {
 
     /**
      * Blocking write
-     * 
+     *
      * @param byteArray
      */
     public void write(final byte[] byteArray) {

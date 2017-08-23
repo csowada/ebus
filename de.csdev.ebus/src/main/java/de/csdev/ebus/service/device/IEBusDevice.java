@@ -11,7 +11,7 @@ package de.csdev.ebus.service.device;
 import java.math.BigDecimal;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public interface IEBusDevice {

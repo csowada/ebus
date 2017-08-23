@@ -24,7 +24,7 @@ import de.csdev.ebus.cfg.datatypes.ext.IEBusComplexType;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusCommandUtils {

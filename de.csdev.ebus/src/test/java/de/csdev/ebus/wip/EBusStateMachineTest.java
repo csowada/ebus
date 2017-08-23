@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.wip;
 
 import org.junit.Rule;
@@ -10,50 +18,54 @@ import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusReceiveStateMachine;
 import de.csdev.ebus.utils.EBusUtils;
 
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EBusStateMachineTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(EBusStateMachineTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusStateMachineTest.class);
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-	@Test
-	public void aa() throws EBusDataException {
+    @Test
+    public void testNoAnswer() throws EBusDataException {
 
-		logger.info("Master/Slave - No Answer ...");
-		
-		thrown.expect(EBusDataException.class);
-		
-		x(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 AA"));
-	}
+        logger.info("Master/Slave - No Answer ...");
 
-	@Test
-	public void bb() throws EBusDataException {
+        thrown.expect(EBusDataException.class);
 
-		logger.info("Master/Slave - NACK");
+        runMachine(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 AA"));
+    }
 
-		thrown.expect(EBusDataException.class);
+    @Test
+    public void testNACK() throws EBusDataException {
 
-		x(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 FF AA"));
-	}
+        logger.info("Master/Slave - NACK");
 
-	@Test
-	public void xxx() throws EBusDataException {
+        thrown.expect(EBusDataException.class);
 
-		x(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 00 02 97 00 E2 00 AA"));
+        runMachine(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 FF AA"));
+    }
 
-		x(EBusUtils.toByteArray("AA 30 FE 07 00 09 00 80 10 08 16 23 10 04 14 A2 AA"));
+    @Test
+    public void testACK() throws EBusDataException {
 
-		x(EBusUtils.toByteArray("71 FE 50 18 0E 00 00 AE 02 07 00 A3 02 C3 01 02 00 00 00 7E AA"));
+        runMachine(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 00 02 97 00 E2 00 AA"));
 
-	}
+        runMachine(EBusUtils.toByteArray("AA 30 FE 07 00 09 00 80 10 08 16 23 10 04 14 A2 AA"));
 
-	private void x(byte[] byteArray) throws EBusDataException {
-		EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+        runMachine(EBusUtils.toByteArray("71 FE 50 18 0E 00 00 AE 02 07 00 A3 02 C3 01 02 00 00 00 7E AA"));
 
-		for (byte b : byteArray) {
-			machine.update(b);
-		}
-	}
+    }
+
+    private void runMachine(byte[] byteArray) throws EBusDataException {
+        EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+
+        for (byte b : byteArray) {
+            machine.update(b);
+        }
+    }
 
 }

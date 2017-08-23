@@ -24,7 +24,7 @@ import de.csdev.ebus.core.EBusDataException;
 /**
  * A helper class to decode all eBus data types and telegrams.
  *
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 @SuppressWarnings("restriction")
@@ -384,8 +384,9 @@ public class EBusUtils {
      * @return
      */
     static public Byte toByte(String hexDumpString) {
-    	if(StringUtils.isEmpty(hexDumpString))
-    		return null;
+        if (StringUtils.isEmpty(hexDumpString)) {
+            return null;
+        }
         return toByteArray(hexDumpString)[0];
     }
 

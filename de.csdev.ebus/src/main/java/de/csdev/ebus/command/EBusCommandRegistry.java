@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusCommandRegistry {

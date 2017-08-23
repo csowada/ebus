@@ -13,23 +13,23 @@ import java.math.BigDecimal;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusDevice implements IEBusDevice {
 
     byte masterAddress;
-    
+
     byte slaveAddress;
-    
+
     public long lastActivity;
-    
+
     private byte manufacturer;
-    
+
     private String deviceId;
-    
+
     private BigDecimal softwareVersion;
-    
+
     private BigDecimal hardwareVersion;
 
     private EBusDeviceTable deviceTable;
@@ -91,11 +91,11 @@ public class EBusDevice implements IEBusDevice {
     public String getManufacturerName() {
         return deviceTable.getManufacturerName(manufacturer);
     }
-    
+
     @Override
     public String toString() {
         return "EBusDevice [masterAddress=" + masterAddress + ", slaveAddress=" + slaveAddress + ", lastActivity="
-                + lastActivity + ", manufacturer=" + manufacturer + "("+getManufacturerName()+"), deviceId=" + deviceId + ", softwareVersion="
-                + softwareVersion + ", hardwareVersion=" + hardwareVersion + "]";
+                + lastActivity + ", manufacturer=" + manufacturer + "(" + getManufacturerName() + "), deviceId="
+                + deviceId + ", softwareVersion=" + softwareVersion + ", hardwareVersion=" + hardwareVersion + "]";
     }
 }

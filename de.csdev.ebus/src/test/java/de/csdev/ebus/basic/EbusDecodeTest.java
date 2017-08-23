@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.basic;
 
 import static org.junit.Assert.*;
@@ -16,6 +24,10 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeData2c;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EbusDecodeTest {
 
     EBusTypes types;

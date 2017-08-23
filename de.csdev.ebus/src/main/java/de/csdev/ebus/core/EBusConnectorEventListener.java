@@ -11,7 +11,8 @@ package de.csdev.ebus.core;
 /**
  * This listener is called if the connector received a valid eBUS telegram.
  *
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
+ *
  */
 public interface EBusConnectorEventListener {
 

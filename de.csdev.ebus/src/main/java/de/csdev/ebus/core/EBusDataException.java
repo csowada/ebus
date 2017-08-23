@@ -13,34 +13,34 @@ import java.nio.ByteBuffer;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusDataException extends Exception {
 
     public enum EBusError {
         NONE,
-        
+
         MASTER_CRC_INVALID,
-        
+
         SLAVE_CRC_INVALID,
-        
+
         NO_SLAVE_RESPONSE,
-        
+
         UNEXPECTED_RESPONSE,
-        
+
         BUFFER_FULL,
-        
+
         INVALID_SYN,
-        
+
         INVALID_SOURCE_ADDRESS,
-        
+
         INVALID_MASTER_LEN,
-        
+
         INVALID_SLAVE_LEN,
-        
+
         MASTER_ACK_FAIL,
-        
+
         SLAVE_ACK_FAIL
     }
 
@@ -69,13 +69,13 @@ public class EBusDataException extends Exception {
 
     public EBusDataException(String message, EBusError errorCode, ByteBuffer data) {
         this(message, errorCode);
-        
+
         this.data = new byte[data.position()];
         ByteBuffer duplicate = data.duplicate();
         duplicate.clear();
         duplicate.get(this.data);
     }
-    
+
     public EBusError getErrorCode() {
         return error;
     }

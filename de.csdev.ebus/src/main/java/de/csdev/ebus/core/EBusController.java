@@ -20,7 +20,7 @@ import de.csdev.ebus.core.connection.IEBusConnection;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusController extends EBusControllerBase {

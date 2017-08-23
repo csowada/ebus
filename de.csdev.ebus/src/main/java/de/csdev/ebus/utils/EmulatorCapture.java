@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Writes byte data to capture text file. It is used to replay the data later on.
- * 
- * @author Christian Sowada
+ *
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EmulatorCapture {

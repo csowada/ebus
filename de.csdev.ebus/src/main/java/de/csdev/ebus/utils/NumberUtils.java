@@ -13,14 +13,14 @@ import java.math.BigDecimal;
 /**
  * A utility class for numbers.
  *
- * @author Christian Sowada
- * 
+ * @author Christian Sowada - Initial contribution
+ *
  */
 public class NumberUtils {
 
     /**
      * Convert number object to BigDecimal
-     * 
+     *
      * @param obj Any kind of primitive datatype
      * @return A converted BigDecimal
      */

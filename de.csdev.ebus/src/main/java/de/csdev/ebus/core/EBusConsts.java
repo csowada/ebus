@@ -9,19 +9,20 @@
 package de.csdev.ebus.core;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
+ *
  */
 public class EBusConsts {
 
     /** The Broadcast address */
     public final static byte BROADCAST_ADDRESS = (byte) 0xFE;
-    
+
     /** The ACK FAIL answer byte */
     public final static byte ACK_FAIL = (byte) 0xFF;
-    
+
     /** The ACK OK answer byte */
     public final static byte ACK_OK = (byte) 0x00;
-    
+
     /** The SYN byte */
     public final static byte SYN = (byte) 0xAA;
 

@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusQueue {
@@ -94,7 +94,7 @@ public class EBusQueue {
 
     /**
      * Adds a raw telegram to the sending queue.
-     * 
+     *
      * @param buffer
      * @return The unique send id, id is later available on event
      */

@@ -16,7 +16,7 @@ import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.IEBusCommand;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public interface IConfigurationReader {

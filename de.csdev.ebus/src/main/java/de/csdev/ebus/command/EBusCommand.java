@@ -16,7 +16,7 @@ import java.util.Map;
 import de.csdev.ebus.utils.CollectionUtils;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusCommand implements IEBusCommandWritable {

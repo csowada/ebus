@@ -29,7 +29,7 @@
             "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 1",
             "id":       "auto_stroker",
             "command":  "05 03",
-            "type":     "master",
+            "type":     "mm",
             
     
             "get": {
@@ -59,6 +59,7 @@
             "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 2",
             "id":       "auto_strokerx",
             "command":  "05 03",
+            "type":     "mm",
     
             "get": {
                 "master": [
@@ -76,7 +77,7 @@
             "comment":  "<Burner Control> Operational Data from Room Controller to Burner Control Unit",
             "id":       "controller",
             "command":  "05 07",
-            "type":     "master",
+            "type":     "mm",
     
             "get": {
                 "master": [
@@ -96,9 +97,9 @@
             "id":       "common",
             "command":  "07 00",
             "dst":      "FE",
-            "type":     "master broadcast",
+            "type":     "bc",
     
-            "get": {
+            "broadcast": {
                 "master": [
                     {"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "format":"%.1f°C"},
                     {"name": "time", "type": "time", "label": "Time"},
@@ -177,7 +178,7 @@
             "command":  "FE 01",
             "dst":      "FE",
     
-            "get": {
+            "broadcast": {
                 "master": [
                     {"type": "string", "name":"error", "length": 10}
                     

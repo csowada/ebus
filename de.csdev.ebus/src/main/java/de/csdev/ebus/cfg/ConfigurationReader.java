@@ -37,7 +37,7 @@ import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class ConfigurationReader implements IConfigurationReader {

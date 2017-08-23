@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.cfg.datatypes.ext;
 
 import java.util.Map;
@@ -5,6 +13,10 @@ import java.util.Map;
 import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EBusTypeBytes extends EBusTypeGeneric {
 
     public static String BYTES = "bytes";
@@ -25,12 +37,12 @@ public class EBusTypeBytes extends EBusTypeGeneric {
     public byte[] encode(Object data) {
 
         byte[] b = new byte[length];
-        
-        if(data != null && data instanceof byte[]) {
-        	System.arraycopy((byte[])data, 0, b, 0, b.length);        	
+
+        if (data != null && data instanceof byte[]) {
+            System.arraycopy(data, 0, b, 0, b.length);
         }
 
-        return (byte[]) b;
+        return b;
     }
 
     @Override

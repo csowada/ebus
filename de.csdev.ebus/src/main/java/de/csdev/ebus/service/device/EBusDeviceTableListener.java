@@ -9,7 +9,7 @@
 package de.csdev.ebus.service.device;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public interface EBusDeviceTableListener {

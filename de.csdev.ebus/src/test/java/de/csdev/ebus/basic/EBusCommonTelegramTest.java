@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.basic;
 
 import java.io.IOException;
@@ -22,6 +30,10 @@ import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.utils.EBusUtils;
 
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EBusCommonTelegramTest {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusCommonTelegramTest.class);
@@ -142,9 +154,9 @@ public class EBusCommonTelegramTest {
     }
 
     @Test
-    public void s() {
+    public void decodeBroadcast() {
         byte[] bs = EBusUtils.toByteArray("30 FE 07 00 09 00 80 10 54 21 16 08 03 17 02 AA");
-        xxx("common", bs, IEBusCommandMethod.Method.GET);
+        xxx("common", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
 
     }

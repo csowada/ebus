@@ -11,7 +11,7 @@ package de.csdev.ebus.core.connection;
 import java.io.IOException;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public interface IEBusConnection {

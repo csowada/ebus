@@ -24,7 +24,7 @@ import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection implements SerialPortEventListener {

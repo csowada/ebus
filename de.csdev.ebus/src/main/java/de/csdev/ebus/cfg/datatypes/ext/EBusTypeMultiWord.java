@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.cfg.datatypes.ext;
 
 import java.math.BigDecimal;
@@ -8,6 +16,10 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.cfg.datatypes.EBusTypeWord;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EBusTypeMultiWord extends EBusTypeGeneric {
 
     public static String MWORD = "mword";
@@ -16,7 +28,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric {
 
     private int length = 2;
     private int pow = 1000;
-    
+
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
@@ -28,41 +40,40 @@ public class EBusTypeMultiWord extends EBusTypeGeneric {
 
     @SuppressWarnings("unchecked")
     public <T> T decode(byte[] data) throws EBusTypeException {
-    	
-    	
-    	byte[] dataNew = new byte[2];
 
-    	int x = this.length - 1;
-    	
-    	BigDecimal valx = new BigDecimal(0);
-    	
-    	for (int i = 0; i <= x; i++) {
-    		
-        	System.arraycopy(data, i*2, dataNew, 0, dataNew.length);
-        	BigDecimal value = types.decode(EBusTypeWord.WORD, dataNew);
-        	
-        	BigDecimal factor = new BigDecimal(this.pow).pow(i);
-        	valx = valx.add(value.multiply(factor));
-		}
+        byte[] dataNew = new byte[2];
+
+        int x = this.length - 1;
+
+        BigDecimal valx = new BigDecimal(0);
+
+        for (int i = 0; i <= x; i++) {
+
+            System.arraycopy(data, i * 2, dataNew, 0, dataNew.length);
+            BigDecimal value = types.decode(EBusTypeWord.WORD, dataNew);
+
+            BigDecimal factor = new BigDecimal(this.pow).pow(i);
+            valx = valx.add(value.multiply(factor));
+        }
 
         return (T) valx;
     }
 
     public byte[] encode(Object data) {
-    	throw new RuntimeException("Not implemented yet!");
+        throw new RuntimeException("Not implemented yet!");
     }
 
     @Override
     public IEBusType getInstance(Map<String, Object> properties) {
 
         if (properties.containsKey("length")) {
-        	EBusTypeMultiWord type = new EBusTypeMultiWord();
-        	type.types = this.types;
-        	
-        	type.length = (Integer) properties.get("length");
-            
+            EBusTypeMultiWord type = new EBusTypeMultiWord();
+            type.types = this.types;
+
+            type.length = (Integer) properties.get("length");
+
             if (properties.containsKey("pow")) {
-            	type.pow = (Integer) properties.get("pow");
+                type.pow = (Integer) properties.get("pow");
             }
 
             return type;
@@ -70,5 +81,5 @@ public class EBusTypeMultiWord extends EBusTypeGeneric {
 
         return this;
     }
-    
+
 }

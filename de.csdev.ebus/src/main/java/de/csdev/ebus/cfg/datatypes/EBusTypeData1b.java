@@ -1,5 +1,17 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.cfg.datatypes;
 
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EBusTypeData1b extends EBusTypeGenericReplaceValue {
 
     public static String DATA1B = "data1b";
@@ -7,17 +19,19 @@ public class EBusTypeData1b extends EBusTypeGenericReplaceValue {
     private static String[] supportedTypes = new String[] { DATA1B };
 
     public EBusTypeData1b() {
-    	replaceValue = new byte[] {(byte)0x80};
+        replaceValue = new byte[] { (byte) 0x80 };
     }
-    
+
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
+    @Override
     public <T> T decodeInt(byte[] data) throws EBusTypeException {
         return types.decode(EBusTypeChar.CHAR, data);
     }
 
+    @Override
     public byte[] encodeInt(Object data) throws EBusTypeException {
         return types.encode(EBusTypeChar.CHAR, data);
     }

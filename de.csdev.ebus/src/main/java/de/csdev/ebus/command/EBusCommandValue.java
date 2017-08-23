@@ -16,7 +16,7 @@ import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.utils.CollectionUtils;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusCommandValue implements IEBusValue {

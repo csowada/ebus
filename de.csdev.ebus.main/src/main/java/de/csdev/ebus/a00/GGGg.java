@@ -24,7 +24,8 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.EBusCommandValue;
 import de.csdev.ebus.command.IEBusCommand;
-import de.csdev.ebus.command.IEBusCommand.Type;
+import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.IEBusCommandMethod.Method;
 import de.csdev.ebus.command.IEBusCommandWritable;
 import de.csdev.ebus.command.EBusKWCrcMValue;
 import de.csdev.ebus.utils.EBusUtils;
@@ -136,7 +137,7 @@ public class GGGg {
 
         EBusCommand telegram = new EBusCommand();
         telegram.setId("heating.program_heating_circuit");
-        telegram.setType(Type.SET);
+        telegram.setType(IEBusCommandMethod.Method.SET);
         telegram.setCommand(new byte[] { 0x50, 0x22 });
         // m.addExtendedCommand();
         // m.addExtendedCommand(new byte[] { (byte) 0xFF, 0x74, 0x27 });

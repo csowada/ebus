@@ -15,7 +15,7 @@ import java.util.Map;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 
 /**
- * @author Christian Sowada
+ * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusKWCrcMValue implements IEBusValue {
