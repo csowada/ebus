@@ -15,23 +15,23 @@ _Notice: This is not an offical eBUS library!_
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.main;
-
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Map;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.aaa.EBusHighLevelService;
-import de.csdev.ebus.cfg.EBusConfigurationJsonReader;
+import de.csdev.ebus.client.EBusClient;
+import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.core.EBusController;
-import de.csdev.ebus.core.connection.EBusCaptureProxyConnection;
-import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.core.connection.EBusTCPConnection;
 import de.csdev.ebus.core.connection.IEBusConnection;
-import de.csdev.ebus.utils.EmulatorCapture;
+import de.csdev.ebus.service.parser.EBusParserListener;
 
 public class EBusMain {
 
@@ -40,29 +40,40 @@ public class EBusMain {
     @SuppressWarnings("deprecation")
     public static void main(String[] args) {
 
-        try {
-            IEBusConnection connection = new EBusTCPConnection("my-ebus-server", 8000);
+        // load a json configuration file from jar
+        InputStream inputStream = ConfigurationReader.class
+                .getResourceAsStream("/commands/wolf-sm1-configuration.json");
+        
+        // create a connection
+        IEBusConnection connection = new EBusTCPConnection("my-ebus-server", 8000);
+        
+        
+        // create the working horse controller
+        EBusController controller = new EBusController(connection);
 
-            EBusController controller = new EBusController(connection);
-            EBusHighLevelService service = new EBusHighLevelService(controller);
-            EBusConfigurationJsonReader jsonCfgReader = new EBusConfigurationJsonReader(
-                    service.getConfigurationProvider());
+        
+        // create the high level client
+        EBusClient client = new EBusClient(controller, (byte) 0xFF);
 
-            File filex = new File("src/resources/common-configuration.json");
-            jsonCfgReader.loadConfigurationFile(filex.toURL());
+        // read the configuration from included json configurations and add it to the provider
+        ConfigurationReader reader = new ConfigurationReader();
+        List<IEBusCommand> configurationList = reader.loadConfiguration(inputStream);
+        client.getConfigurationProvider().addTelegramConfigurationList(configurationList);
 
-            controller.start();
+        client.getResolverService().addEBusParserListener(new EBusParserListener() {
+            
+            public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
+                    Integer sendQueueId) {
+                // valid parsed telegram received !
+            }
+        });
+        
+        // start the controller thread
+        controller.start();
 
-            // main thread wait
-            controller.join();
+        // main thread wait
+        controller.join();
 
-        } catch (InterruptedException e) {
-            logger.error("errro1", e);
-        } catch (MalformedURLException e) {
-            logger.error("errro1", e);
-        } catch (IOException e) {
-            logger.error("errro1", e);
-        }
     }
 }
 ```
