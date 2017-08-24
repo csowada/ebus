@@ -36,7 +36,7 @@ public class EBusValueDTO {
     private BigDecimal replaceValue;
     private BigDecimal step;
     private String type;
-    private String xdefault;
+    private String _default;
     private Integer pos;
     private String format;
 
@@ -61,7 +61,7 @@ public class EBusValueDTO {
     }
 
     public String getDefault() {
-        return xdefault;
+        return _default;
     }
 
     public BigDecimal getFactor() {
@@ -108,8 +108,8 @@ public class EBusValueDTO {
         this.children = children;
     }
 
-    public void setDefault(String xdefault) {
-        this.xdefault = xdefault;
+    public void setDefault(String _default) {
+        this._default = _default;
     }
 
     public void setFactor(BigDecimal factor) {

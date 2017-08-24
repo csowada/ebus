@@ -35,27 +35,30 @@ public class EBusClient {
 
     private EBusController controller;
 
-    private EBusCommandRegistry configurationProvider;
-
     private EBusParserService resolverService;
 
     private EBusDeviceTableService deviceTableService;
 
-    private EBusTypes dataTypes;
+    private EBusClientConfiguration configuration;
 
     public EBusClient(EBusController controller, byte masterAddress) {
         this.controller = controller;
+        this.configuration = new EBusClientConfiguration();
+        init(masterAddress);
+    }
+
+    public EBusClient(EBusController controller, EBusClientConfiguration configuration, byte masterAddress) {
+        this.controller = controller;
+        this.configuration = configuration;
         init(masterAddress);
     }
 
     private void init(byte masterAddress) {
 
-        dataTypes = new EBusTypes();
         deviceTable = new EBusDeviceTable(masterAddress);
-        configurationProvider = new EBusCommandRegistry();
 
-        resolverService = new EBusParserService(configurationProvider);
-        deviceTableService = new EBusDeviceTableService(controller, configurationProvider, deviceTable);
+        resolverService = new EBusParserService(configuration.configurationProvider);
+        deviceTableService = new EBusDeviceTableService(controller, configuration.configurationProvider, deviceTable);
 
         controller.addEBusEventListener(resolverService);
         resolverService.addEBusParserListener(deviceTableService);
@@ -110,7 +113,7 @@ public class EBusClient {
     }
 
     public EBusTypes getDataTypes() {
-        return dataTypes;
+        return configuration.dataTypes;
     }
 
     public EBusController getController() {
@@ -118,7 +121,7 @@ public class EBusClient {
     }
 
     public EBusCommandRegistry getConfigurationProvider() {
-        return configurationProvider;
+        return configuration.configurationProvider;
     }
 
     public EBusParserService getResolverService() {

@@ -14,8 +14,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-
 import de.csdev.ebus.utils.CollectionUtils;
 
 /**
@@ -36,11 +34,14 @@ public class EBusCollectionDTO {
 
     private Map<String, Object> properties;
 
-    @JsonAnySetter
     public void setProperty(String key, Object value) {
         logger.info("Add custom property \"{}\" with value \"{}\"", key, value);
         properties = CollectionUtils.newMapIfNull(properties);
         properties.put(key, value);
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
     }
 
     public Object getProperty(String key) {

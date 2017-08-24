@@ -8,10 +8,10 @@
  */
 package de.csdev.ebus.service.device;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,10 +22,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
@@ -60,24 +58,31 @@ public class EBusDeviceTable {
     public String getManufacturerName(byte vendorCode) {
         if (vendors == null) {
 
-            try {
-                final ObjectMapper mapper = new ObjectMapper();
-                final InputStream inputStream = this.getClass().getResourceAsStream("/manufactures.json");
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String, String>>() {
+            }.getType();
 
-                vendors = mapper.readValue(inputStream, new TypeReference<Map<Integer, String>>() {
-                });
+            final InputStream inputStream = getClass().getResourceAsStream("/manufactures.json");
 
-                inputStream.close();
-
-            } catch (JsonParseException e) {
-                logger.error("error!", e);
-            } catch (JsonMappingException e) {
-                logger.error("error!", e);
-            } catch (MalformedURLException e) {
-                logger.error("error!", e);
-            } catch (IOException e) {
-                logger.error("error!", e);
-            }
+            vendors = gson.fromJson(new InputStreamReader(inputStream), type);
+            // try {
+            // final ObjectMapper mapper = new ObjectMapper();
+            // final InputStream inputStream = this.getClass().getResourceAsStream("/manufactures.json");
+            //
+            // vendors = mapper.readValue(inputStream, new TypeReference<Map<Integer, String>>() {
+            // });
+            //
+            // inputStream.close();
+            //
+            // } catch (JsonParseException e) {
+            // logger.error("error!", e);
+            // } catch (JsonMappingException e) {
+            // logger.error("error!", e);
+            // } catch (MalformedURLException e) {
+            // logger.error("error!", e);
+            // } catch (IOException e) {
+            // logger.error("error!", e);
+            // }
         }
 
         if (vendors == null) {

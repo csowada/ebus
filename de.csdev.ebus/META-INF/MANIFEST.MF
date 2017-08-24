@@ -4,10 +4,7 @@ Bundle-Name: eBUS 4 Java
 Bundle-SymbolicName: de.csdev.ebus;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.fasterxml.jackson.annotation,
- com.fasterxml.jackson.core,
- com.fasterxml.jackson.core.type,
- com.fasterxml.jackson.databind,
+Import-Package: com.google.gson,
  gnu.io,
  org.apache.commons.io,
  org.apache.commons.lang,

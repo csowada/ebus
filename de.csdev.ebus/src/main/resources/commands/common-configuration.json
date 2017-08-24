@@ -6,6 +6,9 @@
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
     "identification": "",
+    "properties":   [
+                        {"test" : "123"}
+                    ],
     
     "commands":
     [

@@ -10,6 +10,7 @@ package de.csdev.ebus.cfg;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,8 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
@@ -42,7 +42,7 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class ConfigurationReader implements IConfigurationReader {
 
-    private ObjectMapper mapper;
+    // private ObjectMapper mapper;
     private EBusTypes registry;
 
     public List<IEBusCommand> loadConfiguration(InputStream inputStream)
@@ -60,12 +60,14 @@ public class ConfigurationReader implements IConfigurationReader {
 
         List<IEBusCommand> commandList = new ArrayList<IEBusCommand>();
 
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-            mapper.configure(Feature.ALLOW_COMMENTS, true);
-        }
+        // if (mapper == null) {
+        // mapper = new ObjectMapper();
+        // mapper.configure(Feature.ALLOW_COMMENTS, true);
+        // }
 
-        EBusCollectionDTO collection = mapper.readValue(inputStream, EBusCollectionDTO.class);
+        Gson gson = new Gson();
+        EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(inputStream), EBusCollectionDTO.class);
+        // EBusCollectionDTO collection = mapper.readValue(inputStream, EBusCollectionDTO.class);
 
         for (EBusCommandDTO command : collection.getCommands()) {
             commandList.add(parseTelegramConfiguration(command));

@@ -35,6 +35,14 @@
 	<!-- <parent> <groupId>de.csdev</groupId> <artifactId>ebus-dist</artifactId> <version>1.0.0</version> </parent> -->
 	<dependencies>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.felix/org.osgi.core -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>1.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -42,20 +50,20 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.13</version>
+            <scope>test</scope>
+        </dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.5</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.0.13</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -70,27 +78,11 @@
 			<version>2.6</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.4.5</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/com.neuronrobotics/nrjavaserial -->
 		<dependency>
 		    <groupId>com.neuronrobotics</groupId>
 		    <artifactId>nrjavaserial</artifactId>
 		    <version>3.12.1</version>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.osgi.core -->
-		<dependency>
-		    <groupId>org.apache.felix</groupId>
-		    <artifactId>org.osgi.core</artifactId>
-		    <version>1.4.0</version>
-		    <scope>provided</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
@@ -99,7 +91,6 @@
 		    <artifactId>gson</artifactId>
 		    <version>2.5</version>
 		</dependency>
-
 		
 	</dependencies>
 
