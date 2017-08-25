@@ -41,32 +41,47 @@ public class EBusClient {
 
     private EBusClientConfiguration configuration;
 
-    public EBusClient(EBusController controller, byte masterAddress) {
-        this.controller = controller;
-        this.configuration = new EBusClientConfiguration();
-        init(masterAddress);
+    /**
+     *
+     */
+    public EBusClient() {
+        this(new EBusClientConfiguration());
     }
 
-    public EBusClient(EBusController controller, EBusClientConfiguration configuration, byte masterAddress) {
-        this.controller = controller;
+    /**
+     * @param configuration
+     */
+    public EBusClient(EBusClientConfiguration configuration) {
         this.configuration = configuration;
-        init(masterAddress);
+
+        deviceTable = new EBusDeviceTable();
+        resolverService = new EBusParserService(configuration.configurationProvider);
     }
 
-    private void init(byte masterAddress) {
+    /**
+     * @param controller
+     * @param masterAddress
+     */
+    public void connect(EBusController controller, byte masterAddress) {
 
-        deviceTable = new EBusDeviceTable(masterAddress);
+        this.controller = controller;
 
-        resolverService = new EBusParserService(configuration.configurationProvider);
+        this.controller.addEBusEventListener(resolverService);
+
+        deviceTable.setOwnAddress(masterAddress);
+
         deviceTableService = new EBusDeviceTableService(controller, configuration.configurationProvider, deviceTable);
 
-        controller.addEBusEventListener(resolverService);
         resolverService.addEBusParserListener(deviceTableService);
-
         deviceTable.addEBusDeviceTableListener(deviceTableService);
-
     }
 
+    /**
+     * @param commandMethod
+     * @param destinationAddress
+     * @return
+     * @throws EBusTypeException
+     */
     public ByteBuffer buildPollingTelegram(IEBusCommandMethod commandMethod, Byte destinationAddress)
             throws EBusTypeException {
 
@@ -84,6 +99,13 @@ public class EBusClient {
         return EBusCommandUtils.buildMasterTelegram(commandMethod, masterAddress, destinationAddress, null);
     }
 
+    /**
+     * @param commandId
+     * @param type
+     * @param destinationAddress
+     * @return
+     * @throws EBusTypeException
+     */
     public ByteBuffer buildPollingTelegram(String commandId, IEBusCommandMethod.Method type, Byte destinationAddress)
             throws EBusTypeException {
 
@@ -93,6 +115,11 @@ public class EBusClient {
         return buildPollingTelegram(commandMethod, destinationAddress);
     }
 
+    /**
+     * @param commandId
+     * @param slaveAddress
+     * @return
+     */
     public boolean pollCommand(String commandId, Byte slaveAddress) {
 
         try {
@@ -112,26 +139,44 @@ public class EBusClient {
         return false;
     }
 
+    /**
+     * @return
+     */
     public EBusTypes getDataTypes() {
         return configuration.dataTypes;
     }
 
+    /**
+     * @return
+     */
     public EBusController getController() {
         return controller;
     }
 
+    /**
+     * @return
+     */
     public EBusCommandRegistry getConfigurationProvider() {
         return configuration.configurationProvider;
     }
 
+    /**
+     * @return
+     */
     public EBusParserService getResolverService() {
         return resolverService;
     }
 
+    /**
+     * @return
+     */
     public EBusDeviceTableService getDeviceTableService() {
         return deviceTableService;
     }
 
+    /**
+     * @return
+     */
     public EBusDeviceTable getDeviceTable() {
         return deviceTable;
     }

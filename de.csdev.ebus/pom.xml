@@ -35,7 +35,6 @@
 	<!-- <parent> <groupId>de.csdev</groupId> <artifactId>ebus-dist</artifactId> <version>1.0.0</version> </parent> -->
 	<dependencies>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.felix/org.osgi.core -->
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -43,7 +42,6 @@
             <scope>provided</scope>
         </dependency>
 
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -51,7 +49,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -59,7 +56,6 @@
             <scope>test</scope>
         </dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -78,14 +74,12 @@
 			<version>2.6</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.neuronrobotics/nrjavaserial -->
 		<dependency>
 		    <groupId>com.neuronrobotics</groupId>
 		    <artifactId>nrjavaserial</artifactId>
 		    <version>3.12.1</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 		    <groupId>com.google.code.gson</groupId>
 		    <artifactId>gson</artifactId>

@@ -46,11 +46,12 @@ public class EBusDeviceTable {
     /** the address of this library */
     private byte ownAddress;
 
-    public EBusDeviceTable(byte ownAddress) {
-        this.ownAddress = ownAddress;
-
+    public EBusDeviceTable() {
         deviceTable = new HashMap<Byte, EBusDevice>();
+    }
 
+    public void setOwnAddress(byte ownAddress) {
+        this.ownAddress = ownAddress;
         EBusDevice d = new EBusDevice(ownAddress, this);
         deviceTable.put(d.getMasterAddress(), d);
     }
@@ -65,24 +66,6 @@ public class EBusDeviceTable {
             final InputStream inputStream = getClass().getResourceAsStream("/manufactures.json");
 
             vendors = gson.fromJson(new InputStreamReader(inputStream), type);
-            // try {
-            // final ObjectMapper mapper = new ObjectMapper();
-            // final InputStream inputStream = this.getClass().getResourceAsStream("/manufactures.json");
-            //
-            // vendors = mapper.readValue(inputStream, new TypeReference<Map<Integer, String>>() {
-            // });
-            //
-            // inputStream.close();
-            //
-            // } catch (JsonParseException e) {
-            // logger.error("error!", e);
-            // } catch (JsonMappingException e) {
-            // logger.error("error!", e);
-            // } catch (MalformedURLException e) {
-            // logger.error("error!", e);
-            // } catch (IOException e) {
-            // logger.error("error!", e);
-            // }
         }
 
         if (vendors == null) {
