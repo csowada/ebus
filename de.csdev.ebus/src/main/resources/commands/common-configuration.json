@@ -146,14 +146,14 @@
             "comment":  "<System Data> Inquiry of Existence",
             "id":       "common.inquiry_of_existence",
             "command":  "07 FE",
-            "dst":      "FE"
+            "broadcast":{}
         },
     
         {
             "comment":  "<System Data> Inquiry of Existence",
             "id":       "common.sign_of_life",
             "command":  "07 FF",
-            "dst":      "FE"
+            "broadcast":{}
         },
     
         {

@@ -17,6 +17,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -36,6 +38,8 @@ public class EBusValueDTO {
     private BigDecimal replaceValue;
     private BigDecimal step;
     private String type;
+
+    @SerializedName("default")
     private String _default;
     private Integer pos;
     private String format;
