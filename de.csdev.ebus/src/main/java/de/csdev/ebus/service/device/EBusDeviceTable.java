@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
 /**
@@ -48,6 +47,20 @@ public class EBusDeviceTable {
 
     public EBusDeviceTable() {
         deviceTable = new HashMap<Byte, EBusDevice>();
+    }
+
+    public void dispose() {
+        if (listeners != null) {
+            listeners.clear();
+        }
+
+        if (deviceTable != null) {
+            deviceTable.clear();
+        }
+
+        if (vendors != null) {
+            vendors.clear();
+        }
     }
 
     public void setOwnAddress(byte ownAddress) {
@@ -78,52 +91,92 @@ public class EBusDeviceTable {
 
     public void updateDevice(byte address, Map<String, Object> data) {
 
-        EBusDevice device = deviceTable.get(address);
-        boolean isNewDevice = false;
-        boolean isUpdate = false;
+        // EBusDevice device = deviceTable.get(address);
+        // boolean isNewDevice = false;
+        // boolean isUpdate = false;
+        //
+        // if (device == null) {
+        // logger.info("New eBus device found. [{}]", device);
+        // device = new EBusDevice(address, this);
+        // deviceTable.put(device.getMasterAddress(), device);
+        // isNewDevice = true;
+        // } else {
+        // logger.info("Update eBus device. [{}]", device);
+        //
+        // }
 
-        if (device == null) {
-            device = new EBusDevice(address, this);
-            deviceTable.put(device.getMasterAddress(), device);
-            logger.info("New eBus device with master address 0x{} found ...",
-                    EBusUtils.toHexDumpString(device.getMasterAddress()));
-            isNewDevice = true;
-        }
+        // if (data == null || data.isEmpty()) {
+        //
+        // EBusDevice device = deviceTable.get(address);
+        // device.setLastActivity(System.currentTimeMillis());
+        //
+        // fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
+        // return;
+        // }
+
+        EBusDevice oldDevice = deviceTable.get(address);
+        // EBusDevice newDevice = null;
+
+        EBusDevice newDevice = new EBusDevice(address, this);
+        newDevice.setLastActivity(System.currentTimeMillis());
 
         if (data != null && !data.isEmpty()) {
 
-            Object obj = data.get("common.identification.device");
+            Object obj = data.get("common.identification.device_id");
             if (obj != null) {
-                device.setDeviceId((String) obj);
+                newDevice.setDeviceId((byte[]) obj);
             }
 
             BigDecimal obj2 = NumberUtils.toBigDecimal(data.get("common.identification.hardware_version"));
             if (obj2 != null) {
-                device.setHardwareVersion(obj2);
+                newDevice.setHardwareVersion(obj2);
             }
 
             obj2 = NumberUtils.toBigDecimal(data.get("common.identification.software_version"));
             if (obj2 != null) {
-                device.setSoftwareVersion(obj2);
+                newDevice.setSoftwareVersion(obj2);
             }
 
             obj2 = NumberUtils.toBigDecimal(data.get("common.identification.vendor"));
             if (obj2 != null) {
                 int intValue = obj2.intValue();
-                device.setManufacturer((byte) intValue);
+                newDevice.setManufacturer((byte) intValue);
             }
-
-            isUpdate = true;
         }
 
-        // update activity
-        device.setLastActivity(System.currentTimeMillis());
+        deviceTable.put(address, newDevice);
 
-        if (isNewDevice) {
-            fireOnTelegramResolved(EBusDeviceTableListener.TYPE.NEW, device);
-        } else if (isUpdate) {
-            fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE, device);
+        if (oldDevice == null) {
+            fireOnTelegramResolved(EBusDeviceTableListener.TYPE.NEW, newDevice);
+        } else if (oldDevice.equals(newDevice)) {
+            fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, newDevice);
+        } else {
+            fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE, newDevice);
         }
+
+        // device.setLastActivity(System.currentTimeMillis());
+        // deviceTable.put(address, device);
+        //
+        // if (oldDevice != null) {
+        // if (device.equals(oldDevice)) {
+        // if (oldDevice.getLastActivity() != device.getLastActivity()) {
+        // fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
+        // }
+        // } else {
+        // fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE, device);
+        // }
+        // } else {
+        // fireOnTelegramResolved(EBusDeviceTableListener.TYPE.NEW, device);
+        // }
+        //
+        // // update activity
+        // device.setLastActivity(System.currentTimeMillis());
+
+        // if (isNewDevice) {
+        // fireOnTelegramResolved(EBusDeviceTableListener.TYPE.NEW, device);
+        // } else if (isUpdate) {
+        // fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE, device);
+        // }
 
     }
 

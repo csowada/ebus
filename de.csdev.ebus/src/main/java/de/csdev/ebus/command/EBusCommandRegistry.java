@@ -39,7 +39,9 @@ public class EBusCommandRegistry {
     }
 
     public List<IEBusCommandMethod> find(byte[] data) {
-        return find(ByteBuffer.wrap(data));
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        buffer.position(data.length);
+        return find(buffer);
     }
 
     public List<IEBusCommand> getConfigurationList() {
@@ -85,6 +87,11 @@ public class EBusCommandRegistry {
 
             ByteBuffer mask = command.getMasterTelegramMask();
 
+            // logger.info("--------------------" + command.getParent().getId() + "------------------------");
+            // logger.info("A " + EBusUtils.toHexDumpString(data).toString());
+            // logger.info("B " + EBusUtils.toHexDumpString(masterTelegram).toString());
+            // logger.info("M " + EBusUtils.toHexDumpString(mask).toString());
+
             for (int i = 0; i < mask.position(); i++) {
                 byte b = mask.get(i);
 
@@ -94,6 +101,7 @@ public class EBusCommandRegistry {
                     }
                 }
                 if (i == mask.position() - 1) {
+                    logger.trace("Match!");
                     return true;
                 }
             }

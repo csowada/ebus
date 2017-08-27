@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.basic;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -28,6 +30,7 @@ import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.IEBusCommandMethod.Method;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -60,13 +63,16 @@ public class EBusCommonTelegramTest {
     }
 
     @Test
-    public void yyy() {
-        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById("common.identification",
+    public void Identification() {
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common.identification",
                 IEBusCommandMethod.Method.GET);
-        try {
-            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00, (byte) 0xFF, null);
 
-            System.out.println("EBusCommonTelegramTest.yyy()" + EBusUtils.toHexDumpString(buffer));
+        assertNotNull("Command common.identification not found!", commandMethod);
+
+        try {
+            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0xFF, null);
+            assertNotNull("Unable to compose byte buffer for command", buffer);
+
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         }
@@ -74,7 +80,33 @@ public class EBusCommonTelegramTest {
     }
 
     @Test
-    public void xxx() {
+    public void AutoStroker() {
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("auto_stroker",
+                IEBusCommandMethod.Method.GET);
+
+        assertNotNull("Command auto_stroker not found!", commandMethod);
+
+        try {
+            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0xFF, null);
+            assertNotNull("Unable to compose byte buffer for command", buffer);
+            logger.info(EBusUtils.toHexDumpString(buffer).toString());
+
+        } catch (EBusTypeException e) {
+            logger.error("error!", e);
+        }
+
+    }
+
+    @Test
+    public void InquiryOfExistence() {
+        // common.inquiry_of_existence
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common.inquiry_of_existence",
+                Method.BROADCAST);
+        assertNotNull("Command common.inquiry_of_existence not found!", commandMethod);
+    }
+
+    @Test
+    public void ResolveCommonTelegrams() {
         byte[] bs = null;
 
         /*

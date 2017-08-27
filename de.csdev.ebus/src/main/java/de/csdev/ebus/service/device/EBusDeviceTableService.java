@@ -23,6 +23,7 @@ import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.service.parser.EBusParserListener;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -66,7 +67,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
         IEBusCommandMethod command = configurationProvider.getConfigurationById("common.inquiry_of_existence",
-                IEBusCommandMethod.Method.GET);
+                IEBusCommandMethod.Method.BROADCAST);
 
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
@@ -114,6 +115,11 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         if (command == null) {
             logger.warn("Unable to load command with id common.identification");
+            return;
+        }
+
+        if (EBusUtils.isMasterAddress(slaveAddress)) {
+            logger.error("The given address is a master address, not a slave address!");
             return;
         }
 
@@ -185,7 +191,9 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
      */
     public void onEBusDeviceUpdate(EBusDeviceTableListener.TYPE type, IEBusDevice device) {
 
-        logger.info("DATA TABLE UPDATE {}", device);
+        if (!type.equals(TYPE.UPDATE_ACTIVITY)) {
+            logger.info("DATA TABLE UPDATE {}", device);
+        }
 
         // identify new devices
         if (type.equals(EBusDeviceTableListener.TYPE.NEW)) {

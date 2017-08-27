@@ -17,6 +17,7 @@ public interface EBusDeviceTableListener {
     public enum TYPE {
         NEW,
         UPDATE,
+        UPDATE_ACTIVITY,
         REMOVED
     }
 

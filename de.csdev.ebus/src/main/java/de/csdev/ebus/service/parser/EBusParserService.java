@@ -39,6 +39,12 @@ public class EBusParserService implements EBusConnectorEventListener {
         this.commandRegistry = configurationProvider;
     }
 
+    public void dispose() {
+        if (listeners != null) {
+            listeners.clear();
+        }
+    }
+
     /**
      * Add an eBus listener to receive parsed eBUS telegram values
      *

@@ -53,9 +53,9 @@ public class EBusTypeTime extends EBusTypeGeneric {
 
             return (T) "";
         } else {
-            BigDecimal sec = NumberUtils.toBigDecimal(types.decode(EBusTypeBCD.BCD, new byte[] { data[2] }));
+            BigDecimal sec = NumberUtils.toBigDecimal(types.decode(EBusTypeBCD.BCD, new byte[] { data[0] }));
             BigDecimal min = NumberUtils.toBigDecimal(types.decode(EBusTypeBCD.BCD, new byte[] { data[1] }));
-            BigDecimal hr = NumberUtils.toBigDecimal(types.decode(EBusTypeBCD.BCD, new byte[] { data[0] }));
+            BigDecimal hr = NumberUtils.toBigDecimal(types.decode(EBusTypeBCD.BCD, new byte[] { data[2] }));
 
             Calendar x = new GregorianCalendar();
             x.set(Calendar.HOUR_OF_DAY, hr.intValue());

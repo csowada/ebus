@@ -22,7 +22,7 @@ public interface IEBusDevice {
 
     public byte getManufacturer();
 
-    public String getDeviceId();
+    public byte[] getDeviceId();
 
     public BigDecimal getSoftwareVersion();
 

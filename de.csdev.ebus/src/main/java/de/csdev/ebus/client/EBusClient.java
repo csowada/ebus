@@ -41,6 +41,30 @@ public class EBusClient {
 
     private EBusClientConfiguration configuration;
 
+    public void dispose() {
+        controller.interrupt();
+
+        if (configuration != null) {
+            configuration.clear();
+            configuration = null;
+        }
+
+        if (deviceTableService != null) {
+            deviceTableService.close();
+            deviceTableService = null;
+        }
+
+        if (deviceTable != null) {
+            deviceTable.dispose();
+            deviceTable = null;
+        }
+
+        if (resolverService != null) {
+            resolverService.dispose();
+            resolverService = null;
+        }
+    }
+
     /**
      *
      */
