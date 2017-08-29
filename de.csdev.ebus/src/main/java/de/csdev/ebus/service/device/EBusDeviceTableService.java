@@ -41,7 +41,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
     private EBusDeviceTable deviceTable;
 
-    private boolean disableIdentificationRequests = true;
+    private boolean disableIdentificationRequests = false;
 
     public EBusDeviceTableService(EBusController controller, EBusCommandRegistry configurationProvider,
             EBusDeviceTable deviceTable) {

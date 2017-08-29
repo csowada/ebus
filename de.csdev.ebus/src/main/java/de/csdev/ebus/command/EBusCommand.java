@@ -123,4 +123,10 @@ public class EBusCommand implements IEBusCommandWritable {
         channels.put(channel.getMethod(), channel);
     }
 
+    @Override
+    public String toString() {
+        return "EBusCommand [id=" + id + ", channels=" + channels + ", description=" + description + ", device="
+                + device + ", properties=" + properties + ", configurationSource=" + configurationSource + "]";
+    }
+
 }

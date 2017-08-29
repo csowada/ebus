@@ -53,7 +53,7 @@ public class EBusReceiveStateMachine {
     private boolean telegramAvailable = false;
 
     private void fireTelegramAvailable() {
-        logger.debug("fireTelegramAvailable ...");
+        logger.trace("fireTelegramAvailable ...");
         telegramAvailable = true;
     }
 

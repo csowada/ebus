@@ -52,6 +52,7 @@ public class EBusClientConfiguration {
     }
 
     public void loadInternalConfiguration(String configurationFile) {
+        logger.info("Load internal configuration {}", configurationFile);
         String configPath = "/commands/" + configurationFile;
         loadConfiguration(EBusController.class.getResourceAsStream(configPath));
     }

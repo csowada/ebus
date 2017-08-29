@@ -82,15 +82,11 @@ public class EBusCommandRegistry {
                 Byte.valueOf((byte) 0x00));
 
         try {
+
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, sourceAddress, targetAddress,
                     null);
 
             ByteBuffer mask = command.getMasterTelegramMask();
-
-            // logger.info("--------------------" + command.getParent().getId() + "------------------------");
-            // logger.info("A " + EBusUtils.toHexDumpString(data).toString());
-            // logger.info("B " + EBusUtils.toHexDumpString(masterTelegram).toString());
-            // logger.info("M " + EBusUtils.toHexDumpString(mask).toString());
 
             for (int i = 0; i < mask.position(); i++) {
                 byte b = mask.get(i);
@@ -101,7 +97,6 @@ public class EBusCommandRegistry {
                     }
                 }
                 if (i == mask.position() - 1) {
-                    logger.trace("Match!");
                     return true;
                 }
             }

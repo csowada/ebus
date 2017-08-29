@@ -67,4 +67,11 @@ public class EBusCommandCollection {
     public Object getProperty(String key) {
         return CollectionUtils.get(properties, key);
     }
+
+    @Override
+    public String toString() {
+        return "EBusCommandCollection [id=" + id + ", label=" + label + ", commands=" + commands + ", properties="
+                + properties + "]";
+    }
+
 }

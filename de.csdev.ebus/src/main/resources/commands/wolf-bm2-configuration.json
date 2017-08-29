@@ -1,0 +1,12 @@
+{
+    "id":           "wolf-bm2",
+    "vendor":       "Wolf",
+    "label":        "Wolf BM2",
+    "description":  "Bedienmodul Wolf BM2",
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    "identification": "00 20 00 00 C0",
+    
+    "commands":
+    []
+}

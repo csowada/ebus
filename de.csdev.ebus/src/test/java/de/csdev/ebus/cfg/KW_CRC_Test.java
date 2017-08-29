@@ -11,6 +11,8 @@ package de.csdev.ebus.cfg;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,4 +65,17 @@ public class KW_CRC_Test {
 
         System.out.println(EBusUtils.toHexDumpString(buffer).toString());
     }
+
+    //
+    @Test
+    public void encodeCC() throws EBusTypeException {
+
+        byte[] bs = EBusUtils.toByteArray("30 08 50 22 03 CC 1A 27 59 00 02 98 00 0C 00");
+        List<IEBusCommandMethod> find = commandRegistry.find(bs);
+
+        Map<String, Object> map = EBusCommandUtils.decodeTelegram(find.get(0), bs);
+
+        System.out.println("KW_CRC_Test.encodeCC()");
+    }
+
 }
