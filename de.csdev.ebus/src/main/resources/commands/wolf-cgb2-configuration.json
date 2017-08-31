@@ -5,7 +5,7 @@
     "description":  "Condensing gas boiler Wolf CGB-2",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": "01 21 00 5A 40",
+    "identification": "00 20 00 00 C0",
     
     "commands":
     [

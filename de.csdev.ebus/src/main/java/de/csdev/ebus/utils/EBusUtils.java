@@ -442,4 +442,12 @@ public class EBusUtils {
 
         return null;
     }
+
+    static public Byte getMasterAddress(byte slaveAddress) {
+        if (!isMasterAddress(slaveAddress)) {
+            return (byte) (slaveAddress == (byte) 0x04 ? (byte) 0xFF : slaveAddress - 5);
+        }
+
+        return null;
+    }
 }

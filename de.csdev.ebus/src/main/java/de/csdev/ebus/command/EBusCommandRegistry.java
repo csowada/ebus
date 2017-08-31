@@ -10,8 +10,11 @@ package de.csdev.ebus.command;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,15 +31,20 @@ public class EBusCommandRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusCommandRegistry.class);
 
-    private List<IEBusCommand> list = new ArrayList<IEBusCommand>();
+    // private List<IEBusCommand> list = new ArrayList<IEBusCommand>();
+    private Map<String, EBusCommandCollection> collections = new HashMap<String, EBusCommandCollection>();
 
-    public void addTelegramConfigurationList(List<IEBusCommand> nlist) {
-        list.addAll(nlist);
+    public void addCommandCollection(EBusCommandCollection collection) {
+        collections.put(collection.getId(), collection);
     }
 
-    public void addTelegramConfiguration(IEBusCommand telegramCfg) {
-        list.add(telegramCfg);
-    }
+    // public void addTelegramConfigurationList(List<IEBusCommand> nlist) {
+    // list.addAll(nlist);
+    // }
+    //
+    // public void addTelegramConfiguration(IEBusCommand telegramCfg) {
+    // list.add(telegramCfg);
+    // }
 
     public List<IEBusCommandMethod> find(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);
@@ -44,15 +52,25 @@ public class EBusCommandRegistry {
         return find(buffer);
     }
 
-    public List<IEBusCommand> getConfigurationList() {
-        return Collections.unmodifiableList(list);
+    public Collection<EBusCommandCollection> getCommandCollections() {
+        return Collections.unmodifiableCollection(collections.values());
     }
+
+    public EBusCommandCollection getCommandCollection(String id) {
+        return collections.get(id);
+    }
+
+    // public List<IEBusCommand> getConfigurationList() {
+    // return Collections.unmodifiableList(list);
+    // }
 
     public IEBusCommandMethod getConfigurationById(String id, IEBusCommandMethod.Method type) {
 
-        for (IEBusCommand command : list) {
-            if (StringUtils.equals(command.getId(), id)) {
-                return command.getCommandMethod(type);
+        for (EBusCommandCollection collection : collections.values()) {
+            for (IEBusCommand command : collection.getCommands()) {
+                if (StringUtils.equals(command.getId(), id)) {
+                    return command.getCommandMethod(type);
+                }
             }
         }
 
@@ -60,14 +78,18 @@ public class EBusCommandRegistry {
     }
 
     public List<IEBusCommandMethod> find(ByteBuffer data) {
-        ArrayList<IEBusCommandMethod> result = new ArrayList<IEBusCommandMethod>();
-        for (IEBusCommand command : list) {
-            for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
-                if (matchesCommand(commandChannel, data)) {
-                    result.add(commandChannel);
-                }
-            }
 
+        ArrayList<IEBusCommandMethod> result = new ArrayList<IEBusCommandMethod>();
+
+        for (EBusCommandCollection collection : collections.values()) {
+            for (IEBusCommand command : collection.getCommands()) {
+                for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
+                    if (matchesCommand(commandChannel, data)) {
+                        result.add(commandChannel);
+                    }
+                }
+
+            }
         }
 
         return result;

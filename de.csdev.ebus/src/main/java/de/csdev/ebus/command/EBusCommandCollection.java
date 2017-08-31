@@ -25,6 +25,15 @@ public class EBusCommandCollection {
     private Map<String, Object> properties;
     private String id;
     private String label;
+    private String identification;
+
+    public String getIdentification() {
+        return identification;
+    }
+
+    public void setIdentification(String identification) {
+        this.identification = identification;
+    }
 
     public EBusCommandCollection(String id, String label, Map<String, Object> properties, List<IEBusCommand> commands) {
 

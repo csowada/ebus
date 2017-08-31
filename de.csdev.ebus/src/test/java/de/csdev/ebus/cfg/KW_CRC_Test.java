@@ -54,7 +54,7 @@ public class KW_CRC_Test {
         cfg.setEBusTypes(types);
 
         commandRegistry = new EBusCommandRegistry();
-        commandRegistry.addTelegramConfigurationList(cfg.loadConfiguration(inputStream));
+        commandRegistry.addCommandCollection(cfg.loadConfigurationCollection(inputStream));
     }
 
     @Test

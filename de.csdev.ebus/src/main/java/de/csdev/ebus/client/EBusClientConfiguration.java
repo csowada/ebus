@@ -69,7 +69,7 @@ public class EBusClientConfiguration {
         try {
 
             collection = reader.loadConfigurationCollection(is);
-            configurationProvider.addTelegramConfigurationList(collection.getCommands());
+            configurationProvider.addCommandCollection(collection);
 
             if (collection != null) {
                 collections.add(collection);

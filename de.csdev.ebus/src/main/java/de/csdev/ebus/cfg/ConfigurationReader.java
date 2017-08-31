@@ -45,11 +45,11 @@ public class ConfigurationReader implements IConfigurationReader {
     // private ObjectMapper mapper;
     private EBusTypes registry;
 
-    public List<IEBusCommand> loadConfiguration(InputStream inputStream)
-            throws IOException, ConfigurationReaderException {
-        EBusCommandCollection collection = loadConfigurationCollection(inputStream);
-        return collection.getCommands();
-    }
+    // public List<IEBusCommand> loadConfiguration(InputStream inputStream)
+    // throws IOException, ConfigurationReaderException {
+    // EBusCommandCollection collection = loadConfigurationCollection(inputStream);
+    // return collection.getCommands();
+    // }
 
     public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
             throws IOException, ConfigurationReaderException {
@@ -73,8 +73,12 @@ public class ConfigurationReader implements IConfigurationReader {
             commandList.add(parseTelegramConfiguration(command));
         }
 
-        return new EBusCommandCollection(collection.getId(), collection.getLabel(), collection.getProperties(),
-                commandList);
+        EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
+                collection.getProperties(), commandList);
+
+        commandCollection.setIdentification(collection.getIdentification());
+
+        return commandCollection;
     }
 
     public void setEBusTypes(EBusTypes ebusTypes) {

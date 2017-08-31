@@ -26,6 +26,7 @@ import de.csdev.ebus.cfg.ConfigurationReaderException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
+import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
@@ -62,21 +63,23 @@ public class ConfigurationReaderTest {
         ConfigurationReader reader = new ConfigurationReader();
         reader.setEBusTypes(types);
 
-        List<IEBusCommand> configurationList = reader.loadConfiguration(inputStream);
-        tr.addTelegramConfigurationList(configurationList);
+        tr.addCommandCollection(reader.loadConfigurationCollection(inputStream));
 
-        for (IEBusCommand command : tr.getConfigurationList()) {
-            for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
-                ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00,
-                        (byte) 0xFF, null);
-                StringBuilder hexDumpString = EBusUtils.toHexDumpString(masterTelegram);
-                System.out.println(hexDumpString);
+        for (EBusCommandCollection collection : tr.getCommandCollections()) {
 
-                ByteBuffer masterTelegramMask = commandChannel.getMasterTelegramMask();
-                StringBuilder xx = EBusUtils.toHexDumpString(masterTelegramMask);
-                System.out.println(xx);
+            for (IEBusCommand command : collection.getCommands()) {
+                for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
+                    ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00,
+                            (byte) 0xFF, null);
+                    StringBuilder hexDumpString = EBusUtils.toHexDumpString(masterTelegram);
+                    System.out.println(hexDumpString);
+
+                    ByteBuffer masterTelegramMask = commandChannel.getMasterTelegramMask();
+                    StringBuilder xx = EBusUtils.toHexDumpString(masterTelegramMask);
+                    System.out.println(xx);
+                }
+
             }
-
         }
 
         // byte[] bs = EBusUtils.toByteArray("71 FE 50 17 10 08 95 F8 00 C3 02 00 80 00 80 00 80 00 80 00 80 DB");
