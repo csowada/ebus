@@ -170,12 +170,12 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
             Integer sendQueueId) {
 
         String id = commandChannel.getParent().getId();
-        byte slaveAddress = receivedData[1];
-        Byte masterAddress = EBusUtils.getMasterAddress(slaveAddress);
+        Byte masterAddress = null;
 
-        if (masterAddress == null) {
-            logger.error("FixME im a master address ???");
-            return;
+        if (EBusUtils.isMasterAddress(receivedData[1])) {
+            masterAddress = receivedData[1];
+        } else {
+            masterAddress = EBusUtils.getMasterAddress(receivedData[1]);
         }
 
         if (id.equals("common.sign_of_life")) {
