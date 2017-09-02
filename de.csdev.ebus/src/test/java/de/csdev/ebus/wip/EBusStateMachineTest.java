@@ -60,6 +60,35 @@ public class EBusStateMachineTest {
 
     }
 
+    @Test
+    public void testA() {
+        try {
+            EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+
+            byte[] byteArray = EBusUtils.toByteArray("30 76 50 23 05 D4 66 00 00 00 0C 00 00 00 AA");
+
+            /*
+             * 30 76 50 23 05 D4 66 00 00 00 0C
+             * 00 00 00 AA
+             */
+
+            machine.update((byte) 0xAA);
+
+            for (byte b : byteArray) {
+
+                machine.update(b);
+
+            }
+
+            logger.info("Machine state: {}", machine.getState().toString());
+            logger.info("Telegram available: {}", machine.isTelegramAvailable());
+
+        } catch (EBusDataException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     private void runMachine(byte[] byteArray) throws EBusDataException {
         EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
