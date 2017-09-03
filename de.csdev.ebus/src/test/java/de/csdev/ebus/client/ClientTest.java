@@ -6,7 +6,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.csdev.ebus.cfg.ConfigurationReaderException;
+import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.core.EBusConnectorEventListener;
@@ -21,7 +21,7 @@ public class ClientTest {
     private EBusEmulatorConnection emulator;
 
     @Before
-    public void before() throws IOException, ConfigurationReaderException {
+    public void before() throws IOException, EBusConfigurationReaderException {
         emulator = new EBusEmulatorConnection(null);
     }
 

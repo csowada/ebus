@@ -9,8 +9,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.ConfigurationReader;
-import de.csdev.ebus.cfg.ConfigurationReaderException;
+import de.csdev.ebus.cfg.EBusConfigurationReader;
+import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandRegistry;
@@ -20,7 +20,7 @@ public class EBusClientConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
 
-    protected ConfigurationReader reader;
+    protected EBusConfigurationReader reader;
 
     protected EBusTypes dataTypes;
 
@@ -32,7 +32,7 @@ public class EBusClientConfiguration {
 
         dataTypes = new EBusTypes();
 
-        reader = new ConfigurationReader();
+        reader = new EBusConfigurationReader();
 
         reader.setEBusTypes(dataTypes);
 
@@ -77,7 +77,7 @@ public class EBusClientConfiguration {
 
         } catch (IOException e) {
             logger.error("error!", e);
-        } catch (ConfigurationReaderException e) {
+        } catch (EBusConfigurationReaderException e) {
             logger.error("error!", e);
         }
     }

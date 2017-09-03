@@ -37,13 +37,12 @@ public class EBusTypeWord extends EBusTypeGenericReplaceValue {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T decodeInt(byte[] data) throws EBusTypeException {
+    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
         BigDecimal value = types.decode(EBusTypeInteger.INTEGER, data);
         if (value == null) {
             return null;
         }
-        return (T) BigDecimal.valueOf((short) (value.intValue() & 0xffff));
+        return BigDecimal.valueOf((short) (value.intValue() & 0xffff));
     }
 
     @Override

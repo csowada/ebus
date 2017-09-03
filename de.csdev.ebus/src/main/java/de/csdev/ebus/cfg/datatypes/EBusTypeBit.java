@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeBit extends EBusTypeGeneric {
+public class EBusTypeBit extends EBusTypeGeneric<Boolean> {
 
     public static String BIT = "bit";
 
@@ -26,16 +26,15 @@ public class EBusTypeBit extends EBusTypeGeneric {
         return supportedTypes;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data) {
+    public Boolean decode(byte[] data) {
 
         if (data == null) {
             // replace value
-            return (T) Boolean.FALSE;
+            return Boolean.FALSE;
         }
 
         Boolean isSet = (data[0] >> bit & 0x1) == 1;
-        return (T) isSet;
+        return isSet;
     }
 
     public byte[] encode(Object data) {
@@ -43,7 +42,7 @@ public class EBusTypeBit extends EBusTypeGeneric {
     }
 
     @Override
-    public IEBusType getInstance(Map<String, Object> properties) {
+    public IEBusType<Boolean> getInstance(Map<String, Object> properties) {
 
         if (properties.containsKey("pos")) {
             EBusTypeBit x = new EBusTypeBit();

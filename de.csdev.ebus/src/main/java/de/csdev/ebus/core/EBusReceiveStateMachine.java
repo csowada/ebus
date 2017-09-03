@@ -144,7 +144,7 @@ public class EBusReceiveStateMachine {
 
             if (!bb.hasRemaining()) {
                 logger.warn("Input buffer full, reset!");
-                throw new EBusDataException("", EBusDataException.EBusError.BUFFER_FULL, bb);
+                throw new EBusDataException("Input buffer full, reset!", EBusDataException.EBusError.BUFFER_FULL, bb);
             }
 
             // state machine

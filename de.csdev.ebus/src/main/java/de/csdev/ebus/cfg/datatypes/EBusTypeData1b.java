@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.cfg.datatypes;
 
+import java.math.BigDecimal;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -27,7 +29,7 @@ public class EBusTypeData1b extends EBusTypeGenericReplaceValue {
     }
 
     @Override
-    public <T> T decodeInt(byte[] data) throws EBusTypeException {
+    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
         return types.decode(EBusTypeChar.CHAR, data);
     }
 

@@ -15,12 +15,13 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.cfg.datatypes.EBusTypeWord;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
+import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeMultiWord extends EBusTypeGeneric {
+public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
     public static String MWORD = "mword";
 
@@ -38,8 +39,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric {
         return length * 2;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data) throws EBusTypeException {
+    public BigDecimal decode(byte[] data) throws EBusTypeException {
 
         byte[] dataNew = new byte[2];
 
@@ -56,15 +56,36 @@ public class EBusTypeMultiWord extends EBusTypeGeneric {
             valx = valx.add(value.multiply(factor));
         }
 
-        return (T) valx;
+        return valx;
     }
 
-    public byte[] encode(Object data) {
-        throw new RuntimeException("Not implemented yet!");
+    public byte[] encode(Object data) throws EBusTypeException {
+
+        BigDecimal value = NumberUtils.toBigDecimal(data);
+        byte[] result = new byte[getTypeLenght()];
+
+        if (value == null) {
+            return result;
+        }
+
+        int length = this.length - 1;
+
+        for (int i = length; i >= 0; i--) {
+
+            BigDecimal factor = new BigDecimal(this.pow).pow(i);
+            BigDecimal[] divideAndRemainder = value.divideAndRemainder(factor);
+
+            byte[] encode = types.encode(EBusTypeWord.WORD, divideAndRemainder[0]);
+
+            value = divideAndRemainder[1];
+            System.arraycopy(encode, 0, result, i * 2, 2);
+        }
+
+        return result;
     }
 
     @Override
-    public IEBusType getInstance(Map<String, Object> properties) {
+    public IEBusType<BigDecimal> getInstance(Map<String, Object> properties) {
 
         if (properties.containsKey("length")) {
             EBusTypeMultiWord type = new EBusTypeMultiWord();

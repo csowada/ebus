@@ -20,13 +20,13 @@ import de.csdev.ebus.cfg.datatypes.IEBusType;
  */
 public class EBusKWCrcMValue implements IEBusValue {
 
-    private IEBusType type;
+    private IEBusType<?> type;
 
-    public EBusKWCrcMValue(IEBusType type) {
+    public EBusKWCrcMValue(IEBusType<?> type) {
         this.type = type;
     }
 
-    public IEBusType getType() {
+    public IEBusType<?> getType() {
         return type;
     }
 
@@ -34,7 +34,7 @@ public class EBusKWCrcMValue implements IEBusValue {
         return BigDecimal.valueOf(0);
     }
 
-    public void setType(IEBusType type) {
+    public void setType(IEBusType<?> type) {
         this.type = type;
     }
 

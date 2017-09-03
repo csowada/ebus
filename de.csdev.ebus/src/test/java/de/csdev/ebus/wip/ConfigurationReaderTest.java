@@ -21,8 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.StaticTestTelegrams;
-import de.csdev.ebus.cfg.ConfigurationReader;
-import de.csdev.ebus.cfg.ConfigurationReaderException;
+import de.csdev.ebus.cfg.EBusConfigurationReader;
+import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
@@ -52,15 +52,15 @@ public class ConfigurationReaderTest {
     }
 
     @Test
-    public void testIsMasterAddress() throws IOException, EBusTypeException, ConfigurationReaderException {
+    public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 
         // final ClassLoader classLoader = this.getClass().getr.getClassLoader();
         // final URL resource = classLoader.getResource("/new-cfg-format2.json");
         // InputStream inputStream = resource.openConnection().getInputStream();
-        InputStream inputStream = ConfigurationReader.class
+        InputStream inputStream = EBusConfigurationReader.class
                 .getResourceAsStream("/commands/wolf-sm1-configuration.json");
 
-        ConfigurationReader reader = new ConfigurationReader();
+        EBusConfigurationReader reader = new EBusConfigurationReader();
         reader.setEBusTypes(types);
 
         tr.addCommandCollection(reader.loadConfigurationCollection(inputStream));

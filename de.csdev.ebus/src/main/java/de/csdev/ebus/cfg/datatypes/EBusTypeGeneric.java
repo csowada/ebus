@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Christian Sowada - Initial contribution
  *
  */
-public abstract class EBusTypeGeneric implements IEBusType {
+public abstract class EBusTypeGeneric<T> implements IEBusType<T> {
 
     public int getTypeLenght() {
         return 1;
@@ -26,7 +26,7 @@ public abstract class EBusTypeGeneric implements IEBusType {
         this.types = types;
     }
 
-    public IEBusType getInstance(Map<String, Object> properties) {
+    public IEBusType<T> getInstance(Map<String, Object> properties) {
         return this;
     }
 

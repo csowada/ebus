@@ -39,18 +39,18 @@ public class KW_CRC_Test {
     EBusCommandRegistry commandRegistry;
 
     @Before
-    public void before() throws IOException, ConfigurationReaderException {
+    public void before() throws IOException, EBusConfigurationReaderException {
 
         types = new EBusTypes();
 
-        InputStream inputStream = ConfigurationReader.class
+        InputStream inputStream = EBusConfigurationReader.class
                 .getResourceAsStream("/commands/wolf-cgb2-configuration.json");
 
         if (inputStream == null) {
             throw new RuntimeException("Unable to load json file ...");
         }
 
-        ConfigurationReader cfg = new ConfigurationReader();
+        EBusConfigurationReader cfg = new EBusConfigurationReader();
         cfg.setEBusTypes(types);
 
         commandRegistry = new EBusCommandRegistry();

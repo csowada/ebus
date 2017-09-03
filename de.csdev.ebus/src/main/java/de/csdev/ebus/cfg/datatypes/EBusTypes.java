@@ -18,7 +18,7 @@ import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeMultiWord;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeString;
-import de.csdev.ebus.cfg.datatypes.ext.EBusTypeTime;
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeDateTime;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -28,14 +28,14 @@ public class EBusTypes {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypes.class);
 
-    private Map<String, IEBusType> types = null;
+    private Map<String, IEBusType<?>> types = null;
 
     public EBusTypes() {
         init();
     }
 
     protected void init() {
-        types = new HashMap<String, IEBusType>();
+        types = new HashMap<String, IEBusType<?>>();
 
         add(EBusTypeBit.class);
         add(EBusTypeByte.class);
@@ -52,18 +52,18 @@ public class EBusTypes {
         add(EBusTypeString.class);
 
         add(EBusTypeMultiWord.class);
-        add(EBusTypeTime.class);
+        add(EBusTypeDateTime.class);
 
         // ext
         add(EBusTypeKWCrc.class);
     }
 
-    public <T extends IEBusType> T xxx(T xxxy) {
-        return xxxy;
-    }
+    // public <T extends IEBusType> T xxx(T xxxy) {
+    // return xxxy;
+    // }
 
-    public IEBusType getType(String type, Map<String, Object> properties) {
-        IEBusType ebusType = getType(type);
+    public <T> IEBusType<T> getType(String type, Map<String, Object> properties) {
+        IEBusType<T> ebusType = getType(type);
 
         if (ebusType != null) {
             return ebusType.getInstance(properties);
@@ -72,8 +72,9 @@ public class EBusTypes {
         return null;
     }
 
-    public IEBusType getType(String type) {
-        IEBusType eBusType = types.get(type);
+    public <T> IEBusType<T> getType(String type) {
+        @SuppressWarnings("unchecked")
+        IEBusType<T> eBusType = (IEBusType<T>) types.get(type);
 
         if (eBusType == null) {
             logger.warn("No eBUS data type with name {} !", type);
@@ -84,7 +85,7 @@ public class EBusTypes {
     }
 
     public byte[] encode(String type, Object data, Object... args) throws EBusTypeException {
-        IEBusType eBusType = types.get(type);
+        IEBusType<?> eBusType = types.get(type);
 
         if (eBusType == null) {
             logger.warn("No eBUS data type with name {} !", type);
@@ -95,7 +96,8 @@ public class EBusTypes {
     }
 
     public <T> T decode(String type, byte[] data) throws EBusTypeException {
-        IEBusType eBusType = types.get(type);
+        @SuppressWarnings("unchecked")
+        IEBusType<T> eBusType = (IEBusType<T>) types.get(type);
 
         if (eBusType == null) {
             logger.warn("No eBUS data type with name {} !", type);
@@ -105,23 +107,23 @@ public class EBusTypes {
         return eBusType.decode(data);
     }
 
-    public <T> T decodeF(String type, byte[] data, int pos, Object... args) throws EBusTypeException {
-        IEBusType eBusType = types.get(type);
-
-        if (eBusType == null) {
-            logger.warn("No eBUS data type with name {} !", type);
-            return null;
-        }
-
-        byte[] b = new byte[eBusType.getTypeLenght()];
-        System.arraycopy(data, pos, b, 0, b.length);
-
-        return eBusType.decode(b);
-    }
+    // public <T> T decode(String type, byte[] data, int pos, Object... args) throws EBusTypeException {
+    // IEBusType eBusType = types.get(type);
+    //
+    // if (eBusType == null) {
+    // logger.warn("No eBUS data type with name {} !", type);
+    // return null;
+    // }
+    //
+    // byte[] b = new byte[eBusType.getTypeLenght()];
+    // System.arraycopy(data, pos, b, 0, b.length);
+    //
+    // return eBusType.decode(b);
+    // }
 
     public void add(Class<?> clazz) {
         try {
-            IEBusType newInstance = (IEBusType) clazz.newInstance();
+            IEBusType<?> newInstance = (IEBusType<?>) clazz.newInstance();
             newInstance.setTypesParent(this);
 
             for (String typeName : newInstance.getSupportedTypes()) {

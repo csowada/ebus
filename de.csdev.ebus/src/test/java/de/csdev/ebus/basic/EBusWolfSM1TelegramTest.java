@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.ConfigurationReader;
-import de.csdev.ebus.cfg.ConfigurationReaderException;
+import de.csdev.ebus.cfg.EBusConfigurationReader;
+import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
@@ -42,28 +42,50 @@ public class EBusWolfSM1TelegramTest {
     EBusCommandRegistry commandRegistry;
 
     @Before
-    public void before() throws IOException, ConfigurationReaderException {
+    public void before() throws IOException, EBusConfigurationReaderException {
 
         types = new EBusTypes();
 
-        InputStream inputStream = ConfigurationReader.class
+        InputStream inputStream = EBusConfigurationReader.class
                 .getResourceAsStream("/commands/wolf-sm1-configuration.json");
 
         if (inputStream == null) {
             throw new RuntimeException("Unable to load json file ...");
         }
 
-        ConfigurationReader cfg = new ConfigurationReader();
+        EBusConfigurationReader cfg = new EBusConfigurationReader();
         cfg.setEBusTypes(types);
 
         commandRegistry = new EBusCommandRegistry();
         commandRegistry.addCommandCollection(cfg.loadConfigurationCollection(inputStream));
     }
 
+    @Test
     public void xxx() {
         byte[] bs = null;
 
         bs = EBusUtils.toByteArray("71 FE 50 18 0E 00 00 F9 00 07 00 3D 02 88 01 05 00 00 00 B8 AA");
+
+        List<IEBusCommandMethod> commandMethods = commandRegistry.find(bs);
+
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("solar.solar_yield",
+                IEBusCommandMethod.Method.BROADCAST);
+
+        commandMethod = commandMethods.get(0);
+
+        try {
+            Map<String, Object> decodeTelegram = EBusCommandUtils.decodeTelegram(commandMethod, bs);
+
+            ByteBuffer buildMasterTelegram = EBusCommandUtils.buildMasterTelegram(commandMethod, bs[0], bs[1],
+                    decodeTelegram);
+
+            System.out.println("EBusWolfSM1TelegramTest.xxx2()");
+
+        } catch (EBusTypeException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         checkMask("solar.solar_yield", bs, IEBusCommandMethod.Method.BROADCAST);
         xxx("solar.solar_yield", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
@@ -75,12 +97,14 @@ public class EBusWolfSM1TelegramTest {
         byte[] bs = null;
 
         bs = EBusUtils.toByteArray("71 FE 50 17 10 08 91 F0 01 0A 04 00 80 00 80 00 80 00 80 00 80 F7 AA");
+
         checkMask("solar.solar_data", bs, IEBusCommandMethod.Method.BROADCAST);
         xxx("solar.solar_data", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
 
     }
 
+    @Test
     public void xxx3() {
         byte[] bs = null;
 

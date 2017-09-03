@@ -25,7 +25,7 @@ public class EBusCommandValue implements IEBusValue {
 
     private String label;
 
-    private IEBusType type;
+    private IEBusType<?> type;
 
     private BigDecimal min;
 
@@ -91,11 +91,11 @@ public class EBusCommandValue implements IEBusValue {
         this.label = label;
     }
 
-    public IEBusType getType() {
+    public IEBusType<?> getType() {
         return type;
     }
 
-    public void setType(IEBusType type) {
+    public void setType(IEBusType<?> type) {
         this.type = type;
     }
 
@@ -133,7 +133,7 @@ public class EBusCommandValue implements IEBusValue {
         properties.put(key, value);
     }
 
-    public static EBusCommandValue getInstance(IEBusType type, byte[] data) {
+    public static EBusCommandValue getInstance(IEBusType<?> type, byte[] data) {
         EBusCommandValue value = new EBusCommandValue();
         value.setType(type);
         value.setDefaultValue(data);

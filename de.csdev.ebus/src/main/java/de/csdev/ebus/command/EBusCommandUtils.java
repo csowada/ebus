@@ -60,7 +60,7 @@ public class EBusCommandUtils {
 
         if (commandChannel.getExtendCommandValue() != null) {
             for (IEBusValue entry : commandChannel.getExtendCommandValue()) {
-                IEBusType type = entry.getType();
+                IEBusType<?> type = entry.getType();
                 buf.put(type.encode(entry.getDefaultValue()));
                 len += type.getTypeLenght();
             }
@@ -70,7 +70,7 @@ public class EBusCommandUtils {
 
         if (commandChannel.getMasterTypes() != null) {
             for (IEBusValue entry : commandChannel.getMasterTypes()) {
-                IEBusType type = entry.getType();
+                IEBusType<?> type = entry.getType();
                 byte[] b = null;
 
                 // use the value from the values map if set
@@ -252,7 +252,7 @@ public class EBusCommandUtils {
         if (commandChannel.getExtendCommandValue() != null) {
 
             for (IEBusValue entry : commandChannel.getExtendCommandValue()) {
-                IEBusType type = entry.getType();
+                IEBusType<?> type = entry.getType();
 
                 if (entry instanceof EBusKWCrcMValue) {
                     buf.put(new byte[type.getTypeLenght()]);
@@ -270,7 +270,7 @@ public class EBusCommandUtils {
 
         if (commandChannel.getMasterTypes() != null) {
             for (IEBusValue entry : commandChannel.getMasterTypes()) {
-                IEBusType type = entry.getType();
+                IEBusType<?> type = entry.getType();
 
                 // boolean x = type instanceof EBusTypeBytes;
 

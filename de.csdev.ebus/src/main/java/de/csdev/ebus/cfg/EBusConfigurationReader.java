@@ -40,7 +40,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class ConfigurationReader implements IConfigurationReader {
+public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     // private ObjectMapper mapper;
     private EBusTypes registry;
@@ -52,7 +52,7 @@ public class ConfigurationReader implements IConfigurationReader {
     // }
 
     public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
-            throws IOException, ConfigurationReaderException {
+            throws IOException, EBusConfigurationReaderException {
 
         if (registry == null) {
             throw new RuntimeException("Unable to load configuration without EBusType set!");
@@ -86,7 +86,7 @@ public class ConfigurationReader implements IConfigurationReader {
     }
 
     protected EBusCommand parseTelegramConfiguration(EBusCommandDTO commandElement)
-            throws ConfigurationReaderException {
+            throws EBusConfigurationReaderException {
 
         LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<String, EBusCommandValue>();
 
@@ -208,7 +208,7 @@ public class ConfigurationReader implements IConfigurationReader {
             byte[] byteArray = EBusUtils.toByteArray(template.getDefault());
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("length", byteArray.length);
-            final IEBusType typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
+            final IEBusType<?> typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
 
             result.add(EBusCommandValue.getInstance(typeByte, byteArray));
             return result;
@@ -241,7 +241,7 @@ public class ConfigurationReader implements IConfigurationReader {
         }
 
         Map<String, Object> map = template.getAsMap();
-        IEBusType type = registry.getType(typeStr, map);
+        IEBusType<?> type = registry.getType(typeStr, map);
 
         ev.setType(type);
 

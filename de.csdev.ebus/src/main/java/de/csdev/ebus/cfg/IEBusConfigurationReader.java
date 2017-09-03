@@ -18,13 +18,13 @@ import de.csdev.ebus.command.EBusCommandCollection;
  * @author Christian Sowada - Initial contribution
  *
  */
-public interface IConfigurationReader {
+public interface IEBusConfigurationReader {
 
     // public List<IEBusCommand> loadConfiguration(InputStream inputStream)
     // throws ConfigurationReaderException, IOException;
 
     public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
-            throws ConfigurationReaderException, IOException;
+            throws EBusConfigurationReaderException, IOException;
 
     public void setEBusTypes(EBusTypes ebusTypes);
 

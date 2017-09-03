@@ -31,10 +31,9 @@ public class EBusTypeData1c extends EBusTypeGenericReplaceValue {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T decodeInt(byte[] data) throws EBusTypeException {
-        BigDecimal x = types.getType(EBusTypeByte.BYTE).decode(data);
-        return (T) x.divide(BigDecimal.valueOf(2));
+    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
+        BigDecimal x = (BigDecimal) types.getType(EBusTypeByte.BYTE).decode(data);
+        return x.divide(BigDecimal.valueOf(2));
     }
 
     @Override

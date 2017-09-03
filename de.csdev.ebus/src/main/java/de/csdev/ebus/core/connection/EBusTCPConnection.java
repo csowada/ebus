@@ -59,8 +59,8 @@ public class EBusTCPConnection extends AbstractEBusConnection {
             outputStream = socket.getOutputStream();
 
         } catch (Exception e) {
-            logger.error(e.toString(), e);
-
+            logger.warn(e.getMessage());
+            return false;
         }
 
         return true;

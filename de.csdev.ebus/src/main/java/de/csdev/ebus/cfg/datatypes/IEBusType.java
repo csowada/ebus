@@ -14,9 +14,13 @@ import java.util.Map;
  * @author Christian Sowada - Initial contribution
  *
  */
-public interface IEBusType {
+public interface IEBusType<T> {
 
-    public <T> T decode(byte[] data) throws EBusTypeException;
+    public static final String LENGTH = "length";
+
+    public static final String TYPE = "type";
+
+    public T decode(byte[] data) throws EBusTypeException;
 
     public byte[] encode(Object data) throws EBusTypeException;
 
@@ -26,6 +30,6 @@ public interface IEBusType {
 
     public int getTypeLenght();
 
-    public IEBusType getInstance(Map<String, Object> properties);
+    public IEBusType<T> getInstance(Map<String, Object> properties);
 
 }

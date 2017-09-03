@@ -36,9 +36,8 @@ public class EBusTypeInteger extends EBusTypeGenericReplaceValue {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T decodeInt(byte[] data) {
-        return (T) BigDecimal.valueOf((short) (data[1] << 8 | data[0] & 0xFF));
+    public BigDecimal decodeInt(byte[] data) {
+        return BigDecimal.valueOf((short) (data[1] << 8 | data[0] & 0xFF));
     }
 
     @Override

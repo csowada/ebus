@@ -36,13 +36,12 @@ public class EBusTypeData2b extends EBusTypeGenericReplaceValue {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T decodeInt(byte[] data) throws EBusTypeException {
+    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
         BigDecimal intValue = types.decode(EBusTypeInteger.INTEGER, data);
         if (intValue == null) {
             return null;
         }
-        return (T) intValue.divide(BigDecimal.valueOf(256));
+        return intValue.divide(BigDecimal.valueOf(256));
     }
 
     @Override

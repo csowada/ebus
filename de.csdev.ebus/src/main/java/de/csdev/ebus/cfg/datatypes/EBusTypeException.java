@@ -16,4 +16,20 @@ public class EBusTypeException extends Exception {
 
     private static final long serialVersionUID = 7105215995176921667L;
 
+    public EBusTypeException() {
+        super();
+    }
+
+    public EBusTypeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public EBusTypeException(String message) {
+        super(message);
+    }
+
+    public EBusTypeException(Throwable cause) {
+        super(cause);
+    }
+
 }

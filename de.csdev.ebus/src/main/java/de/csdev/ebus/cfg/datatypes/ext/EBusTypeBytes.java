@@ -17,7 +17,7 @@ import de.csdev.ebus.cfg.datatypes.IEBusType;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeBytes extends EBusTypeGeneric {
+public class EBusTypeBytes extends EBusTypeGeneric<byte[]> {
 
     public static String BYTES = "bytes";
 
@@ -29,9 +29,8 @@ public class EBusTypeBytes extends EBusTypeGeneric {
         return supportedTypes;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T decode(byte[] data) {
-        return (T) data;
+    public byte[] decode(byte[] data) {
+        return data;
     }
 
     public byte[] encode(Object data) {
@@ -51,11 +50,11 @@ public class EBusTypeBytes extends EBusTypeGeneric {
     }
 
     @Override
-    public IEBusType getInstance(Map<String, Object> properties) {
+    public IEBusType<byte[]> getInstance(Map<String, Object> properties) {
 
-        if (properties.containsKey("length")) {
+        if (properties.containsKey(IEBusType.LENGTH)) {
             EBusTypeBytes type = new EBusTypeBytes();
-            type.length = (Integer) properties.get("length");
+            type.length = (Integer) properties.get(IEBusType.LENGTH);
             type.types = this.types;
             return type;
         }

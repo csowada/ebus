@@ -8,13 +8,15 @@
  */
 package de.csdev.ebus.cfg.datatypes;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.ArrayUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric {
+public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric<BigDecimal> {
 
     protected byte[] replaceValue = null;
 
@@ -22,7 +24,7 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric {
         return ArrayUtils.isEquals(data, this.replaceValue);
     }
 
-    public <T> T decode(byte[] data) throws EBusTypeException {
+    public BigDecimal decode(byte[] data) throws EBusTypeException {
 
         if (equalsReplaceValue(data)) {
             return null;
@@ -40,7 +42,7 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric {
         return encodeInt(data);
     }
 
-    public abstract <T> T decodeInt(byte[] data) throws EBusTypeException;
+    public abstract BigDecimal decodeInt(byte[] data) throws EBusTypeException;
 
     public abstract byte[] encodeInt(Object data) throws EBusTypeException;
 }

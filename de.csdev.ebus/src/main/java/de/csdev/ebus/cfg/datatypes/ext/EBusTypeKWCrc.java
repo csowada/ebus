@@ -15,7 +15,7 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeKWCrc extends EBusTypeGeneric implements IEBusComplexType {
+public class EBusTypeKWCrc extends EBusTypeGeneric<Object> implements IEBusComplexType {
 
     public static String KW_CRC = "kw-crc";
 
@@ -25,7 +25,7 @@ public class EBusTypeKWCrc extends EBusTypeGeneric implements IEBusComplexType {
         return supportedTypes;
     }
 
-    public <T> T decode(byte[] data) {
+    public Object decode(byte[] data) {
         throw new RuntimeException("Not implmented!");
     }
 

@@ -19,9 +19,9 @@ import de.csdev.ebus.cfg.datatypes.IEBusType;
  */
 public interface IEBusValue {
 
-    public IEBusType getType();
+    public IEBusType<?> getType();
 
-    public void setType(IEBusType type);
+    public void setType(IEBusType<?> type);
 
     public Object getDefaultValue();
 

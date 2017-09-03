@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.ConfigurationReader;
-import de.csdev.ebus.cfg.ConfigurationReaderException;
+import de.csdev.ebus.cfg.EBusConfigurationReader;
+import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
@@ -45,17 +45,17 @@ public class EBusCommonTelegramTest {
     EBusCommandRegistry commandRegistry;
 
     @Before
-    public void before() throws IOException, ConfigurationReaderException {
+    public void before() throws IOException, EBusConfigurationReaderException {
 
         types = new EBusTypes();
 
-        InputStream inputStream = ConfigurationReader.class.getResourceAsStream("/commands/common-configuration.json");
+        InputStream inputStream = EBusConfigurationReader.class.getResourceAsStream("/commands/common-configuration.json");
 
         if (inputStream == null) {
             throw new RuntimeException("Unable to load json file ...");
         }
 
-        ConfigurationReader cfg = new ConfigurationReader();
+        EBusConfigurationReader cfg = new EBusConfigurationReader();
         cfg.setEBusTypes(types);
 
         commandRegistry = new EBusCommandRegistry();

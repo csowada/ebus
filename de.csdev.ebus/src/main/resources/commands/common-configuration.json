@@ -105,11 +105,7 @@
             "broadcast": {
                 "master": [
                     {"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "format":"%.1f°C"},
-                    {"name": "time", "type": "time", "label": "Time"},
-                    {"name": "date_day", "type": "bcd", "label": "Date day"},
-                    {"name": "date_month", "type": "bcd", "label": "Date month"},
-                    {"name": "date_weekday", "type": "bcd", "label": "Date weekday"},
-                    {"name": "date_year", "type": "bcd", "label": "Date year"}
+                    {"name": "time", "type": "datetime", "label": "Date/Time"}
                 ]
             }
         },

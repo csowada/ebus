@@ -72,7 +72,7 @@ public class EBusController extends EBusControllerBase {
         try {
             machine.update(data);
         } catch (EBusDataException e) {
-            logger.debug("error!", e);
+            logger.debug(e.getMessage());
         }
 
         if (machine.isWaitingForSlaveAnswer()) {
@@ -106,7 +106,7 @@ public class EBusController extends EBusControllerBase {
     }
 
     private boolean reconnect() throws IOException, InterruptedException {
-        logger.trace("EBusController.reconnect()");
+        logger.info("Try to reconnect to ebus adapter ...");
 
         if (reConnectCounter > 10) {
             return false;
@@ -118,7 +118,7 @@ public class EBusController extends EBusControllerBase {
             if (connection.open()) {
                 reConnectCounter = 0;
             } else {
-                logger.warn("xxxxx");
+                logger.warn("Retry to connect to ebus adapter in {} seconds ...", 5 * reConnectCounter);
                 Thread.sleep(5000 * reConnectCounter);
             }
         }
@@ -221,7 +221,7 @@ public class EBusController extends EBusControllerBase {
             }
         }
 
-        logger.debug("End ...");
+        logger.debug("eBus connection thread is shuting down ...");
 
         // *******************************
         // ** end of thread **

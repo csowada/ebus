@@ -197,11 +197,8 @@
             "broadcast": {
                 "master": [
                     {"name": "output_current", "type": "data2c", "label": "Current output (kW)", "format":"%d kW"},
-                    {"name": "x_yield_today_l", "type": "word"},
-                    {"name": "x_yield_today_h", "type": "word"},
-                    {"name": "x_yield_total_l", "type": "word"},
-                    {"name": "x_yield_total_h", "type": "word"},
-                    {"name": "x_yield_total_m", "type": "word"},
+                    {"name": "yield_today", "type": "mword"},
+                    {"name": "yield_total", "type": "mword", "length":3},
                     {"name": "unknown", "type": "word"}
                 ]
             }

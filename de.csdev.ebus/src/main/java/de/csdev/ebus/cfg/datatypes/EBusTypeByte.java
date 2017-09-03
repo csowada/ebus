@@ -32,9 +32,8 @@ public class EBusTypeByte extends EBusTypeGenericReplaceValue {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T decodeInt(byte[] data) {
-        return (T) BigDecimal.valueOf(data[0] & 0xFF);
+    public BigDecimal decodeInt(byte[] data) {
+        return BigDecimal.valueOf(data[0] & 0xFF);
     }
 
     @Override
