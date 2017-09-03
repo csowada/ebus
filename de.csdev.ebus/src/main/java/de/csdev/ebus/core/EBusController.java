@@ -182,6 +182,7 @@ public class EBusController extends EBusControllerBase {
 
                     if (read == -1) {
                         logger.debug("eBUS read timeout occured, no data on bus ...");
+                        Thread.sleep(500);
 
                     } else {
 

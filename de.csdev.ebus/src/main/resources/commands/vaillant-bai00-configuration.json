@@ -1,0 +1,146 @@
+{
+    "id":           "vaillant-bai00",
+    "vendor":       "Vaillant",
+    "label":        "Vaillant BAI00",
+    "description":  "Vaillant BAI00",
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    "identification": "00 00 00 00 00",
+    
+    "commands":
+    [
+    
+        {
+            "comment":  "<Boiler> Heating partial load D.000 (kW)",
+            "device":   "Vaillant BAI000",
+            "id":       "boiler.level_part_load",
+            "command":  "B5 09",
+    
+            "template": [
+                {"name": "level_part_load", "type": "uchar", "label": "Heating partial load", "min": 1, "max": 200, "format":"%.1f kW"}
+            ],
+    
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 07 04"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 07 04"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
+        {
+            "comment":  "<Boiler> Overrun time of internal pump for heating mode D.001 (min)",
+            "device":   "Vaillant BAI000",
+            "id":       "boiler.postrun_pump",
+            "command":  "B5 09",
+    
+            "template": [
+                {"name": "postrun_pump", "type": "uchar", "label": "Overrun time of internal pump for heating mode (min)", "min": 0, "max": 60, "format":"%d min"}
+            ],
+    
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D F7 03"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E F7 03"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
+        {
+            "comment":  "<Boiler> Max. burner anti-cycling time heating at 20 °C flow temperature D.002 (min)",
+            "device":   "Vaillant BAI000",
+            "id":       "boiler.blocktime_boiler",
+            "command":  "B5 09",
+    
+            "template": [
+                {"name": "blocktime_boiler", "type": "uchar", "label": "Max. burner anti-cycling time heating at 20 °C flow temperature", "min": 2, "max": 60, "format":"%d min"}
+            ],
+    
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 09 04"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 09 04"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
+        {
+            "comment":  "<Boiler> Outlet temp. actual value D.003 (°C)",
+            "device":   "Vaillant BAI000",
+            "id":       "boiler.temp_outlet",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 16 00"}
+                ],
+                "slave": [
+                    {"name": "temp_outlet", "type": "data2c", "label": "Outlet temp. actual value", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "status", "type": "uchar", "label": "Outlet temp. actual value status", 
+                        "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+                ]
+            }
+        },
+        
+        {
+            "comment":  "<DHW> Measured value of hot water sensor D.004 (°C)",
+            "device":   "Vaillant BAI000",
+            "id":       "boiler.temp_outlet",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 17 00"}
+                ],
+                "slave": [
+                    {"name": "temp_cylinder", "type": "data2c", "label": "Measured value of hot water sensor", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "status", "type": "uchar", "label": "Outlet temp. actual value status", 
+                        "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+                ]
+            }
+        },
+        
+        {
+            "comment":  "<Boiler> Flow temperature target value (or return target value) D.005 (°C)",
+            "device":   "Vaillant BAI000",
+            "id":       "boiler.temp_d_flow",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 39 00"}
+                ],
+                "slave": [
+                    {"name": "temp_d_flow", "type": "data2c", "label": "Flow temperature target value (or return target value) (°C)", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "status", "type": "uchar", "label": "Outlet temp. actual value status", 
+                        "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+                ]
+            }
+        }
+        
+    ]
+}
