@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import de.csdev.ebus.utils.EBusUtils;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -45,4 +47,9 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric<BigDec
     public abstract BigDecimal decodeInt(byte[] data) throws EBusTypeException;
 
     public abstract byte[] encodeInt(Object data) throws EBusTypeException;
+
+    @Override
+    public String toString() {
+        return "EBusTypeGenericReplaceValue [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+    }
 }

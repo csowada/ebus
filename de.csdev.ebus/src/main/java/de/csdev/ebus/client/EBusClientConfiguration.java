@@ -48,13 +48,19 @@ public class EBusClientConfiguration {
 
     public List<String> getInternalConfigurationFiles() {
         return Arrays.asList("common-configuration.json", "wolf-cgb2-configuration.json", "wolf-sm1-configuration.json",
-                "vaillant-bai00-configuration.json");
+                "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json");
     }
 
     public void loadInternalConfiguration(String configurationFile) {
         logger.info("Load internal configuration {}", configurationFile);
         String configPath = "/commands/" + configurationFile;
-        loadConfiguration(EBusController.class.getResourceAsStream(configPath));
+
+        InputStream inputStream = EBusController.class.getResourceAsStream(configPath);
+        if (inputStream == null) {
+            throw new RuntimeException(String.format("Unable to load internal configuration \"%s\" ...", configPath));
+        }
+
+        loadConfiguration(inputStream);
     }
 
     public void loadInternalConfigurations() {

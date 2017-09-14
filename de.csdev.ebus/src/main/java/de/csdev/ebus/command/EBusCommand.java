@@ -23,7 +23,7 @@ public class EBusCommand implements IEBusCommandWritable {
 
     private String configurationSource;
 
-    private String description;
+    private String label;
 
     private String device;
 
@@ -47,8 +47,8 @@ public class EBusCommand implements IEBusCommandWritable {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getDescription()
      */
-    public String getDescription() {
-        return description;
+    public String getLabel() {
+        return label;
     }
 
     /*
@@ -77,8 +77,8 @@ public class EBusCommand implements IEBusCommandWritable {
         this.configurationSource = configurationSource;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public void setDevice(String device) {
@@ -125,8 +125,8 @@ public class EBusCommand implements IEBusCommandWritable {
 
     @Override
     public String toString() {
-        return "EBusCommand [id=" + id + ", channels=" + channels + ", description=" + description + ", device="
-                + device + ", properties=" + properties + ", configurationSource=" + configurationSource + "]";
+        return "EBusCommand [configurationSource=" + configurationSource + ", label=" + label + ", device=" + device
+                + ", id=" + id + ", properties=" + properties + ", channels=" + channels + "]";
     }
 
 }

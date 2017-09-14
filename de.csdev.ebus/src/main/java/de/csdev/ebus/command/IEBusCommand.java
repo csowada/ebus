@@ -38,11 +38,11 @@ public interface IEBusCommand {
     public String getConfigurationSource();
 
     /**
-     * Get a short description to this command
+     * Get a short label to this command
      *
      * @return
      */
-    public String getDescription();
+    public String getLabel();
 
     /**
      * Returns the id of this command

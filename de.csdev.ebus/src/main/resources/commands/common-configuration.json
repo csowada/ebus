@@ -1,11 +1,11 @@
 {
     "id":           "common",
-    "vendor":       "eBus Group",
-    "label":        "eBus Standard",
-    "description":  "A node that only uses the eBus Grup Standard",
+    "vendor":       "eBUS Group",
+    "label":        "eBUS Standard",
+    "description":  "eBUS Group Standard commands",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": "",
+    "identification": [],
     "properties":   {
                         "test" : "123"
                     },
@@ -14,25 +14,23 @@
     [
     
         {
-            "comment":  "<Service Data> Aussentemperatur (°C)",
-            "id":       "burner",
+            "label":    "Outside temperature",
+            "id":       "burner.temp_outside",
             "command":  "03 01",
             "dst":      "FE",
-            "type":     "master broadcast",
             
     
             "get": {
                 "master": [
-                    {"name":"temp_outside", "type": "word", "label": "Aussentemperatur", "factor": 0.1, "format":"%.1f°C"}
+                    {"name":"temp_outside", "type": "word", "label": "Outside temperature", "factor": 0.1, "format":"%.1f°C"}
                 ]
             }
         },
     
         {
-            "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 1",
-            "id":       "auto_stroker",
+            "label":    "Operational Data of Burner Control unit to Room Control Unit - Block 1",
+            "id":       "auto_stroker.op_data_bc2tc_b1",
             "command":  "05 03",
-            "type":     "mm",
             
     
             "get": {
@@ -59,10 +57,9 @@
         },
         
         {
-            "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 2",
-            "id":       "auto_strokerx",
+            "label":    "Operational Data of Burner Control unit to Room Control Unit - Block 2",
+            "id":       "auto_stroker.op_data_bc2tc_b2",
             "command":  "05 03",
-            "type":     "mm",
     
             "get": {
                 "master": [
@@ -77,10 +74,9 @@
         },
         
         {
-            "comment":  "<Burner Control> Operational Data from Room Controller to Burner Control Unit",
-            "id":       "controller",
+            "label":    "Operational Data from Room Controller to Burner Control Unit",
+            "id":       "controller.op_data_rc2bc",
             "command":  "05 07",
-            "type":     "mm",
     
             "get": {
                 "master": [
@@ -96,11 +92,10 @@
         },
     
         {
-            "comment":  "<System Data> Date/Time of an eBUS Master",
-            "id":       "common",
+            "label":    "Date/Time of an eBUS Master",
+            "id":       "common.time",
             "command":  "07 00",
             "dst":      "FE",
-            "type":     "bc",
     
             "broadcast": {
                 "master": [
@@ -111,10 +106,9 @@
         },
     
         {
-            "comment":  "<System Data> Identification of eBUS devices - Request",
+            "label":    "Identification of eBUS devices - Request",
             "id":       "common.identification",
             "command":  "07 04",
-            "type":     "master-slave",
     
             "template": [
                 {"name": "vendor", "type": "byte", "label": "Vendor"},
@@ -139,22 +133,22 @@
         },
     
         {
-            "comment":  "<System Data> Inquiry of Existence",
+            "label":    "Inquiry of Existence",
             "id":       "common.inquiry_of_existence",
             "command":  "07 FE",
             "broadcast":{}
         },
     
         {
-            "comment":  "<System Data> Inquiry of Existence",
+            "label":    "Inquiry of Existence",
             "id":       "common.sign_of_life",
             "command":  "07 FF",
             "broadcast":{}
         },
     
         {
-            "comment":  "<Room Controller> Transmission of Target Values of the Room Controllers to other Room Controllers",
-            "id":       "controller2",
+            "label":    "<Room Controller> Transmission of Target Values of the Room Controllers to other Room Controllers",
+            "id":       "controller.d_values_rc2",
             "command":  "08 00",
     
             "get": {
@@ -172,7 +166,7 @@
         },
     
         {
-            "comment":  "<General> Error Message",
+            "label":    "Error Message",
             "id":       "common.error",
             "command":  "FE 01",
             "dst":      "FE",

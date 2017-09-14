@@ -142,9 +142,14 @@ public class EBusCommandValue implements IEBusValue {
 
     @Override
     public String toString() {
-        return "EBusCommandValue [name=" + name + ", label=" + label + ", type=" + type + ", min=" + min + ", max="
-                + max + ", factor=" + factor + ", mapping=" + mapping + ", step=" + step + ", defaultValue="
-                + defaultValue + "]";
+        return "EBusCommandValue [" + (name != null ? "name=" + name + ", " : "")
+                + (label != null ? "label=" + label + ", " : "") + (type != null ? "type=" + type + ", " : "")
+                + (min != null ? "min=" + min + ", " : "") + (max != null ? "max=" + max + ", " : "")
+                + (factor != null ? "factor=" + factor + ", " : "")
+                + (mapping != null ? "mapping=" + mapping + ", " : "")
+                + (properties != null ? "properties=" + properties + ", " : "")
+                + (step != null ? "step=" + step + ", " : "") + (format != null ? "format=" + format + ", " : "")
+                + (defaultValue != null ? "defaultValue=" + defaultValue : "") + "]";
     }
 
     @Override

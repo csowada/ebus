@@ -10,6 +10,7 @@ package de.csdev.ebus.cfg.datatypes;
 
 import java.math.BigDecimal;
 
+import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
 /**
@@ -50,6 +51,11 @@ public class EBusTypeByte extends EBusTypeGenericReplaceValue {
         }
 
         return new byte[] { (byte) b.intValue() };
+    }
+
+    @Override
+    public String toString() {
+        return "EBusTypeByte [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
     }
 
 }

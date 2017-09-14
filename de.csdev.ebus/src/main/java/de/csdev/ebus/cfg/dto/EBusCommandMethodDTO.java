@@ -53,4 +53,10 @@ public class EBusCommandMethodDTO {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "EBusCommandMethodDTO [command=" + command + ", master=" + master + ", slave=" + slave + ", type=" + type
+                + "]";
+    }
+
 }

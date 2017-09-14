@@ -25,20 +25,27 @@ public class EBusCommandCollection {
     private Map<String, Object> properties;
     private String id;
     private String label;
-    private String identification;
+    private String description;
+    private List<String> identification;
 
-    public String getIdentification() {
+    public List<String> getIdentification() {
         return identification;
     }
 
-    public void setIdentification(String identification) {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setIdentification(List<String> identification) {
         this.identification = identification;
     }
 
-    public EBusCommandCollection(String id, String label, Map<String, Object> properties, List<IEBusCommand> commands) {
+    public EBusCommandCollection(String id, String label, String description, Map<String, Object> properties,
+            List<IEBusCommand> commands) {
 
         this.id = id;
         this.label = label;
+        this.description = description;
 
         if (properties != null) {
             this.properties = CollectionUtils.newMapIfNull(this.properties);
@@ -79,8 +86,8 @@ public class EBusCommandCollection {
 
     @Override
     public String toString() {
-        return "EBusCommandCollection [id=" + id + ", label=" + label + ", commands=" + commands + ", properties="
-                + properties + "]";
+        return "EBusCommandCollection [commands=" + commands + ", properties=" + properties + ", id=" + id + ", label="
+                + label + ", identification=" + identification + "]";
     }
 
 }

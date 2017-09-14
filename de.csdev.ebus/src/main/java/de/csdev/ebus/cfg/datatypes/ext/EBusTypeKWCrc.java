@@ -10,6 +10,7 @@ package de.csdev.ebus.cfg.datatypes.ext;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.cfg.datatypes.EBusTypeGeneric;
+import de.csdev.ebus.cfg.datatypes.IEBusComplexType;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -41,6 +42,11 @@ public class EBusTypeKWCrc extends EBusTypeGeneric<Object> implements IEBusCompl
     public byte[] encodeComplex(Object data) throws EBusTypeException {
         // TODO Auto-generated method stub
         return new byte[] { 0x11 };
+    }
+
+    @Override
+    public String toString() {
+        return "EBusTypeKWCrc []";
     }
 
 }

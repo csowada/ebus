@@ -42,4 +42,9 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
         return list.add(value);
     }
 
+    @Override
+    public String toString() {
+        return "EBusCommandNestedValue [list=" + list + "]";
+    }
+
 }

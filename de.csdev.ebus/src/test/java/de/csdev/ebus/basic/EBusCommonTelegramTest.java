@@ -49,7 +49,8 @@ public class EBusCommonTelegramTest {
 
         types = new EBusTypes();
 
-        InputStream inputStream = EBusConfigurationReader.class.getResourceAsStream("/commands/common-configuration.json");
+        InputStream inputStream = EBusConfigurationReader.class
+                .getResourceAsStream("/commands/common-configuration.json");
 
         if (inputStream == null) {
             throw new RuntimeException("Unable to load json file ...");
@@ -81,7 +82,7 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void AutoStroker() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("auto_stroker",
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("auto_stroker.op_data_bc2tc_b1",
                 IEBusCommandMethod.Method.GET);
 
         assertNotNull("Command auto_stroker not found!", commandMethod);
@@ -188,7 +189,7 @@ public class EBusCommonTelegramTest {
     @Test
     public void decodeBroadcast() {
         byte[] bs = EBusUtils.toByteArray("30 FE 07 00 09 00 80 10 54 21 16 08 03 17 02 AA");
-        xxx("common", bs, IEBusCommandMethod.Method.BROADCAST);
+        xxx("common.time", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
 
     }

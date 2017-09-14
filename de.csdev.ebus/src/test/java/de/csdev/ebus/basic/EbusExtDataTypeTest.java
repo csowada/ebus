@@ -75,7 +75,7 @@ public class EbusExtDataTypeTest {
 
         assertEquals(3, calendar.getCalendar().get(Calendar.DAY_OF_MONTH));
         assertEquals(9, calendar.getCalendar().get(Calendar.MONTH) + 1);
-        assertEquals(17, calendar.getCalendar().get(Calendar.YEAR));
+        assertEquals(2017, calendar.getCalendar().get(Calendar.YEAR));
     }
 
     @Test

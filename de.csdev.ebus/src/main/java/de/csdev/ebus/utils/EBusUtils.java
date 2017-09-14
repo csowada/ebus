@@ -365,6 +365,17 @@ public class EBusUtils {
     }
 
     /**
+     * @param data
+     * @return
+     */
+    static public String toPrintHexDumpString(Byte data) {
+        if (data != null) {
+            return "0x" + String.format("%02X", (0xFF & data));
+        }
+        return null;
+    }
+
+    /**
      * Converts a hex string to byte array
      *
      * @param hexDumpString

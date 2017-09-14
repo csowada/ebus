@@ -194,4 +194,9 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "EBusTypeDateTime [variant=" + variant + "]";
+    }
+
 }

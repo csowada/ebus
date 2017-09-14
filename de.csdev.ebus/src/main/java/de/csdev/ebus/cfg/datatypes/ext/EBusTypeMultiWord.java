@@ -103,4 +103,9 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "EBusTypeMultiWord [length=" + length + ", pow=" + pow + "]";
+    }
+
 }

@@ -20,9 +20,6 @@ import de.csdev.ebus.command.EBusCommandCollection;
  */
 public interface IEBusConfigurationReader {
 
-    // public List<IEBusCommand> loadConfiguration(InputStream inputStream)
-    // throws ConfigurationReaderException, IOException;
-
     public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
             throws EBusConfigurationReaderException, IOException;
 

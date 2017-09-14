@@ -75,4 +75,9 @@ public class EBusKWCrcMValue implements IEBusValue {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "EBusKWCrcMValue [type=" + type + "]";
+    }
+
 }

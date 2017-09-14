@@ -18,14 +18,13 @@ public class EBusCommandDTO {
 
     private EBusCommandMethodDTO broadcast;
     private String command;
-    private String comment;
+    private String label;
     private String device;
     private String dst;
     private EBusCommandMethodDTO get;
     private String id;
     private EBusCommandMethodDTO set;
     private List<EBusValueDTO> template;
-    private String type;
     private String src;
 
     public String getSrc() {
@@ -44,8 +43,8 @@ public class EBusCommandDTO {
         return command;
     }
 
-    public String getComment() {
-        return comment;
+    public String getLabel() {
+        return label;
     }
 
     public String getDevice() {
@@ -72,10 +71,6 @@ public class EBusCommandDTO {
         return template;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public void setBroadcast(EBusCommandMethodDTO broadcast) {
         this.broadcast = broadcast;
     }
@@ -84,8 +79,8 @@ public class EBusCommandDTO {
         this.command = command;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public void setDevice(String device) {
@@ -112,8 +107,11 @@ public class EBusCommandDTO {
         this.template = template;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    @Override
+    public String toString() {
+        return "EBusCommandDTO [broadcast=" + broadcast + ", command=" + command + ", label=" + label + ", device="
+                + device + ", dst=" + dst + ", get=" + get + ", id=" + id + ", set=" + set + ", template=" + template
+                + ", src=" + src + "]";
     }
 
 }

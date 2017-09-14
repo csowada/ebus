@@ -10,6 +10,8 @@ package de.csdev.ebus.cfg.datatypes;
 
 import java.math.BigDecimal;
 
+import de.csdev.ebus.utils.EBusUtils;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -41,6 +43,11 @@ public class EBusTypeData1b extends EBusTypeGenericReplaceValue {
     @Override
     public void setTypesParent(EBusTypes types) {
         this.types = types;
+    }
+
+    @Override
+    public String toString() {
+        return "EBusTypeData1b [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
     }
 
 }

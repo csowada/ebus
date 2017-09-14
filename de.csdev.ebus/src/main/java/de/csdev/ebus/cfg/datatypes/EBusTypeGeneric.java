@@ -32,7 +32,7 @@ public abstract class EBusTypeGeneric<T> implements IEBusType<T> {
 
     @Override
     public String toString() {
-        return "EBusTypeGeneric [types=" + types + "]";
+        return "EBusTypeGeneric []";
     }
 
 }

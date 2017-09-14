@@ -5,14 +5,13 @@
     "description":  "Vaillant BAI00",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": "00 00 00 00 00",
+    "identification": ["66 65 73 48 48"],
     
     "commands":
     [
     
         {
-            "comment":  "<Boiler> Heating partial load D.000 (kW)",
-            "device":   "Vaillant BAI000",
+            "label":    "Heating partial load D.000",
             "id":       "boiler.level_part_load",
             "command":  "B5 09",
     
@@ -37,8 +36,7 @@
         },
         
         {
-            "comment":  "<Boiler> Overrun time of internal pump for heating mode D.001 (min)",
-            "device":   "Vaillant BAI000",
+            "label":    "Overrun time of internal pump for heating mode D.001 (min)",
             "id":       "boiler.postrun_pump",
             "command":  "B5 09",
     
@@ -63,8 +61,7 @@
         },
         
         {
-            "comment":  "<Boiler> Max. burner anti-cycling time heating at 20 °C flow temperature D.002 (min)",
-            "device":   "Vaillant BAI000",
+            "label":    "Max. burner anti-cycling time heating at 20 °C flow temperature D.002 (min)",
             "id":       "boiler.blocktime_boiler",
             "command":  "B5 09",
     
@@ -89,8 +86,7 @@
         },
         
         {
-            "comment":  "<Boiler> Outlet temp. actual value D.003 (°C)",
-            "device":   "Vaillant BAI000",
+            "label":    "Outlet temp. actual value D.003",
             "id":       "boiler.temp_outlet",
             "command":  "B5 09",
 
@@ -107,8 +103,7 @@
         },
         
         {
-            "comment":  "<DHW> Measured value of hot water sensor D.004 (°C)",
-            "device":   "Vaillant BAI000",
+            "label":    "Measured value of hot water sensor D.004",
             "id":       "boiler.temp_outlet",
             "command":  "B5 09",
 
@@ -125,8 +120,7 @@
         },
         
         {
-            "comment":  "<Boiler> Flow temperature target value (or return target value) D.005 (°C)",
-            "device":   "Vaillant BAI000",
+            "label":    "Flow temperature target value (or return target value) D.005",
             "id":       "boiler.temp_d_flow",
             "command":  "B5 09",
 
@@ -135,12 +129,326 @@
                     {"type": "static", "default": "0D 39 00"}
                 ],
                 "slave": [
-                    {"name": "temp_d_flow", "type": "data2c", "label": "Flow temperature target value (or return target value) (°C)", "min": 0, "max": 100, "format":"%.f°C"},
-                    {"name": "status", "type": "uchar", "label": "Outlet temp. actual value status", 
+                    {"name": "temp_d_flow", "type": "data2c", "label": "Flow temperature target value (or return target value) (°C)", "min": 0, "max": 100, "format":"%.f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Hot water temperature target value (VUW boilers only) D.006",
+            "id":       "boiler.temp_d_dhw",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D EA 03"}
+                ],
+                "slave": [
+                    {"name": "temp_d_dhw", "type": "data2c", "label": "Hot water temperature target value (°C)", "min": 0, "max": 100, "format":"%.f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Warm start temperature target value (only with VUW boilers) - Cylinder temperature target value (only with VU boilers) D.007",
+            "id":       "boiler.temp_d_cylinder",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 04 00"}
+                ],
+                "slave": [
+                    {"name": "temp_d_cylinder", "type": "data2c", "label": "Cylinder temperature target value (°C)", "min": 0, "max": 100, "format":"%.f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Room thermostat at terminal RT D.008",
+            "id":       "controller.state_thermostat_RT",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 2A 00"}
+                ],
+                "slave": [
+                    {"name": "state_thermostat_RT", "type": "uchar", "label": "Room thermostat at terminal RT", "min": 0, "max": 1, "format":"%d",
+                        "mapping": {"0":"off", "1":"on"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Target value from external eBus controller D.009",
+            "id":       "boiler.temp_d_flow_ext",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 6E 04"}
+                ],
+                "slave": [
+                    {"name": "temp_d_flow_ext", "type": "data2c", "label": "Target value from external eBus controller", "min": 0, "max": 100, "format":"%.f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Status of internal pump D.010",
+            "id":       "boiler.state_pump",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 44 00"}
+                ],
+                "slave": [
+                    {"name": "state_pump", "type": "uchar", "label": "Status of internal pump", "min": 0, "max": 1, "format":"%d",
+                        "mapping": {"0":"off", "1":"on"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Status of external heating pump D.011",
+            "id":       "boiler.state_pump_ext",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 3F 00"}
+                ],
+                "slave": [
+                    {"name": "state_pump_ext", "type": "uchar", "label": "Status of external heating pump", "min": 0, "max": 1, "format":"%d",
+                        "mapping": {"0":"off", "1":"on"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Actual pump speed (high-efficiency pump) D.015",
+            "id":       "boiler.modulation_pump",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 73 00"}
+                ],
+                "slave": [
+                    {"name": "modulation_pump", "type": "uchar", "label": "Actual pump speed (%)", "min": 0, "max": 100, "format":"%.f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Room thermostat 24 V DC open/closed D.016",
+            "id":       "boiler.state_thermostat_24V",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 0E 00"}
+                ],
+                "slave": [
+                    {"name": "state_thermostat_24V", "type": "uchar", "label": "Room thermostat 24V", "min": 0, "max": 1, "format":"%d", 
+                        "mapping": {"0":"off", "1":"on"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Heating flow/return regulation changeover D.017",
+            "id":       "boiler.state_return_regulation",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 0C 04"}
+                ],
+                "slave": [
+                    {"name": "state_return_regulation", "type": "uchar", "label": "Heating flow/return regulation changeover", "min": 0, "max": 1, "format":"%d", 
+                        "mapping": {"0":"flow", "1":"return"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Hot water requirement via C1/C2, impeller or APC D.022",
+            "id":       "dhw.state_dhw_demand",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 58 00"}
+                ],
+                "slave": [
+                    {"name": "state_dhw_demand", "type": "uchar", "label": "Hot water requirement", "min": 0, "max": 1, "format":"%d", 
+                        "mapping": {"0":"off", "1":"on"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Summer/winter operating mode(heating on/off) D.023",
+            "id":       "boiler.mode_summer_winter_switch",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D F2 03"}
+                ],
+                "slave": [
+                    {"name": "mode_summer_winter_switch", "type": "uchar", "label": "Summer/winter operating mode", "min": 0, "max": 1, "format":"%d", 
+                        "mapping": {"0":"off", "1":"on"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Hot water generation enabled by eBUS controller D.025",
+            "id":       "dhw.state_dhw_demand_ebus",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 47 04"}
+                ],
+                "slave": [
+                    {"name": "state_dhw_demand_ebus", "type": "uchar", "label": "Hot water generation enabled by eBUS controller", "min": 0, "max": 1, "format":"%d", 
+                        "mapping": {"0":"off", "1":"on"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Gas valve status D.030",
+            "id":       "boiler.state_gas_valve",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D BB 00"}
+                ],
+                "slave": [
+                    {"name": "state_gas_valve", "type": "uchar", "label": "Gas valve status", "format":"%d", 
+                        "mapping": {"240":"off", "15":"on"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Fan speed target value D.033",
+            "id":       "boiler.speed_d_fan",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 24 00"}
+                ],
+                "slave": [
+                    {"name": "speed_d_fan", "type": "uint", "label": "Fan speed target value", "format":"%d rpm"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Fan speed actual value D.034",
+            "id":       "boiler.speed_fan",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 83 00"}
+                ],
+                "slave": [
+                    {"name": "speed_fan", "type": "uint", "label": "Fan speed value", "format":"%d rpm"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Position of the diverter valve D.035",
+            "id":       "boiler.state_diverter_valve",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 54 00"}
+                ],
+                "slave": [
+                    {"name": "state_diverter_valve", "type": "uchar", "label": "Position of the diverter valve", "format":"%d",
+                        "mapping":   {"0":"heating", "40":"parallel", "100":"dhw"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Flow temperature D.040",
+            "id":       "boiler.temp_flow",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 18 00"}
+                ],
+                "slave": [
+                    {"name": "temp_flow", "type": "data2c", "label": "Measured value of hot water sensor", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "status", "type": "uchar", "label": "Status flow temperature", 
                         "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
                 ]
             }
-        }
+        },
+        
+        {
+            "label":    "Return temperature D.041",
+            "id":       "boiler.temp_return",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 98 00"}
+                ],
+                "slave": [
+                    {"name": "temp_return", "type": "data2c", "label": "Return temperature", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "status", "type": "uchar", "label": "Status return temperature", 
+                        "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Digitised ionisation value D.044",
+            "id":       "boiler.value_io",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D A4 00"}
+                ],
+                "slave": [
+                    {"name": "value_io", "type": "word", "label": "Digitised ionisation value", "min": 0, "max": 1020, "format":"%d"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Outside temperature D.047",
+            "id":       "boiler.temp_outside",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 76 00"}
+                ],
+                "slave": [
+                    {"name": "temp_outside", "type": "data2c", "label": "Outside temperature", "min": -40, "max": 70, "format":"%.f°C"},
+                    {"name": "status", "type": "uchar", "label": "Status uutside temperature", 
+                        "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+                ]
+            }
+        },
         
     ]
 }

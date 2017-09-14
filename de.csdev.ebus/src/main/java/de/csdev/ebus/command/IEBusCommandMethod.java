@@ -68,6 +68,7 @@ public interface IEBusCommandMethod {
      */
     public ByteBuffer getMasterTelegramMask();
 
+    @Deprecated
     public List<IEBusValue> getExtendCommandValue();
 
     /**

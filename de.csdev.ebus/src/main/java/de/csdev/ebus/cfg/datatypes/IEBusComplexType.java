@@ -6,20 +6,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.command;
+package de.csdev.ebus.cfg.datatypes;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public interface IEBusCommandWritable extends IEBusCommand {
+public interface IEBusComplexType {
 
-    public IEBusCommandWritable setId(String id);
+    public <T> T decodeComplex(byte[] rawData, int pos) throws EBusTypeException;
 
-    public void setConfigurationSource(String configurationSource);
-
-    public void setLabel(String label);
-
-    public void addCommandChannel(IEBusCommandMethod channel);
-
+    public byte[] encodeComplex(Object data) throws EBusTypeException;
 }

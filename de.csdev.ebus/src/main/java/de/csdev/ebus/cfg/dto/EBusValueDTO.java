@@ -178,4 +178,13 @@ public class EBusValueDTO {
 
         return map;
     }
+
+    @Override
+    public String toString() {
+        return "EBusValueDTO [children=" + children + ", factor=" + factor + ", label=" + label + ", length=" + length
+                + ", mapping=" + mapping + ", max=" + max + ", min=" + min + ", name=" + name + ", replaceValue="
+                + replaceValue + ", step=" + step + ", type=" + type + ", _default=" + _default + ", pos=" + pos
+                + ", format=" + format + "]";
+    }
+
 }

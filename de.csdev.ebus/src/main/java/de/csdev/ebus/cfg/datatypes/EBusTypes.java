@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
+import de.csdev.ebus.cfg.datatypes.ext.EBusTypeDateTime;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeMultiWord;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeString;
-import de.csdev.ebus.cfg.datatypes.ext.EBusTypeDateTime;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -137,6 +137,11 @@ public class EBusTypes {
         } catch (IllegalAccessException e) {
             logger.error("error!", e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "EBusTypes [types=" + types + "]";
     }
 
 }

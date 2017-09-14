@@ -1,0 +1,344 @@
+{
+    "id":           "vaillant-vrc",
+    "vendor":       "Vaillant",
+    "label":        "Vaillant VRC Common",
+    "description":  "Vaillant VRC Common (VRC 430, VRC 470, VRC 90)",
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    "identification": ["86 82 67 52 51 48", "86 82 67 52 55 48", "86 82 67 57 48 00"],
+    
+    "commands":
+    [
+        {
+            "label":    "Raw room temperature",
+            "id":       "controller.temp_room",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 00 00"}
+                ],
+                "slave": [
+                    {"name": "temp_room", "type": "data2c", "label": "Room temperature", "min": -30, "max": 60, "format":"%.1f °C"},
+                    {"name": "status", "type": "uchar", "label": "Room temperature status",
+                        "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Global system off",
+            "id":       "heating.status_global_system_off",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 01 00"}
+                ],
+                "slave": [
+                    {"name": "status_global_system_off", "type": "uchar", "label": "Activation of operation mode system off", "min": 0, "max": 1, "format":"%d",
+                        "mapping": {"0":"Off", "1":"On"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Holiday Setpoint",
+            "id":       "dhw.temp_d_holiday",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "temp_d_holiday", "type": "data2c", "label": "Holiday setpoint", "format":"%.1f °C"}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 22 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 22 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "HC1 Day Setpoint",
+            "id":       "heating.temp_d_day",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "temp_d_day", "type": "data1c", "label": "HC1 Day setpoint", "min": 0, "max": 100, "format":"%.1f °C"}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 27 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 27 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "HC1 Operation mode",
+            "id":       "heating.program_heating_circuit",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "program", "type": "uchar", "label": "HC1 Operation mode", "format":"%d",
+                    "mapping": {"0":"Off", "1":"Manual", "2":"Auto", "3":"Day", "4":"Night", "5":"Summer"}}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 2F 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 2F 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "HC1 Night Setpoint",
+            "id":       "heating.temp_d_night",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "temp_d_night", "type": "data1c", "label": "HC1 Night setpoint", "min": 0, "max": 100, "format":"%.1f °C"}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 30 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 30 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "HC1 Heating curve",
+            "id":       "heating.temp_hcurve",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "temp_hcurve", "type": "uint", "label": "HC1 Heating curve", "factor": 0.01, "format":"%d"}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 31 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 31 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "HC1 Manual Setpoint",
+            "id":       "heating.temp_d_man",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "temp_d_man", "type": "data1c", "label": "HC1 Day setpoint", "min": 0, "max": 100, "format":"%.1f °C"}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 32 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 32 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "HC1 Manual override setpoint",
+            "id":       "heating.temp_d_room_override",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 3C 00"}
+                ],
+                "slave": [
+                    {"name": "temp_d_room_override", "type": "data1c", "label": "HC1 Manual override setpoint", "min": 0, "max": 100, "format":"%.1f °C"}
+                ]
+            }
+        },
+
+        {
+            "label":    "DHW Operation mode",
+            "id":       "dhw.program_dhw_circuit",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "program", "type": "uchar", "label": "DHW Operation mode", "min": 0, "max": 2, "format":"%d",
+                        "mapping": {"0":"Off", "1":"Manual", "2":"Auto"}}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 42 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 42 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "Domestic Hot Water Setpoint",
+            "id":       "dhw.temp_d_dhw",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "temp_d_dhw", "type": "data1c", "label": "DHW setpoint", "format":"%.1f °C"}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 44 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 44 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "Set HC1 Special operation mode",
+            "id":       "heating.program_heating_circuit_special",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "program", "type": "uchar", "label": "HC1 Operation mode", "format":"%d",
+                    "mapping": {"0":"Nothing", "1":"Party", "2":"OneDayHome", "3":"OneDayNotHome", "4":"Holiday", "5":"Home", "6":"QuickVeto", "7":"OneTimeVentilation", "8":"WhisperMode", "9":"LoadDHW"}}
+            ],
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 5D 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 5D 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "Outside temperature",
+            "id":       "controller.temp_outside",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 62 00"}
+                ],
+                "slave": [
+                    {"name": "temp_outside", "type": "data2c", "label": "Outside temperature", "min": -60, "max": 80, "format":"%.1f °C"},
+                    {"name": "status", "type": "uchar", "label": "Outside temperature status",
+                        "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Displayed room temperature",
+            "id":       "controller.temp_room_disp",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 80 00"}
+                ],
+                "slave": [
+                    {"name": "temp_room_disp", "type": "data2c", "label": "Room temperature", "min": -30, "max": 60, "format":"%.1f °C"}
+                ]
+            }
+        },
+
+        {
+            "label":    "Domestic Hot Water actual desired temperature",
+            "id":       "controller.temp_d_actual_dhw",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 86 00"}
+                ],
+                "slave": [
+                    {"name": "temp_d_actual_dhw", "type": "data1c", "label": "DHW actual desired temperature", "min": 0, "max": 100, "format":"%.1f °C"}
+                ]
+            }
+        }
+    ]
+}

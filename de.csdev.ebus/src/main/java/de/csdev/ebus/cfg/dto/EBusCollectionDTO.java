@@ -28,7 +28,7 @@ public class EBusCollectionDTO {
     private List<EBusCommandDTO> commands;
     private String description;
     private String id;
-    private String identification;
+    private List<String> identification;
     private String label;
     private String vendor;
 
@@ -68,7 +68,7 @@ public class EBusCollectionDTO {
         return id;
     }
 
-    public String getIdentification() {
+    public List<String> getIdentification() {
         return identification;
     }
 
@@ -96,7 +96,7 @@ public class EBusCollectionDTO {
         this.id = id;
     }
 
-    public void setIdentification(String identification) {
+    public void setIdentification(List<String> identification) {
         this.identification = identification;
     }
 
@@ -106,6 +106,13 @@ public class EBusCollectionDTO {
 
     public void setVendor(String vendor) {
         this.vendor = vendor;
+    }
+
+    @Override
+    public String toString() {
+        return "EBusCollectionDTO [authors=" + authors + ", commands=" + commands + ", description=" + description
+                + ", id=" + id + ", identification=" + identification + ", label=" + label + ", vendor=" + vendor
+                + ", properties=" + properties + "]";
     }
 
 }

@@ -61,4 +61,9 @@ public class EBusTypeBytes extends EBusTypeGeneric<byte[]> {
 
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "EBusTypeBytes [length=" + length + "]";
+    }
 }

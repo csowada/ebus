@@ -129,4 +129,9 @@ public class EBusCommandRegistry {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "EBusCommandRegistry [collections=" + collections + "]";
+    }
+
 }

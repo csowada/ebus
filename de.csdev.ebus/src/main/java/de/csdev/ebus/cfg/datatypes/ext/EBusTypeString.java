@@ -67,4 +67,9 @@ public class EBusTypeString extends EBusTypeGeneric<String> {
 
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "EBusTypeString [length=" + length + "]";
+    }
 }

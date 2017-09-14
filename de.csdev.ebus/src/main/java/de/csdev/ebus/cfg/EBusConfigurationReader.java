@@ -42,14 +42,7 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusConfigurationReader implements IEBusConfigurationReader {
 
-    // private ObjectMapper mapper;
     private EBusTypes registry;
-
-    // public List<IEBusCommand> loadConfiguration(InputStream inputStream)
-    // throws IOException, ConfigurationReaderException {
-    // EBusCommandCollection collection = loadConfigurationCollection(inputStream);
-    // return collection.getCommands();
-    // }
 
     public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
             throws IOException, EBusConfigurationReaderException {
@@ -58,23 +51,23 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             throw new RuntimeException("Unable to load configuration without EBusType set!");
         }
 
-        List<IEBusCommand> commandList = new ArrayList<IEBusCommand>();
+        if (inputStream == null) {
+            throw new IllegalArgumentException("Required argument inputStream is null!");
+        }
 
-        // if (mapper == null) {
-        // mapper = new ObjectMapper();
-        // mapper.configure(Feature.ALLOW_COMMENTS, true);
-        // }
+        List<IEBusCommand> commandList = new ArrayList<IEBusCommand>();
 
         Gson gson = new Gson();
         EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(inputStream), EBusCollectionDTO.class);
-        // EBusCollectionDTO collection = mapper.readValue(inputStream, EBusCollectionDTO.class);
 
         for (EBusCommandDTO command : collection.getCommands()) {
-            commandList.add(parseTelegramConfiguration(command));
+            if (command != null) {
+                commandList.add(parseTelegramConfiguration(command));
+            }
         }
 
         EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
-                collection.getProperties(), commandList);
+                collection.getDescription(), collection.getProperties(), commandList);
 
         commandCollection.setIdentification(collection.getIdentification());
 
@@ -87,6 +80,10 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     protected EBusCommand parseTelegramConfiguration(EBusCommandDTO commandElement)
             throws EBusConfigurationReaderException {
+
+        if (commandElement == null) {
+            throw new IllegalArgumentException("Parameter \"command dto\" not set!");
+        }
 
         LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<String, EBusCommandValue>();
 
@@ -105,7 +102,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         // extract default values
         String id = commandElement.getId();
         byte[] command = EBusUtils.toByteArray(commandElement.getCommand());
-        String comment = commandElement.getComment();
+        String label = commandElement.getLabel();
         String device = commandElement.getDevice();
         Byte destination = EBusUtils.toByte(commandElement.getDst());
         Byte source = EBusUtils.toByte(commandElement.getSrc());
@@ -121,7 +118,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         EBusCommand cfg = new EBusCommand();
         cfg.setId(id);
-        cfg.setDescription(comment);
+        cfg.setLabel(label);
         cfg.setDevice(device);
 
         // loop all available channnels
@@ -146,24 +143,12 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
             if (commandMethodElement != null) {
 
-                // String t = commandMethodElement.getType();
-                // IEBusCommandMethod.Type type = t == null ? null
-                // : t.equalsIgnoreCase("ms") ? IEBusCommandMethod.Type.MASTER_SLAVE
-                // : t.equalsIgnoreCase("mm") ? IEBusCommandMethod.Type.MASTER_MASTER
-                // : t.equalsIgnoreCase("ms") ? IEBusCommandMethod.Type.BROADCAST : null;
-
-                // if (type == null) {
-                // throw new ConfigurationReaderException("Property \"type\" is missing for command %s !",
-                // commandElement.getId());
-                // }
-
                 EBusCommandMethod commandMethod = new EBusCommandMethod(cfg, method);
 
                 commandMethod.setCommand(command);
                 commandMethod.setDestinationAddress(destination);
                 commandMethod.setSourceAddress(source);
 
-                // entry = map.get("master");
                 if (commandMethodElement.getMaster() != null) {
                     for (EBusValueDTO template : commandMethodElement.getMaster()) {
                         for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {

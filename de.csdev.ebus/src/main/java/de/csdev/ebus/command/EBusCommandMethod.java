@@ -12,6 +12,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.csdev.ebus.utils.EBusUtils;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -200,6 +202,31 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
         }
 
         return Type.MASTER_MASTER;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("EBusCommandMethod [");
+
+        sb.append("command=" + EBusUtils.toHexDumpString(command).toString() + ", ");
+
+        if (destinationAddress != null) {
+            sb.append("destinationAddress=" + EBusUtils.toPrintHexDumpString(destinationAddress) + ", ");
+        }
+
+        if (sourceAddress != null) {
+            sb.append("sourceAddress=" + EBusUtils.toPrintHexDumpString(sourceAddress) + ", ");
+        }
+
+        sb.append("masterTypes=" + masterTypes + ", ");
+        sb.append("slaveTypes=" + slaveTypes + ", ");
+
+        sb.append("method=" + method);
+        sb.append("]");
+
+        return sb.toString();
     }
 
 }

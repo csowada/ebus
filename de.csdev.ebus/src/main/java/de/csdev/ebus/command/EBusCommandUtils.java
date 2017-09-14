@@ -18,9 +18,9 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 
 import de.csdev.ebus.cfg.datatypes.EBusTypeException;
+import de.csdev.ebus.cfg.datatypes.IEBusComplexType;
 import de.csdev.ebus.cfg.datatypes.IEBusType;
 import de.csdev.ebus.cfg.datatypes.ext.EBusTypeBytes;
-import de.csdev.ebus.cfg.datatypes.ext.IEBusComplexType;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**

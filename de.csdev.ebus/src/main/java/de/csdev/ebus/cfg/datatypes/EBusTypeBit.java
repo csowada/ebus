@@ -53,4 +53,9 @@ public class EBusTypeBit extends EBusTypeGeneric<Boolean> {
 
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "EBusTypeBit [bit=" + bit + "]";
+    }
 }
