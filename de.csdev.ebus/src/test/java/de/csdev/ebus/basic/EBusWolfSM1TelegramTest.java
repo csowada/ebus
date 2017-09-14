@@ -21,13 +21,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.EBusConfigurationReader;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
-import de.csdev.ebus.cfg.datatypes.EBusTypeException;
-import de.csdev.ebus.cfg.datatypes.EBusTypes;
+import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -36,15 +36,15 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusWolfSM1TelegramTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusWolfSM1TelegramTest.class);
+    private final Logger logger = LoggerFactory.getLogger(EBusWolfSM1TelegramTest.class);
 
-    EBusTypes types;
+    EBusTypeRegistry types;
     EBusCommandRegistry commandRegistry;
 
     @Before
     public void before() throws IOException, EBusConfigurationReaderException {
 
-        types = new EBusTypes();
+        types = new EBusTypeRegistry();
 
         InputStream inputStream = EBusConfigurationReader.class
                 .getResourceAsStream("/commands/wolf-sm1-configuration.json");

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.csdev.ebus.cfg.datatypes.IEBusType;
+import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.utils.CollectionUtils;
 
 /**

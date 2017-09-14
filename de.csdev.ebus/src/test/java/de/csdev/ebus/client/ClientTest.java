@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
-import de.csdev.ebus.cfg.datatypes.EBusTypeException;
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;

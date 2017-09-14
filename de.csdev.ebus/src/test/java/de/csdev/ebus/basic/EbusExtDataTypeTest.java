@@ -19,11 +19,11 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.csdev.ebus.cfg.datatypes.EBusTypeException;
-import de.csdev.ebus.cfg.datatypes.EBusTypes;
-import de.csdev.ebus.cfg.datatypes.IEBusType;
-import de.csdev.ebus.cfg.datatypes.ext.EBusTypeDateTime;
-import de.csdev.ebus.cfg.datatypes.ext.EBusTypeMultiWord;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.command.datatypes.IEBusType;
+import de.csdev.ebus.command.datatypes.ext.EBusTypeDateTime;
+import de.csdev.ebus.command.datatypes.ext.EBusTypeMultiWord;
 import de.csdev.ebus.utils.EBusDateTime;
 
 /**
@@ -37,11 +37,11 @@ public class EbusExtDataTypeTest {
 
     private static final byte[] TIME_BYTES = new byte[] { 0x59, 0x30, 0x13 };
 
-    EBusTypes types;
+    EBusTypeRegistry types;
 
     @Before
     public void before() {
-        types = new EBusTypes();
+        types = new EBusTypeRegistry();
     }
 
     @Test

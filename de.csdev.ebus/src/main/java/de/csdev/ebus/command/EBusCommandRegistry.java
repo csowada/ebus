@@ -21,7 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.datatypes.EBusTypeException;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -29,54 +29,31 @@ import de.csdev.ebus.cfg.datatypes.EBusTypeException;
  */
 public class EBusCommandRegistry {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusCommandRegistry.class);
+    private final Logger logger = LoggerFactory.getLogger(EBusCommandRegistry.class);
 
-    // private List<IEBusCommand> list = new ArrayList<IEBusCommand>();
     private Map<String, EBusCommandCollection> collections = new HashMap<String, EBusCommandCollection>();
 
+    /**
+     * @param collection
+     */
     public void addCommandCollection(EBusCommandCollection collection) {
         collections.put(collection.getId(), collection);
     }
 
-    // public void addTelegramConfigurationList(List<IEBusCommand> nlist) {
-    // list.addAll(nlist);
-    // }
-    //
-    // public void addTelegramConfiguration(IEBusCommand telegramCfg) {
-    // list.add(telegramCfg);
-    // }
-
+    /**
+     * @param data
+     * @return
+     */
     public List<IEBusCommandMethod> find(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);
         buffer.position(data.length);
         return find(buffer);
     }
 
-    public Collection<EBusCommandCollection> getCommandCollections() {
-        return Collections.unmodifiableCollection(collections.values());
-    }
-
-    public EBusCommandCollection getCommandCollection(String id) {
-        return collections.get(id);
-    }
-
-    // public List<IEBusCommand> getConfigurationList() {
-    // return Collections.unmodifiableList(list);
-    // }
-
-    public IEBusCommandMethod getConfigurationById(String id, IEBusCommandMethod.Method type) {
-
-        for (EBusCommandCollection collection : collections.values()) {
-            for (IEBusCommand command : collection.getCommands()) {
-                if (StringUtils.equals(command.getId(), id)) {
-                    return command.getCommandMethod(type);
-                }
-            }
-        }
-
-        return null;
-    }
-
+    /**
+     * @param data
+     * @return
+     */
     public List<IEBusCommandMethod> find(ByteBuffer data) {
 
         ArrayList<IEBusCommandMethod> result = new ArrayList<IEBusCommandMethod>();
@@ -96,6 +73,44 @@ public class EBusCommandRegistry {
 
     }
 
+    /**
+     * @param id
+     * @return
+     */
+    public EBusCommandCollection getCommandCollection(String id) {
+        return collections.get(id);
+    }
+
+    /**
+     * @return
+     */
+    public Collection<EBusCommandCollection> getCommandCollections() {
+        return Collections.unmodifiableCollection(collections.values());
+    }
+
+    /**
+     * @param id
+     * @param type
+     * @return
+     */
+    public IEBusCommandMethod getConfigurationById(String id, IEBusCommandMethod.Method type) {
+
+        for (EBusCommandCollection collection : collections.values()) {
+            for (IEBusCommand command : collection.getCommands()) {
+                if (StringUtils.equals(command.getId(), id)) {
+                    return command.getCommandMethod(type);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param command
+     * @param data
+     * @return
+     */
     public boolean matchesCommand(IEBusCommandMethod command, ByteBuffer data) {
 
         Byte sourceAddress = (Byte) ObjectUtils.defaultIfNull(command.getSourceAddress(), Byte.valueOf((byte) 0x00));

@@ -108,7 +108,7 @@ public abstract class EBusControllerBase extends Thread {
 
     protected void initThreadPool() {
         // create new thread pool to send received telegrams
-        threadPool = Executors.newCachedThreadPool(new WorkerThreadFactory("ebus-send-receive"));
+        threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-send-receive"));
     }
 
     protected void shutdownThreadPool() {

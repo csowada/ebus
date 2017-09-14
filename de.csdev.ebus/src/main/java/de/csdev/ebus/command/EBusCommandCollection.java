@@ -22,10 +22,15 @@ import de.csdev.ebus.utils.CollectionUtils;
 public class EBusCommandCollection {
 
     private List<IEBusCommand> commands = new ArrayList<IEBusCommand>();
+
     private Map<String, Object> properties;
+
     private String id;
+
     private String label;
+
     private String description;
+
     private List<String> identification;
 
     public List<String> getIdentification() {

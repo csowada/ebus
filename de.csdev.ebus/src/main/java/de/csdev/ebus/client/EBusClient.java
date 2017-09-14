@@ -13,11 +13,11 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.datatypes.EBusTypeException;
-import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.service.device.EBusDeviceTable;
 import de.csdev.ebus.service.device.EBusDeviceTableService;
@@ -166,7 +166,7 @@ public class EBusClient {
     /**
      * @return
      */
-    public EBusTypes getDataTypes() {
+    public EBusTypeRegistry getDataTypes() {
         return configuration.dataTypes;
     }
 

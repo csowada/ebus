@@ -11,8 +11,8 @@ package de.csdev.ebus.cfg;
 import java.io.IOException;
 import java.io.InputStream;
 
-import de.csdev.ebus.cfg.datatypes.EBusTypes;
 import de.csdev.ebus.command.EBusCommandCollection;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -20,9 +20,18 @@ import de.csdev.ebus.command.EBusCommandCollection;
  */
 public interface IEBusConfigurationReader {
 
+    /**
+     * @param inputStream
+     * @return
+     * @throws EBusConfigurationReaderException
+     * @throws IOException
+     */
     public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
             throws EBusConfigurationReaderException, IOException;
 
-    public void setEBusTypes(EBusTypes ebusTypes);
+    /**
+     * @param ebusTypes
+     */
+    public void setEBusTypes(EBusTypeRegistry ebusTypes);
 
 }

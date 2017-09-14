@@ -15,14 +15,14 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.csdev.ebus.cfg.datatypes.EBusTypeBCD;
-import de.csdev.ebus.cfg.datatypes.EBusTypeChar;
-import de.csdev.ebus.cfg.datatypes.EBusTypeData1b;
-import de.csdev.ebus.cfg.datatypes.EBusTypeData1c;
-import de.csdev.ebus.cfg.datatypes.EBusTypeData2b;
-import de.csdev.ebus.cfg.datatypes.EBusTypeData2c;
-import de.csdev.ebus.cfg.datatypes.EBusTypeException;
-import de.csdev.ebus.cfg.datatypes.EBusTypes;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
+import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData1b;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -30,11 +30,11 @@ import de.csdev.ebus.cfg.datatypes.EBusTypes;
  */
 public class EbusBasicDataTypeTest {
 
-    EBusTypes types;
+    EBusTypeRegistry types;
 
     @Before
     public void before() {
-        types = new EBusTypes();
+        types = new EBusTypeRegistry();
     }
 
     @Test

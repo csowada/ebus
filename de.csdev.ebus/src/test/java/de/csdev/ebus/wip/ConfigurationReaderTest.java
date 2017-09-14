@@ -21,16 +21,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.StaticTestTelegrams;
-import de.csdev.ebus.cfg.EBusConfigurationReader;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
-import de.csdev.ebus.cfg.datatypes.EBusTypeException;
-import de.csdev.ebus.cfg.datatypes.EBusTypes;
-import de.csdev.ebus.cfg.datatypes.ext.EBusTypeKWCrc;
+import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -41,12 +41,12 @@ import de.csdev.ebus.utils.EBusUtils;
 public class ConfigurationReaderTest {
 
     EBusCommandRegistry tr;
-    EBusTypes types;
+    EBusTypeRegistry types;
 
     @Before
     public void before() {
         tr = new EBusCommandRegistry();
-        types = new EBusTypes();
+        types = new EBusTypeRegistry();
         types.add(EBusTypeKWCrc.class);
 
     }

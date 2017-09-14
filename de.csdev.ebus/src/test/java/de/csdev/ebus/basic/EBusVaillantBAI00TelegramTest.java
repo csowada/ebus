@@ -15,10 +15,10 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.cfg.EBusConfigurationReader;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
-import de.csdev.ebus.cfg.datatypes.EBusTypes;
+import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -26,15 +26,16 @@ import de.csdev.ebus.command.EBusCommandRegistry;
  */
 public class EBusVaillantBAI00TelegramTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusVaillantBAI00TelegramTest.class);
+    @SuppressWarnings("unused")
+    private final Logger logger = LoggerFactory.getLogger(EBusVaillantBAI00TelegramTest.class);
 
-    EBusTypes types;
+    EBusTypeRegistry types;
     EBusCommandRegistry commandRegistry;
 
     @Before
     public void before() throws IOException, EBusConfigurationReaderException {
 
-        types = new EBusTypes();
+        types = new EBusTypeRegistry();
 
         InputStream inputStream = EBusConfigurationReader.class
                 .getResourceAsStream("/commands/vaillant-bai00-configuration.json");
