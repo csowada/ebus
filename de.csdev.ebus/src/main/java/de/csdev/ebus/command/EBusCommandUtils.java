@@ -58,14 +58,6 @@ public class EBusCommandUtils {
         buf.put(commandChannel.getCommand()); // PB SB - Command
         buf.put((byte) 0x00); // NN - Length, will be set later
 
-        if (commandChannel.getExtendCommandValue() != null) {
-            for (IEBusValue entry : commandChannel.getExtendCommandValue()) {
-                IEBusType<?> type = entry.getType();
-                buf.put(type.encode(entry.getDefaultValue()));
-                len += type.getTypeLenght();
-            }
-        }
-
         Map<Integer, IEBusComplexType> complexTypes = new HashMap<Integer, IEBusComplexType>();
 
         if (commandChannel.getMasterTypes() != null) {
@@ -225,12 +217,6 @@ public class EBusCommandUtils {
             throw new IllegalArgumentException("Parameter command is null!");
         }
 
-        if (commandChannel.getExtendCommandValue() != null) {
-            for (IEBusValue ev : commandChannel.getExtendCommandValue()) {
-                pos += ev.getType().getTypeLenght();
-            }
-        }
-
         pos = decodeValueList(commandChannel.getMasterTypes(), data, result, pos);
 
         pos += 3;
@@ -248,25 +234,6 @@ public class EBusCommandUtils {
         buf.put(commandChannel.getDestinationAddress() == null ? (byte) 0x00 : (byte) 0xFF); // ZZ - Target
         buf.put(new byte[] { (byte) 0xFF, (byte) 0xFF }); // PB SB - Command
         buf.put((byte) 0xFF); // NN - Length
-
-        if (commandChannel.getExtendCommandValue() != null) {
-
-            for (IEBusValue entry : commandChannel.getExtendCommandValue()) {
-                IEBusType<?> type = entry.getType();
-
-                if (entry instanceof EBusKWCrcMValue) {
-                    buf.put(new byte[type.getTypeLenght()]);
-                } else {
-                    for (int i = 0; i < type.getTypeLenght(); i++) {
-                        buf.put((byte) 0xFF);
-
-                    }
-                }
-
-                // buf.put(new byte[type.getTypeLenght()]);
-
-            }
-        }
 
         if (commandChannel.getMasterTypes() != null) {
             for (IEBusValue entry : commandChannel.getMasterTypes()) {

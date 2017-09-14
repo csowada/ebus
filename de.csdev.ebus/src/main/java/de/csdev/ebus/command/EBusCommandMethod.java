@@ -24,8 +24,6 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
 
     private Byte destinationAddress;
 
-    private List<IEBusValue> extendCommandValue;
-
     private List<IEBusValue> masterTypes;
 
     private List<IEBusValue> slaveTypes;
@@ -109,15 +107,6 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
     /*
      * (non-Javadoc)
      *
-     * @see de.csdev.ebus.command.IEBusCommand#getExtendCommandValue()
-     */
-    public List<IEBusValue> getExtendCommandValue() {
-        return extendCommandValue;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTelegramMask()
      */
     public ByteBuffer getMasterTelegramMask() {
@@ -173,10 +162,6 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
 
     public void setDestinationAddress(Byte destinationAddress) {
         this.destinationAddress = destinationAddress;
-    }
-
-    public void setExtendCommandValue(List<IEBusValue> extendCommandValue) {
-        this.extendCommandValue = extendCommandValue;
     }
 
     public void setMasterTypes(List<IEBusValue> masterTypes) {

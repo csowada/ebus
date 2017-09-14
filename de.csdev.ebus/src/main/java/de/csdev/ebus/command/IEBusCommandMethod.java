@@ -68,9 +68,6 @@ public interface IEBusCommandMethod {
      */
     public ByteBuffer getMasterTelegramMask();
 
-    @Deprecated
-    public List<IEBusValue> getExtendCommandValue();
-
     /**
      * Get ordered list of eBus data types for the master part
      *
