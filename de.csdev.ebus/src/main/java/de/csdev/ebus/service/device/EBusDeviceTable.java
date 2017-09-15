@@ -12,12 +12,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class EBusDeviceTable {
     private Map<Byte, EBusDevice> deviceTable;
 
     /** the list for listeners */
-    private final List<EBusDeviceTableListener> listeners = new ArrayList<EBusDeviceTableListener>();
+    private final List<EBusDeviceTableListener> listeners = new CopyOnWriteArrayList<EBusDeviceTableListener>();
 
     private Map<Integer, String> vendors;
 

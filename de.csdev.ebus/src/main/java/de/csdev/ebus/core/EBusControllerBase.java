@@ -8,8 +8,8 @@
  */
 package de.csdev.ebus.core;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,7 @@ public abstract class EBusControllerBase extends Thread {
     private static final Logger logger = LoggerFactory.getLogger(EBusControllerBase.class);
 
     /** the list for listeners */
-    private final List<EBusConnectorEventListener> listeners = new ArrayList<EBusConnectorEventListener>();
+    private final List<EBusConnectorEventListener> listeners = new CopyOnWriteArrayList<EBusConnectorEventListener>();
 
     /** The thread pool to execute events without blocking */
     private ExecutorService threadPool;

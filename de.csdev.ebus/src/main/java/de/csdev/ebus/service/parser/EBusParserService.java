@@ -8,9 +8,9 @@
  */
 package de.csdev.ebus.service.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class EBusParserService implements EBusConnectorEventListener {
     private static final Logger logger = LoggerFactory.getLogger(EBusParserService.class);
 
     /** the list for listeners */
-    private final List<EBusParserListener> listeners = new ArrayList<EBusParserListener>();
+    private final List<EBusParserListener> listeners = new CopyOnWriteArrayList<EBusParserListener>();
 
     private EBusCommandRegistry commandRegistry;
 
