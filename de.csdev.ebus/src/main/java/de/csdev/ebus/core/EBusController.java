@@ -9,6 +9,7 @@
 package de.csdev.ebus.core;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
@@ -72,7 +73,8 @@ public class EBusController extends EBusControllerBase {
         try {
             machine.update(data);
         } catch (EBusDataException e) {
-            logger.debug(e.getMessage());
+            this.fireOnEBusDataException(e, null);
+            // logger.debug(e.getMessage());
         }
 
         if (machine.isWaitingForSlaveAnswer()) {
@@ -193,6 +195,10 @@ public class EBusController extends EBusControllerBase {
 
                     }
                 }
+            } catch (InterruptedIOException e) {
+                logger.error(e.toString(), e);
+                Thread.currentThread().interrupt();
+                machine.reset();
 
             } catch (IOException e) {
                 fireOnConnectionException(e);
@@ -208,7 +214,7 @@ public class EBusController extends EBusControllerBase {
 
             } catch (BufferOverflowException e) {
                 logger.error(
-                        "eBUS telegram buffer overflow - not enough sync bytes received! Try to adjust eBus adapter.");
+                        "eBUS telegram buffer overflow - not enough sync bytes received! Try to adjust eBUS adapter.");
                 machine.reset();
 
             } catch (InterruptedException e) {
@@ -249,12 +255,13 @@ public class EBusController extends EBusControllerBase {
      */
     private void send(boolean secondTry) throws IOException {
 
-        try {
-            QueueEntry sendEntry = queue.getCurrent();
+        QueueEntry sendEntry = queue.getCurrent();
 
-            if (sendEntry == null) {
-                return;
-            }
+        if (sendEntry == null) {
+            return;
+        }
+
+        try {
 
             byte[] dataOutputBuffers = sendEntry.buffer;
             EBusReceiveStateMachine sendMachine = new EBusReceiveStateMachine();
@@ -377,12 +384,14 @@ public class EBusController extends EBusControllerBase {
 
         } catch (EBusDataException e) {
 
+            this.fireOnEBusDataException(e, sendEntry.id);
+
             if (e.getErrorCode().equals(EBusDataException.EBusError.SLAVE_ACK_FAIL)) {
                 // directly resend telegram (max. once), not on next send loop
                 resend();
             }
 
-            logger.error("error!", e);
+            // logger.error("error!", e);
         }
     }
 }

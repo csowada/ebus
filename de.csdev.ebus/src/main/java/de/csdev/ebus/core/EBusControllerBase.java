@@ -82,7 +82,7 @@ public abstract class EBusControllerBase extends Thread {
             public void run() {
 
                 // try {
-                byte[] receivedData = null;// EBusUtils.decodeExpandedData(receivedRawData);
+                byte[] receivedData = null;
                 receivedData = receivedRawData;
 
                 if (receivedData != null) {
@@ -92,16 +92,22 @@ public abstract class EBusControllerBase extends Thread {
                 } else {
                     logger.debug("Received telegram was invalid, skip!");
                 }
+            }
+        });
+    }
 
-                // } catch (EBusDataException e) {
-                //
-                // logger.trace("error!", e);
-                //
-                // for (EBusConnectorEventListener listener : listeners) {
-                // listener.onTelegramException(e, sendQueueId);
-                // }
-                // }
+    protected void fireOnEBusDataException(final EBusDataException exception, final Integer sendQueueId) {
 
+        if (threadPool == null) {
+            logger.warn("ThreadPool not ready!");
+            return;
+        }
+
+        threadPool.execute(new Runnable() {
+            public void run() {
+                for (EBusConnectorEventListener listener : listeners) {
+                    listener.onTelegramException(exception, sendQueueId);
+                }
             }
         });
     }

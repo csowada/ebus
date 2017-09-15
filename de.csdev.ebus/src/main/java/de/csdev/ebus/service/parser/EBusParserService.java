@@ -98,7 +98,7 @@ public class EBusParserService implements EBusConnectorEventListener {
      * java.lang.Integer)
      */
     public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
-        logger.debug("ERROR: " + exception.getMessage());
+        // logger.debug("ERROR: " + exception.getMessage());
     }
 
     public void onConnectionException(Exception e) {
