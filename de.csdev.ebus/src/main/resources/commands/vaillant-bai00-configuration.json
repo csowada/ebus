@@ -104,7 +104,7 @@
         
         {
             "label":    "Measured value of hot water sensor D.004",
-            "id":       "boiler.temp_outlet",
+            "id":       "boiler.temp_cylinder",
             "command":  "B5 09",
 
             "get": {
