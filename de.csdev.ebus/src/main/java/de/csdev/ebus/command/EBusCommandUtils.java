@@ -29,21 +29,21 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusCommandUtils {
 
-    public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandChannel, Byte source, Byte target,
+    public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
             Map<String, Object> values) throws EBusTypeException {
 
         byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
 
-        if (source == null && commandChannel.getSourceAddress() != null) {
-            source = commandChannel.getSourceAddress();
+        if (source == null && commandMethod.getSourceAddress() != null) {
+            source = commandMethod.getSourceAddress();
         }
 
-        if (target == null && commandChannel.getDestinationAddress() != null) {
-            target = commandChannel.getDestinationAddress();
+        if (target == null && commandMethod.getDestinationAddress() != null) {
+            target = commandMethod.getDestinationAddress();
         }
 
-        if (commandChannel == null) {
+        if (commandMethod == null) {
             throw new IllegalArgumentException("Parameter command is null!");
         }
         if (source == null) {
@@ -55,13 +55,13 @@ public class EBusCommandUtils {
 
         buf.put(source); // QQ - Source
         buf.put(target); // ZZ - Target
-        buf.put(commandChannel.getCommand()); // PB SB - Command
+        buf.put(commandMethod.getCommand()); // PB SB - Command
         buf.put((byte) 0x00); // NN - Length, will be set later
 
         Map<Integer, IEBusComplexType> complexTypes = new HashMap<Integer, IEBusComplexType>();
 
-        if (commandChannel.getMasterTypes() != null) {
-            for (IEBusValue entry : commandChannel.getMasterTypes()) {
+        if (commandMethod.getMasterTypes() != null) {
+            for (IEBusValue entry : commandMethod.getMasterTypes()) {
                 IEBusType<?> type = entry.getType();
                 byte[] b = null;
 

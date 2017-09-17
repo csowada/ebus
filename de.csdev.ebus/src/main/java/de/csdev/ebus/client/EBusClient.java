@@ -9,6 +9,7 @@
 package de.csdev.ebus.client;
 
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,8 +107,8 @@ public class EBusClient {
      * @return
      * @throws EBusTypeException
      */
-    public ByteBuffer buildPollingTelegram(IEBusCommandMethod commandMethod, Byte destinationAddress)
-            throws EBusTypeException {
+    public ByteBuffer buildTelegram(IEBusCommandMethod commandMethod, Byte destinationAddress,
+            Map<String, Object> values) throws EBusTypeException {
 
         if (destinationAddress == null) {
             logger.warn("No destination address defined!");
@@ -120,48 +121,69 @@ public class EBusClient {
         }
 
         final byte masterAddress = getDeviceTable().getOwnDevice().getMasterAddress();
-        return EBusCommandUtils.buildMasterTelegram(commandMethod, masterAddress, destinationAddress, null);
+        return EBusCommandUtils.buildMasterTelegram(commandMethod, masterAddress, destinationAddress, values);
     }
 
-    /**
-     * @param commandId
-     * @param type
-     * @param destinationAddress
-     * @return
-     * @throws EBusTypeException
-     */
-    public ByteBuffer buildPollingTelegram(String commandId, IEBusCommandMethod.Method type, Byte destinationAddress)
-            throws EBusTypeException {
+    // /**
+    // * @param commandId
+    // * @param type
+    // * @param destinationAddress
+    // * @return
+    // * @throws EBusTypeException
+    // */
+    // public ByteBuffer buildPollingTelegram(String commandId, IEBusCommandMethod.Method type, Byte destinationAddress)
+    // throws EBusTypeException {
+    //
+    // final IEBusCommandMethod commandMethod = getConfigurationProvider().getConfigurationById(commandId,
+    // IEBusCommandMethod.Method.GET);
+    //
+    // return buildTelegram(commandMethod, destinationAddress, null);
+    // }
 
-        final IEBusCommandMethod commandMethod = getConfigurationProvider().getConfigurationById(commandId,
-                IEBusCommandMethod.Method.GET);
-
-        return buildPollingTelegram(commandMethod, destinationAddress);
-    }
-
-    /**
-     * @param commandId
-     * @param slaveAddress
-     * @return
-     */
-    public boolean pollCommand(String commandId, Byte slaveAddress) {
-
-        try {
-            final ByteBuffer buffer = buildPollingTelegram(commandId, IEBusCommandMethod.Method.GET, slaveAddress);
-            if (buffer == null) {
-                logger.warn("Unable to build polling telegram!");
-                return false;
-            }
-
-            getController().addToSendQueue(buffer);
-            return true;
-
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        }
-
-        return false;
-    }
+    // /**
+    // * @param commandId
+    // * @param slaveAddress
+    // * @return
+    // */
+    // public boolean sendPollCommand(String commandId, Byte slaveAddress) {
+    //
+    // try {
+    // final ByteBuffer buffer = buildPollingTelegram(commandId, IEBusCommandMethod.Method.GET, slaveAddress);
+    // if (buffer == null) {
+    // logger.warn("Unable to build polling telegram!");
+    // return false;
+    // }
+    //
+    // getController().addToSendQueue(buffer);
+    // return true;
+    //
+    // } catch (EBusTypeException e) {
+    // logger.error("error!", e);
+    // }
+    //
+    // return false;
+    // }
+    //
+    // public int sendSetCommand(String commandId, Byte destinationAddress, Map<String, Object> values) {
+    //
+    // final IEBusCommandMethod commandMethod = getConfigurationProvider().getConfigurationById(commandId,
+    // IEBusCommandMethod.Method.SET);
+    //
+    // try {
+    // final ByteBuffer buffer = buildTelegram(commandMethod, destinationAddress, values);
+    // if (buffer == null) {
+    // logger.warn("Unable to build polling telegram!");
+    // return -1;
+    // }
+    //
+    // return getController().addToSendQueue(buffer);
+    //
+    // } catch (EBusTypeException e) {
+    // logger.error("error!", e);
+    // }
+    //
+    // return -1;
+    // }
 
     /**
      * @return
