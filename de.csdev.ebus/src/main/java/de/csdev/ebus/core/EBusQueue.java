@@ -9,6 +9,7 @@
 package de.csdev.ebus.core;
 
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
@@ -42,6 +43,8 @@ public class EBusQueue {
     /** next send try is blocked */
     private boolean blockNextSend;
 
+    private Random random = new Random();
+
     /** internal structure to store send attempts */
     public class QueueEntry {
         public byte[] buffer;
@@ -52,6 +55,7 @@ public class EBusQueue {
 
         public QueueEntry(byte[] buffer) {
             this.buffer = buffer;
+            id = random.nextInt();
         }
     }
 
