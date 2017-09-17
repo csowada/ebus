@@ -153,7 +153,7 @@
             "command":  "B5 09",
 
             "template": [
-                {"name": "temp_hcurve", "type": "uint", "label": "HC1 Heating curve", "factor": 0.01, "format":"%d"}
+                {"name": "temp_hcurve", "type": "uint", "label": "HC1 Heating curve", "factor": 0.01, "format":"%.1f"}
             ],
 
             "get": {
