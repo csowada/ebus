@@ -15,6 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.core.EBusDataException.EBusError;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -50,6 +51,7 @@ public class EBusQueue {
         public byte[] buffer;
         public int id;
 
+        public int maxAttemps = 10;
         public int sendAttempts = 0;
         public boolean secondTry = false;
 
@@ -59,7 +61,7 @@ public class EBusQueue {
         }
     }
 
-    public void checkSendStatus() {
+    public void checkSendStatus() throws EBusDataException {
 
         if (lockCounter > 0) {
             lockCounter--;
@@ -84,9 +86,17 @@ public class EBusQueue {
         }
 
         if (sendEntry != null) {
-            if (sendEntry.sendAttempts == 10) {
-                logger.error("Skip telegram {} after 10 attempts ...", EBusUtils.toHexDumpString(sendEntry.buffer));
+            if (sendEntry.sendAttempts == sendEntry.maxAttemps) {
+
+                // store a temp. variable
+                QueueEntry tmpEntry = sendEntry;
+
                 resetSendQueue();
+
+                throw new EBusDataException(
+                        String.format("Unable to send telegram %s after %d attempts ...",
+                                EBusUtils.toHexDumpString(tmpEntry.buffer), tmpEntry.maxAttemps),
+                        EBusError.TOO_MANY_ATTEMPS, tmpEntry.buffer, tmpEntry.id);
             }
 
             return;
@@ -103,6 +113,17 @@ public class EBusQueue {
      * @return The unique send id, id is later available on event
      */
     public Integer addToSendQueue(byte[] buffer) {
+        return addToSendQueue(buffer, 10);
+    }
+
+    /**
+     * Adds a raw telegram to the sending queue.
+     *
+     * @param buffer
+     * @param maxAttemps
+     * @return The unique send id, id is later available on event
+     */
+    public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
 
         if (buffer == null) {
             logger.trace("Send data is empty, skip");
@@ -110,6 +131,7 @@ public class EBusQueue {
         }
 
         QueueEntry entry = new QueueEntry(buffer);
+        entry.maxAttemps = maxAttemps;
 
         try {
             outputQueue.add(entry);
