@@ -67,6 +67,12 @@ public class EBusUtils {
             (byte) 0xCF, (byte) 0xF9, (byte) 0x62, (byte) 0x8C, (byte) 0x17, (byte) 0x21, (byte) 0xBA, (byte) 0x4D,
             (byte) 0xD6, (byte) 0xE0, (byte) 0x7B };
 
+    public static byte[] toByteArray(ByteBuffer buffer) {
+        byte[] data = new byte[buffer.position()];
+        ((ByteBuffer) buffer.duplicate().clear()).get(data);
+        return data;
+    }
+
     /**
      * CRC calculation with tab operations
      *

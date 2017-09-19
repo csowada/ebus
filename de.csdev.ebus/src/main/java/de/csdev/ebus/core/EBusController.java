@@ -11,7 +11,6 @@ package de.csdev.ebus.core;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.nio.BufferOverflowException;
-import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +41,16 @@ public class EBusController extends EBusControllerBase {
         this.connection = connection;
     }
 
+    public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
+        return queue.addToSendQueue(buffer, maxAttemps);
+    }
+
+    // public Integer addToSendQueue(ByteBuffer buffer, int maxAttemps) {
+    // byte[] data = new byte[buffer.position()];
+    // ((ByteBuffer) buffer.duplicate().clear()).get(data);
+    // return queue.addToSendQueue(data, maxAttemps);
+    // }
+
     /**
      * @param buffer
      * @return
@@ -50,11 +59,11 @@ public class EBusController extends EBusControllerBase {
         return queue.addToSendQueue(buffer);
     }
 
-    public Integer addToSendQueue(ByteBuffer buffer) {
-        byte[] data = new byte[buffer.position()];
-        ((ByteBuffer) buffer.duplicate().clear()).get(data);
-        return addToSendQueue(data);
-    }
+    // public Integer addToSendQueue(ByteBuffer buffer) {
+    // byte[] data = new byte[buffer.position()];
+    // ((ByteBuffer) buffer.duplicate().clear()).get(data);
+    // return addToSendQueue(data);
+    // }
 
     /**
      * @return
@@ -73,8 +82,7 @@ public class EBusController extends EBusControllerBase {
         try {
             machine.update(data);
         } catch (EBusDataException e) {
-            this.fireOnEBusDataException(e, null);
-            // logger.debug(e.getMessage());
+            this.fireOnEBusDataException(e, e.getSendId());
         }
 
         if (machine.isWaitingForSlaveAnswer()) {
@@ -84,15 +92,15 @@ public class EBusController extends EBusControllerBase {
         // we received a SYN byte
         if (machine.isSync()) {
 
-            // // check if empty
-            // if (queue.getCurrent() == null)
-            // queue.checkSendStatus();
-
             // try to send someting if the send queue is not empty
             send(false);
 
             // afterwards check for next sending slot
-            queue.checkSendStatus();
+            try {
+                queue.checkSendStatus();
+            } catch (EBusDataException e) {
+                fireOnEBusDataException(e, e.getSendId());
+            }
 
             // check of a complete and valid telegram is available
             if (machine.isTelegramAvailable()) {
@@ -262,7 +270,7 @@ public class EBusController extends EBusControllerBase {
             byte[] dataOutputBuffers = sendEntry.buffer;
             EBusReceiveStateMachine sendMachine = new EBusReceiveStateMachine();
 
-            logger.info("Send: " + EBusUtils.toHexDumpString(dataOutputBuffers));
+            logger.debug("Send: " + EBusUtils.toHexDumpString(dataOutputBuffers));
 
             // start machine
             sendMachine.update(EBusConsts.SYN);

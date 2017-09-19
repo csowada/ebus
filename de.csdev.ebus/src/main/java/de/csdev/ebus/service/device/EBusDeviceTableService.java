@@ -73,7 +73,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
                     EBusConsts.BROADCAST_ADDRESS, null);
 
-            scanQueueId = controller.addToSendQueue(buffer);
+            scanQueueId = controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         }
@@ -99,7 +99,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
                     EBusConsts.BROADCAST_ADDRESS, null);
 
-            controller.addToSendQueue(buffer);
+            controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         }
@@ -126,7 +126,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
 
-            controller.addToSendQueue(buffer);
+            controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         }
