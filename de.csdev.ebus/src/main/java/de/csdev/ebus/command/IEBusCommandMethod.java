@@ -82,8 +82,6 @@ public interface IEBusCommandMethod {
      */
     public List<IEBusValue> getSlaveTypes();
 
-    public IEBusValue findType(String name);
-
     /**
      * Returns the eBus command bytes
      *

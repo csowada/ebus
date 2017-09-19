@@ -214,26 +214,4 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
         return sb.toString();
     }
 
-    public IEBusValue findType(String name) {
-
-        if (slaveTypes != null) {
-
-            for (IEBusValue value : slaveTypes) {
-                if (value.getName() != null && value.getName().equals(name)) {
-                    return value;
-                }
-            }
-        }
-
-        if (masterTypes != null) {
-            for (IEBusValue value : masterTypes) {
-                if (value.getName() != null && value.getName().equals(name)) {
-                    return value;
-                }
-            }
-        }
-
-        return null;
-    }
-
 }
