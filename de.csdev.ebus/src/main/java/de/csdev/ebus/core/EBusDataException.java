@@ -41,7 +41,9 @@ public class EBusDataException extends Exception {
 
         MASTER_ACK_FAIL,
 
-        SLAVE_ACK_FAIL
+        SLAVE_ACK_FAIL,
+
+        TOO_MANY_ATTEMPS
     }
 
     /**
@@ -52,6 +54,8 @@ public class EBusDataException extends Exception {
     private EBusError error = EBusError.NONE;
 
     private byte[] data;
+
+    private Integer sendId;
 
     public EBusDataException(String message) {
         super(message);
@@ -69,11 +73,19 @@ public class EBusDataException extends Exception {
 
     public EBusDataException(String message, EBusError errorCode, ByteBuffer data) {
         this(message, errorCode);
+        this.data = EBusUtils.toByteArray(data);
+    }
 
-        this.data = new byte[data.position()];
-        ByteBuffer duplicate = data.duplicate();
-        duplicate.clear();
-        duplicate.get(this.data);
+    public EBusDataException(String message, EBusError errorCode, byte[] data, int sendId) {
+        this(message, errorCode);
+        this.data = data;
+        this.sendId = sendId;
+    }
+
+    public EBusDataException(String message, EBusError errorCode, ByteBuffer data, int sendId) {
+        this(message, errorCode);
+        this.data = EBusUtils.toByteArray(data);
+        this.sendId = sendId;
     }
 
     public EBusError getErrorCode() {
@@ -82,6 +94,10 @@ public class EBusDataException extends Exception {
 
     public byte[] getData() {
         return data;
+    }
+
+    public Integer getSendId() {
+        return sendId;
     }
 
     @Override
