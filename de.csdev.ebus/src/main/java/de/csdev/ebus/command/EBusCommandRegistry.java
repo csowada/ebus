@@ -31,12 +31,12 @@ public class EBusCommandRegistry {
 
     private final Logger logger = LoggerFactory.getLogger(EBusCommandRegistry.class);
 
-    private Map<String, EBusCommandCollection> collections = new HashMap<String, EBusCommandCollection>();
+    private Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
 
     /**
      * @param collection
      */
-    public void addCommandCollection(EBusCommandCollection collection) {
+    public void addCommandCollection(IEBusCommandCollection collection) {
         collections.put(collection.getId(), collection);
     }
 
@@ -58,7 +58,7 @@ public class EBusCommandRegistry {
 
         ArrayList<IEBusCommandMethod> result = new ArrayList<IEBusCommandMethod>();
 
-        for (EBusCommandCollection collection : collections.values()) {
+        for (IEBusCommandCollection collection : collections.values()) {
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
                     if (matchesCommand(commandChannel, data)) {
@@ -77,14 +77,14 @@ public class EBusCommandRegistry {
      * @param id
      * @return
      */
-    public EBusCommandCollection getCommandCollection(String id) {
+    public IEBusCommandCollection getCommandCollection(String id) {
         return collections.get(id);
     }
 
     /**
      * @return
      */
-    public Collection<EBusCommandCollection> getCommandCollections() {
+    public Collection<IEBusCommandCollection> getCommandCollections() {
         return Collections.unmodifiableCollection(collections.values());
     }
 
@@ -95,7 +95,7 @@ public class EBusCommandRegistry {
      */
     public IEBusCommandMethod getConfigurationById(String id, IEBusCommandMethod.Method type) {
 
-        for (EBusCommandCollection collection : collections.values()) {
+        for (IEBusCommandCollection collection : collections.values()) {
             for (IEBusCommand command : collection.getCommands()) {
                 if (StringUtils.equals(command.getId(), id)) {
                     return command.getCommandMethod(type);

@@ -17,7 +17,7 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  * @author Christian Sowada - Initial contribution
  *
  */
-public interface IEBusValue {
+public interface IEBusValue extends Cloneable {
 
     public IEBusType<?> getType();
 
@@ -47,5 +47,7 @@ public interface IEBusValue {
      * @return
      */
     public Map<String, Object> getProperties();
+
+    public IEBusCommandMethod getParent();
 
 }

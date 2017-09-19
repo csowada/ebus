@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
 
+import de.csdev.ebus.command.EBusCommandMethod;
+import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.IEBusValue;
 import de.csdev.ebus.command.datatypes.IEBusType;
 
@@ -20,6 +22,8 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  *
  */
 public class EBusKWCrcMValue implements IEBusValue {
+
+    IEBusCommandMethod parent;
 
     private IEBusType<?> type;
 
@@ -79,6 +83,14 @@ public class EBusKWCrcMValue implements IEBusValue {
     @Override
     public String toString() {
         return "EBusKWCrcMValue [type=" + type + "]";
+    }
+
+    public void setParent(EBusCommandMethod parent) {
+        this.parent = parent;
+    }
+
+    public IEBusCommandMethod getParent() {
+        return parent;
     }
 
 }

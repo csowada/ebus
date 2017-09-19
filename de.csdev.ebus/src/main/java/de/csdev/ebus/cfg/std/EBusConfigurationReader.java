@@ -31,7 +31,7 @@ import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandMethod;
 import de.csdev.ebus.command.EBusCommandNestedValue;
 import de.csdev.ebus.command.EBusCommandValue;
-import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
@@ -46,7 +46,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     private EBusTypeRegistry registry;
 
-    public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
+    public IEBusCommandCollection loadConfigurationCollection(InputStream inputStream)
             throws IOException, EBusConfigurationReaderException {
 
         if (registry == null) {
@@ -57,19 +57,20 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             throw new IllegalArgumentException("Required argument inputStream is null!");
         }
 
-        List<IEBusCommand> commandList = new ArrayList<IEBusCommand>();
+        // List<IEBusCommand> commandList = new ArrayList<IEBusCommand>();
 
         Gson gson = new Gson();
         EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(inputStream), EBusCollectionDTO.class);
 
-        for (EBusCommandDTO command : collection.getCommands()) {
-            if (command != null) {
-                commandList.add(parseTelegramConfiguration(command));
+        EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
+                collection.getDescription(), collection.getProperties());
+
+        for (EBusCommandDTO commandDto : collection.getCommands()) {
+            if (commandDto != null) {
+                commandCollection.addCommand(parseTelegramConfiguration(commandCollection, commandDto));
+                // commandList.add(parseTelegramConfiguration(commandCollection, commandDto));
             }
         }
-
-        EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
-                collection.getDescription(), collection.getProperties(), commandList);
 
         commandCollection.setIdentification(collection.getIdentification());
 
@@ -80,8 +81,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         registry = ebusTypes;
     }
 
-    protected EBusCommand parseTelegramConfiguration(EBusCommandDTO commandElement)
-            throws EBusConfigurationReaderException {
+    protected EBusCommand parseTelegramConfiguration(IEBusCommandCollection commandCollection,
+            EBusCommandDTO commandElement) throws EBusConfigurationReaderException {
 
         if (commandElement == null) {
             throw new IllegalArgumentException("Parameter \"command dto\" not set!");
@@ -112,7 +113,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         // read in template block
         if (commandElement.getTemplate() != null) {
             for (EBusValueDTO template : commandElement.getTemplate()) {
-                for (EBusCommandValue templateCfg : parseValueConfiguration(template, null)) {
+                for (EBusCommandValue templateCfg : parseValueConfiguration(template, null, null)) {
                     templateMap.put(templateCfg.getName(), templateCfg);
                 }
             }
@@ -153,7 +154,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
                 if (commandMethodElement.getMaster() != null) {
                     for (EBusValueDTO template : commandMethodElement.getMaster()) {
-                        for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
+                        for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, commandMethod)) {
                             commandMethod.addMasterValue(ev);
                         }
                     }
@@ -161,7 +162,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
                 if (commandMethodElement.getSlave() != null) {
                     for (EBusValueDTO template : commandMethodElement.getSlave()) {
-                        for (EBusCommandValue ev : parseValueConfiguration(template, templateMap)) {
+                        for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, commandMethod)) {
                             commandMethod.addSlaveValue(ev);
                         }
                     }
@@ -170,23 +171,33 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             }
         }
 
+        cfg.setParentCollection(commandCollection);
+
         return cfg;
     }
 
     protected Collection<EBusCommandValue> parseValueConfiguration(EBusValueDTO template,
-            Map<String, EBusCommandValue> templateMap) {
+            Map<String, EBusCommandValue> templateMap, EBusCommandMethod commandMethod) {
 
         Collection<EBusCommandValue> result = new ArrayList<EBusCommandValue>();
         String typeStr = template.getType();
 
         if (typeStr.equals("template-block")) {
-            // return the complete template block
-            return templateMap.values();
+            // return the complete template block as clone
+            for (EBusCommandValue commandValue : templateMap.values()) {
+                EBusCommandValue clone = commandValue.clone();
+                clone.setParent(commandMethod);
+                result.add(clone);
+            }
+            return result;
 
         } else if (typeStr.equals("template")) {
 
-            // use command value from template map
-            result.add(templateMap.get(template.getName()));
+            // use command value from template map as clone
+            EBusCommandValue commandValue = templateMap.get(template.getName());
+            EBusCommandValue clone = commandValue.clone();
+            clone.setParent(commandMethod);
+            result.add(clone);
             return result;
 
         } else if (typeStr.equals("static")) {
@@ -197,7 +208,10 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             properties.put("length", byteArray.length);
             final IEBusType<?> typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
 
-            result.add(EBusCommandValue.getInstance(typeByte, byteArray));
+            EBusCommandValue commandValue = EBusCommandValue.getInstance(typeByte, byteArray);
+            commandValue.setParent(commandMethod);
+
+            result.add(commandValue);
             return result;
         }
 
@@ -215,7 +229,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 childElem.setPos(pos);
 
                 // parse child value
-                for (EBusCommandValue childValue : parseValueConfiguration(childElem, templateMap)) {
+                for (EBusCommandValue childValue : parseValueConfiguration(childElem, templateMap, commandMethod)) {
                     evc.add(childValue);
                 }
 
@@ -241,6 +255,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         ev.setMapping(template.getMapping());
         ev.setFormat(template.getFormat());
+
+        ev.setParent(commandMethod);
 
         result.add(ev);
         return result;

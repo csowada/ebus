@@ -19,34 +19,21 @@ import de.csdev.ebus.utils.CollectionUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusCommandCollection {
+public class EBusCommandCollection implements IEBusCommandCollection {
 
     private List<IEBusCommand> commands = new ArrayList<IEBusCommand>();
 
-    private Map<String, Object> properties;
+    private String description;
 
     private String id;
 
-    private String label;
-
-    private String description;
-
     private List<String> identification;
 
-    public List<String> getIdentification() {
-        return identification;
-    }
+    private String label;
 
-    public String getDescription() {
-        return description;
-    }
+    private Map<String, Object> properties;
 
-    public void setIdentification(List<String> identification) {
-        this.identification = identification;
-    }
-
-    public EBusCommandCollection(String id, String label, String description, Map<String, Object> properties,
-            List<IEBusCommand> commands) {
+    public EBusCommandCollection(String id, String label, String description, Map<String, Object> properties) {
 
         this.id = id;
         this.label = label;
@@ -60,33 +47,98 @@ public class EBusCommandCollection {
         this.commands.addAll(commands);
     }
 
-    public String getId() {
-        return id;
+    public void addCommand(IEBusCommand command) {
+        this.commands.add(command);
     }
 
-    public String getLabel() {
-        return label;
+    public void addCommandw(List<IEBusCommand> commands) {
+        this.commands.addAll(commands);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#get(java.lang.String)
+     */
+    public Object get(String key) {
+        return CollectionUtils.get(properties, key);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#getAsString(java.lang.String)
+     */
     public String getAsString(String key) {
         Object object = get(key);
         return object instanceof String ? (String) object : null;
     }
 
-    public Object get(String key) {
-        return CollectionUtils.get(properties, key);
-    }
-
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#getCommands()
+     */
     public List<IEBusCommand> getCommands() {
         return Collections.unmodifiableList(commands);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#getDescription()
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#getId()
+     */
+    public String getId() {
+        return id;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#getIdentification()
+     */
+    public List<String> getIdentification() {
+        return identification;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#getLabel()
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#getProperties()
+     */
     public Map<String, Object> getProperties() {
         return CollectionUtils.unmodifiableNotNullMap(properties);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.IEBusCommandCollection#getProperty(java.lang.String)
+     */
     public Object getProperty(String key) {
         return CollectionUtils.get(properties, key);
+    }
+
+    public void setIdentification(List<String> identification) {
+        this.identification = identification;
     }
 
     @Override

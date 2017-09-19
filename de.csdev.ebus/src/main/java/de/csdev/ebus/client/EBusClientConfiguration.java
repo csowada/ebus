@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
-import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusController;
 
@@ -24,7 +24,7 @@ public class EBusClientConfiguration {
 
     protected EBusTypeRegistry dataTypes;
 
-    protected ArrayList<EBusCommandCollection> collections;
+    protected ArrayList<IEBusCommandCollection> collections;
 
     protected EBusCommandRegistry configurationProvider;
 
@@ -38,12 +38,12 @@ public class EBusClientConfiguration {
 
         configurationProvider = new EBusCommandRegistry();
 
-        collections = new ArrayList<EBusCommandCollection>();
+        collections = new ArrayList<IEBusCommandCollection>();
     }
 
     public void clear() {
         configurationProvider = new EBusCommandRegistry();
-        collections = new ArrayList<EBusCommandCollection>();
+        collections = new ArrayList<IEBusCommandCollection>();
     }
 
     public List<String> getInternalConfigurationFiles() {
@@ -71,7 +71,7 @@ public class EBusClientConfiguration {
 
     public void loadConfiguration(InputStream is) {
 
-        EBusCommandCollection collection = null;
+        IEBusCommandCollection collection = null;
         try {
 
             collection = reader.loadConfigurationCollection(is);
@@ -88,7 +88,7 @@ public class EBusClientConfiguration {
         }
     }
 
-    public List<EBusCommandCollection> getCollections() {
+    public List<IEBusCommandCollection> getCollections() {
         return collections;
     }
 

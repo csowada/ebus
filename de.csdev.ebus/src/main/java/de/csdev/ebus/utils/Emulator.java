@@ -70,6 +70,7 @@ public class Emulator {
             public void run() {
                 try {
                     synchronized (out) {
+
                         if (logger.isTraceEnabled()) {
                             logger.trace("Emulator WRITE: {}", EBusUtils.toHexDumpString(byteArray).toString());
                         }
@@ -82,9 +83,9 @@ public class Emulator {
                     }
 
                 } catch (IOException e) {
-                    logger.error("error!", e);
+                    logger.trace("error!", e);
                 } catch (InterruptedException e) {
-                    logger.error("error!", e);
+                    logger.trace("error!", e);
                 }
             }
         });

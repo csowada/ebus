@@ -11,6 +11,7 @@ package de.csdev.ebus.command;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.utils.CollectionUtils;
@@ -40,6 +41,8 @@ public class EBusCommandValue implements IEBusValue {
     private BigDecimal step;
 
     private String format;
+
+    private EBusCommandMethod parent;
 
     public String getFormat() {
         return format;
@@ -248,6 +251,45 @@ public class EBusCommandValue implements IEBusValue {
 
     public Map<String, Object> getProperties() {
         return CollectionUtils.unmodifiableNotNullMap(properties);
+    }
+
+    public void setParent(EBusCommandMethod parent) {
+        this.parent = parent;
+    }
+
+    public IEBusCommandMethod getParent() {
+        return parent;
+    }
+
+    @Override
+    public EBusCommandValue clone() {
+
+        EBusCommandValue clone = new EBusCommandValue();
+        clone.defaultValue = this.defaultValue;
+        clone.factor = this.factor;
+        clone.format = this.format;
+        clone.label = this.label;
+        clone.max = this.max;
+        clone.min = this.min;
+        clone.name = this.name;
+        clone.step = this.step;
+        clone.type = this.type;
+
+        if (this.mapping != null) {
+            clone.mapping = new HashMap<String, String>();
+            for (Entry<String, String> elem : this.mapping.entrySet()) {
+                clone.mapping.put(elem.getKey(), elem.getValue());
+            }
+        }
+
+        if (this.properties != null) {
+            clone.properties = new HashMap<String, Object>();
+            for (Entry<String, Object> elem : this.properties.entrySet()) {
+                clone.properties.put(elem.getKey(), elem.getValue());
+            }
+        }
+
+        return clone;
     }
 
 }

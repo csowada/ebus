@@ -196,9 +196,10 @@ public class EBusController extends EBusControllerBase {
                     }
                 }
             } catch (InterruptedIOException e) {
-                logger.error(e.toString(), e);
                 Thread.currentThread().interrupt();
-                machine.reset();
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
 
             } catch (IOException e) {
                 fireOnConnectionException(e);
@@ -215,11 +216,6 @@ public class EBusController extends EBusControllerBase {
             } catch (BufferOverflowException e) {
                 logger.error(
                         "eBUS telegram buffer overflow - not enough sync bytes received! Try to adjust eBUS adapter.");
-                machine.reset();
-
-            } catch (InterruptedException e) {
-                logger.error(e.toString(), e);
-                Thread.currentThread().interrupt();
                 machine.reset();
 
             } catch (Exception e) {

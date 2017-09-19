@@ -23,10 +23,10 @@ import org.junit.Test;
 import de.csdev.ebus.StaticTestTelegrams;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
-import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
+import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
@@ -65,7 +65,7 @@ public class ConfigurationReaderTest {
 
         tr.addCommandCollection(reader.loadConfigurationCollection(inputStream));
 
-        for (EBusCommandCollection collection : tr.getCommandCollections()) {
+        for (IEBusCommandCollection collection : tr.getCommandCollections()) {
 
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {

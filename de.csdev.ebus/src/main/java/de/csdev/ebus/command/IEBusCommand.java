@@ -57,4 +57,6 @@ public interface IEBusCommand {
      * @return
      */
     public Map<String, Object> getProperties();
+
+    public IEBusCommandCollection getParentCollection();
 }

@@ -11,6 +11,9 @@ package de.csdev.ebus.core.connection;
 import java.io.IOException;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.csdev.ebus.utils.Emulator;
 
 /**
@@ -19,7 +22,10 @@ import de.csdev.ebus.utils.Emulator;
  */
 public class EBusEmulatorConnection extends AbstractEBusConnection {
 
+    private static final Logger logger = LoggerFactory.getLogger(EBusEmulatorConnection.class);
+
     private URL readerURL;
+
     private Emulator emu;
 
     public EBusEmulatorConnection(URL readerURL) {
@@ -46,6 +52,33 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
     public void writeByte(int b) throws IOException {
         byte[] byteArray = { (byte) b };
         emu.write(byteArray);
+    }
+
+    public void writeBytes(byte[] byteArray) {
+        for (byte b : byteArray) {
+            try {
+                writeByte(b);
+            } catch (IOException e) {
+                logger.error("error!", e);
+            }
+        }
+    }
+
+    public void writeBytesDelayed(byte[] byteArray, long delay) {
+
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            logger.error("error!", e);
+        }
+
+        for (byte b : byteArray) {
+            try {
+                writeByte(b);
+            } catch (IOException e) {
+                logger.error("error!", e);
+            }
+        }
     }
 
     @Override

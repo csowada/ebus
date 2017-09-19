@@ -11,7 +11,7 @@ package de.csdev.ebus.cfg;
 import java.io.IOException;
 import java.io.InputStream;
 
-import de.csdev.ebus.command.EBusCommandCollection;
+import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 
 /**
@@ -26,7 +26,7 @@ public interface IEBusConfigurationReader {
      * @throws EBusConfigurationReaderException
      * @throws IOException
      */
-    public EBusCommandCollection loadConfigurationCollection(InputStream inputStream)
+    public IEBusCommandCollection loadConfigurationCollection(InputStream inputStream)
             throws EBusConfigurationReaderException, IOException;
 
     /**
