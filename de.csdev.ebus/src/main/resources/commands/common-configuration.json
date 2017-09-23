@@ -20,7 +20,7 @@
             "dst":      "FE",
             
     
-            "get": {
+            "broadcast": {
                 "master": [
                     {"name":"temp_outside", "type": "word", "label": "Outside temperature", "factor": 0.1, "format":"%.1f°C"}
                 ]

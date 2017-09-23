@@ -5,7 +5,7 @@
     "description":  "Condensing gas boiler Wolf CGB-2",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": ["00 20 00 00 C0"],
+    "identification": ["01 21 00 5A 40"],
     
     "commands":
     [
@@ -123,7 +123,7 @@
         },
     
         {
-            "label":    "Burner starts",
+            "label":    "Burner Firmware Version",
             "id":       "boiler.fw_version",
             "command":  "50 22",
     
@@ -187,7 +187,7 @@
         },
     
         {
-            "label":    "Burner hours run (h)",
+            "label":    "Burner hours run",
             "id":       "burner.runtime",
             "command":  "50 22",
     
@@ -197,7 +197,7 @@
                     {"type": "static", "default": "2A 02"}
                 ],
                 "slave": [
-                    {"name": "runtime", "type": "word", "label": "Burner hours run (h)", "format":"%d hours"}
+                    {"name": "runtime", "type": "word", "label": "Burner hours run", "format":"%d hours"}
                 ]
             }
         },
@@ -229,7 +229,7 @@
                     {"type": "static", "default": "28 02"}
                 ],
                 "slave": [
-                    {"name": "runtime", "type": "word", "label": "Mains hours (h)", "format":"%d hours"}
+                    {"name": "runtime", "type": "word", "label": "Mains hours", "format":"%d hours"}
                 ]
             }
         },
