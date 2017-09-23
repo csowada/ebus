@@ -93,15 +93,17 @@ public class EBusCommandRegistry {
      * @param type
      * @return
      */
-    public IEBusCommandMethod getConfigurationById(String id, IEBusCommandMethod.Method type) {
+    public IEBusCommandMethod getConfigurationById(String collectionId, String id, IEBusCommandMethod.Method type) {
 
-        for (IEBusCommandCollection collection : collections.values()) {
-            for (IEBusCommand command : collection.getCommands()) {
-                if (StringUtils.equals(command.getId(), id)) {
-                    return command.getCommandMethod(type);
-                }
+        IEBusCommandCollection collection = collections.get(collectionId);
+
+        // for (IEBusCommandCollection collection : collections.values()) {
+        for (IEBusCommand command : collection.getCommands()) {
+            if (StringUtils.equals(command.getId(), id)) {
+                return command.getCommandMethod(type);
             }
         }
+        // }
 
         return null;
     }

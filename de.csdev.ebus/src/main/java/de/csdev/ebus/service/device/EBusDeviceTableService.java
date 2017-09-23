@@ -66,7 +66,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-        IEBusCommandMethod command = configurationProvider.getConfigurationById("common.inquiry_of_existence",
+        IEBusCommandMethod command = configurationProvider.getConfigurationById("common", "common.inquiry_of_existence",
                 IEBusCommandMethod.Method.BROADCAST);
 
         try {
@@ -92,7 +92,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
      */
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommandMethod command = configurationProvider.getConfigurationById("common.sign_of_life",
+        IEBusCommandMethod command = configurationProvider.getConfigurationById("common", "common.sign_of_life",
                 IEBusCommandMethod.Method.BROADCAST);
 
         try {
@@ -110,7 +110,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
      */
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommandMethod command = configurationProvider.getConfigurationById("common.identification",
+        IEBusCommandMethod command = configurationProvider.getConfigurationById("common", "common.identification",
                 IEBusCommandMethod.Method.GET);
 
         if (command == null) {
