@@ -45,12 +45,6 @@ public class EBusController extends EBusControllerBase {
         return queue.addToSendQueue(buffer, maxAttemps);
     }
 
-    // public Integer addToSendQueue(ByteBuffer buffer, int maxAttemps) {
-    // byte[] data = new byte[buffer.position()];
-    // ((ByteBuffer) buffer.duplicate().clear()).get(data);
-    // return queue.addToSendQueue(data, maxAttemps);
-    // }
-
     /**
      * @param buffer
      * @return
@@ -58,12 +52,6 @@ public class EBusController extends EBusControllerBase {
     public Integer addToSendQueue(byte[] buffer) {
         return queue.addToSendQueue(buffer);
     }
-
-    // public Integer addToSendQueue(ByteBuffer buffer) {
-    // byte[] data = new byte[buffer.position()];
-    // ((ByteBuffer) buffer.duplicate().clear()).get(data);
-    // return addToSendQueue(data);
-    // }
 
     /**
      * @return
@@ -92,7 +80,7 @@ public class EBusController extends EBusControllerBase {
         // we received a SYN byte
         if (machine.isSync()) {
 
-            // try to send someting if the send queue is not empty
+            // try to send something if the send queue is not empty
             send(false);
 
             // afterwards check for next sending slot
@@ -116,7 +104,7 @@ public class EBusController extends EBusControllerBase {
     }
 
     private boolean reconnect() throws IOException, InterruptedException {
-        logger.info("Try to reconnect to ebus adapter ...");
+        logger.info("Try to reconnect to eBUS adapter ...");
 
         if (reConnectCounter > 10) {
             return false;
@@ -128,7 +116,7 @@ public class EBusController extends EBusControllerBase {
             if (connection.open()) {
                 reConnectCounter = 0;
             } else {
-                logger.warn("Retry to connect to ebus adapter in {} seconds ...", 5 * reConnectCounter);
+                logger.warn("Retry to connect to eBUS adapter in {} seconds ...", 5 * reConnectCounter);
                 Thread.sleep(5000 * reConnectCounter);
             }
         }
@@ -211,7 +199,7 @@ public class EBusController extends EBusControllerBase {
 
             } catch (IOException e) {
                 fireOnConnectionException(e);
-                logger.error("An IO exception has occured! Try to reconnect eBus connector ...", e);
+                logger.error("An IO exception has occured! Try to reconnect eBUS connector ...", e);
 
                 try {
                     reconnect();
@@ -232,7 +220,7 @@ public class EBusController extends EBusControllerBase {
             }
         }
 
-        logger.debug("eBus connection thread is shuting down ...");
+        logger.debug("eBUS connection thread is shuting down ...");
 
         // *******************************
         // ** end of thread **
@@ -270,13 +258,20 @@ public class EBusController extends EBusControllerBase {
             byte[] dataOutputBuffers = sendEntry.buffer;
             EBusReceiveStateMachine sendMachine = new EBusReceiveStateMachine();
 
-            logger.debug("Send: " + EBusUtils.toHexDumpString(dataOutputBuffers));
+            logger.debug("Send: {} @ {}. attempt", EBusUtils.toHexDumpString(dataOutputBuffers),
+                    sendEntry.sendAttempts);
 
             // start machine
             sendMachine.update(EBusConsts.SYN);
 
             // count as send attempt
             sendEntry.sendAttempts++;
+
+            if (sendEntry.sendAttempts - 10 > sendEntry.maxAttemps) {
+                logger.error("emergency break!!!!");
+                queue.resetSendQueue();
+                return;
+            }
 
             int read = 0;
             byte readByte = 0;
@@ -301,9 +296,9 @@ public class EBusController extends EBusControllerBase {
                 // written and read byte not identical, that's
                 // a collision
                 if (readByte == EBusConsts.SYN) {
-                    logger.debug("eBus collision with SYN detected!");
+                    logger.debug("eBUS collision with SYN detected!");
                 } else {
-                    logger.debug("eBus collision detected! 0x{}", EBusUtils.toHexDumpString(readByte));
+                    logger.debug("eBUS collision detected! 0x{}", EBusUtils.toHexDumpString(readByte));
                 }
 
                 // last send try was a collision
@@ -388,6 +383,8 @@ public class EBusController extends EBusControllerBase {
 
         } catch (EBusDataException e) {
 
+            // logger.error(e.getLocalizedMessage());
+
             this.fireOnEBusDataException(e, sendEntry.id);
 
             if (e.getErrorCode().equals(EBusDataException.EBusError.SLAVE_ACK_FAIL)) {
@@ -395,7 +392,6 @@ public class EBusController extends EBusControllerBase {
                 resend();
             }
 
-            // logger.error("error!", e);
         }
     }
 }

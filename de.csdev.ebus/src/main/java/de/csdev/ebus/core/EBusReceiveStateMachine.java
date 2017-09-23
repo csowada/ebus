@@ -22,20 +22,20 @@ import de.csdev.ebus.utils.EBusUtils;
 public class EBusReceiveStateMachine {
 
     public enum State {
-        ACK1,
-        ACK2,
-        CRC1,
-        CRC2,
-        DATA1,
-        DATA2,
-        LENGTH1,
-        LENGTH2,
+        UNKNOWN,
+        SYN,
+        SRC_ADDR,
+        TGT_ADDR,
         PRIMARY_CMD,
         SECONDARY_CMD,
-        SRC_ADDR,
-        SYN,
-        TGT_ADDR,
-        UNKNOWN
+        LENGTH1,
+        DATA1,
+        CRC1,
+        ACK1,
+        LENGTH2,
+        DATA2,
+        CRC2,
+        ACK2
     }
 
     private static final Logger logger = LoggerFactory.getLogger(EBusReceiveStateMachine.class);
@@ -76,7 +76,8 @@ public class EBusReceiveStateMachine {
     }
 
     public boolean isReceivingTelegram() {
-        return state.compareTo(State.SYN) > 1;
+        // return state.compareTo(State.SYN) > 1;
+        return state != State.UNKNOWN && state != State.SYN;
     }
 
     public boolean isSync() {

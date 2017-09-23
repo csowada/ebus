@@ -76,7 +76,7 @@ public class EBusQueue {
 
         // counter not zero, it's not allowed to send yet
         if (lockCounter > 0) {
-            logger.trace("No access to ebus because the lock counter ...");
+            logger.trace("No access to eBUS because the lock counter ...");
             return;
         }
 
@@ -86,7 +86,7 @@ public class EBusQueue {
         }
 
         if (sendEntry != null) {
-            if (sendEntry.sendAttempts == sendEntry.maxAttemps) {
+            if (sendEntry.sendAttempts >= sendEntry.maxAttemps) {
 
                 // store a temp. variable
                 QueueEntry tmpEntry = sendEntry;
@@ -135,6 +135,7 @@ public class EBusQueue {
 
         try {
             outputQueue.add(entry);
+            logger.debug("Size of send queue is {} ...", outputQueue.size());
 
         } catch (IllegalStateException e) {
             logger.error("Send queue is full! The eBUS service will reset the queue to ensure proper operation.");
