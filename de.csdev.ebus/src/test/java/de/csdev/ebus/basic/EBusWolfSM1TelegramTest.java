@@ -68,7 +68,7 @@ public class EBusWolfSM1TelegramTest {
 
         List<IEBusCommandMethod> commandMethods = commandRegistry.find(bs);
 
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("solar.solar_yield",
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("wolf-sm1", "solar.solar_yield",
                 IEBusCommandMethod.Method.BROADCAST);
 
         commandMethod = commandMethods.get(0);
@@ -86,8 +86,8 @@ public class EBusWolfSM1TelegramTest {
             e.printStackTrace();
         }
 
-        checkMask("solar.solar_yield", bs, IEBusCommandMethod.Method.BROADCAST);
-        xxx("solar.solar_yield", bs, IEBusCommandMethod.Method.BROADCAST);
+        checkMask("wolf-sm1", "solar.solar_yield", bs, IEBusCommandMethod.Method.BROADCAST);
+        xxx("wolf-sm1", "solar.solar_yield", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
 
     }
@@ -98,8 +98,8 @@ public class EBusWolfSM1TelegramTest {
 
         bs = EBusUtils.toByteArray("71 FE 50 17 10 08 91 F0 01 0A 04 00 80 00 80 00 80 00 80 00 80 F7 AA");
 
-        checkMask("solar.solar_data", bs, IEBusCommandMethod.Method.BROADCAST);
-        xxx("solar.solar_data", bs, IEBusCommandMethod.Method.BROADCAST);
+        checkMask("wolf-sm1", "solar.solar_data", bs, IEBusCommandMethod.Method.BROADCAST);
+        xxx("wolf-sm1", "solar.solar_data", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
 
     }
@@ -109,15 +109,15 @@ public class EBusWolfSM1TelegramTest {
         byte[] bs = null;
 
         bs = EBusUtils.toByteArray("30 76 50 22 03 CC 2B 0A BF 00 02 07 01 DA");
-        checkMask("solar.e1", bs, IEBusCommandMethod.Method.GET);
-        xxx("solar.e1", bs, IEBusCommandMethod.Method.GET);
+        checkMask("wolf-sm1", "solar.e1", bs, IEBusCommandMethod.Method.GET);
+        xxx("wolf-sm1", "solar.e1", bs, IEBusCommandMethod.Method.GET);
         canResolve(bs);
 
     }
 
-    protected void xxx(String commandId, byte[] data, IEBusCommandMethod.Method type) {
+    protected void xxx(String collectionId, String commandId, byte[] data, IEBusCommandMethod.Method type) {
 
-        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(commandId, type);
+        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(collectionId, commandId, type);
 
         try {
 
@@ -133,10 +133,10 @@ public class EBusWolfSM1TelegramTest {
         }
     }
 
-    protected void checkMask(String commandId, byte[] data, IEBusCommandMethod.Method type) {
+    protected void checkMask(String collectionId, String commandId, byte[] data, IEBusCommandMethod.Method type) {
 
         ByteBuffer wrap = ByteBuffer.wrap(data);
-        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(commandId, type);
+        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(collectionId, commandId, type);
 
         try {
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00, (byte) 0xFF,

@@ -8,6 +8,9 @@
  */
 package de.csdev.ebus.wip;
 
+import static org.junit.Assert.*;
+
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -15,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.core.EBusDataException.EBusError;
 import de.csdev.ebus.core.EBusReceiveStateMachine;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -24,19 +28,38 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusStateMachineTest {
 
+    EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+
     private static final Logger logger = LoggerFactory.getLogger(EBusStateMachineTest.class);
+
+    @Before
+    public void init() {
+        machine = new EBusReceiveStateMachine();
+    }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void testNoAnswer() throws EBusDataException {
+    public void testNoAnswer() {
 
         logger.info("Master/Slave - No Answer ...");
 
-        thrown.expect(EBusDataException.class);
+        try {
+            runMachine(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 AA"));
+            fail("expected exception was not occured.");
 
-        runMachine(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 AA"));
+        } catch (EBusDataException e) {
+            assertTrue(e.getErrorCode().equals(EBusError.NO_SLAVE_RESPONSE));
+        }
+
+        assertFalse(machine.isReceivingTelegram());
+        assertFalse(machine.isSync());
+        assertFalse(machine.isTelegramAvailable());
+        assertFalse(machine.isWaitingForMasterACK());
+        assertFalse(machine.isWaitingForMasterSYN());
+        assertFalse(machine.isWaitingForSlaveAnswer());
+
     }
 
     @Test
@@ -61,37 +84,275 @@ public class EBusStateMachineTest {
     }
 
     @Test
-    public void testA() {
+    public void testMachineMethodsNoResponse() {
+
         try {
-            EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
-            byte[] byteArray = EBusUtils.toByteArray("30 76 50 23 05 D4 66 00 00 00 0C 00 00 00 AA");
+            // AA 30 76 50 22 03 CC 2B 0A BF AA
 
-            /*
-             * 30 76 50 23 05 D4 66 00 00 00 0C
-             * 00 00 00 AA
-             */
+            // SYN
+            machine.update((byte) 0xAA);
+            assertTrue(machine.isSync());
+            assertFalse(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
 
+            // SRC
+            machine.update((byte) 0x30);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // TGT
+            machine.update((byte) 0x76);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // PRIMARY COMMAND
+            machine.update((byte) 0x50);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // SECONDARY COMMAND
+            machine.update((byte) 0x22);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // LEN
+            machine.update((byte) 0x03);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // DATA 1
+            machine.update((byte) 0xCC);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // DATA 2
+            machine.update((byte) 0x2B);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // DATA 3
+            machine.update((byte) 0x0A);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // MASTER CRC
+            machine.update((byte) 0xBF);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertTrue(machine.isWaitingForSlaveAnswer());
+
+            // SLAVE ACK
             machine.update((byte) 0xAA);
 
-            for (byte b : byteArray) {
+        } catch (EBusDataException e) {
+            // fail("No exception expected!");
+            e.printStackTrace();
+        }
 
-                machine.update(b);
+        assertFalse(machine.isReceivingTelegram());
+        assertFalse(machine.isTelegramAvailable());
+        assertFalse(machine.isWaitingForMasterACK());
+        assertFalse(machine.isWaitingForMasterSYN());
+        assertFalse(machine.isWaitingForSlaveAnswer());
+    }
 
-            }
+    @Test
+    public void testMachineMethods() {
+
+        try {
+
+            // AA 30 76 50 22 03 CC 2B 0A BF 00 02 07 01 DA
+
+            // SYN
+            machine.update((byte) 0xAA);
+            assertTrue(machine.isSync());
+            assertFalse(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // SRC
+            machine.update((byte) 0x30);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // TGT
+            machine.update((byte) 0x76);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // PRIMARY COMMAND
+            machine.update((byte) 0x50);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // SECONDARY COMMAND
+            machine.update((byte) 0x22);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // LEN
+            machine.update((byte) 0x03);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // DATA 1
+            machine.update((byte) 0xCC);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // DATA 2
+            machine.update((byte) 0x2B);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // DATA 3
+            machine.update((byte) 0x0A);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // MASTER CRC
+            machine.update((byte) 0xBF);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertTrue(machine.isWaitingForSlaveAnswer());
+
+            // SLAVE ACK
+            machine.update((byte) 0x00);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // LEN
+            machine.update((byte) 0x02);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // DATA 1
+            machine.update((byte) 0x07);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // DATA 2
+            machine.update((byte) 0x01);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // SLAVE CRC
+            machine.update((byte) 0xDA);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertTrue(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // MASTER ACK
+            machine.update((byte) 0x00);
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertTrue(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+            // MASTER SYN
+            machine.update((byte) 0xAA);
+            assertFalse(machine.isReceivingTelegram());
+            assertTrue(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertFalse(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+        } catch (EBusDataException e) {
+            fail("No exception expected!");
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testA() {
+        try {
+            runMachine(EBusUtils.toByteArray("AA 30 76 50 23 05 D4 66 00 00 00 0C 00 00 00 AA"));
 
             logger.info("Machine state: {}", machine.getState().toString());
             logger.info("Telegram available: {}", machine.isTelegramAvailable());
 
+            assertTrue(machine.isTelegramAvailable());
+
         } catch (EBusDataException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            fail("No exception expected!");
         }
     }
 
     private void runMachine(byte[] byteArray) throws EBusDataException {
-        EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
-
         for (byte b : byteArray) {
             machine.update(b);
         }

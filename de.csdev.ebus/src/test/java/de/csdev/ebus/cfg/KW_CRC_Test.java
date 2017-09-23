@@ -60,8 +60,8 @@ public class KW_CRC_Test {
 
     @Test
     public void xxx() throws EBusTypeException {
-        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById("heating.program_heating_circuit",
-                IEBusCommandMethod.Method.GET);
+        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById("wolf-cgb2",
+                "heating.program_heating_circuit", IEBusCommandMethod.Method.GET);
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00, (byte) 0x0FF, null);
 
         System.out.println(EBusUtils.toHexDumpString(buffer).toString());

@@ -1,9 +1,6 @@
 package de.csdev.ebus.client;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Map;
 
 import org.junit.Before;
@@ -22,7 +19,7 @@ import de.csdev.ebus.service.parser.EBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.wip.EBusStateMachineTest;
 
-public class ClientTest {
+public class ClientTest2 {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusStateMachineTest.class);
 
@@ -34,8 +31,7 @@ public class ClientTest {
     }
 
     @Test
-    public void xxx() throws EBusTypeException, IOException, InterruptedException {
-
+    public void testNoSlaveResponse() throws EBusTypeException, IOException, InterruptedException {
         EBusClientConfiguration clientConfiguration = new EBusClientConfiguration();
 
         clientConfiguration.loadInternalConfigurations();
@@ -49,15 +45,19 @@ public class ClientTest {
         client.getController().addEBusEventListener(new EBusConnectorEventListener() {
 
             public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
-                // noop
+                // TODO Auto-generated method stub
+                logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramReceived()");
             }
 
             public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
-                fail("No TelegramException expected!");
+                logger.error(exception.getLocalizedMessage());
+                // TODO Auto-generated method stub
+                // logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramException()");
             }
 
             public void onConnectionException(Exception e) {
-                fail("No ConnectionException expected!");
+                // TODO Auto-generated method stub
+                logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onConnectionException()");
             }
         });
 
@@ -65,35 +65,28 @@ public class ClientTest {
 
             public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
                     byte[] receivedData, Integer sendQueueId) {
-
-                assertTrue(result.containsKey("pressure"));
-                assertEquals(new BigDecimal("1.52"), result.get("pressure"));
-                logger.info("Result correct!");
+                logger.error("ClientTest.xxx().new EBusParserListener() {...}.onTelegramResolved()");
+                System.out.println(result);
             }
         });
 
         controller.start();
 
-        writeTelegramToEmulator("30 08 50 22 03 CC 1A 27 59 00 02 98 00 0C 00");
+        controller.addToSendQueue(EBusUtils.toByteArray("FF 08 B5 09 03 0D 2F 00 1D"));
 
-        // wait a bit for the ebus thread
-        Thread.sleep(10);
+        sendAutoSYN(10);
     }
 
-    private void writeTelegramToEmulator(String telegram) throws IOException {
+    private void sendAutoSYN(int loopCount) throws IOException {
 
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
+        for (int i = 0; i < loopCount; i++) {
+            emulator.writeByte(0xAA);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
 
-        byte[] bs = EBusUtils.toByteArray(telegram);
-
-        for (byte b : bs) {
-            emulator.writeByte(b);
         }
-
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
     }
 
 }

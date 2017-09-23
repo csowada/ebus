@@ -65,7 +65,7 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void Identification() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common.identification",
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common", "common.identification",
                 IEBusCommandMethod.Method.GET);
 
         assertNotNull("Command common.identification not found!", commandMethod);
@@ -82,8 +82,8 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void AutoStroker() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("auto_stroker.op_data_bc2tc_b1",
-                IEBusCommandMethod.Method.GET);
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common",
+                "auto_stroker.op_data_bc2tc_b1", IEBusCommandMethod.Method.GET);
 
         assertNotNull("Command auto_stroker not found!", commandMethod);
 
@@ -101,7 +101,7 @@ public class EBusCommonTelegramTest {
     @Test
     public void InquiryOfExistence() {
         // common.inquiry_of_existence
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common.inquiry_of_existence",
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common", "common.inquiry_of_existence",
                 Method.BROADCAST);
         assertNotNull("Command common.inquiry_of_existence not found!", commandMethod);
     }
@@ -189,15 +189,15 @@ public class EBusCommonTelegramTest {
     @Test
     public void decodeBroadcast() {
         byte[] bs = EBusUtils.toByteArray("30 FE 07 00 09 00 80 10 54 21 16 08 03 17 02 AA");
-        xxx("common.time", bs, IEBusCommandMethod.Method.BROADCAST);
+        xxx("common", "common.time", bs, IEBusCommandMethod.Method.BROADCAST);
         canResolve(bs);
 
     }
 
-    protected void checkMask(String commandId, byte[] data, IEBusCommandMethod.Method type) {
+    protected void checkMask(String collectionId, String commandId, byte[] data, IEBusCommandMethod.Method type) {
 
         ByteBuffer wrap = ByteBuffer.wrap(data);
-        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(commandId, type);
+        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(collectionId, commandId, type);
 
         try {
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00, (byte) 0xFF,
@@ -242,9 +242,9 @@ public class EBusCommonTelegramTest {
         return true;
     }
 
-    protected void xxx(String commandId, byte[] data, IEBusCommandMethod.Method type) {
+    protected void xxx(String collectionId, String commandId, byte[] data, IEBusCommandMethod.Method type) {
 
-        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(commandId, type);
+        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(collectionId, commandId, type);
 
         try {
 
