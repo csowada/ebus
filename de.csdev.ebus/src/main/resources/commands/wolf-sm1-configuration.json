@@ -107,7 +107,7 @@
         },
         
         {
-            "label":    "Max. Cylinder Temperature 24h",
+            "label":    "Max. cylinder Temperature 24h",
             "id":       "solar.temp_cylinder_24h_max",
             "command":  "50 22",
     
