@@ -14,7 +14,22 @@ package de.csdev.ebus.command.datatypes;
  */
 public interface IEBusComplexType {
 
+    /**
+     * Allows to decode complex values with the complete telegram
+     * 
+     * @param rawData
+     * @param pos
+     * @return
+     * @throws EBusTypeException
+     */
     public <T> T decodeComplex(byte[] rawData, int pos) throws EBusTypeException;
 
+    /**
+     * ???
+     *
+     * @param data
+     * @return
+     * @throws EBusTypeException
+     */
     public byte[] encodeComplex(Object data) throws EBusTypeException;
 }

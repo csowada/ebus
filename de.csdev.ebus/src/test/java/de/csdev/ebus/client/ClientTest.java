@@ -17,10 +17,10 @@ import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.core.EBusStateMachineTest;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
-import de.csdev.ebus.wip.EBusStateMachineTest;
 
 public class ClientTest {
 

@@ -53,6 +53,11 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     private EBusTypeRegistry registry;
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.cfg.IEBusConfigurationReader#loadConfigurationCollection(java.io.InputStream)
+     */
     public IEBusCommandCollection loadConfigurationCollection(InputStream inputStream)
             throws IOException, EBusConfigurationReaderException {
 
@@ -84,10 +89,21 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         return commandCollection;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.cfg.IEBusConfigurationReader#setEBusTypes(de.csdev.ebus.command.datatypes.EBusTypeRegistry)
+     */
     public void setEBusTypes(EBusTypeRegistry ebusTypes) {
         registry = ebusTypes;
     }
 
+    /**
+     * @param commandCollection
+     * @param commandElement
+     * @return
+     * @throws EBusConfigurationReaderException
+     */
     protected EBusCommand parseTelegramConfiguration(IEBusCommandCollection commandCollection,
             EBusCommandDTO commandElement) throws EBusConfigurationReaderException {
 
@@ -189,6 +205,12 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         return cfg;
     }
 
+    /**
+     * @param template
+     * @param templateMap
+     * @param commandMethod
+     * @return
+     */
     protected Collection<EBusCommandValue> parseValueConfiguration(EBusValueDTO template,
             Map<String, EBusCommandValue> templateMap, EBusCommandMethod commandMethod) {
 

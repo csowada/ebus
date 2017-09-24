@@ -40,10 +40,16 @@ public class EBusTypeRegistry {
 
     private Map<String, IEBusType<?>> types = null;
 
+    /**
+     *
+     */
     public EBusTypeRegistry() {
         init();
     }
 
+    /**
+     * Loads all internal types
+     */
     protected void init() {
         types = new HashMap<String, IEBusType<?>>();
 
@@ -68,10 +74,11 @@ public class EBusTypeRegistry {
         add(EBusTypeKWCrc.class);
     }
 
-    // public <T extends IEBusType> T xxx(T xxxy) {
-    // return xxxy;
-    // }
-
+    /**
+     * @param type
+     * @param properties
+     * @return
+     */
     public <T> IEBusType<T> getType(String type, Map<String, Object> properties) {
         IEBusType<T> ebusType = getType(type);
 
@@ -82,6 +89,10 @@ public class EBusTypeRegistry {
         return null;
     }
 
+    /**
+     * @param type
+     * @return
+     */
     public <T> IEBusType<T> getType(String type) {
         @SuppressWarnings("unchecked")
         IEBusType<T> eBusType = (IEBusType<T>) types.get(type);
@@ -94,6 +105,13 @@ public class EBusTypeRegistry {
         return eBusType;
     }
 
+    /**
+     * @param type
+     * @param data
+     * @param args
+     * @return
+     * @throws EBusTypeException
+     */
     public byte[] encode(String type, Object data, Object... args) throws EBusTypeException {
         IEBusType<?> eBusType = types.get(type);
 
@@ -105,6 +123,12 @@ public class EBusTypeRegistry {
         return eBusType.encode(data);
     }
 
+    /**
+     * @param type
+     * @param data
+     * @return
+     * @throws EBusTypeException
+     */
     public <T> T decode(String type, byte[] data) throws EBusTypeException {
         @SuppressWarnings("unchecked")
         IEBusType<T> eBusType = (IEBusType<T>) types.get(type);
@@ -117,6 +141,10 @@ public class EBusTypeRegistry {
         return eBusType.decode(data);
     }
 
+    /**
+     *
+     * @param clazz
+     */
     public void add(Class<?> clazz) {
         try {
             IEBusType<?> newInstance = (IEBusType<?>) clazz.newInstance();
@@ -135,6 +163,11 @@ public class EBusTypeRegistry {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return "EBusTypeRegistry [types=" + types + "]";

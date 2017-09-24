@@ -21,6 +21,8 @@ import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 public interface IEBusConfigurationReader {
 
     /**
+     * Loads the configuration from an InputStream and returns a command collection
+     *
      * @param inputStream
      * @return
      * @throws EBusConfigurationReaderException
@@ -30,6 +32,8 @@ public interface IEBusConfigurationReader {
             throws EBusConfigurationReaderException, IOException;
 
     /**
+     * Sets the eBUS type registry to use
+     * 
      * @param ebusTypes
      */
     public void setEBusTypes(EBusTypeRegistry ebusTypes);

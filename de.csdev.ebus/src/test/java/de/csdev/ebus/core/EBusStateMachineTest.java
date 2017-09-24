@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.wip;
+package de.csdev.ebus.core;
 
 import static org.junit.Assert.*;
 
@@ -174,9 +174,10 @@ public class EBusStateMachineTest {
             // SLAVE ACK
             machine.update((byte) 0xAA);
 
+            fail("exception expected!");
+
         } catch (EBusDataException e) {
-            // fail("No exception expected!");
-            e.printStackTrace();
+            // okay
         }
 
         assertFalse(machine.isReceivingTelegram());

@@ -11,9 +11,6 @@ package de.csdev.ebus.cfg.std.dto;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.csdev.ebus.utils.CollectionUtils;
 
 /**
@@ -21,8 +18,6 @@ import de.csdev.ebus.utils.CollectionUtils;
  *
  */
 public class EBusCollectionDTO {
-
-    private final Logger logger = LoggerFactory.getLogger(EBusCollectionDTO.class);
 
     private List<String> authors;
     private List<EBusCommandDTO> commands;
@@ -35,7 +30,6 @@ public class EBusCollectionDTO {
     private Map<String, Object> properties;
 
     public void setProperty(String key, Object value) {
-        logger.info("Add custom property \"{}\" with value \"{}\"", key, value);
         properties = CollectionUtils.newMapIfNull(properties);
         properties.put(key, value);
     }

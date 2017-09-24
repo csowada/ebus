@@ -19,7 +19,7 @@ import de.csdev.ebus.utils.CollectionUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusCommand implements IEBusCommandWritable {
+public class EBusCommand implements IEBusCommand {
 
     private Map<IEBusCommandMethod.Method, IEBusCommandMethod> channels;
 

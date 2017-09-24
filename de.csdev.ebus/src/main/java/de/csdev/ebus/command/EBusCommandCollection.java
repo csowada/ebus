@@ -58,25 +58,6 @@ public class EBusCommandCollection implements IEBusCommandCollection {
     /*
      * (non-Javadoc)
      *
-     * @see de.csdev.ebus.command.IEBusCommandCollection#get(java.lang.String)
-     */
-    public Object get(String key) {
-        return CollectionUtils.get(properties, key);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.csdev.ebus.command.IEBusCommandCollection#getAsString(java.lang.String)
-     */
-    public String getAsString(String key) {
-        Object object = get(key);
-        return object instanceof String ? (String) object : null;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
      * @see de.csdev.ebus.command.IEBusCommandCollection#getCommands()
      */
     public List<IEBusCommand> getCommands() {

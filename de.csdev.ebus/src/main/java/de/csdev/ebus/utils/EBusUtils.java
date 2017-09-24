@@ -22,7 +22,6 @@ import de.csdev.ebus.core.EBusConsts;
  * @author Christian Sowada - Initial contribution
  *
  */
-@SuppressWarnings("restriction")
 public class EBusUtils {
 
     /** calculated crc values */

@@ -6,23 +6,20 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.basic;
+package de.csdev.ebus.cfg;
 
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.TestUtils;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
@@ -64,7 +61,7 @@ public class EBusCommonTelegramTest {
     }
 
     @Test
-    public void Identification() {
+    public void testIdentification() {
         IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common", "common.identification",
                 IEBusCommandMethod.Method.GET);
 
@@ -81,7 +78,7 @@ public class EBusCommonTelegramTest {
     }
 
     @Test
-    public void AutoStroker() {
+    public void testAutoStroker() {
         IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common",
                 "auto_stroker.op_data_bc2tc_b1", IEBusCommandMethod.Method.GET);
 
@@ -90,7 +87,6 @@ public class EBusCommonTelegramTest {
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0xFF, null);
             assertNotNull("Unable to compose byte buffer for command", buffer);
-            logger.info(EBusUtils.toHexDumpString(buffer).toString());
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);
@@ -99,8 +95,7 @@ public class EBusCommonTelegramTest {
     }
 
     @Test
-    public void InquiryOfExistence() {
-        // common.inquiry_of_existence
+    public void testInquiryOfExistence() {
         IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common", "common.inquiry_of_existence",
                 Method.BROADCAST);
         assertNotNull("Command common.inquiry_of_existence not found!", commandMethod);
@@ -121,7 +116,7 @@ public class EBusCommonTelegramTest {
          * 2014-10-23 16:10:31 - >>> common.time_hour 16 Zeit Stunde
          */
         bs = EBusUtils.toByteArray("30 FE 07 00 09 00 80 10 08 16 23 10 04 14 A2 AA");
-        canResolve(bs);
+        TestUtils.canResolve(commandRegistry, bs);
 
         /*
          * 2014-10-23 16:10:30 - >>> Betriebsdaten des Feuerungsautomaten an den Regler - Block 1
@@ -142,7 +137,7 @@ public class EBusCommonTelegramTest {
          */
 
         bs = EBusUtils.toByteArray("03 FE 05 03 08 01 00 40 FF 2D 17 30 0E C8 AA");
-        canResolve(bs);
+        TestUtils.canResolve(commandRegistry, bs);
 
         /*
          * 2014-10-23 16:10:33 - >>> Sollwertübertragung des Reglers an andere Regler
@@ -154,7 +149,7 @@ public class EBusCommonTelegramTest {
          * 2014-10-23 16:10:33 - >>> controller2.temp_t_boiler 5.0 Brauchwassersoll
          */
         bs = EBusUtils.toByteArray("03 F1 08 00 08 00 80 99 0E 80 02 00 05 94 AA");
-        canResolve(bs);
+        TestUtils.canResolve(commandRegistry, bs);
 
         /*
          * 2014-10-23 16:10:39 - >>> Betriebsdaten des Reglers an den Feuerungsautomaten
@@ -167,7 +162,7 @@ public class EBusCommonTelegramTest {
          * 2014-10-23 16:10:39 - >>> controller.temp_t_boiler 50.0 Brauchwassersollwert
          */
         bs = EBusUtils.toByteArray("30 03 05 07 09 BB 03 61 01 00 80 FF 64 FF D5 00 AA");
-        canResolve(bs);
+        TestUtils.canResolve(commandRegistry, bs);
 
         /*
          * 2014-10-23 16:11:18 - >>> Identifikation
@@ -183,81 +178,14 @@ public class EBusCommonTelegramTest {
          * 2014-10-23 16:11:18 - >>> common._device_id1 0 Geräte ID 1
          */
         bs = EBusUtils.toByteArray("30 08 07 04 00 5E 00 0A 19 01 21 00 5A 40 60 01 00 00 48 00 AA");
-        canResolve(bs);
+        TestUtils.canResolve(commandRegistry, bs);
     }
 
     @Test
     public void decodeBroadcast() {
         byte[] bs = EBusUtils.toByteArray("30 FE 07 00 09 00 80 10 54 21 16 08 03 17 02 AA");
-        xxx("common", "common.time", bs, IEBusCommandMethod.Method.BROADCAST);
-        canResolve(bs);
+        TestUtils.canResolve(commandRegistry, bs);
 
-    }
-
-    protected void checkMask(String collectionId, String commandId, byte[] data, IEBusCommandMethod.Method type) {
-
-        ByteBuffer wrap = ByteBuffer.wrap(data);
-        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(collectionId, commandId, type);
-
-        try {
-            ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00, (byte) 0xFF,
-                    null);
-            ByteBuffer mask = commandChannel.getMasterTelegramMask();
-
-            System.out.println("MASK:     " + EBusUtils.toHexDumpString(mask));
-            System.out.println("DATA:     " + EBusUtils.toHexDumpString(data));
-            System.out.println("COMPOSED: " + EBusUtils.toHexDumpString(masterTelegram));
-            System.out.println("MATCHS?   " + commandRegistry.matchesCommand(commandChannel, wrap));
-
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        }
-    }
-
-    private boolean canResolve(byte[] data) {
-
-        List<IEBusCommandMethod> list = commandRegistry.find(data);
-
-        if (list.isEmpty()) {
-            Assert.fail("Expected an filled array!");
-        }
-
-        for (IEBusCommandMethod commandChannel : list) {
-            logger.info(">>> " + commandChannel.toString());
-            try {
-                Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, data);
-                if (map.isEmpty()) {
-                    Assert.fail("Expected a result map!");
-                } else {
-
-                    for (Entry<String, Object> entry : map.entrySet()) {
-                        logger.info(entry.getKey() + " > " + entry.getValue());
-                    }
-                }
-            } catch (EBusTypeException e) {
-                logger.error("error!", e);
-            }
-        }
-
-        return true;
-    }
-
-    protected void xxx(String collectionId, String commandId, byte[] data, IEBusCommandMethod.Method type) {
-
-        IEBusCommandMethod commandChannel = commandRegistry.getConfigurationById(collectionId, commandId, type);
-
-        try {
-
-            Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, data);
-            if (map != null) {
-                for (Entry<String, Object> entry : map.entrySet()) {
-                    System.out.println(entry.getKey() + " -> " + entry.getValue());
-                }
-            }
-
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        }
     }
 
 }

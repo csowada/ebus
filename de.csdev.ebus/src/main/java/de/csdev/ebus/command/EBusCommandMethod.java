@@ -18,7 +18,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusCommandMethod implements IEBusCommandMethodWriteable {
+public class EBusCommandMethod implements IEBusCommandMethod {
 
     private byte[] command;
 
@@ -57,7 +57,7 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
      *
      * @see de.csdev.ebus.command.IEBusCommandWritable#addMasterValue(de.csdev.ebus.command.IEBusValue)
      */
-    public IEBusCommandMethodWriteable addMasterValue(IEBusValue value) {
+    public EBusCommandMethod addMasterValue(IEBusValue value) {
         if (masterTypes == null) {
             masterTypes = new ArrayList<IEBusValue>();
         }
@@ -72,7 +72,7 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
      *
      * @see de.csdev.ebus.command.IEBusCommandWritable#addSlaveValue(de.csdev.ebus.command.IEBusValue)
      */
-    public IEBusCommandMethodWriteable addSlaveValue(IEBusValue value) {
+    public EBusCommandMethod addSlaveValue(IEBusValue value) {
         if (slaveTypes == null) {
             slaveTypes = new ArrayList<IEBusValue>();
         }
@@ -88,11 +88,6 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
      */
     public byte[] getCommand() {
         return command;
-    }
-
-    public String getConfigurationSource() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /*
@@ -155,7 +150,7 @@ public class EBusCommandMethod implements IEBusCommandMethodWriteable {
         return sourceAddress;
     }
 
-    public IEBusCommandMethodWriteable setCommand(byte[] command) {
+    public EBusCommandMethod setCommand(byte[] command) {
         this.command = command;
         return this;
     }

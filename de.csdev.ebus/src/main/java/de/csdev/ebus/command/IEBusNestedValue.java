@@ -11,6 +11,8 @@ package de.csdev.ebus.command;
 import java.util.List;
 
 /**
+ * A marker of a value with child values
+ * 
  * @author Christian Sowada - Initial contribution
  *
  */
@@ -18,7 +20,7 @@ public interface IEBusNestedValue {
 
     /**
      * Returns true if the value has child values
-     * 
+     *
      * @return
      */
     public boolean hasChildren();

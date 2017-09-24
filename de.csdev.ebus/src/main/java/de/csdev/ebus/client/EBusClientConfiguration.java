@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
+import de.csdev.ebus.cfg.IEBusConfigurationReader;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommandCollection;
@@ -32,7 +33,7 @@ public class EBusClientConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
 
-    protected EBusConfigurationReader reader;
+    protected IEBusConfigurationReader reader;
 
     protected EBusTypeRegistry dataTypes;
 
@@ -41,13 +42,20 @@ public class EBusClientConfiguration {
     protected EBusCommandRegistry configurationProvider;
 
     /**
-     *
+     * Default constructor
      */
     public EBusClientConfiguration() {
+        this(new EBusConfigurationReader());
+    }
+
+    /**
+     * Constructor with custom configuration reader
+     */
+    public EBusClientConfiguration(IEBusConfigurationReader reader) {
 
         dataTypes = new EBusTypeRegistry();
 
-        reader = new EBusConfigurationReader();
+        this.reader = reader;
 
         reader.setEBusTypes(dataTypes);
 
@@ -57,7 +65,7 @@ public class EBusClientConfiguration {
     }
 
     /**
-     *
+     * Clear the loaded command collections
      */
     public void clear() {
         configurationProvider = new EBusCommandRegistry();
@@ -65,14 +73,18 @@ public class EBusClientConfiguration {
     }
 
     /**
+     * Returns the list of all available internal configuration files
+     *
      * @return
      */
     public List<String> getInternalConfigurationFiles() {
         return Arrays.asList("common-configuration.json", "wolf-cgb2-configuration.json", "wolf-sm1-configuration.json",
-                "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json");
+                "wolf-bm2-configuration.json", "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json");
     }
 
     /**
+     * Load a internal configuration file.
+     *
      * @param configurationFile
      */
     public void loadInternalConfiguration(String configurationFile) {
@@ -88,7 +100,7 @@ public class EBusClientConfiguration {
     }
 
     /**
-     *
+     * Load all internal configuration files.
      */
     public void loadInternalConfigurations() {
         for (String configurationFile : getInternalConfigurationFiles()) {
@@ -97,6 +109,8 @@ public class EBusClientConfiguration {
     }
 
     /**
+     * Load a configuration from an InputStream.
+     *
      * @param is
      */
     public void loadConfiguration(InputStream is) {
@@ -119,6 +133,8 @@ public class EBusClientConfiguration {
     }
 
     /**
+     * Returns all loaded collections
+     *
      * @return
      */
     public List<IEBusCommandCollection> getCollections() {

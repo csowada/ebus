@@ -8,8 +8,6 @@
  */
 package de.csdev.ebus.wip;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -18,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import de.csdev.ebus.StaticTestTelegrams;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
@@ -31,7 +28,6 @@ import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
-import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -51,12 +47,9 @@ public class ConfigurationReaderTest {
 
     }
 
-    @Test
+    // @Test
     public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 
-        // final ClassLoader classLoader = this.getClass().getr.getClassLoader();
-        // final URL resource = classLoader.getResource("/new-cfg-format2.json");
-        // InputStream inputStream = resource.openConnection().getInputStream();
         InputStream inputStream = EBusConfigurationReader.class
                 .getResourceAsStream("/commands/wolf-sm1-configuration.json");
 
@@ -106,41 +99,18 @@ public class ConfigurationReaderTest {
             System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
                     + eBusCommand2.getValue());
         }
-
-        assertFalse("Broadcast address is not a master address",
-                EBusUtils.isMasterAddress(EBusConsts.BROADCAST_ADDRESS));
-
-        assertFalse("0xA9 address is not a master address", EBusUtils.isMasterAddress(EBusConsts.ESCAPE));
-
-        assertFalse("0xAA address is not a master address", EBusUtils.isMasterAddress(EBusConsts.SYN));
-
-        assertTrue("0x0 address is a master address", EBusUtils.isMasterAddress((byte) 0x00));
-
-        assertTrue("0xFF address is a master address", EBusUtils.isMasterAddress((byte) 0xFF));
-
-        assertFalse("0x09 address is not a master address", EBusUtils.isMasterAddress((byte) 0x09));
+        //
+        // assertFalse("Broadcast address is not a master address",
+        // EBusUtils.isMasterAddress(EBusConsts.BROADCAST_ADDRESS));
+        //
+        // assertFalse("0xA9 address is not a master address", EBusUtils.isMasterAddress(EBusConsts.ESCAPE));
+        //
+        // assertFalse("0xAA address is not a master address", EBusUtils.isMasterAddress(EBusConsts.SYN));
+        //
+        // assertTrue("0x0 address is a master address", EBusUtils.isMasterAddress((byte) 0x00));
+        //
+        // assertTrue("0xFF address is a master address", EBusUtils.isMasterAddress((byte) 0xFF));
+        //
+        // assertFalse("0x09 address is not a master address", EBusUtils.isMasterAddress((byte) 0x09));
     }
-
-    // @Test
-    // public void xxx() throws IOException, EBusTypeException {
-    //
-    // InputStream inputStream = getClass().getResourceAsStream("/commands/wolf-sm1-configuration.json");
-    //
-    // ConfigurationReader reader = new ConfigurationReader();
-    // reader.setEBusTypes(types);
-    //
-    // List<EBusCommand> configurationList = reader.loadConfiguration(inputStream);
-    // tr.addTelegramConfigurationList(configurationList);
-    //
-    //
-    // Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-    // tr.getConfigurationById("auto_stroker", Type.GET),
-    // StaticTestTelegrams.AUTO_STROKER);
-    //
-    // for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
-    // System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "
-    // + eBusCommand2.getValue());
-    // }
-    // }
-
 }

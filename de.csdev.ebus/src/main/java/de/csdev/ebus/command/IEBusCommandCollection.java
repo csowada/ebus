@@ -20,48 +20,50 @@ import java.util.Map;
 public interface IEBusCommandCollection {
 
     /**
+     * Returns the list of eBUS device ids that are compatible with this collection.
+     *
      * @return
      */
     List<String> getIdentification();
 
     /**
+     * Returns the long description
+     *
      * @return
      */
     String getDescription();
 
     /**
+     * Returns the id of this collection
+     *
      * @return
      */
     String getId();
 
     /**
+     * Returns the label of this collection
+     *
      * @return
      */
     String getLabel();
 
     /**
-     * @param key
-     * @return
-     */
-    String getAsString(String key);
-
-    /**
-     * @param key
-     * @return
-     */
-    Object get(String key);
-
-    /**
+     * Returns the list of all commands
+     * 
      * @return
      */
     List<IEBusCommand> getCommands();
 
     /**
+     * Returns a map of all properties
+     * 
      * @return
      */
     Map<String, Object> getProperties();
 
     /**
+     * Returns a property value or <code>null</code>
+     * 
      * @param key
      * @return
      */

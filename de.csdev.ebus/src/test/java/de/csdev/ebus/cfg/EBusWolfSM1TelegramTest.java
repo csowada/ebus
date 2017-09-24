@@ -6,28 +6,26 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.basic;
+package de.csdev.ebus.cfg;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Test;
 
+import de.csdev.ebus.TestUtils;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusVaillantBAI00TelegramTest {
-
-    @SuppressWarnings("unused")
-    private final Logger logger = LoggerFactory.getLogger(EBusVaillantBAI00TelegramTest.class);
+public class EBusWolfSM1TelegramTest {
 
     EBusTypeRegistry types;
     EBusCommandRegistry commandRegistry;
@@ -38,7 +36,7 @@ public class EBusVaillantBAI00TelegramTest {
         types = new EBusTypeRegistry();
 
         InputStream inputStream = EBusConfigurationReader.class
-                .getResourceAsStream("/commands/vaillant-bai00-configuration.json");
+                .getResourceAsStream("/commands/wolf-sm1-configuration.json");
 
         if (inputStream == null) {
             throw new RuntimeException("Unable to load json file ...");
@@ -49,6 +47,15 @@ public class EBusVaillantBAI00TelegramTest {
 
         commandRegistry = new EBusCommandRegistry();
         commandRegistry.addCommandCollection(cfg.loadConfigurationCollection(inputStream));
+    }
+
+    @Test
+    public void testSolarCommands() {
+        TestUtils.canResolve(commandRegistry, EBusUtils.toByteArray("30 76 50 22 03 CC 2B 0A BF 00 02 07 01 DA AA"));
+        TestUtils.canResolve(commandRegistry,
+                EBusUtils.toByteArray("71 FE 50 18 0E 00 00 F9 00 07 00 3D 02 88 01 05 00 00 00 B8 AA"));
+        TestUtils.canResolve(commandRegistry,
+                EBusUtils.toByteArray("71 FE 50 17 10 08 91 F0 01 0A 04 00 80 00 80 00 80 00 80 00 80 F7 AA"));
     }
 
 }

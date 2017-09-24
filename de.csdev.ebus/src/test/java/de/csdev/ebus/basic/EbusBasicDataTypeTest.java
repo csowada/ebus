@@ -40,15 +40,11 @@ public class EbusBasicDataTypeTest {
     @Test
     public void test_PRIMARY() throws EBusTypeException {
 
-        // Boolean decodeBit = types.decode(EBusTypeBit.BIT, new byte[] { (byte) 0x01 }, 1);
-        // assertEquals("Decode BIT failed!", false, decodeBit);
-
         BigDecimal decodeBCD = types.decode(EBusTypeBCD.BCD, new byte[] { (byte) 0x50 });
         assertEquals("Decode BCD failed!", BigDecimal.valueOf(50), decodeBCD);
 
         decodeBCD = types.decode(EBusTypeBCD.BCD, new byte[] { (byte) 0xFF });
         assertNull("xxxx", decodeBCD);
-        // assertEquals("Decode CHAR failed!", null, decodeBCD);
 
         BigDecimal decodeChar = types.decode(EBusTypeChar.CHAR, new byte[] { (byte) 0xFA });
         assertEquals("Decode CHAR failed!", BigDecimal.valueOf((byte) 0xFA), decodeChar);

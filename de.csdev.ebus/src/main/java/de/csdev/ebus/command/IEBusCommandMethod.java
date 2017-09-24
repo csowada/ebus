@@ -18,14 +18,17 @@ import java.util.List;
 public interface IEBusCommandMethod {
 
     /**
-     * Type of the eBUS method
+     * Type of the method
      */
     enum Type {
 
+        /** master slave telegram */
         MASTER_SLAVE,
 
+        /** master master telegram */
         MASTER_MASTER,
 
+        /** broadcast telegram */
         BROADCAST
 
     }
@@ -46,11 +49,15 @@ public interface IEBusCommandMethod {
     }
 
     /**
+     * Returns the method enum of this method
+     *
      * @return
      */
     public IEBusCommandMethod.Type getType();
 
     /**
+     * Returns the parent command
+     *
      * @return
      */
     public IEBusCommand getParent();

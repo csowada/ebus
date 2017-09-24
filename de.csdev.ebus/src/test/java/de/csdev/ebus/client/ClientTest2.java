@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.core.EBusStateMachineTest;
+import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
-import de.csdev.ebus.wip.EBusStateMachineTest;
 
 public class ClientTest2 {
 
@@ -44,17 +44,20 @@ public class ClientTest2 {
 
         client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
 
+            @Override
             public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
                 // TODO Auto-generated method stub
                 logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramReceived()");
             }
 
+            @Override
             public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
                 logger.error(exception.getLocalizedMessage());
                 // TODO Auto-generated method stub
                 // logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramException()");
             }
 
+            @Override
             public void onConnectionException(Exception e) {
                 // TODO Auto-generated method stub
                 logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onConnectionException()");
@@ -63,6 +66,7 @@ public class ClientTest2 {
 
         client.getResolverService().addEBusParserListener(new IEBusParserListener() {
 
+            @Override
             public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
                     byte[] receivedData, Integer sendQueueId) {
                 logger.error("ClientTest.xxx().new EBusParserListener() {...}.onTelegramResolved()");
@@ -82,7 +86,7 @@ public class ClientTest2 {
         for (int i = 0; i < loopCount; i++) {
             emulator.writeByte(0xAA);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
             }
 
