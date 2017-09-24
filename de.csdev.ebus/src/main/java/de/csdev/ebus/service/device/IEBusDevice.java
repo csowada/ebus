@@ -16,18 +16,53 @@ import java.math.BigDecimal;
  */
 public interface IEBusDevice {
 
-    public byte getMasterAddress();
+    /**
+     * The eBUS Master Address
+     *
+     * @return
+     */
+    public Byte getMasterAddress();
 
-    public byte getSlaveAddress();
+    /**
+     * The eBUS Slave Address
+     *
+     * @return
+     */
+    public Byte getSlaveAddress();
 
-    public byte getManufacturer();
+    /**
+     * Returns the identifier of the manufacturer of the eBUS device
+     *
+     * @return
+     */
+    public Byte getManufacturer();
 
+    /**
+     * Returns the device ID
+     *
+     * @return
+     */
     public byte[] getDeviceId();
 
+    /**
+     * Returns the software version of the eBUS device
+     *
+     * @return
+     */
     public BigDecimal getSoftwareVersion();
 
+    /**
+     * Returns the hardware version of the eBUS device
+     *
+     * @return
+     */
     public BigDecimal getHardwareVersion();
 
+    /**
+     * Returns the last activity of the device as 1970 millis
+     * 
+     * @return
+     */
     public long getLastActivity();
 
 }

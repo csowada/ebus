@@ -8,18 +8,13 @@
  */
 package de.csdev.ebus.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusConsts;
-import de.csdev.ebus.core.EBusDataException;
 
 /**
  * A helper class to decode all eBus data types and telegrams.
@@ -29,8 +24,6 @@ import de.csdev.ebus.core.EBusDataException;
  */
 @SuppressWarnings("restriction")
 public class EBusUtils {
-
-    private static final Logger logger = LoggerFactory.getLogger(EBusUtils.class);
 
     /** calculated crc values */
     final static public byte CRC_TAB_8_VALUE[] = { (byte) 0x00, (byte) 0x9B, (byte) 0xAD, (byte) 0x36, (byte) 0xC1,
@@ -67,35 +60,6 @@ public class EBusUtils {
             (byte) 0xCF, (byte) 0xF9, (byte) 0x62, (byte) 0x8C, (byte) 0x17, (byte) 0x21, (byte) 0xBA, (byte) 0x4D,
             (byte) 0xD6, (byte) 0xE0, (byte) 0x7B };
 
-    public static byte[] toByteArray(ByteBuffer buffer) {
-        byte[] data = new byte[buffer.position()];
-        ((ByteBuffer) buffer.duplicate().clear()).get(data);
-        return data;
-    }
-
-    /**
-     * CRC calculation with tab operations
-     *
-     * @param data The byte to crc check
-     * @param crc_init The current crc result or another start value
-     * @return The crc result
-     */
-    public static byte crc8_tab(byte data, byte crcInit) {
-        short ci = (short) (crcInit & 0xFF);
-        byte crc = (byte) (CRC_TAB_8_VALUE[ci] ^ (data & 0xFF));
-        return crc;
-    }
-
-    /**
-     * Convert to unsigned int
-     *
-     * @param v
-     * @return
-     */
-    public static int uint(byte v) {
-        return v & 0xFF;
-    }
-
     /**
      * CRC calculation
      *
@@ -130,6 +94,11 @@ public class EBusUtils {
         return crc;
     }
 
+    /**
+     * @param data
+     * @param len
+     * @return
+     */
     public static byte crc8(byte[] data, int len) {
         byte uc_crc = 0;
         for (int i = 0; i < len; i++) {
@@ -140,71 +109,42 @@ public class EBusUtils {
     }
 
     /**
-     * Expands ebus-data bytes 0xAA and 0xA9 from byte data. All other bytes
-     * are unchanged.
+     * CRC calculation with tab operations
      *
-     * @param data The received byte buffer
-     * @param pos The position to check
-     * @return The new value or the unchanged byte
+     * @param data The byte to crc check
+     * @param crc_init The current crc result or another start value
+     * @return The crc result
      */
-    static private byte decodeEBusData(byte[] data, int pos) {
-
-        if (data[pos - 1] == EBusConsts.ESCAPE) {
-            if (data[pos] == (byte) 0x00) {
-                return EBusConsts.ESCAPE;
-            } else if (data[pos] == (byte) 0x01) {
-                return EBusConsts.SYN;
-            }
-        }
-        return data[pos];
+    public static byte crc8_tab(byte data, byte crcInit) {
+        short ci = (short) (crcInit & 0xFF);
+        byte crc = (byte) (CRC_TAB_8_VALUE[ci] ^ (data & 0xFF));
+        return crc;
     }
 
     /**
-     * Encodes the eBUS data to replace sync and 0x9A bytes
-     *
-     * @param data
+     * @param slaveAddress
      * @return
      */
-    public static byte[] encodeEBusData(byte[] data) {
-        final ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        try {
-            for (byte b : data) {
-                if (b == EBusConsts.SYN) {
-                    byteBuffer.write(new byte[] { EBusConsts.ESCAPE, (byte) 0x01 });
-                } else if (b == EBusConsts.ESCAPE) {
-                    byteBuffer.write(new byte[] { EBusConsts.ESCAPE, (byte) 0x00 });
-                } else {
-                    byteBuffer.write(b);
-                }
-            }
-        } catch (IOException e) {
-            logger.error("io error", e);
+    static public Byte getMasterAddress(byte slaveAddress) {
+        if (!isMasterAddress(slaveAddress)) {
+            return (byte) (slaveAddress == (byte) 0x04 ? (byte) 0xFF : slaveAddress - 5);
         }
 
-        return byteBuffer.toByteArray();
+        return null;
     }
 
     /**
-     * Encodes the eBUS data to replace sync and 0x9A bytes
+     * Compute the slave address based on the master address.
      *
-     * @param data
-     * @return
+     * @param masterAddress The master address
+     * @return The slave address or null if the master address is invalid
      */
-    public static byte[] encodeEBusData(byte data) {
-        return encodeEBusData(new byte[] { data });
-    }
-
-    /**
-     * Check if the address is in general valid
-     *
-     * @param address
-     * @return
-     */
-    public static boolean isValidAddress(byte address) {
-        if (address == EBusConsts.BROADCAST_ADDRESS || address == EBusConsts.SYN || address == EBusConsts.ESCAPE) {
-            return false;
+    static public Byte getSlaveAddress(byte masterAddress) {
+        if (isMasterAddress(masterAddress)) {
+            return (byte) (masterAddress == (byte) 0xFF ? (byte) 0x04 : masterAddress + 5);
         }
-        return true;
+
+        return null;
     }
 
     /**
@@ -233,152 +173,35 @@ public class EBusUtils {
     }
 
     /**
-     * Processes a EBus received byte array, crc check, expand special bytes.
+     * Check if the address is in general valid
      *
-     * @param data The received raw byte data
-     * @return A valid object or null if the data was incorrect
-     * @throws EBusDataException
-     */
-    @Deprecated
-    static public byte[] decodeExpandedData(byte[] data) throws EBusDataException {
-
-        if (data.length < 7) {
-            throw new EBusDataException("To short. ..", EBusDataException.EBusError.BUFFER_FULL, data);
-        }
-
-        try {
-            ByteBuffer buffer = ByteBuffer.allocate(data.length + 10);
-
-            buffer.put(data, 0, 5);
-            int nnPos = 4;
-            int nn = data[nnPos];
-
-            byte uc_crc = 0;
-
-            // crc-check first bytes
-            for (int i = 0; i < 5; i++) {
-                byte b = data[i];
-                uc_crc = crc8_tab(b, uc_crc);
-            }
-
-            // process sender data and find data end pos.
-            // (may moved because expanded bytes)
-            if (nn > 0) {
-                nnPos = 0;
-
-                for (int i = 5; i < data.length; i++) {
-                    byte b = data[i];
-
-                    uc_crc = crc8_tab(b, uc_crc);
-
-                    if (b != EBusConsts.ESCAPE) {
-                        nnPos++;
-                        buffer.put(decodeEBusData(data, i));
-                    }
-
-                    if (nnPos == nn) {
-                        nnPos = i;
-                        break;
-                    }
-                }
-            }
-
-            int crcPos = nnPos + 1;
-            byte crc = data[crcPos];
-
-            // check calculted crc with received crc
-            if (crc != uc_crc) {
-                throw new EBusDataException("eBUS telegram master-crc invalid!",
-                        EBusDataException.EBusError.MASTER_CRC_INVALID, data);
-            }
-
-            buffer.put(crc);
-            buffer.put(data[crcPos + 1]);
-
-            if (data[crcPos + 1] == EBusConsts.SYN) {
-
-                if (data[1] == EBusConsts.BROADCAST_ADDRESS) {
-                    // Broadcast Telegram, end
-                    return buffer.array();
-                }
-
-                throw new EBusDataException("No answer from slave!", EBusDataException.EBusError.NO_SLAVE_RESPONSE,
-                        data);
-            }
-
-            if ((data[crcPos + 1] == EBusConsts.ACK_OK || data[crcPos + 1] == EBusConsts.ACK_FAIL)
-                    && data[crcPos + 2] == EBusConsts.SYN) {
-
-                // Master-Master Telegram, add ack value and end
-                buffer.put(data[crcPos + 2]);
-                return buffer.array();
-            }
-
-            if (data[crcPos + 1] != EBusConsts.ACK_OK && data[crcPos + 1] != EBusConsts.ACK_FAIL) {
-
-                // Unexpected value on this position
-                throw new EBusDataException("Unexpect ACK value in eBUS telegram!",
-                        EBusDataException.EBusError.UNEXPECTED_RESPONSE, data);
-            }
-
-            // ok, read slave answer
-
-            int nn2Pos = crcPos + 2;
-            byte nn2 = data[nn2Pos];
-
-            buffer.put(nn2);
-            uc_crc = crc8_tab(nn2, (byte) 0);
-
-            // process answer data and find data end pos.
-            // (may moved because expanded bytes)
-            if (nn2 > 0) {
-                for (int i = nn2Pos + 1; i < data.length - 3; i++) {
-                    byte b = data[i];
-
-                    uc_crc = crc8_tab(b, uc_crc);
-
-                    if (b != EBusConsts.ESCAPE) {
-                        buffer.put(decodeEBusData(data, i));
-                    }
-                }
-            }
-
-            crc = data[data.length - 3];
-            buffer.put(data, data.length - 3, 3);
-
-            // check calculted crc with received crc
-            if (crc != uc_crc) {
-                throw new EBusDataException("eBUS telegram answer-crc invalid!",
-                        EBusDataException.EBusError.SLAVE_CRC_INVALID, data);
-            }
-
-            // return valid telegram
-            return buffer.array();
-
-        } catch (IndexOutOfBoundsException e) {
-            throw new EBusDataException("Index out of bounds!", EBusDataException.EBusError.BUFFER_FULL, data);
-        }
-    }
-
-    /**
-     * Generates a hex string representative of byte data
-     *
-     * @param data The source
-     * @return The hex string
-     */
-    static public String toHexDumpString(byte data) {
-        return String.format("%02X", (0xFF & data));
-    }
-
-    /**
-     * @param data
+     * @param address
      * @return
      */
-    static public String toPrintHexDumpString(Byte data) {
-        if (data != null) {
-            return "0x" + String.format("%02X", (0xFF & data));
+    public static boolean isValidAddress(byte address) {
+        if (address == EBusConsts.BROADCAST_ADDRESS || address == EBusConsts.SYN || address == EBusConsts.ESCAPE) {
+            return false;
         }
-        return null;
+        return true;
+    }
+
+    /**
+     * FIXME: Badly programmed
+     *
+     * @param hexDumpString
+     * @return
+     */
+    static public Byte toByte(String hexDumpString) {
+        if (StringUtils.isEmpty(hexDumpString)) {
+            return null;
+        }
+        return toByteArray(hexDumpString)[0];
+    }
+
+    public static byte[] toByteArray(ByteBuffer buffer) {
+        byte[] data = new byte[buffer.position()];
+        ((ByteBuffer) buffer.duplicate().clear()).get(data);
+        return data;
     }
 
     /**
@@ -395,16 +218,13 @@ public class EBusUtils {
     }
 
     /**
-     * FIXME: Badly programmed
+     * Generates a hex string representative of byte data
      *
-     * @param hexDumpString
-     * @return
+     * @param data The source
+     * @return The hex string
      */
-    static public Byte toByte(String hexDumpString) {
-        if (StringUtils.isEmpty(hexDumpString)) {
-            return null;
-        }
-        return toByteArray(hexDumpString)[0];
+    static public String toHexDumpString(byte data) {
+        return String.format("%02X", (0xFF & data));
     }
 
     /**
@@ -447,24 +267,23 @@ public class EBusUtils {
     }
 
     /**
-     * Compute the slave address based on the master address.
-     *
-     * @param masterAddress The master address
-     * @return The slave address or null if the master address is invalid
+     * @param data
+     * @return
      */
-    static public Byte getSlaveAddress(byte masterAddress) {
-        if (isMasterAddress(masterAddress)) {
-            return (byte) (masterAddress == (byte) 0xFF ? (byte) 0x04 : masterAddress + 5);
+    static public String toPrintHexDumpString(Byte data) {
+        if (data != null) {
+            return "0x" + String.format("%02X", (0xFF & data));
         }
-
         return null;
     }
 
-    static public Byte getMasterAddress(byte slaveAddress) {
-        if (!isMasterAddress(slaveAddress)) {
-            return (byte) (slaveAddress == (byte) 0x04 ? (byte) 0xFF : slaveAddress - 5);
-        }
-
-        return null;
+    /**
+     * Convert to unsigned int
+     *
+     * @param v
+     * @return
+     */
+    public static int uint(byte v) {
+        return v & 0xFF;
     }
 }

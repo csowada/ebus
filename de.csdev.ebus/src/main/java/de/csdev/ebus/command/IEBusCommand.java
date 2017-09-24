@@ -12,15 +12,33 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
+ * A command is the link to encode/decode an eBUS byte telegram.
+ *
  * @author Christian Sowada - Initial contribution
  *
  */
 public interface IEBusCommand {
 
+    /**
+     * Returns the available command methods
+     *
+     * @return
+     */
     public Collection<IEBusCommandMethod> getCommandMethods();
 
+    /**
+     * Returns the command method if available. Returns <code>null</code> if not availble.
+     *
+     * @param method
+     * @return
+     */
     public IEBusCommandMethod getCommandMethod(IEBusCommandMethod.Method method);
 
+    /**
+     * Returns the available command method enums.
+     *
+     * @return
+     */
     public Collection<IEBusCommandMethod.Method> getCommandChannelMethods();
 
     /**
@@ -58,5 +76,10 @@ public interface IEBusCommand {
      */
     public Map<String, Object> getProperties();
 
+    /**
+     * Returns the parent collection
+     *
+     * @return
+     */
     public IEBusCommandCollection getParentCollection();
 }

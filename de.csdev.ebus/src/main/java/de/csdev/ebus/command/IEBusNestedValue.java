@@ -16,8 +16,18 @@ import java.util.List;
  */
 public interface IEBusNestedValue {
 
+    /**
+     * Returns true if the value has child values
+     * 
+     * @return
+     */
     public boolean hasChildren();
 
+    /**
+     * Returns the list of all children of this value
+     *
+     * @return
+     */
     public List<IEBusValue> getChildren();
 
 }

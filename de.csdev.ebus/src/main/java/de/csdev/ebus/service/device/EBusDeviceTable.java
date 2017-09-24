@@ -39,7 +39,7 @@ public class EBusDeviceTable {
     private Map<Byte, EBusDevice> deviceTable;
 
     /** the list for listeners */
-    private final List<EBusDeviceTableListener> listeners = new CopyOnWriteArrayList<EBusDeviceTableListener>();
+    private final List<IEBusDeviceTableListener> listeners = new CopyOnWriteArrayList<IEBusDeviceTableListener>();
 
     private Map<Integer, String> vendors;
 
@@ -71,6 +71,8 @@ public class EBusDeviceTable {
     }
 
     public String getManufacturerName(byte vendorCode) {
+
+        // vendor list not loaded?
         if (vendors == null) {
 
             Gson gson = new Gson();
@@ -106,12 +108,12 @@ public class EBusDeviceTable {
 
                 deviceTable.put(address, device);
 
-                fireOnTelegramResolved(EBusDeviceTableListener.TYPE.NEW, device);
+                fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.NEW, device);
                 return;
             } else {
                 device.setLastActivity(System.currentTimeMillis());
 
-                fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
+                fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
                 return;
             }
         }
@@ -140,15 +142,15 @@ public class EBusDeviceTable {
             }
         }
 
-        fireOnTelegramResolved(EBusDeviceTableListener.TYPE.UPDATE, device);
+        fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.UPDATE, device);
     }
 
     public Collection<EBusDevice> getDeviceTable() {
         return Collections.unmodifiableCollection(deviceTable.values());
     }
 
-    private void fireOnTelegramResolved(EBusDeviceTableListener.TYPE type, EBusDevice device) {
-        for (EBusDeviceTableListener listener : listeners) {
+    private void fireOnTelegramResolved(IEBusDeviceTableListener.TYPE type, EBusDevice device) {
+        for (IEBusDeviceTableListener listener : listeners) {
             listener.onEBusDeviceUpdate(type, device);
         }
     }
@@ -162,7 +164,7 @@ public class EBusDeviceTable {
      *
      * @param listener
      */
-    public void addEBusDeviceTableListener(EBusDeviceTableListener listener) {
+    public void addEBusDeviceTableListener(IEBusDeviceTableListener listener) {
         listeners.add(listener);
     }
 
@@ -172,7 +174,7 @@ public class EBusDeviceTable {
      * @param listener
      * @return
      */
-    public boolean removeEBusDeviceTableListener(EBusDeviceTableListener listener) {
+    public boolean removeEBusDeviceTableListener(IEBusDeviceTableListener listener) {
         return listeners.remove(listener);
     }
 

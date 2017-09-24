@@ -1,34 +1,32 @@
-/**
- * Copyright (c) 2010-2017 by the respective copyright holders.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- */
 package de.csdev.ebus.core;
 
-/**
- * This listener is called if the connector received a valid eBUS telegram.
- *
- * @author Christian Sowada - Initial contribution
- *
- */
-public interface EBusConnectorEventListener {
+public class EBusConnectorEventListener implements IEBusConnectorEventListener {
 
-    /**
-     * A new valid telegram has been received.
-     *
-     * @param telegram
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.IEBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
-    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId);
+    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+        // noop
+    }
 
-    /**
-     * A new valid telegram has been received.
-     *
-     * @param telegram
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.IEBusConnectorEventListener#onTelegramException(de.csdev.ebus.core.EBusDataException,
+     * java.lang.Integer)
      */
-    public void onTelegramException(EBusDataException exception, Integer sendQueueId);
+    public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+        // noop
+    }
 
-    public void onConnectionException(Exception e);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.IEBusConnectorEventListener#onConnectionException(java.lang.Exception)
+     */
+    public void onConnectionException(Exception e) {
+        // noop
+    }
 }

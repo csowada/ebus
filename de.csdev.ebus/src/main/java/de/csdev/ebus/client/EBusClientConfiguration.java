@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.client;
 
 import java.io.IOException;
@@ -16,6 +24,10 @@ import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusController;
 
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EBusClientConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
@@ -28,6 +40,9 @@ public class EBusClientConfiguration {
 
     protected EBusCommandRegistry configurationProvider;
 
+    /**
+     *
+     */
     public EBusClientConfiguration() {
 
         dataTypes = new EBusTypeRegistry();
@@ -41,16 +56,25 @@ public class EBusClientConfiguration {
         collections = new ArrayList<IEBusCommandCollection>();
     }
 
+    /**
+     *
+     */
     public void clear() {
         configurationProvider = new EBusCommandRegistry();
         collections = new ArrayList<IEBusCommandCollection>();
     }
 
+    /**
+     * @return
+     */
     public List<String> getInternalConfigurationFiles() {
         return Arrays.asList("common-configuration.json", "wolf-cgb2-configuration.json", "wolf-sm1-configuration.json",
                 "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json");
     }
 
+    /**
+     * @param configurationFile
+     */
     public void loadInternalConfiguration(String configurationFile) {
         logger.info("Load internal configuration {}", configurationFile);
         String configPath = "/commands/" + configurationFile;
@@ -63,12 +87,18 @@ public class EBusClientConfiguration {
         loadConfiguration(inputStream);
     }
 
+    /**
+     *
+     */
     public void loadInternalConfigurations() {
         for (String configurationFile : getInternalConfigurationFiles()) {
             loadInternalConfiguration(configurationFile);
         }
     }
 
+    /**
+     * @param is
+     */
     public void loadConfiguration(InputStream is) {
 
         IEBusCommandCollection collection = null;
@@ -88,6 +118,9 @@ public class EBusClientConfiguration {
         }
     }
 
+    /**
+     * @return
+     */
     public List<IEBusCommandCollection> getCollections() {
         return collections;
     }

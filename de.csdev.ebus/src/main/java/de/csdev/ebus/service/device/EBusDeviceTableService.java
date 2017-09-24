@@ -18,18 +18,18 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.EBusConnectorEventListener;
+import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
-import de.csdev.ebus.service.parser.EBusParserListener;
+import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusDeviceTableService implements EBusConnectorEventListener, EBusParserListener, EBusDeviceTableListener {
+public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBusParserListener, IEBusDeviceTableListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
 
@@ -82,7 +82,7 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
     /**
      *
      */
-    public void close() {
+    public void dispose() {
         this.controller.removeEBusEventListener(this);
         this.controller = null;
     }
@@ -195,14 +195,14 @@ public class EBusDeviceTableService implements EBusConnectorEventListener, EBusP
      * @see de.csdev.ebus.service.device.EBusDeviceTableListener#onEBusDeviceUpdate(de.csdev.ebus.service.device.
      * EBusDeviceTableListener.TYPE, de.csdev.ebus.service.device.IEBusDevice)
      */
-    public void onEBusDeviceUpdate(EBusDeviceTableListener.TYPE type, IEBusDevice device) {
+    public void onEBusDeviceUpdate(IEBusDeviceTableListener.TYPE type, IEBusDevice device) {
 
         if (!type.equals(TYPE.UPDATE_ACTIVITY)) {
             logger.info("DATA TABLE UPDATE {}", device);
         }
 
         // identify new devices
-        if (type.equals(EBusDeviceTableListener.TYPE.NEW)) {
+        if (type.equals(IEBusDeviceTableListener.TYPE.NEW)) {
             if (!disableIdentificationRequests) {
                 sendIdentificationRequest(device.getSlaveAddress());
             }

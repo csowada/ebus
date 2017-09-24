@@ -14,31 +14,61 @@ import java.util.Map;
 import de.csdev.ebus.command.datatypes.IEBusType;
 
 /**
+ * An IEBusValue represents one value from a raw eBUS telegram.
+ *
  * @author Christian Sowada - Initial contribution
  *
  */
 public interface IEBusValue extends Cloneable {
 
+    /**
+     * @return
+     */
     public IEBusType<?> getType();
 
-    public void setType(IEBusType<?> type);
-
+    /**
+     * @return
+     */
     public Object getDefaultValue();
 
+    /**
+     * @return
+     */
     public String getName();
 
+    /**
+     * @return
+     */
     public Map<String, String> getMapping();
 
+    /**
+     * @return
+     */
     public BigDecimal getStep();
 
+    /**
+     * @return
+     */
     public BigDecimal getFactor();
 
+    /**
+     * @return
+     */
     public String getLabel();
 
+    /**
+     * @return
+     */
     public BigDecimal getMax();
 
+    /**
+     * @return
+     */
     public BigDecimal getMin();
 
+    /**
+     * @return
+     */
     public String getFormat();
 
     /**
@@ -48,6 +78,9 @@ public interface IEBusValue extends Cloneable {
      */
     public Map<String, Object> getProperties();
 
+    /**
+     * @return
+     */
     public IEBusCommandMethod getParent();
 
 }

@@ -23,72 +23,148 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  */
 public class EBusKWCrcMValue implements IEBusValue {
 
-    IEBusCommandMethod parent;
+    private IEBusCommandMethod parent;
 
     private IEBusType<?> type;
 
+    /**
+     * @param type
+     */
     public EBusKWCrcMValue(IEBusType<?> type) {
         this.type = type;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getType()
+     */
     public IEBusType<?> getType() {
         return type;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getDefaultValue()
+     */
     public BigDecimal getDefaultValue() {
         return BigDecimal.valueOf(0);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#setType(de.csdev.ebus.command.datatypes.IEBusType)
+     */
     public void setType(IEBusType<?> type) {
         this.type = type;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getName()
+     */
     public String getName() {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getMapping()
+     */
     public Map<String, String> getMapping() {
         return Collections.emptyMap();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getStep()
+     */
     public BigDecimal getStep() {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getFactor()
+     */
     public BigDecimal getFactor() {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getLabel()
+     */
     public String getLabel() {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getMax()
+     */
     public BigDecimal getMax() {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getMin()
+     */
     public BigDecimal getMin() {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getProperties()
+     */
     public Map<String, Object> getProperties() {
         return Collections.emptyMap();
 
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getFormat()
+     */
     public String getFormat() {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return "EBusKWCrcMValue [type=" + type + "]";
     }
 
+    /**
+     * @param parent
+     */
     public void setParent(EBusCommandMethod parent) {
         this.parent = parent;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.command.IEBusValue#getParent()
+     */
     public IEBusCommandMethod getParent() {
         return parent;
     }

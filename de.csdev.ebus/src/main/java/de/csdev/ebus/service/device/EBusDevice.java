@@ -94,7 +94,7 @@ public class EBusDevice implements IEBusDevice {
         return lastActivity;
     }
 
-    public byte getManufacturer() {
+    public Byte getManufacturer() {
         return manufacturer;
     }
 
@@ -102,11 +102,11 @@ public class EBusDevice implements IEBusDevice {
         return deviceTable.getManufacturerName(manufacturer);
     }
 
-    public byte getMasterAddress() {
+    public Byte getMasterAddress() {
         return masterAddress;
     }
 
-    public byte getSlaveAddress() {
+    public Byte getSlaveAddress() {
         return slaveAddress;
     }
 

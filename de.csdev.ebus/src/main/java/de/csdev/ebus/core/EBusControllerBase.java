@@ -26,7 +26,7 @@ public abstract class EBusControllerBase extends Thread {
     private static final Logger logger = LoggerFactory.getLogger(EBusControllerBase.class);
 
     /** the list for listeners */
-    private final List<EBusConnectorEventListener> listeners = new CopyOnWriteArrayList<EBusConnectorEventListener>();
+    private final List<IEBusConnectorEventListener> listeners = new CopyOnWriteArrayList<IEBusConnectorEventListener>();
 
     /** The thread pool to execute events without blocking */
     private ExecutorService threadPool;
@@ -36,7 +36,7 @@ public abstract class EBusControllerBase extends Thread {
      *
      * @param listener
      */
-    public void addEBusEventListener(EBusConnectorEventListener listener) {
+    public void addEBusEventListener(IEBusConnectorEventListener listener) {
         listeners.add(listener);
     }
 
@@ -46,10 +46,13 @@ public abstract class EBusControllerBase extends Thread {
      * @param listener
      * @return
      */
-    public boolean removeEBusEventListener(EBusConnectorEventListener listener) {
+    public boolean removeEBusEventListener(IEBusConnectorEventListener listener) {
         return listeners.remove(listener);
     }
 
+    /**
+     * @param e
+     */
     protected void fireOnConnectionException(final Exception e) {
         if (threadPool == null) {
             logger.warn("ThreadPool not ready!");
@@ -58,7 +61,7 @@ public abstract class EBusControllerBase extends Thread {
 
         threadPool.execute(new Runnable() {
             public void run() {
-                for (EBusConnectorEventListener listener : listeners) {
+                for (IEBusConnectorEventListener listener : listeners) {
                     listener.onConnectionException(e);
                 }
             }
@@ -86,7 +89,7 @@ public abstract class EBusControllerBase extends Thread {
                 receivedData = receivedRawData;
 
                 if (receivedData != null) {
-                    for (EBusConnectorEventListener listener : listeners) {
+                    for (IEBusConnectorEventListener listener : listeners) {
                         listener.onTelegramReceived(receivedData, sendQueueId);
                     }
                 } else {
@@ -96,6 +99,10 @@ public abstract class EBusControllerBase extends Thread {
         });
     }
 
+    /**
+     * @param exception
+     * @param sendQueueId
+     */
     protected void fireOnEBusDataException(final EBusDataException exception, final Integer sendQueueId) {
 
         if (threadPool == null) {
@@ -105,18 +112,24 @@ public abstract class EBusControllerBase extends Thread {
 
         threadPool.execute(new Runnable() {
             public void run() {
-                for (EBusConnectorEventListener listener : listeners) {
+                for (IEBusConnectorEventListener listener : listeners) {
                     listener.onTelegramException(exception, sendQueueId);
                 }
             }
         });
     }
 
+    /**
+     *
+     */
     protected void initThreadPool() {
         // create new thread pool to send received telegrams
         threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-send-receive"));
     }
 
+    /**
+     *
+     */
     protected void shutdownThreadPool() {
         // shutdown threadpool
         if (threadPool != null && !threadPool.isShutdown()) {

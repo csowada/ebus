@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.EBusConnectorEventListener;
+import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
-import de.csdev.ebus.service.parser.EBusParserListener;
+import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.wip.EBusStateMachineTest;
 
@@ -42,7 +42,7 @@ public class ClientTest2 {
 
         client.connect(controller, (byte) 0xFF);
 
-        client.getController().addEBusEventListener(new EBusConnectorEventListener() {
+        client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
 
             public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
                 // TODO Auto-generated method stub
@@ -61,7 +61,7 @@ public class ClientTest2 {
             }
         });
 
-        client.getResolverService().addEBusParserListener(new EBusParserListener() {
+        client.getResolverService().addEBusParserListener(new IEBusParserListener() {
 
             public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
                     byte[] receivedData, Integer sendQueueId) {

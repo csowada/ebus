@@ -19,9 +19,12 @@ import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.service.device.EBusDeviceTable;
+import de.csdev.ebus.service.device.IEBusDeviceTableListener;
 import de.csdev.ebus.service.device.EBusDeviceTableService;
+import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.service.parser.EBusParserService;
 
 /**
@@ -42,6 +45,9 @@ public class EBusClient {
 
     private EBusClientConfiguration configuration;
 
+    /**
+     *
+     */
     public void dispose() {
         controller.interrupt();
 
@@ -51,7 +57,7 @@ public class EBusClient {
         }
 
         if (deviceTableService != null) {
-            deviceTableService.close();
+            deviceTableService.dispose();
             deviceTableService = null;
         }
 
@@ -124,67 +130,6 @@ public class EBusClient {
         return EBusCommandUtils.buildMasterTelegram(commandMethod, masterAddress, destinationAddress, values);
     }
 
-    // /**
-    // * @param commandId
-    // * @param type
-    // * @param destinationAddress
-    // * @return
-    // * @throws EBusTypeException
-    // */
-    // public ByteBuffer buildPollingTelegram(String commandId, IEBusCommandMethod.Method type, Byte destinationAddress)
-    // throws EBusTypeException {
-    //
-    // final IEBusCommandMethod commandMethod = getConfigurationProvider().getConfigurationById(commandId,
-    // IEBusCommandMethod.Method.GET);
-    //
-    // return buildTelegram(commandMethod, destinationAddress, null);
-    // }
-
-    // /**
-    // * @param commandId
-    // * @param slaveAddress
-    // * @return
-    // */
-    // public boolean sendPollCommand(String commandId, Byte slaveAddress) {
-    //
-    // try {
-    // final ByteBuffer buffer = buildPollingTelegram(commandId, IEBusCommandMethod.Method.GET, slaveAddress);
-    // if (buffer == null) {
-    // logger.warn("Unable to build polling telegram!");
-    // return false;
-    // }
-    //
-    // getController().addToSendQueue(buffer);
-    // return true;
-    //
-    // } catch (EBusTypeException e) {
-    // logger.error("error!", e);
-    // }
-    //
-    // return false;
-    // }
-    //
-    // public int sendSetCommand(String commandId, Byte destinationAddress, Map<String, Object> values) {
-    //
-    // final IEBusCommandMethod commandMethod = getConfigurationProvider().getConfigurationById(commandId,
-    // IEBusCommandMethod.Method.SET);
-    //
-    // try {
-    // final ByteBuffer buffer = buildTelegram(commandMethod, destinationAddress, values);
-    // if (buffer == null) {
-    // logger.warn("Unable to build polling telegram!");
-    // return -1;
-    // }
-    //
-    // return getController().addToSendQueue(buffer);
-    //
-    // } catch (EBusTypeException e) {
-    // logger.error("error!", e);
-    // }
-    //
-    // return -1;
-    // }
-
     /**
      * @return
      */
@@ -225,5 +170,83 @@ public class EBusClient {
      */
     public EBusDeviceTable getDeviceTable() {
         return deviceTable;
+    }
+
+    /**
+     * Add a listener
+     *
+     * @param listener
+     */
+    public void addEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+        getDeviceTable().addEBusDeviceTableListener(listener);
+    }
+
+    /**
+     * Remove a listener
+     *
+     * @param listener
+     * @return
+     */
+    public boolean removeEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+        return getDeviceTable().removeEBusDeviceTableListener(listener);
+    }
+
+    /**
+     * Add an eBus listener to receive valid eBus telegrams
+     *
+     * @param listener
+     */
+    public void addEBusEventListener(IEBusConnectorEventListener listener) {
+        getController().addEBusEventListener(listener);
+    }
+
+    /**
+     * Remove an eBus listener
+     *
+     * @param listener
+     * @return
+     */
+    public boolean removeEBusEventListener(IEBusConnectorEventListener listener) {
+        return getController().removeEBusEventListener(listener);
+    }
+
+    /**
+     * Add an eBus listener to receive parsed eBUS telegram values
+     *
+     * @param listener
+     */
+    public void addEBusParserListener(IEBusParserListener listener) {
+        getResolverService().addEBusParserListener(listener);
+    }
+
+    /**
+     * Remove an eBus listener
+     *
+     * @param listener
+     * @return
+     */
+    public boolean removeEBusParserListener(IEBusParserListener listener) {
+        return getResolverService().removeEBusParserListener(listener);
+    }
+
+    /**
+     * @param buffer
+     * @param maxAttemps
+     * @return
+     */
+    public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
+        return getController().addToSendQueue(buffer, maxAttemps);
+    }
+
+    /**
+     * @param buffer
+     * @return
+     */
+    /**
+     * @param buffer
+     * @return
+     */
+    public Integer addToSendQueue(byte[] buffer) {
+        return getController().addToSendQueue(buffer);
     }
 }

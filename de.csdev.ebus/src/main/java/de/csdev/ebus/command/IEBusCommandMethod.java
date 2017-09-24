@@ -17,6 +17,9 @@ import java.util.List;
  */
 public interface IEBusCommandMethod {
 
+    /**
+     * Type of the eBUS method
+     */
     enum Type {
 
         MASTER_SLAVE,
@@ -27,17 +30,29 @@ public interface IEBusCommandMethod {
 
     }
 
+    /**
+     * Kind of the method
+     */
     enum Method {
 
+        /** A getter command */
         GET,
 
+        /** A setter command */
         SET,
 
+        /** A broadcast command */
         BROADCAST
     }
 
+    /**
+     * @return
+     */
     public IEBusCommandMethod.Type getType();
 
+    /**
+     * @return
+     */
     public IEBusCommand getParent();
 
     /**
