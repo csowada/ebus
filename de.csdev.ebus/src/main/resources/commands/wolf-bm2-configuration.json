@@ -1,0 +1,74 @@
+{
+    "id":           "wolf-bm2",
+    "vendor":       "Wolf",
+    "label":        "Wolf BM2",
+    "description":  "Bedienmodul Wolf BM2",
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    "identification": ["00 20 00 00 C0"],
+    
+    "commands":
+    [
+            {
+            "label":    "Heating program",
+            "id":       "heating.program_heating_circuit",
+    
+            "template": [
+                {"name": "program", "type": "byte", "label": "Heating program", "min": 0, "max": 3,
+                    "mapping": {"0": "standby", "1": "auto", "2": "heating mode", "3":"economy mode"}
+                }
+            ],
+    
+            "set": {
+                "command":  "50 23",
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "74 27"},
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "command":  "50 22",
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "74 27"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "DHW program",
+            "id":       "dhw.program_dhw_circuit",
+    
+            "template": [
+                {"name": "program", "type": "byte", "label": "DHW program", "min": 0, "max": 2,
+                    "mapping": {"0": "standby", "1": "auto", "2": "always on"}
+                }
+            ],
+    
+            "set": {
+                "command":  "50 23",
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "75 27"},
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "command":  "50 22",
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "75 27"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        }
+    ]
+}

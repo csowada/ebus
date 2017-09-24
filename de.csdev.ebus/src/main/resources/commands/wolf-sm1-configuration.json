@@ -1,0 +1,196 @@
+{
+    "id":           "wolf-sm1",
+    "vendor":       "Wolf",
+    "label":        "Wolf SM1",
+    "description":  "Solar Module Wolf CGB-2",
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    "identification": ["01 15 00 00 80"],
+    
+    "commands":
+    [
+    
+        {
+            "label":    "Cylinder temperature",
+            "id":       "solar.temp_cylinder",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "29 0A"}
+                ],
+                "slave": [
+                    {"name": "temp_cylinder", "type": "word", "label": "Solar cylinder temperature", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Return temperature",
+            "id":       "solar.temp_return",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "FB 02"}
+                ],
+                "slave": [
+                    {"name": "temp_return", "type": "word", "label": "Solar return temperature", "factor": 0.1 , "min": -30, "max": 150, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "E1 - Return temp",
+            "id":       "solar.e1",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "2B 0A"}
+                ],
+                "slave": [
+                    {"name": "e1", "type": "word", "label": "E1 - Return temp", "factor": 0.1, "min": 1, "max": 120, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Hours run circuit pump 1",
+            "id":       "solar.runtime_pump",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "F9 02"}
+                ],
+                "slave": [
+                    {"name": "runtime_pump", "type": "word", "label": "Runtime solar circuit pump 1 (h)", "format":"%d hours"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Collector temperature",
+            "id":       "solar.temp_collector",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "2A 0A"}
+                ],
+                "slave": [
+                    {"name": "temp_collector", "type": "word", "label": "Solar collector temperature", "factor": 0.1 , "min": -40, "max": 300, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Min. cylinder temperature 24h",
+            "id":       "solar.temp_cylinder_24h_min",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "7B 09"}
+                ],
+                "slave": [
+                    {"name": "temp_cylinder_24h_min", "type": "word", "label": "Min. cylinder temperature 24h", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Max. cylinder Temperature 24h",
+            "id":       "solar.temp_cylinder_24h_max",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "7C 09"}
+                ],
+                "slave": [
+                    {"name": "temp_cylinder_24h_max", "type": "word", "label": "Max. cylinder temperature 24h", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Min. collector temperature 24h",
+            "id":       "solar.temp_collector_24h_min",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "77 09"}
+                ],
+                "slave": [
+                    {"name": "temp_collector_24h_min", "type": "word", "label": "Min. collector temperature 24h", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Max. collector temperature 24h",
+            "id":       "solar.temp_collector_24h_max",
+            "command":  "50 22",
+    
+            "get": {
+                "master": [
+                    {"type": "kw-crc"},
+                    {"type": "static", "default": "78 09"}
+                ],
+                "slave": [
+                    {"name": "temp_collector_24h_max", "type": "word", "label": "Max. collector temperature 24h", "factor": 0.1 , "min": 1, "max": 100, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Solar Broadcast 1",
+            "id":       "solar.solar_data",
+            "command":  "50 17",
+    
+            "broadcast": {
+                "master": [
+                    {"type": "byte", "children": [
+                        {"name": "state_pump", "type": "bit", "label": "Pump status"}
+                    ]},
+                    
+                    {"name": "unknown1", "type": "data1b"},
+                    {"name": "temp_collector", "type": "data2c", "label": "Temperature, collector 1", "min":-20, "max":160, "format":"%.1f°C"},
+                    {"name": "temp_cylinder", "type": "data2c", "label": "Temperature, solar cylinder 1", "min":1, "max":100, "format":"%.1f°C"},
+
+                    {"name": "unknown", "type": "data2c", "label": "Temperature, solar cylinder X"},
+                    {"name": "temp_cylinder2", "type": "data2c", "label": "Temperature, solar cylinder 2", "min":1, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_cylinder2a", "type": "data2c", "label": "Temperature, solar cylinder 2", "min":1, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_cylinder3b", "type": "data2c", "label": "Temperature, solar cylinder 3", "min":1, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_cylinder3", "type": "data2c", "label": "Temperature, solar cylinder 3", "min":1, "max":100, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Solar Yield Broadcast",
+            "id":       "solar.solar_yield",
+            "command":  "50 18",
+    
+            "broadcast": {
+                "master": [
+                    {"name": "output_current", "type": "data2c", "label": "Current output", "format":"%d kW"},
+                    {"name": "yield_today", "type": "mword", "length":2, "label": "Yield today", "factor": 0.001, "format":"%.1f kW/h"},
+                    {"name": "yield_total", "type": "mword", "length":3, "label": "Yield total", "factor": 0.001, "format":"%.1f kW/h"},
+                    {"name": "_unknown", "type": "word"}
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+java -cp de.csdev.ebus/target/core-alpha_20170711165501.jar de.csdev.ebus.astart.EBusMain2

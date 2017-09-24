@@ -4,12 +4,28 @@ Bundle-Name: eBUS 4 Java
 Bundle-SymbolicName: de.csdev.ebus;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.commons.io;version="2.2.0",
+Import-Package: com.google.gson,
+ com.google.gson.annotations,
+ com.google.gson.reflect,
+ gnu.io,
+ org.apache.commons.io,
+ org.apache.commons.lang,
+ org.apache.commons.lang.builder,
  org.slf4j
 Bundle-ActivationPolicy: lazy
-Export-Package: de.csdev.ebus.cfg,
+Export-Package: de.csdev.ebus,
+ de.csdev.ebus.cfg,
+ de.csdev.ebus.cfg.std,
+ de.csdev.ebus.cfg.std.dto,
+ de.csdev.ebus.client,
+ de.csdev.ebus.command,
+ de.csdev.ebus.command.datatypes,
+ de.csdev.ebus.command.datatypes.ext,
+ de.csdev.ebus.command.datatypes.std,
+ de.csdev.ebus.command.ext,
  de.csdev.ebus.core,
  de.csdev.ebus.core.connection,
- de.csdev.ebus.main,
- de.csdev.ebus.telegram,
+ de.csdev.ebus.service.device,
+ de.csdev.ebus.service.parser,
  de.csdev.ebus.utils
+Require-Bundle: org.junit;resolution:=optional

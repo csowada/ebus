@@ -1,0 +1,177 @@
+{
+    "id":           "common",
+    "vendor":       "eBUS Group",
+    "label":        "eBUS Standard",
+    "description":  "eBUS Group Standard commands",
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    "identification": [],
+    "properties":   {
+                        "test" : "123"
+                    },
+    
+    "commands":
+    [
+    
+        {
+            "label":    "Outside temperature",
+            "id":       "burner.temp_outside",
+            "command":  "03 01",
+    
+            "broadcast": {
+                "master": [
+                    {"name":"temp_outside", "type": "word", "label": "Outside temperature", "factor": 0.1, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Operational Data of Burner Control unit to Room Control Unit - Block 1",
+            "id":       "auto_stroker.op_data_bc2tc_b1",
+            "command":  "05 03",
+
+            "get": {
+                "master": [
+                    {"name":"block_number", "type": "static", "default": "01"},
+                    {"name":"status_auto_stroker", "type": "byte", "label": "Status indication"},
+                    {"type": "byte", "children": [
+                        {"name":"state_air_pressure", "type": "bit", "label": "Air pressure monitor"},
+                        {"name":"state_gas_pressure", "type": "bit", "label": "Gas pressure monitor"},
+                        {"name":"state_water_flow", "type": "bit", "label": "Water flow"},
+                        {"name":"state_flame", "type": "bit", "label": "Flame"},
+                        {"name":"state_valve1", "type": "bit", "label": "Valve1"},
+                        {"name":"state_valve2", "type": "bit", "label": "Valve2"},
+                        {"name":"state_pump", "type": "bit", "label": "State heating pump"},
+                        {"name":"state_alarm", "type": "bit", "label": "Alarm"}
+                    ]},                
+                    {"name":"performance_burner", "type": "uchar", "label": "Setting degree between min. and max. boiler performance (%)","min":0.0, "max":100.0,  "format":"%d%%"},
+                    {"name":"temp_boiler", "type": "data1c", "label": "Boiler temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
+                    {"name":"temp_return", "type": "uchar", "label": "Return temperature (°C)", "min":0, "max":100, "format":"%d°C"},
+                    {"name":"temp_dhw", "type": "uchar", "label": "DHW temperature (°C)", "min":0, "max":100, "format":"%d°C"},
+                    {"name":"temp_outside", "type": "char", "label": "Outside temperature (°C)", "min":-30, "max":50, "format":"%d°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Operational Data of Burner Control unit to Room Control Unit - Block 2",
+            "id":       "auto_stroker.op_data_bc2tc_b2",
+            "command":  "05 03",
+    
+            "get": {
+                "master": [
+                    {"name":"block_number", "type": "static", "default": "02"},
+                    {"name":"temp_exhaust", "type": "data2c", "label": "Exhaust temperatur", "min": 0, "max":600, "format":"%.1f°C"},
+                    {"name":"temp_bww_lead", "type": "data1c", "label": "temp_bww_lead", "format":"%.1f°C"},
+                    {"name":"performance_eff_boiler", "type": "data1c", "label": "performance_eff_boiler"},
+                    {"name":"temp_xxxx", "type": "data1c", "label": "...", "format":"%.1f°C"},
+                    {"name":"_reserve", "type": "byte", "default": "255"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Operational Data from Room Controller to Burner Control Unit",
+            "id":       "controller.op_data_rc2bc",
+            "command":  "05 07",
+    
+            "get": {
+                "master": [
+                    {"name": "status_heat_req1", "type": "byte", "label": "Status heat request 1"},
+                    {"name": "status_heat_req2", "type": "byte", "label": "Status heat request 2"},
+                    {"name": "temp_d_boiler", "type": "data2c", "label": "Boiler desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
+                    {"name": "pressure_d_boiler", "type": "data2b", "label": "Boiler desire pressure (bar)", "min":0, "max":100, "format":"%.1f bar"},
+                    {"name": "modulation", "type": "data1c", "label": "Setting degree", "min":0, "max":100, "step": 0.5, "format":"%.1f%%"},
+                    {"name": "temp_d_dhw", "type": "data1c", "label": "DWH desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
+                    {"name": "value_fuel", "type": "byte", "label": "Election of fuel", "replaceValue": 255}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Date/Time of an eBUS Master",
+            "id":       "common.time",
+            "command":  "07 00",
+    
+            "broadcast": {
+                "master": [
+                    {"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "format":"%.1f°C"},
+                    {"name": "time", "type": "datetime", "label": "Date/Time"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Identification of eBUS devices - Request",
+            "id":       "common.identification",
+            "command":  "07 04",
+    
+            "template": [
+                {"name": "vendor", "type": "byte", "label": "Vendor"},
+                {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
+                {"name": "_software_ver", "type": "bcd", "label": "Software Version"},
+                {"name": "_software_rev", "type": "bcd", "label": "Software Revision"},
+                {"name": "_hardware_ver", "type": "bcd", "label": "Hardware Version"},
+                {"name": "_hardware_rev", "type": "bcd", "label": "Hardware Revision"}
+            ],
+    
+            "broadcast": {
+                "master": [
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Inquiry of Existence",
+            "id":       "common.inquiry_of_existence",
+            "command":  "07 FE",
+            "broadcast":{}
+        },
+    
+        {
+            "label":    "Inquiry of Existence",
+            "id":       "common.sign_of_life",
+            "command":  "07 FF",
+            "broadcast":{}
+        },
+    
+        {
+            "label":    "<Room Controller> Transmission of Target Values of the Room Controllers to other Room Controllers",
+            "id":       "controller.d_values_rc2",
+            "command":  "08 00",
+    
+            "get": {
+                "master": [
+                    {"name": "temp_d_boiler", "type": "data2b", "label": "Boiler desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "min":-30, "max":50, "format":"%.1f°C"},
+                    {"name": "performance_forced", "type": "data1b", "label": "Forced performance"},
+                    {"type": "byte", "children": [
+                        {"name": "state_dhw", "type": "bit", "label": "State DHW(?) active"},
+                        {"name": "state_hc", "type": "bit", "label": "State heating circuit active"}
+                    ]},
+                    {"name": "temp_d_dhw", "type": "data2b", "label": "DWH desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Error Message",
+            "id":       "common.error",
+            "command":  "FE 01",
+    
+            "broadcast": {
+                "master": [
+                    {"type": "string", "name":"error", "length": 10}
+                    
+                ]
+            }
+        }
+    ]
+}

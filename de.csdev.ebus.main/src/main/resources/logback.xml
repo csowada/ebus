@@ -1,0 +1,16 @@
+<configuration scan="true">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%-5level] %logger{30}[:%line] - %msg%n%ex{0}</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="de.csdev.ebus.core.EBusReceiveStateMachine" level="INFO" />
+	<logger name="de.csdev.ebus" level="TRACE" />
+
+	<root level="TRACE">
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>
