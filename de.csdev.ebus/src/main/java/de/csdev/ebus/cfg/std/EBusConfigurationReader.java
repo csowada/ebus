@@ -18,6 +18,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
@@ -43,6 +47,9 @@ import de.csdev.ebus.utils.EBusUtils;
  *
  */
 public class EBusConfigurationReader implements IEBusConfigurationReader {
+
+    @SuppressWarnings("unused")
+    private final Logger logger = LoggerFactory.getLogger(EBusConfigurationReader.class);
 
     private EBusTypeRegistry registry;
 
@@ -148,7 +155,13 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
                 EBusCommandMethod commandMethod = new EBusCommandMethod(cfg, method);
 
-                commandMethod.setCommand(command);
+                // overwrite with local command
+                if (StringUtils.isNotEmpty(commandMethodElement.getCommand())) {
+                    commandMethod.setCommand(EBusUtils.toByteArray(commandMethodElement.getCommand()));
+                } else {
+                    commandMethod.setCommand(command);
+                }
+
                 commandMethod.setDestinationAddress(destination);
                 commandMethod.setSourceAddress(source);
 
