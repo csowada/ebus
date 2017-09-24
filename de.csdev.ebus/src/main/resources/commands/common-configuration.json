@@ -17,8 +17,6 @@
             "label":    "Outside temperature",
             "id":       "burner.temp_outside",
             "command":  "03 01",
-            "dst":      "FE",
-            
     
             "broadcast": {
                 "master": [
@@ -31,8 +29,7 @@
             "label":    "Operational Data of Burner Control unit to Room Control Unit - Block 1",
             "id":       "auto_stroker.op_data_bc2tc_b1",
             "command":  "05 03",
-            
-    
+
             "get": {
                 "master": [
                     {"name":"block_number", "type": "static", "default": "01"},
@@ -95,7 +92,6 @@
             "label":    "Date/Time of an eBUS Master",
             "id":       "common.time",
             "command":  "07 00",
-            "dst":      "FE",
     
             "broadcast": {
                 "master": [
@@ -169,7 +165,6 @@
             "label":    "Error Message",
             "id":       "common.error",
             "command":  "FE 01",
-            "dst":      "FE",
     
             "broadcast": {
                 "master": [

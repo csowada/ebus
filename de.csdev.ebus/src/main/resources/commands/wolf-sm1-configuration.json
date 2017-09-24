@@ -161,7 +161,7 @@
     
             "broadcast": {
                 "master": [
-                    {"name": "_solar_status", "type": "byte", "label": "Solar status (Multiple bits)", "children": [
+                    {"type": "byte", "children": [
                         {"name": "state_pump", "type": "bit", "label": "Pump status"}
                     ]},
                     
