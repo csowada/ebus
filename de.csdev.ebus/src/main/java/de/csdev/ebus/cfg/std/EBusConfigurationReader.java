@@ -55,9 +55,10 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.cfg.IEBusConfigurationReader#loadConfigurationCollection(java.io.InputStream)
      */
+    @Override
     public IEBusCommandCollection loadConfigurationCollection(InputStream inputStream)
             throws IOException, EBusConfigurationReaderException {
 
@@ -69,8 +70,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             throw new IllegalArgumentException("Required argument inputStream is null!");
         }
 
-        // List<IEBusCommand> commandList = new ArrayList<IEBusCommand>();
-
         Gson gson = new Gson();
         EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(inputStream), EBusCollectionDTO.class);
 
@@ -80,7 +79,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         for (EBusCommandDTO commandDto : collection.getCommands()) {
             if (commandDto != null) {
                 commandCollection.addCommand(parseTelegramConfiguration(commandCollection, commandDto));
-                // commandList.add(parseTelegramConfiguration(commandCollection, commandDto));
             }
         }
 
@@ -91,9 +89,10 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.cfg.IEBusConfigurationReader#setEBusTypes(de.csdev.ebus.command.datatypes.EBusTypeRegistry)
      */
+    @Override
     public void setEBusTypes(EBusTypeRegistry ebusTypes) {
         registry = ebusTypes;
     }
