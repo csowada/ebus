@@ -1,5 +1,5 @@
 {
-    "id":           "vaillant-bai00",
+    "id":           "bai",
     "vendor":       "Vaillant",
     "label":        "Vaillant BAI00",
     "description":  "Vaillant BAI00",
@@ -41,7 +41,7 @@
             "command":  "B5 09",
     
             "template": [
-                {"name": "postrun_pump", "type": "uchar", "label": "Overrun time of internal pump for heating mode (min)", "min": 0, "max": 60, "format":"%d min"}
+                {"name": "postrun_pump", "type": "uchar", "label": "Overrun time of internal pump for heating mode", "min": 0, "max": 60, "format":"%d min"}
             ],
     
             "get": {
@@ -61,7 +61,7 @@
         },
         
         {
-            "label":    "Max. burner anti-cycling time heating at 20 °C flow temperature D.002 (min)",
+            "label":    "Max. burner anti-cycling time heating at 20 °C flow temperature D.002",
             "id":       "boiler.blocktime_boiler",
             "command":  "B5 09",
     
@@ -129,7 +129,7 @@
                     {"type": "static", "default": "0D 39 00"}
                 ],
                 "slave": [
-                    {"name": "temp_d_flow", "type": "data2c", "label": "Flow temperature target value (or return target value) (°C)", "min": 0, "max": 100, "format":"%.f°C"}
+                    {"name": "temp_d_flow", "type": "data2c", "label": "Flow temperature target value (or return target value)", "min": 0, "max": 100, "format":"%.f°C"}
                 ]
             }
         },
@@ -144,7 +144,7 @@
                     {"type": "static", "default": "0D EA 03"}
                 ],
                 "slave": [
-                    {"name": "temp_d_dhw", "type": "data2c", "label": "Hot water temperature target value (°C)", "min": 0, "max": 100, "format":"%.f°C"}
+                    {"name": "temp_d_dhw", "type": "data2c", "label": "Hot water temperature target value", "min": 0, "max": 100, "format":"%.f°C"}
                 ]
             }
         },
@@ -159,7 +159,7 @@
                     {"type": "static", "default": "0D 04 00"}
                 ],
                 "slave": [
-                    {"name": "temp_d_cylinder", "type": "data2c", "label": "Cylinder temperature target value (°C)", "min": 0, "max": 100, "format":"%.f°C"}
+                    {"name": "temp_d_cylinder", "type": "data2c", "label": "Cylinder temperature target value", "min": 0, "max": 100, "format":"%.f°C"}
                 ]
             }
         },
@@ -237,7 +237,7 @@
                     {"type": "static", "default": "0D 73 00"}
                 ],
                 "slave": [
-                    {"name": "modulation_pump", "type": "uchar", "label": "Actual pump speed (%)", "min": 0, "max": 100, "format":"%.f°C"}
+                    {"name": "modulation_pump", "type": "uchar", "label": "Actual pump speed", "min": 0, "max": 100, "format":"%d%%"}
                 ]
             }
         },

@@ -1,14 +1,10 @@
 {
-    "id":           "common",
+    "id":           "std",
     "vendor":       "eBUS Group",
     "label":        "eBUS Standard",
     "description":  "eBUS Group Standard commands",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": [],
-    "properties":   {
-                        "test" : "123"
-                    },
     
     "commands":
     [
@@ -44,11 +40,11 @@
                         {"name":"state_pump", "type": "bit", "label": "State heating pump"},
                         {"name":"state_alarm", "type": "bit", "label": "Alarm"}
                     ]},                
-                    {"name":"performance_burner", "type": "uchar", "label": "Setting degree between min. and max. boiler performance (%)","min":0.0, "max":100.0,  "format":"%d%%"},
-                    {"name":"temp_boiler", "type": "data1c", "label": "Boiler temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
-                    {"name":"temp_return", "type": "uchar", "label": "Return temperature (°C)", "min":0, "max":100, "format":"%d°C"},
-                    {"name":"temp_dhw", "type": "uchar", "label": "DHW temperature (°C)", "min":0, "max":100, "format":"%d°C"},
-                    {"name":"temp_outside", "type": "char", "label": "Outside temperature (°C)", "min":-30, "max":50, "format":"%d°C"}
+                    {"name":"performance_burner", "type": "uchar", "label": "Setting degree between min. and max. boiler performance","min":0.0, "max":100.0,  "format":"%d%%"},
+                    {"name":"temp_boiler", "type": "data1c", "label": "Boiler temperature", "min":0, "max":100, "format":"%.1f°C"},
+                    {"name":"temp_return", "type": "uchar", "label": "Return temperature", "min":0, "max":100, "format":"%d°C"},
+                    {"name":"temp_dhw", "type": "uchar", "label": "DHW temperature", "min":0, "max":100, "format":"%d°C"},
+                    {"name":"temp_outside", "type": "char", "label": "Outside temperature", "min":-30, "max":50, "format":"%d°C"}
                 ]
             }
         },
@@ -62,10 +58,10 @@
                 "master": [
                     {"name":"block_number", "type": "static", "default": "02"},
                     {"name":"temp_exhaust", "type": "data2c", "label": "Exhaust temperatur", "min": 0, "max":600, "format":"%.1f°C"},
-                    {"name":"temp_bww_lead", "type": "data1c", "label": "temp_bww_lead", "format":"%.1f°C"},
-                    {"name":"performance_eff_boiler", "type": "data1c", "label": "performance_eff_boiler"},
-                    {"name":"temp_xxxx", "type": "data1c", "label": "...", "format":"%.1f°C"},
-                    {"name":"_reserve", "type": "byte", "default": "255"}
+                    {"name":"temp_dhw_lead", "type": "data1c", "label": "DHW lead water temperature", "min": 0, "max":100, "format":"%.1f°C"},
+                    {"name":"performance_eff_boiler", "type": "data1c", "label": "Effective relative boiler performance", "format":"%.1f%%"},
+                    {"name":"temp_joint_lead", "type": "data1c", "label": "Joint lead water temperature in case of cascade operation", "min": 0, "max":100, "format":"%.1f°C"},
+                    {"type": "byte", "default": "255"}
                 ]
             }
         },
@@ -79,10 +75,10 @@
                 "master": [
                     {"name": "status_heat_req1", "type": "byte", "label": "Status heat request 1"},
                     {"name": "status_heat_req2", "type": "byte", "label": "Status heat request 2"},
-                    {"name": "temp_d_boiler", "type": "data2c", "label": "Boiler desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
-                    {"name": "pressure_d_boiler", "type": "data2b", "label": "Boiler desire pressure (bar)", "min":0, "max":100, "format":"%.1f bar"},
+                    {"name": "temp_d_boiler", "type": "data2c", "label": "Boiler desire temperature", "min":0, "max":100, "format":"%.1f°C"},
+                    {"name": "pressure_d_boiler", "type": "data2b", "label": "Boiler desire pressure", "min":0, "max":100, "format":"%.1f bar"},
                     {"name": "modulation", "type": "data1c", "label": "Setting degree", "min":0, "max":100, "step": 0.5, "format":"%.1f%%"},
-                    {"name": "temp_d_dhw", "type": "data1c", "label": "DWH desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_d_dhw", "type": "data1c", "label": "DHW desire temperature", "min":0, "max":100, "step": 0.5, "format":"%.1f°C"},
                     {"name": "value_fuel", "type": "byte", "label": "Election of fuel", "replaceValue": 255}
                 ]
             }
@@ -95,7 +91,7 @@
     
             "broadcast": {
                 "master": [
-                    {"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "format":"%.1f°C"},
+                    {"name": "temp_outside", "type": "data2b", "label": "Outside temperature", "format":"%.1f°C"},
                     {"name": "time", "type": "datetime", "label": "Date/Time"}
                 ]
             }
@@ -149,14 +145,14 @@
     
             "get": {
                 "master": [
-                    {"name": "temp_d_boiler", "type": "data2b", "label": "Boiler desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"},
-                    {"name": "temp_outside", "type": "data2b", "label": "Outside temperature (°C)", "min":-30, "max":50, "format":"%.1f°C"},
+                    {"name": "temp_d_boiler", "type": "data2b", "label": "Boiler desire temperature", "min":0, "max":100, "format":"%.1f°C"},
+                    {"name": "temp_outside", "type": "data2b", "label": "Outside temperature", "min":-30, "max":50, "format":"%.1f°C"},
                     {"name": "performance_forced", "type": "data1b", "label": "Forced performance"},
                     {"type": "byte", "children": [
-                        {"name": "state_dhw", "type": "bit", "label": "State DHW(?) active"},
+                        {"name": "state_dhw", "type": "bit", "label": "State DHW active"},
                         {"name": "state_hc", "type": "bit", "label": "State heating circuit active"}
                     ]},
-                    {"name": "temp_d_dhw", "type": "data2b", "label": "DWH desire temperature (°C)", "min":0, "max":100, "format":"%.1f°C"}
+                    {"name": "temp_d_dhw", "type": "data2b", "label": "DHW desire temperature", "min":0, "max":100, "format":"%.1f°C"}
                 ]
             }
         },
