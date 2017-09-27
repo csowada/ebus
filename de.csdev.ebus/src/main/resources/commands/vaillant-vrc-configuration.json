@@ -1,11 +1,11 @@
 {
-    "id":           "vaillant-vrc",
+    "id":           "vaillant-vrc430",
     "vendor":       "Vaillant",
-    "label":        "Vaillant VRC Common",
-    "description":  "Vaillant VRC Common (VRC 430, VRC 470, VRC 90)",
+    "label":        "Vaillant VRC 430/470n",
+    "description":  "Vaillant VRC 430 and VRC 470",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": ["86 82 67 52 51 48", "86 82 67 52 55 48", "86 82 67 57 48 00"],
+    "identification": ["34 33 30 30 30", "34 37 30 30 30"],
     
     "commands":
     [
