@@ -27,7 +27,7 @@ public class EBusDevice implements IEBusDevice {
 
     public long lastActivity;
 
-    private byte manufacturer;
+    private Byte manufacturer;
 
     byte masterAddress;
 
@@ -82,34 +82,46 @@ public class EBusDevice implements IEBusDevice {
         return true;
     }
 
+    @Override
     public byte[] getDeviceId() {
         return deviceId;
     }
 
+    @Override
     public BigDecimal getHardwareVersion() {
         return hardwareVersion;
     }
 
+    @Override
     public long getLastActivity() {
         return lastActivity;
     }
 
+    @Override
     public Byte getManufacturer() {
         return manufacturer;
     }
 
+    @Override
     public String getManufacturerName() {
-        return deviceTable.getManufacturerName(manufacturer);
+        if (manufacturer != null) {
+            return deviceTable.getManufacturerName(manufacturer);
+        }
+
+        return null;
     }
 
+    @Override
     public Byte getMasterAddress() {
         return masterAddress;
     }
 
+    @Override
     public Byte getSlaveAddress() {
         return slaveAddress;
     }
 
+    @Override
     public BigDecimal getSoftwareVersion() {
         return softwareVersion;
     }
@@ -139,7 +151,7 @@ public class EBusDevice implements IEBusDevice {
         this.lastActivity = lastActivity;
     }
 
-    public void setManufacturer(byte manufactur) {
+    public void setManufacturer(Byte manufactur) {
         this.manufacturer = manufactur;
     }
 

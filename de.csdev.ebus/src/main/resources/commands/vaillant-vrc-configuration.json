@@ -1,11 +1,11 @@
 {
-    "id":           "vaillant-vrc",
+    "id":           "vrc430",
     "vendor":       "Vaillant",
-    "label":        "Vaillant VRC Common",
-    "description":  "Vaillant VRC Common (VRC 430, VRC 470, VRC 90)",
+    "label":        "Vaillant VRC 430/470",
+    "description":  "Vaillant VRC 430 and VRC 470",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": ["86 82 67 52 51 48", "86 82 67 52 55 48", "86 82 67 57 48 00"],
+    "identification": ["34 33 30 30 30", "34 37 30 30 30"],
     
     "commands":
     [
@@ -19,7 +19,7 @@
                     {"type": "static", "default": "0D 00 00"}
                 ],
                 "slave": [
-                    {"name": "temp_room", "type": "data2c", "label": "Room temperature", "min": -30, "max": 60, "format":"%.1f °C"},
+                    {"name": "temp_room", "type": "data2c", "label": "Room temperature", "min": -30, "max": 60, "format":"%.1f°C"},
                     {"name": "status", "type": "uchar", "label": "Room temperature status",
                         "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
                 ]
@@ -48,7 +48,7 @@
             "command":  "B5 09",
 
             "template": [
-                {"name": "temp_d_holiday", "type": "data2c", "label": "Holiday setpoint", "format":"%.1f °C"}
+                {"name": "temp_d_holiday", "type": "data2c", "label": "Holiday setpoint", "format":"%.1f°C"}
             ],
 
             "get": {
@@ -74,7 +74,7 @@
             "command":  "B5 09",
 
             "template": [
-                {"name": "temp_d_day", "type": "data1c", "label": "HC1 Day setpoint", "min": 0, "max": 100, "format":"%.1f °C"}
+                {"name": "temp_d_day", "type": "data1c", "label": "HC1 Day setpoint", "min": 0, "max": 100, "format":"%.1f°C"}
             ],
 
             "get": {
@@ -127,7 +127,7 @@
             "command":  "B5 09",
 
             "template": [
-                {"name": "temp_d_night", "type": "data1c", "label": "HC1 Night setpoint", "min": 0, "max": 100, "format":"%.1f °C"}
+                {"name": "temp_d_night", "type": "data1c", "label": "HC1 Night setpoint", "min": 0, "max": 100, "format":"%.1f°C"}
             ],
 
             "get": {
@@ -179,7 +179,7 @@
             "command":  "B5 09",
 
             "template": [
-                {"name": "temp_d_man", "type": "data1c", "label": "HC1 Day setpoint", "min": 0, "max": 100, "format":"%.1f °C"}
+                {"name": "temp_d_man", "type": "data1c", "label": "HC1 Day setpoint", "min": 0, "max": 100, "format":"%.1f°C"}
             ],
 
             "get": {
@@ -209,7 +209,7 @@
                     {"type": "static", "default": "0D 3C 00"}
                 ],
                 "slave": [
-                    {"name": "temp_d_room_override", "type": "data1c", "label": "HC1 Manual override setpoint", "min": 0, "max": 100, "format":"%.1f °C"}
+                    {"name": "temp_d_room_override", "type": "data1c", "label": "HC1 Manual override setpoint", "min": 0, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -247,7 +247,7 @@
             "command":  "B5 09",
 
             "template": [
-                {"name": "temp_d_dhw", "type": "data1c", "label": "DHW setpoint", "format":"%.1f °C"}
+                {"name": "temp_d_dhw", "type": "data1c", "label": "DHW setpoint", "format":"%.1f°C"}
             ],
 
             "get": {
@@ -304,7 +304,7 @@
                     {"type": "static", "default": "0D 62 00"}
                 ],
                 "slave": [
-                    {"name": "temp_outside", "type": "data2c", "label": "Outside temperature", "min": -60, "max": 80, "format":"%.1f °C"},
+                    {"name": "temp_outside", "type": "data2c", "label": "Outside temperature", "min": -60, "max": 80, "format":"%.1f°C"},
                     {"name": "status", "type": "uchar", "label": "Outside temperature status",
                         "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
                 ]
@@ -321,7 +321,7 @@
                     {"type": "static", "default": "0D 80 00"}
                 ],
                 "slave": [
-                    {"name": "temp_room_disp", "type": "data2c", "label": "Room temperature", "min": -30, "max": 60, "format":"%.1f °C"}
+                    {"name": "temp_room_disp", "type": "data2c", "label": "Room temperature", "min": -30, "max": 60, "format":"%.1f°C"}
                 ]
             }
         },
@@ -336,7 +336,7 @@
                     {"type": "static", "default": "0D 86 00"}
                 ],
                 "slave": [
-                    {"name": "temp_d_actual_dhw", "type": "data1c", "label": "DHW actual desired temperature", "min": 0, "max": 100, "format":"%.1f °C"}
+                    {"name": "temp_d_actual_dhw", "type": "data1c", "label": "DHW actual desired temperature", "min": 0, "max": 100, "format":"%.1f°C"}
                 ]
             }
         }

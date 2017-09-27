@@ -28,4 +28,14 @@ public class EBusConsts {
 
     /** The escape byte for expanded bytes */
     public final static byte ESCAPE = (byte) 0xA9;
+
+    /** eBUS standard collection id */
+    public final static String COLLECTION_STD = "std";
+
+    public final static String COMMAND_INQ_EXISTENCE = "common.inquiry_of_existence";
+
+    public final static String COMMAND_SIGN_OF_LIFE = "common.sign_of_life";
+
+    public final static String COMMAND_IDENTIFICATIONE = "common.identification";
+
 }

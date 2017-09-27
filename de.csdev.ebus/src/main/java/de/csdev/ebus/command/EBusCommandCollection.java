@@ -27,7 +27,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
 
     private String id;
 
-    private List<String> identification;
+    private List<String> identification = new ArrayList<String>();
 
     private String label;
 
@@ -60,6 +60,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      *
      * @see de.csdev.ebus.command.IEBusCommandCollection#getCommands()
      */
+    @Override
     public List<IEBusCommand> getCommands() {
         return Collections.unmodifiableList(commands);
     }
@@ -69,6 +70,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      *
      * @see de.csdev.ebus.command.IEBusCommandCollection#getDescription()
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -78,6 +80,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      *
      * @see de.csdev.ebus.command.IEBusCommandCollection#getId()
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -87,7 +90,11 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      *
      * @see de.csdev.ebus.command.IEBusCommandCollection#getIdentification()
      */
+    @Override
     public List<String> getIdentification() {
+        if (identification == null) {
+            identification = new ArrayList<String>();
+        }
         return identification;
     }
 
@@ -96,6 +103,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      *
      * @see de.csdev.ebus.command.IEBusCommandCollection#getLabel()
      */
+    @Override
     public String getLabel() {
         return label;
     }
@@ -105,6 +113,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      *
      * @see de.csdev.ebus.command.IEBusCommandCollection#getProperties()
      */
+    @Override
     public Map<String, Object> getProperties() {
         return CollectionUtils.unmodifiableNotNullMap(properties);
     }
@@ -114,11 +123,15 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      *
      * @see de.csdev.ebus.command.IEBusCommandCollection#getProperty(java.lang.String)
      */
+    @Override
     public Object getProperty(String key) {
         return CollectionUtils.get(properties, key);
     }
 
     public void setIdentification(List<String> identification) {
+        if (identification == null) {
+            this.identification = new ArrayList<String>();
+        }
         this.identification = identification;
     }
 

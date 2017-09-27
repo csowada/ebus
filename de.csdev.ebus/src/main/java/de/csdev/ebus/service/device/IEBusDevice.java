@@ -38,6 +38,13 @@ public interface IEBusDevice {
     public Byte getManufacturer();
 
     /**
+     * Returns the identifier of the manufacturer of the eBUS device
+     *
+     * @return
+     */
+    public String getManufacturerName();
+
+    /**
      * Returns the device ID
      *
      * @return
@@ -60,7 +67,7 @@ public interface IEBusDevice {
 
     /**
      * Returns the last activity of the device as 1970 millis
-     * 
+     *
      * @return
      */
     public long getLastActivity();
