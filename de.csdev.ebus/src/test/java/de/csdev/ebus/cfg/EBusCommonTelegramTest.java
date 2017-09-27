@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.TestUtils;
-import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
@@ -28,6 +27,7 @@ import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.IEBusCommandMethod.Method;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -62,8 +62,8 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void testIdentification() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common", "common.identification",
-                IEBusCommandMethod.Method.GET);
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById(EBusConsts.COLLECTION_STD,
+                EBusConsts.COMMAND_IDENTIFICATIONE, IEBusCommandMethod.Method.GET);
 
         assertNotNull("Command common.identification not found!", commandMethod);
 
@@ -79,7 +79,7 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void testAutoStroker() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common",
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById(EBusConsts.COLLECTION_STD,
                 "auto_stroker.op_data_bc2tc_b1", IEBusCommandMethod.Method.GET);
 
         assertNotNull("Command auto_stroker not found!", commandMethod);
@@ -96,8 +96,8 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void testInquiryOfExistence() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("common", "common.inquiry_of_existence",
-                Method.BROADCAST);
+        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById(EBusConsts.COLLECTION_STD,
+                EBusConsts.COMMAND_INQ_EXISTENCE, Method.BROADCAST);
         assertNotNull("Command common.inquiry_of_existence not found!", commandMethod);
     }
 

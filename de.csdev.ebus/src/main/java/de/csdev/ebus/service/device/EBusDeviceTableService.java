@@ -18,10 +18,10 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -29,7 +29,8 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBusParserListener, IEBusDeviceTableListener {
+public class EBusDeviceTableService
+        implements IEBusConnectorEventListener, IEBusParserListener, IEBusDeviceTableListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
 
@@ -66,8 +67,8 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-        IEBusCommandMethod command = configurationProvider.getConfigurationById("common", "common.inquiry_of_existence",
-                IEBusCommandMethod.Method.BROADCAST);
+        IEBusCommandMethod command = configurationProvider.getConfigurationById(EBusConsts.COLLECTION_STD,
+                EBusConsts.COMMAND_INQ_EXISTENCE, IEBusCommandMethod.Method.BROADCAST);
 
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
@@ -92,8 +93,8 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
      */
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommandMethod command = configurationProvider.getConfigurationById("common", "common.sign_of_life",
-                IEBusCommandMethod.Method.BROADCAST);
+        IEBusCommandMethod command = configurationProvider.getConfigurationById(EBusConsts.COLLECTION_STD,
+                EBusConsts.COMMAND_SIGN_OF_LIFE, IEBusCommandMethod.Method.BROADCAST);
 
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
@@ -110,8 +111,8 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
      */
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommandMethod command = configurationProvider.getConfigurationById("common", "common.identification",
-                IEBusCommandMethod.Method.GET);
+        IEBusCommandMethod command = configurationProvider.getConfigurationById(EBusConsts.COLLECTION_STD,
+                EBusConsts.COMMAND_IDENTIFICATIONE, IEBusCommandMethod.Method.GET);
 
         if (command == null) {
             logger.warn("Unable to load command with id common.identification");
@@ -137,6 +138,7 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
      *
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
+    @Override
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
         deviceTable.updateDevice(receivedData[0], null);
@@ -153,6 +155,7 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramException(de.csdev.ebus.core.EBusDataException,
      * java.lang.Integer)
      */
+    @Override
     public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
             logger.warn("Scan broadcast failed!");
@@ -166,6 +169,7 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
      * @see de.csdev.ebus.service.parser.EBusParserListener#onTelegramResolved(de.csdev.ebus.command.IEBusCommand,
      * java.util.Map, byte[], java.lang.Integer)
      */
+    @Override
     public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
             Integer sendQueueId) {
 
@@ -178,13 +182,13 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
             masterAddress = EBusUtils.getMasterAddress(receivedData[1]);
         }
 
-        if (id.equals("common.sign_of_life")) {
+        if (id.equals(EBusConsts.COMMAND_SIGN_OF_LIFE)) {
             deviceTable.updateDevice(masterAddress, null);
 
-        } else if (id.equals("common.inquiry_of_existence")) {
+        } else if (id.equals(EBusConsts.COMMAND_INQ_EXISTENCE)) {
             sendSignOfLife();
 
-        } else if (id.equals("common.identification")) {
+        } else if (id.equals(EBusConsts.COMMAND_IDENTIFICATIONE)) {
             deviceTable.updateDevice(masterAddress, result);
         }
     }
@@ -195,6 +199,7 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
      * @see de.csdev.ebus.service.device.EBusDeviceTableListener#onEBusDeviceUpdate(de.csdev.ebus.service.device.
      * EBusDeviceTableListener.TYPE, de.csdev.ebus.service.device.IEBusDevice)
      */
+    @Override
     public void onEBusDeviceUpdate(IEBusDeviceTableListener.TYPE type, IEBusDevice device) {
 
         if (!type.equals(TYPE.UPDATE_ACTIVITY)) {
@@ -209,6 +214,7 @@ public class EBusDeviceTableService implements IEBusConnectorEventListener, IEBu
         }
     }
 
+    @Override
     public void onConnectionException(Exception e) {
         // noop
     }
