@@ -48,7 +48,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
 
             if (portIdentifier != null) {
 
-                serialPort = portIdentifier.open("org.openhab.binding.ebus", 2000);
+                serialPort = portIdentifier.open("de.csdev.ebus", 2000);
                 serialPort.setSerialPortParams(2400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE);
 
