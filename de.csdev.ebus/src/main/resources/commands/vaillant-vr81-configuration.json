@@ -1,0 +1,44 @@
+{
+    "id":           "vr81",
+    "vendor":       "Vaillant",
+    "label":        "Vaillant VR 81",
+    "description":  "Vaillant VR 81",
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    "identification": ["56 38 31 30 30"],
+    
+    "commands":
+    [
+        {
+            "label":    "Raw room temperature",
+            "id":       "controller.temp_room",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 00 00"}
+                ],
+                "slave": [
+                    {"name": "temp_room", "type": "data2c", "label": "Room temperature", "min": -30, "max": 60, "format":"%.1f°C"},
+                    {"name": "status", "type": "uchar", "label": "Room temperature status",
+                        "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Displayed room temperature",
+            "id":       "controller.temp_room_disp",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 1B 00"}
+                ],
+                "slave": [
+                    {"name": "temp_room_disp", "type": "data2c", "label": "Room temperature", "min": -30, "max": 60, "format":"%.1f°C"}
+                ]
+            }
+        }
+    ]
+}

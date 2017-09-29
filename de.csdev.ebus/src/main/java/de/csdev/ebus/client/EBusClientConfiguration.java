@@ -79,7 +79,8 @@ public class EBusClientConfiguration {
      */
     public List<String> getInternalConfigurationFiles() {
         return Arrays.asList("common-configuration.json", "wolf-cgb2-configuration.json", "wolf-sm1-configuration.json",
-                "wolf-bm2-configuration.json", "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json");
+                "wolf-bm2-configuration.json", "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json",
+                "vaillant-vr81-configuration.json");
     }
 
     /**
