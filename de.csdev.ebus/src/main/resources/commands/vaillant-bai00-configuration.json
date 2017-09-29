@@ -95,7 +95,7 @@
                     {"type": "static", "default": "0D 16 00"}
                 ],
                 "slave": [
-                    {"name": "temp_outlet", "type": "data2c", "label": "Outlet temp. actual value", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "temp_outlet", "type": "data2c", "label": "Outlet temp. actual value", "min": 0, "max": 100, "format":"%.1f°C"},
                     {"name": "status", "type": "uchar", "label": "Outlet temp. actual value status", 
                         "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
                 ]
@@ -112,7 +112,7 @@
                     {"type": "static", "default": "0D 17 00"}
                 ],
                 "slave": [
-                    {"name": "temp_cylinder", "type": "data2c", "label": "Measured value of hot water sensor", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "temp_cylinder", "type": "data2c", "label": "Measured value of hot water sensor", "min": 0, "max": 100, "format":"%.1f°C"},
                     {"name": "status", "type": "uchar", "label": "Outlet temp. actual value status", 
                         "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
                 ]
@@ -129,7 +129,7 @@
                     {"type": "static", "default": "0D 39 00"}
                 ],
                 "slave": [
-                    {"name": "temp_d_flow", "type": "data2c", "label": "Flow temperature target value (or return target value)", "min": 0, "max": 100, "format":"%.f°C"}
+                    {"name": "temp_d_flow", "type": "data2c", "label": "Flow temperature target value (or return target value)", "min": 0, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -144,7 +144,7 @@
                     {"type": "static", "default": "0D EA 03"}
                 ],
                 "slave": [
-                    {"name": "temp_d_dhw", "type": "data2c", "label": "Hot water temperature target value", "min": 0, "max": 100, "format":"%.f°C"}
+                    {"name": "temp_d_dhw", "type": "data2c", "label": "Hot water temperature target value", "min": 0, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -159,7 +159,7 @@
                     {"type": "static", "default": "0D 04 00"}
                 ],
                 "slave": [
-                    {"name": "temp_d_cylinder", "type": "data2c", "label": "Cylinder temperature target value", "min": 0, "max": 100, "format":"%.f°C"}
+                    {"name": "temp_d_cylinder", "type": "data2c", "label": "Cylinder temperature target value", "min": 0, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -190,7 +190,7 @@
                     {"type": "static", "default": "0D 6E 04"}
                 ],
                 "slave": [
-                    {"name": "temp_d_flow_ext", "type": "data2c", "label": "Target value from external eBus controller", "min": 0, "max": 100, "format":"%.f°C"}
+                    {"name": "temp_d_flow_ext", "type": "data2c", "label": "Target value from external eBus controller", "min": 0, "max": 100, "format":"%.1f°C"}
                 ]
             }
         },
@@ -394,7 +394,7 @@
                     {"type": "static", "default": "0D 18 00"}
                 ],
                 "slave": [
-                    {"name": "temp_flow", "type": "data2c", "label": "Measured value of hot water sensor", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "temp_flow", "type": "data2c", "label": "Measured value of hot water sensor", "min": 0, "max": 100, "format":"%.1f°C"},
                     {"name": "status", "type": "uchar", "label": "Status flow temperature", 
                         "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
                 ]
@@ -411,7 +411,7 @@
                     {"type": "static", "default": "0D 98 00"}
                 ],
                 "slave": [
-                    {"name": "temp_return", "type": "data2c", "label": "Return temperature", "min": 0, "max": 100, "format":"%.f°C"},
+                    {"name": "temp_return", "type": "data2c", "label": "Return temperature", "min": 0, "max": 100, "format":"%.1f°C"},
                     {"name": "status", "type": "uchar", "label": "Status return temperature", 
                         "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
                 ]
@@ -443,7 +443,7 @@
                     {"type": "static", "default": "0D 76 00"}
                 ],
                 "slave": [
-                    {"name": "temp_outside", "type": "data2c", "label": "Outside temperature", "min": -40, "max": 70, "format":"%.f°C"},
+                    {"name": "temp_outside", "type": "data2c", "label": "Outside temperature", "min": -40, "max": 70, "format":"%.1f°C"},
                     {"name": "status", "type": "uchar", "label": "Status uutside temperature", 
                         "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
                 ]
