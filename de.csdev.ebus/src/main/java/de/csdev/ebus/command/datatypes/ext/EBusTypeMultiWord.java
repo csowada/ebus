@@ -52,6 +52,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
         for (int i = 0; i <= x; i++) {
 
             System.arraycopy(data, i * 2, dataNew, 0, dataNew.length);
+            applyByteOrder(dataNew);
             BigDecimal value = types.decode(EBusTypeWord.WORD, dataNew);
 
             BigDecimal factor = this.factor.pow(i);
@@ -79,7 +80,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
             BigDecimal[] divideAndRemainder = value.divideAndRemainder(factor);
 
             byte[] encode = types.encode(EBusTypeWord.WORD, divideAndRemainder[0]);
-
+            applyByteOrder(encode);
             value = divideAndRemainder[1];
             System.arraycopy(encode, 0, result, i * 2, 2);
         }

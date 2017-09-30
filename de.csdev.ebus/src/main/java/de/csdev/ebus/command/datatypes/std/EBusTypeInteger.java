@@ -26,8 +26,10 @@ public class EBusTypeInteger extends EBusTypeGenericReplaceValue {
 
     public EBusTypeInteger() {
         replaceValue = new byte[] { (byte) 0x00, (byte) 0x80 };
+        applyByteOrder(replaceValue);
     }
 
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
@@ -39,13 +41,18 @@ public class EBusTypeInteger extends EBusTypeGenericReplaceValue {
 
     @Override
     public BigDecimal decodeInt(byte[] data) {
+        applyByteOrder(data);
         return BigDecimal.valueOf((short) (data[1] << 8 | data[0] & 0xFF));
     }
 
     @Override
     public byte[] encodeInt(Object data) {
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        return new byte[] { (byte) b.intValue(), (byte) (b.intValue() >> 8) };
+
+        byte[] result = new byte[] { (byte) b.intValue(), (byte) (b.intValue() >> 8) };
+        applyByteOrder(result);
+
+        return result;
     }
 
     @Override

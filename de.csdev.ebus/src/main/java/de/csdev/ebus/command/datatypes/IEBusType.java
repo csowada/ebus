@@ -22,6 +22,8 @@ public interface IEBusType<T> {
 
     public static final String FACTOR = "factor";
 
+    public static final String REVERSED_BYTE_ORDER = "reverseByteOrder";
+
     /**
      * Decodes the byte-array extract from the telegram to valid result
      *
