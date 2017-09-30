@@ -20,6 +20,8 @@ public interface IEBusType<T> {
 
     public static final String TYPE = "type";
 
+    public static final String FACTOR = "factor";
+
     /**
      * Decodes the byte-array extract from the telegram to valid result
      *
