@@ -2,7 +2,7 @@
     "id":           "bai",
     "vendor":       "Vaillant",
     "label":        "Vaillant BAI00",
-    "description":  "Vaillant BAI00",
+    "description":  "Condensing gas boiler like Vaillant atmoCOMPACT, ecoCOMPACT, auroCOMPACT, ecoTEC, ecoCRAFT ...",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
     "identification": ["66 65 73 48 48"],
