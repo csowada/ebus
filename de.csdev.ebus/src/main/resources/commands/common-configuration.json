@@ -105,10 +105,8 @@
             "template": [
                 {"name": "vendor", "type": "byte", "label": "Vendor"},
                 {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
-                {"name": "_software_ver", "type": "bcd", "label": "Software Version"},
-                {"name": "_software_rev", "type": "bcd", "label": "Software Revision"},
-                {"name": "_hardware_ver", "type": "bcd", "label": "Hardware Version"},
-                {"name": "_hardware_rev", "type": "bcd", "label": "Hardware Revision"}
+                {"name": "software_version", "type": "version", "label": "Software Version"},
+                {"name": "hardware_version", "type": "version", "label": "Hardware Version"}
             ],
     
             "broadcast": {

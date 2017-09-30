@@ -24,6 +24,7 @@ import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeDateTime;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeMultiWord;
+import de.csdev.ebus.command.datatypes.ext.EBusTypeVersion;
 import de.csdev.ebus.utils.EBusDateTime;
 
 /**
@@ -94,6 +95,36 @@ public class EbusExtDataTypeTest {
     }
 
     @Test
+    public void test_Version() throws EBusTypeException {
+
+        byte[] testValue = new byte[] { 0x02, 0x27 };
+        IEBusType<?> type = types.getType(EBusTypeVersion.VERSION, null);
+
+        // decode
+        Object decode = type.decode(testValue);
+        assertEquals("Decode Version failed!", BigDecimal.valueOf(227, 2), decode);
+
+        // encode
+        byte[] encode = type.encode(decode);
+        assertArrayEquals(testValue, encode);
+    }
+
+    @Test
+    public void test_Version2() throws EBusTypeException {
+
+        byte[] testValue = new byte[] { 0x02, 0x01 };
+        IEBusType<?> type = types.getType(EBusTypeVersion.VERSION, null);
+
+        // decode
+        Object decode = type.decode(testValue);
+        assertEquals("Decode Version failed!", BigDecimal.valueOf(201, 2), decode);
+
+        // encode
+        byte[] encode = type.encode(decode);
+        assertArrayEquals(testValue, encode);
+    }
+
+    @Test
     public void test_MultiWordLength() throws EBusTypeException {
 
         byte[] testValue = new byte[] { 0x3D, 0x02, (byte) 0x88, 0x01, 0x05, 0x00 };
@@ -122,6 +153,25 @@ public class EbusExtDataTypeTest {
 
         // encode
         byte[] encode = types.encode(EBusTypeMultiWord.MWORD, decode);
+        assertArrayEquals(testValue, encode);
+    }
+
+    @Test
+    public void test_MultiWordFactor() throws EBusTypeException {
+
+        byte[] testValue = new byte[] { 0x3D, 0x02, (byte) 0x88, 0x01, 0x05, 0x00 };
+
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(IEBusType.LENGTH, 3);
+        properties.put(IEBusType.FACTOR, 500);
+        IEBusType<?> type = types.getType(EBusTypeMultiWord.MWORD, properties);
+
+        // decode
+        Object decode = type.decode(testValue);
+        assertEquals("Decode MultiWord failed!", BigDecimal.valueOf(1446573), decode);
+
+        // encode
+        byte[] encode = type.encode(decode);
         assertArrayEquals(testValue, encode);
     }
 

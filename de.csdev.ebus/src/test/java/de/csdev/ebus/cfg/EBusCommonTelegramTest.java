@@ -179,6 +179,9 @@ public class EBusCommonTelegramTest {
          */
         bs = EBusUtils.toByteArray("30 08 07 04 00 5E 00 0A 19 01 21 00 5A 40 60 01 00 00 48 00 AA");
         TestUtils.canResolve(commandRegistry, bs);
+
+        bs = EBusUtils.toByteArray("FF 76 07 04 00 43 00 0A 50 01 15 00 00 80 02 27 FF FF 81 00 AA");
+        TestUtils.canResolve(commandRegistry, bs);
     }
 
     @Test

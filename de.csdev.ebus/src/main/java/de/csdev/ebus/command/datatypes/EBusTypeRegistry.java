@@ -19,6 +19,7 @@ import de.csdev.ebus.command.datatypes.ext.EBusTypeDateTime;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeMultiWord;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeString;
+import de.csdev.ebus.command.datatypes.ext.EBusTypeVersion;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBit;
 import de.csdev.ebus.command.datatypes.std.EBusTypeByte;
@@ -53,24 +54,28 @@ public class EBusTypeRegistry {
     protected void init() {
         types = new HashMap<String, IEBusType<?>>();
 
+        // primary types
         add(EBusTypeBit.class);
         add(EBusTypeByte.class);
         add(EBusTypeChar.class);
         add(EBusTypeInteger.class);
         add(EBusTypeWord.class);
+
+        // secondary types
         add(EBusTypeBCD.class);
         add(EBusTypeData1b.class);
         add(EBusTypeData1c.class);
         add(EBusTypeData2b.class);
         add(EBusTypeData2c.class);
 
+        // extended types
         add(EBusTypeBytes.class);
         add(EBusTypeString.class);
-
         add(EBusTypeMultiWord.class);
         add(EBusTypeDateTime.class);
+        add(EBusTypeVersion.class);
 
-        // ext
+        // vendor specific
         add(EBusTypeKWCrc.class);
     }
 
@@ -103,6 +108,18 @@ public class EBusTypeRegistry {
         }
 
         return eBusType;
+    }
+
+    /**
+     * @param type
+     * @param data
+     * @return
+     * @throws EBusTypeException
+     */
+    public byte[] encode(String type, Object data) throws EBusTypeException {
+
+        return encode(type, data, (Object[]) null);
+
     }
 
     /**
