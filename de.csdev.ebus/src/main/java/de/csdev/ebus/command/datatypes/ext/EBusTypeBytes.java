@@ -25,14 +25,17 @@ public class EBusTypeBytes extends EBusTypeGeneric<byte[]> {
 
     private Integer length = 1;
 
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
+    @Override
     public byte[] decode(byte[] data) {
         return data;
     }
 
+    @Override
     public byte[] encode(Object data) {
 
         byte[] b = new byte[length];

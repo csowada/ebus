@@ -39,6 +39,7 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
 
     private String variant = DATE_TIME;
 
+    @Override
     public String[] getSupportedTypes() {
 
         return supportedTypes;
@@ -57,6 +58,7 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
         return 0;
     }
 
+    @Override
     public EBusDateTime decode(byte[] data) throws EBusTypeException {
 
         if (data == null) {
@@ -136,6 +138,7 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
         return new EBusDateTime(calendar, anyDate, anyTime);
     }
 
+    @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);

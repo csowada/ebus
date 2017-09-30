@@ -25,14 +25,17 @@ public class EBusTypeString extends EBusTypeGeneric<String> {
 
     private Integer length = 1;
 
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
+    @Override
     public String decode(byte[] data) {
         return new String(data);
     }
 
+    @Override
     public byte[] encode(Object data) {
 
         // return a empty string with defined len

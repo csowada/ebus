@@ -25,10 +25,12 @@ public class EBusTypeBit extends EBusTypeGeneric<Boolean> {
 
     private Integer bit = null;
 
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
+    @Override
     public Boolean decode(byte[] data) {
 
         if (data == null) {
@@ -40,6 +42,7 @@ public class EBusTypeBit extends EBusTypeGeneric<Boolean> {
         return isSet;
     }
 
+    @Override
     public byte[] encode(Object data) {
         throw new RuntimeException("Not implemented yet!");
     }

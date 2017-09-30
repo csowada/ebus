@@ -26,6 +26,7 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric<BigDec
         return ArrayUtils.isEquals(data, this.replaceValue);
     }
 
+    @Override
     public BigDecimal decode(byte[] data) throws EBusTypeException {
 
         if (equalsReplaceValue(data)) {
@@ -35,6 +36,7 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric<BigDec
         return decodeInt(data);
     }
 
+    @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
         if (data == null) {
