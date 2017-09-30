@@ -26,10 +26,10 @@
                         {"name":"_state_unknown2", "type": "bit", "label": "State Unknown2"},
                         {"name":"_state_unknown3", "type": "bit", "label": "State Unknown3"}
                     ]},                
-                    {"name":"_unknown2", "type": "byte"},
+                    {"name":"_unknown", "type": "byte"},
                     {"name":"temp_d_mixer", "type": "data2b", "label": "Mixer desire temperature", "reverseByteOrder": true, "min":0, "max":100, "format":"%.1f°C"},
-                    {"name":"temp_room", "type": "data2b", "label": "Room temperature", "reverseByteOrder": true, "min":0, "max":100, "format":"%d°C"},
-                    {"name":"temp_d_dhw", "type": "data1c", "label": "DHW desire temperature", "min":0, "max":100, "format":"%d°C"}
+                    {"name":"temp_room", "type": "data2b", "label": "Room temperature", "reverseByteOrder": true, "min":0, "max":100, "format":"%.1f°C"},
+                    {"name":"temp_d_dhw", "type": "data1c", "label": "DHW desire temperature", "min":0, "max":100, "format":"%.1f°C"}
                 ],
                 "slave": [
                     {"name":"_s_unknown1", "type": "byte"},
