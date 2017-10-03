@@ -8,6 +8,7 @@
  */
 package de.csdev.ebus.command;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -24,49 +25,64 @@ public interface IEBusCommandCollection {
      *
      * @return
      */
-    List<String> getIdentification();
+    public List<String> getIdentification();
 
     /**
      * Returns the long description
      *
      * @return
      */
-    String getDescription();
+    public String getDescription();
 
     /**
      * Returns the id of this collection
      *
      * @return
      */
-    String getId();
+    public String getId();
 
     /**
      * Returns the label of this collection
      *
      * @return
      */
-    String getLabel();
+    public String getLabel();
 
     /**
      * Returns the list of all commands
-     * 
+     *
      * @return
      */
-    List<IEBusCommand> getCommands();
+    public Collection<IEBusCommand> getCommands();
+
+    /**
+     * Returns the requested command or null
+     *
+     * @param id
+     * @return
+     */
+    public IEBusCommand getCommand(String id);
 
     /**
      * Returns a map of all properties
-     * 
+     *
      * @return
      */
-    Map<String, Object> getProperties();
+    public Map<String, Object> getProperties();
 
     /**
      * Returns a property value or <code>null</code>
-     * 
+     *
      * @param key
      * @return
      */
-    Object getProperty(String key);
+    public Object getProperty(String key);
+
+    /**
+     * Returns usually a MD5 hash of the source configuration file
+     * 
+     * @return
+     */
+    public byte[] getSourceHash();
 
 }
