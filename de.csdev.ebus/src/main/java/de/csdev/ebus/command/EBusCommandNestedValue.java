@@ -29,28 +29,6 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        EBusCommandNestedValue other = (EBusCommandNestedValue) obj;
-        if (list == null) {
-            if (other.list != null) {
-                return false;
-            }
-        } else if (!list.equals(other.list)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public List<IEBusValue> getChildren() {
 
         if (list == null) {
@@ -64,17 +42,6 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
     public boolean hasChildren() {
 
         return list != null && !list.isEmpty();
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((list == null) ? 0 : list.hashCode());
-
-        // System.out.println("EBusCommandNestedValue.hashCode() " + result);
-
-        return result;
     }
 
     @Override

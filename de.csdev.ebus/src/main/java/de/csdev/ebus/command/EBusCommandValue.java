@@ -85,91 +85,6 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        EBusCommandValue other = (EBusCommandValue) obj;
-        if (defaultValue == null) {
-            if (other.defaultValue != null) {
-                return false;
-            }
-        } else if (!defaultValue.equals(other.defaultValue)) {
-            return false;
-        }
-        if (factor == null) {
-            if (other.factor != null) {
-                return false;
-            }
-        } else if (!factor.equals(other.factor)) {
-            return false;
-        }
-        if (format == null) {
-            if (other.format != null) {
-                return false;
-            }
-        } else if (!format.equals(other.format)) {
-            return false;
-        }
-        if (label == null) {
-            if (other.label != null) {
-                return false;
-            }
-        } else if (!label.equals(other.label)) {
-            return false;
-        }
-        if (mapping == null) {
-            if (other.mapping != null) {
-                return false;
-            }
-        } else if (!mapping.equals(other.mapping)) {
-            return false;
-        }
-        if (max == null) {
-            if (other.max != null) {
-                return false;
-            }
-        } else if (!max.equals(other.max)) {
-            return false;
-        }
-        if (min == null) {
-            if (other.min != null) {
-                return false;
-            }
-        } else if (!min.equals(other.min)) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (properties == null) {
-            if (other.properties != null) {
-                return false;
-            }
-        } else if (!properties.equals(other.properties)) {
-            return false;
-        }
-        if (step == null) {
-            if (other.step != null) {
-                return false;
-            }
-        } else if (!step.equals(other.step)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public Object getDefaultValue() {
         return defaultValue;
     }
@@ -227,23 +142,6 @@ public class EBusCommandValue implements IEBusValue {
     @Override
     public IEBusType<?> getType() {
         return type;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((defaultValue == null) ? 0 : defaultValue.hashCode());
-        result = prime * result + ((factor == null) ? 0 : factor.hashCode());
-        result = prime * result + ((format == null) ? 0 : format.hashCode());
-        result = prime * result + ((label == null) ? 0 : label.hashCode());
-        result = prime * result + ((mapping == null) ? 0 : mapping.hashCode());
-        result = prime * result + ((max == null) ? 0 : max.hashCode());
-        result = prime * result + ((min == null) ? 0 : min.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((properties == null) ? 0 : properties.hashCode());
-        result = prime * result + ((step == null) ? 0 : step.hashCode());
-        return result;
     }
 
     public void setDefaultValue(Object defaultValue) {

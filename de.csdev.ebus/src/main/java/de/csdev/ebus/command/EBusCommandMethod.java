@@ -10,7 +10,6 @@ package de.csdev.ebus.command;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.csdev.ebus.utils.EBusUtils;
@@ -71,55 +70,6 @@ public class EBusCommandMethod implements IEBusCommandMethod {
 
         slaveTypes.add(value);
         return this;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        EBusCommandMethod other = (EBusCommandMethod) obj;
-        if (!Arrays.equals(command, other.command)) {
-            return false;
-        }
-        if (destinationAddress == null) {
-            if (other.destinationAddress != null) {
-                return false;
-            }
-        } else if (!destinationAddress.equals(other.destinationAddress)) {
-            return false;
-        }
-        if (masterTypes == null) {
-            if (other.masterTypes != null) {
-                return false;
-            }
-        } else if (!masterTypes.equals(other.masterTypes)) {
-            return false;
-        }
-        if (method != other.method) {
-            return false;
-        }
-        if (slaveTypes == null) {
-            if (other.slaveTypes != null) {
-                return false;
-            }
-        } else if (!slaveTypes.equals(other.slaveTypes)) {
-            return false;
-        }
-        if (sourceAddress == null) {
-            if (other.sourceAddress != null) {
-                return false;
-            }
-        } else if (!sourceAddress.equals(other.sourceAddress)) {
-            return false;
-        }
-        return true;
     }
 
     /*
@@ -220,19 +170,6 @@ public class EBusCommandMethod implements IEBusCommandMethod {
         }
 
         return Type.MASTER_MASTER;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode(command);
-        result = prime * result + ((destinationAddress == null) ? 0 : destinationAddress.hashCode());
-        result = prime * result + ((masterTypes == null) ? 0 : masterTypes.hashCode());
-        result = prime * result + ((method == null) ? 0 : method.hashCode());
-        result = prime * result + ((slaveTypes == null) ? 0 : slaveTypes.hashCode());
-        result = prime * result + ((sourceAddress == null) ? 0 : sourceAddress.hashCode());
-        return result;
     }
 
     public EBusCommandMethod setCommand(byte[] command) {
