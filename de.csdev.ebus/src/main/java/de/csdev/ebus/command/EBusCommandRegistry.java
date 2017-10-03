@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,14 +95,11 @@ public class EBusCommandRegistry {
     public IEBusCommandMethod getConfigurationById(String collectionId, String id, IEBusCommandMethod.Method type) {
 
         IEBusCommandCollection collection = collections.get(collectionId);
+        IEBusCommand command = collection.getCommand(id);
 
-        // for (IEBusCommandCollection collection : collections.values()) {
-        for (IEBusCommand command : collection.getCommands()) {
-            if (StringUtils.equals(command.getId(), id)) {
-                return command.getCommandMethod(type);
-            }
+        if (command != null) {
+            return command.getCommandMethod(type);
         }
-        // }
 
         return null;
     }

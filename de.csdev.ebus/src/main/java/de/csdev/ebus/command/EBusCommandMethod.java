@@ -10,6 +10,7 @@ package de.csdev.ebus.command;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.csdev.ebus.utils.EBusUtils;
@@ -26,30 +27,21 @@ public class EBusCommandMethod implements IEBusCommandMethod {
 
     private List<IEBusValue> masterTypes;
 
+    private IEBusCommandMethod.Method method;
+
+    private IEBusCommand parent;
+
     private List<IEBusValue> slaveTypes;
 
     private Byte sourceAddress;
 
     private ByteBuffer telegramMask;
 
-    private IEBusCommand parent;
-
-    private IEBusCommandMethod.Method method;
-
     public EBusCommandMethod(EBusCommand parent, IEBusCommandMethod.Method method) {
         this.parent = parent;
         this.method = method;
 
         parent.addCommandChannel(this);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.csdev.ebus.command.IEBusCommand#getType()
-     */
-    public IEBusCommandMethod.Method getMethod() {
-        return method;
     }
 
     /*
@@ -81,11 +73,61 @@ public class EBusCommandMethod implements IEBusCommandMethod {
         return this;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        EBusCommandMethod other = (EBusCommandMethod) obj;
+        if (!Arrays.equals(command, other.command)) {
+            return false;
+        }
+        if (destinationAddress == null) {
+            if (other.destinationAddress != null) {
+                return false;
+            }
+        } else if (!destinationAddress.equals(other.destinationAddress)) {
+            return false;
+        }
+        if (masterTypes == null) {
+            if (other.masterTypes != null) {
+                return false;
+            }
+        } else if (!masterTypes.equals(other.masterTypes)) {
+            return false;
+        }
+        if (method != other.method) {
+            return false;
+        }
+        if (slaveTypes == null) {
+            if (other.slaveTypes != null) {
+                return false;
+            }
+        } else if (!slaveTypes.equals(other.slaveTypes)) {
+            return false;
+        }
+        if (sourceAddress == null) {
+            if (other.sourceAddress != null) {
+                return false;
+            }
+        } else if (!sourceAddress.equals(other.sourceAddress)) {
+            return false;
+        }
+        return true;
+    }
+
     /*
      * (non-Javadoc)
      *
      * @see de.csdev.ebus.command.IEBusCommand#getCommand()
      */
+    @Override
     public byte[] getCommand() {
         return command;
     }
@@ -95,6 +137,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getDestinationAddress()
      */
+    @Override
     public Byte getDestinationAddress() {
         return destinationAddress;
     }
@@ -104,6 +147,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTelegramMask()
      */
+    @Override
     public ByteBuffer getMasterTelegramMask() {
 
         if (telegramMask == null) {
@@ -119,6 +163,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTypes()
      */
+    @Override
     public List<IEBusValue> getMasterTypes() {
         return masterTypes;
     }
@@ -126,8 +171,19 @@ public class EBusCommandMethod implements IEBusCommandMethod {
     /*
      * (non-Javadoc)
      *
+     * @see de.csdev.ebus.command.IEBusCommand#getType()
+     */
+    @Override
+    public IEBusCommandMethod.Method getMethod() {
+        return method;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see de.csdev.ebus.command.IEBusCommandChannel#getParent()
      */
+    @Override
     public IEBusCommand getParent() {
         return parent;
     }
@@ -137,6 +193,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getSlaveTypes()
      */
+    @Override
     public List<IEBusValue> getSlaveTypes() {
         return slaveTypes;
     }
@@ -146,8 +203,36 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getSourceAddress()
      */
+    @Override
     public Byte getSourceAddress() {
         return sourceAddress;
+    }
+
+    @Override
+    public Type getType() {
+
+        if (method.equals(Method.BROADCAST)) {
+            return Type.BROADCAST;
+        }
+
+        if (slaveTypes != null && !slaveTypes.isEmpty()) {
+            return Type.MASTER_SLAVE;
+        }
+
+        return Type.MASTER_MASTER;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(command);
+        result = prime * result + ((destinationAddress == null) ? 0 : destinationAddress.hashCode());
+        result = prime * result + ((masterTypes == null) ? 0 : masterTypes.hashCode());
+        result = prime * result + ((method == null) ? 0 : method.hashCode());
+        result = prime * result + ((slaveTypes == null) ? 0 : slaveTypes.hashCode());
+        result = prime * result + ((sourceAddress == null) ? 0 : sourceAddress.hashCode());
+        return result;
     }
 
     public EBusCommandMethod setCommand(byte[] command) {
@@ -169,19 +254,6 @@ public class EBusCommandMethod implements IEBusCommandMethod {
 
     public void setSourceAddress(Byte sourceAddress) {
         this.sourceAddress = sourceAddress;
-    }
-
-    public Type getType() {
-
-        if (method.equals(Method.BROADCAST)) {
-            return Type.BROADCAST;
-        }
-
-        if (slaveTypes != null && !slaveTypes.isEmpty()) {
-            return Type.MASTER_SLAVE;
-        }
-
-        return Type.MASTER_MASTER;
     }
 
     @Override
