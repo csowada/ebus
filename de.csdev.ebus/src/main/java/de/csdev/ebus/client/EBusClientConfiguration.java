@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +119,6 @@ public class EBusClientConfiguration {
 
         IEBusCommandCollection collection = null;
         try {
-
             collection = reader.loadConfigurationCollection(is);
             configurationProvider.addCommandCollection(collection);
 
@@ -140,6 +140,16 @@ public class EBusClientConfiguration {
      */
     public List<IEBusCommandCollection> getCollections() {
         return collections;
+    }
+
+    public IEBusCommandCollection getCollection(String collectionId) {
+        for (IEBusCommandCollection collection : collections) {
+            if (StringUtils.equals(collection.getId(), collectionId)) {
+                return collection;
+            }
+        }
+
+        return null;
     }
 
 }

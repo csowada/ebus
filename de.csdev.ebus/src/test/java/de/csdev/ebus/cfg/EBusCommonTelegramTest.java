@@ -63,7 +63,7 @@ public class EBusCommonTelegramTest {
     @Test
     public void testIdentification() {
         IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById(EBusConsts.COLLECTION_STD,
-                EBusConsts.COMMAND_IDENTIFICATIONE, IEBusCommandMethod.Method.GET);
+                EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
 
         assertNotNull("Command common.identification not found!", commandMethod);
 
