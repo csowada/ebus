@@ -27,7 +27,7 @@ public class ClientTest2 {
 
     @Before
     public void before() throws IOException, EBusConfigurationReaderException {
-        emulator = new EBusEmulatorConnection(null);
+        emulator = new EBusEmulatorConnection();
     }
 
     @Test

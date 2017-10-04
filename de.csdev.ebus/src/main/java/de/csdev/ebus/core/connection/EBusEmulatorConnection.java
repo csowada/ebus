@@ -9,12 +9,11 @@
 package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
-import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.utils.Emulator;
+import de.csdev.ebus.utils.Emulator2;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -24,44 +23,25 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusEmulatorConnection.class);
 
-    private URL readerURL;
+    private Emulator2 emu;
 
-    private Emulator emu;
-
-    public EBusEmulatorConnection(URL readerURL) {
-        this.readerURL = readerURL;
-
-        emu = new Emulator();
+    public EBusEmulatorConnection() {
+        emu = new Emulator2();
     }
 
+    @Override
     public boolean open() throws IOException {
         this.inputStream = emu.getInputStream();
-
-        // emu.write(new byte[] { 1, 2, 3, 45, (byte) 0xAA });
-        if (readerURL != null) {
-            emu.play(readerURL.openStream());
-        }
-        // emu.write(new byte[] { 1, 2, 3, 45, (byte) 0xAA });
-        // emu.play(readerURL.openStream());
-        // emu.write(new byte[] { 2, 1, 1, 1, (byte) 200, 100, 45, (byte) 0xAA });
-        // emu.play(readerURL.openStream());
         return true;
     }
 
     @Override
     public void writeByte(int b) throws IOException {
-        byte[] byteArray = { (byte) b };
-        emu.write(byteArray);
+        emu.write((byte) b);
     }
 
     public void writeBytes(byte[] byteArray) {
-        for (byte b : byteArray) {
-            try {
-                writeByte(b);
-            } catch (IOException e) {
-                logger.error("error!", e);
-            }
-        }
+        emu.write(byteArray);
     }
 
     public void writeBytesDelayed(byte[] byteArray, long delay) {
@@ -72,13 +52,7 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
             logger.error("error!", e);
         }
 
-        for (byte b : byteArray) {
-            try {
-                writeByte(b);
-            } catch (IOException e) {
-                logger.error("error!", e);
-            }
-        }
+        writeBytes(byteArray);
     }
 
     @Override
