@@ -362,14 +362,16 @@ public class EBusController extends EBusControllerBase {
             if (sendMachine.isWaitingForMasterACK()) {
                 logger.trace("Send Master ACK to Slave ...");
                 connection.writeByte(EBusConsts.ACK_OK);
-                sendMachine.update(EBusConsts.ACK_OK);
+                byte b0 = (byte) (connection.readByte(true) & 0xFF);
+                sendMachine.update(b0);
             }
 
             // sende master sync
             if (sendMachine.isWaitingForMasterSYN()) {
                 logger.trace("Send SYN to bus ...");
                 connection.writeByte(EBusConsts.SYN);
-                sendMachine.update(EBusConsts.SYN);
+                byte b0 = (byte) (connection.readByte(true) & 0xFF);
+                sendMachine.update(b0);
             }
 
             // after send process the received telegram
