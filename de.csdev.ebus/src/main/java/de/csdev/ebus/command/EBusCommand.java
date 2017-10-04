@@ -10,6 +10,7 @@ package de.csdev.ebus.command;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,10 +37,14 @@ public class EBusCommand implements IEBusCommand {
     private Map<String, Object> properties;
 
     public void addCommandChannel(IEBusCommandMethod channel) {
+        if (channels == null) {
+            channels = new EnumMap<IEBusCommandMethod.Method, IEBusCommandMethod>(IEBusCommandMethod.Method.class);
+        }
         channels = CollectionUtils.newMapIfNull(channels);
         channels.put(channel.getMethod(), channel);
     }
 
+    @Override
     public Collection<IEBusCommandMethod.Method> getCommandChannelMethods() {
         if (channels != null) {
             return Collections.unmodifiableCollection(channels.keySet());
@@ -47,10 +52,12 @@ public class EBusCommand implements IEBusCommand {
         return Collections.emptyList();
     }
 
+    @Override
     public IEBusCommandMethod getCommandMethod(IEBusCommandMethod.Method channel) {
         return CollectionUtils.get(channels, channel);
     }
 
+    @Override
     public Collection<IEBusCommandMethod> getCommandMethods() {
         if (channels != null) {
             return Collections.unmodifiableCollection(channels.values());
@@ -63,6 +70,7 @@ public class EBusCommand implements IEBusCommand {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getConfigurationSource()
      */
+    @Override
     public String getConfigurationSource() {
         return configurationSource;
     }
@@ -72,6 +80,7 @@ public class EBusCommand implements IEBusCommand {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getDevice()
      */
+    @Override
     public String getDevice() {
         return device;
     }
@@ -81,6 +90,7 @@ public class EBusCommand implements IEBusCommand {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getId()
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -90,14 +100,17 @@ public class EBusCommand implements IEBusCommand {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getDescription()
      */
+    @Override
     public String getLabel() {
         return label;
     }
 
+    @Override
     public IEBusCommandCollection getParentCollection() {
         return parentCollection;
     }
 
+    @Override
     public Map<String, Object> getProperties() {
         return CollectionUtils.unmodifiableNotNullMap(properties);
     }
