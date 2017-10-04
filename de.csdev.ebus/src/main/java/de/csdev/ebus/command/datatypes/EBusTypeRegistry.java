@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
+import de.csdev.ebus.command.datatypes.ext.EBusTypeDate;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeDateTime;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeMultiWord;
@@ -73,6 +74,7 @@ public class EBusTypeRegistry {
         add(EBusTypeString.class);
         add(EBusTypeMultiWord.class);
         add(EBusTypeDateTime.class);
+        add(EBusTypeDate.class);
         add(EBusTypeVersion.class);
 
         // vendor specific
