@@ -130,7 +130,7 @@
         },
     
         {
-            "label":    "Inquiry of Existence",
+            "label":    "Sign of Life",
             "id":       "common.sign_of_life",
             "command":  "07 FF",
             "broadcast":{}
