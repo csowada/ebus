@@ -444,11 +444,28 @@
                 ],
                 "slave": [
                     {"name": "temp_outside", "type": "data2c", "label": "Outside temperature", "min": -40, "max": 70, "format":"%.1f°C"},
-                    {"name": "status", "type": "uchar", "label": "Status uutside temperature", 
+                    {"name": "status", "type": "uchar", "label": "Status Outside temperature", 
                         "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
                 ]
             }
         },
+        
+        {
+            "label":    "Outside temperature D.047",
+            "id":       "boiler.temp_outside",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 02 00"}
+                ],
+                "slave": [
+                    {"name": "temp_outside", "type": "int", "label": "Outside temperature", "factor": 0.001, "format":"%.1f bar"},
+                    {"name": "status", "type": "uchar", "label": "Status Outside temperature", 
+                        "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+                ]
+            }
+        }
         
     ]
 }
