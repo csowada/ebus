@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
@@ -41,7 +40,7 @@ public class EbusExtDataTypeDateTest {
         types = new EBusTypeRegistry();
     }
 
-    @Test
+    // @Test
     public void test_DateTime3() throws EBusTypeException {
 
         GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 13, 30, 59);

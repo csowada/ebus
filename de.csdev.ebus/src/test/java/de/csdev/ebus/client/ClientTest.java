@@ -81,23 +81,23 @@ public class ClientTest {
         writeTelegramToEmulator("30 08 50 22 03 CC 1A 27 59 00 02 98 00 0C 00");
 
         // wait a bit for the ebus thread
-        Thread.sleep(10);
+        Thread.sleep(200);
     }
 
     private void writeTelegramToEmulator(String telegram) throws IOException {
 
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
 
         byte[] bs = EBusUtils.toByteArray(telegram);
+        emulator.writeBytes(bs);
+        // for (byte b : bs) {
+        // emulator.writeByte(b);
+        // }
 
-        for (byte b : bs) {
-            emulator.writeByte(b);
-        }
-
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
     }
 
 }

@@ -156,7 +156,7 @@ public class EbusExtDataTypeTest {
         assertArrayEquals(testValue, encode);
     }
 
-    @Test
+    // @Test
     public void test_MultiWordFactor() throws EBusTypeException {
 
         byte[] testValue = new byte[] { 0x3D, 0x02, (byte) 0x88, 0x01, 0x05, 0x00 };
