@@ -125,8 +125,12 @@ public class EBusUtils {
      * @return
      */
     static public Byte getMasterAddress(byte slaveAddress) {
+
         if (!isMasterAddress(slaveAddress)) {
-            return (byte) (slaveAddress == (byte) 0x04 ? (byte) 0xFF : slaveAddress - 5);
+            byte masterAddress = (byte) (slaveAddress == (byte) 0x04 ? (byte) 0xFF : slaveAddress - 5);
+            if (isMasterAddress(masterAddress)) {
+                return masterAddress;
+            }
         }
 
         return null;
@@ -222,7 +226,12 @@ public class EBusUtils {
      * @param data The source
      * @return The hex string
      */
-    static public String toHexDumpString(byte data) {
+    static public String toHexDumpString(Byte data) {
+
+        if (data == null) {
+            return "";
+        }
+
         return String.format("%02X", (0xFF & data));
     }
 
