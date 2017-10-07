@@ -73,13 +73,22 @@
     
             "get": {
                 "master": [
-                    {"name": "status_heat_req1", "type": "byte", "label": "Status heat request 1"},
-                    {"name": "status_heat_req2", "type": "byte", "label": "Status heat request 2"},
+                    {"name": "status_heat_req1", "type": "byte", "label": "Status heat request 1", 
+                        "mapping": {
+                            "0": "Shut down burner", "1": "No action", "68":"Controller stop on stepped mode", 
+                            "85": "Service water preparation", "102":"Service water preparation on controller stop",
+                            "170":"Heating operation", "187":"Service water preparation on heating op.",
+                            "204":"Emission check", "221":"Tech check function", "238":"Controller stop function"}},
+                    {"name": "status_heat_req2", "type": "byte", "label": "Status heat request 2", 
+                        "mapping": {
+                            "0": "No action", "1":"Turn off boiler pump", "2":"Turn on boiler pump", 
+                            "3":"Turn off variable user", "4": "Turn on variable user"}},
                     {"name": "temp_d_boiler", "type": "data2c", "label": "Boiler desire temperature", "min":0, "max":100, "format":"%.1f°C"},
                     {"name": "pressure_d_boiler", "type": "data2b", "label": "Boiler desire pressure", "min":0, "max":100, "format":"%.1f bar"},
                     {"name": "modulation", "type": "data1c", "label": "Setting degree", "min":0, "max":100, "step": 0.5, "format":"%.1f%%"},
                     {"name": "temp_d_dhw", "type": "data1c", "label": "DHW desire temperature", "min":0, "max":100, "step": 0.5, "format":"%.1f°C"},
-                    {"name": "value_fuel", "type": "byte", "label": "Election of fuel", "replaceValue": 255}
+                    {"name": "value_fuel", "type": "byte", "label": "Election of fuel", "replaceValue": 255, 
+                        "mapping": {"0": "don't care", "1":"Gas", "2":"Oil", "3": "don't care"}}
                 ]
             }
         },
@@ -105,10 +114,8 @@
             "template": [
                 {"name": "vendor", "type": "byte", "label": "Vendor"},
                 {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
-                {"name": "_software_ver", "type": "bcd", "label": "Software Version"},
-                {"name": "_software_rev", "type": "bcd", "label": "Software Revision"},
-                {"name": "_hardware_ver", "type": "bcd", "label": "Hardware Version"},
-                {"name": "_hardware_rev", "type": "bcd", "label": "Hardware Revision"}
+                {"name": "software_version", "type": "version", "label": "Software Version"},
+                {"name": "hardware_version", "type": "version", "label": "Hardware Version"}
             ],
     
             "broadcast": {
@@ -132,7 +139,7 @@
         },
     
         {
-            "label":    "Inquiry of Existence",
+            "label":    "Sign of Life",
             "id":       "common.sign_of_life",
             "command":  "07 FF",
             "broadcast":{}

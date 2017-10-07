@@ -28,8 +28,9 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
     private static String[] supportedTypes = new String[] { MWORD };
 
     private int length = 2;
-    private int pow = 1000;
+    private BigDecimal factor = BigDecimal.valueOf(1000);
 
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
@@ -39,6 +40,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
         return length * 2;
     }
 
+    @Override
     public BigDecimal decode(byte[] data) throws EBusTypeException {
 
         byte[] dataNew = new byte[2];
@@ -50,15 +52,17 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
         for (int i = 0; i <= x; i++) {
 
             System.arraycopy(data, i * 2, dataNew, 0, dataNew.length);
+            applyByteOrder(dataNew);
             BigDecimal value = types.decode(EBusTypeWord.WORD, dataNew);
 
-            BigDecimal factor = new BigDecimal(this.pow).pow(i);
+            BigDecimal factor = this.factor.pow(i);
             valx = valx.add(value.multiply(factor));
         }
 
         return valx;
     }
 
+    @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
         BigDecimal value = NumberUtils.toBigDecimal(data);
@@ -72,11 +76,11 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
         for (int i = length; i >= 0; i--) {
 
-            BigDecimal factor = new BigDecimal(this.pow).pow(i);
+            BigDecimal factor = this.factor.pow(i);
             BigDecimal[] divideAndRemainder = value.divideAndRemainder(factor);
 
             byte[] encode = types.encode(EBusTypeWord.WORD, divideAndRemainder[0]);
-
+            applyByteOrder(encode);
             value = divideAndRemainder[1];
             System.arraycopy(encode, 0, result, i * 2, 2);
         }
@@ -87,14 +91,15 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
     @Override
     public IEBusType<BigDecimal> getInstance(Map<String, Object> properties) {
 
-        if (properties.containsKey("length")) {
+        if (properties.containsKey(IEBusType.LENGTH)) {
             EBusTypeMultiWord type = new EBusTypeMultiWord();
             type.types = this.types;
 
-            type.length = (Integer) properties.get("length");
+            type.length = (Integer) properties.get(IEBusType.LENGTH);
 
-            if (properties.containsKey("pow")) {
-                type.pow = (Integer) properties.get("pow");
+            if (properties.containsKey(IEBusType.FACTOR)) {
+                type.factor = NumberUtils.toBigDecimal(properties.get(IEBusType.FACTOR));
+                // type.factor = (Integer) properties.get(IEBusType.FACTOR);
             }
 
             return type;
@@ -105,7 +110,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
     @Override
     public String toString() {
-        return "EBusTypeMultiWord [length=" + length + ", pow=" + pow + "]";
+        return "EBusTypeMultiWord [length=" + length + ", factor=" + factor + "]";
     }
 
 }

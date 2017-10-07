@@ -32,6 +32,7 @@ public class EBusParserService extends EBusConnectorEventListener {
     /** the list for listeners */
     private final List<IEBusParserListener> listeners = new CopyOnWriteArrayList<IEBusParserListener>();
 
+    /** */
     private EBusCommandRegistry commandRegistry;
 
     /**
@@ -71,7 +72,7 @@ public class EBusParserService extends EBusConnectorEventListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
     @Override

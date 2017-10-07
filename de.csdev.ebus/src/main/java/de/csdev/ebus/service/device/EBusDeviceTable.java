@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class EBusDeviceTable {
     /** the list for listeners */
     private final List<IEBusDeviceTableListener> listeners = new CopyOnWriteArrayList<IEBusDeviceTableListener>();
 
-    private Map<Integer, String> vendors;
+    private Map<String, String> vendors;
 
     /** the address of this library */
     private byte ownAddress;
@@ -89,10 +90,13 @@ public class EBusDeviceTable {
             return null;
         }
 
-        return vendors.get(vendorCode & 0xFF);
+        return vendors.get(String.valueOf(vendorCode));
     }
 
     public void updateDevice(byte address, Map<String, Object> data) {
+
+        boolean newDevice = false;
+        boolean updatedDevice = false;
 
         if (!EBusUtils.isMasterAddress(address)) {
             logger.error("ups, no master address!");
@@ -101,55 +105,100 @@ public class EBusDeviceTable {
 
         EBusDevice device = deviceTable.get(address);
 
-        if (data == null) {
-            if (device == null) {
-                device = new EBusDevice(address, this);
-                device.setLastActivity(System.currentTimeMillis());
-
-                deviceTable.put(address, device);
-
-                fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.NEW, device);
-                return;
-            } else {
-                device.setLastActivity(System.currentTimeMillis());
-
-                fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
-                return;
-            }
+        if (device == null) {
+            device = new EBusDevice(address, this);
+            device.setLastActivity(System.currentTimeMillis());
+            deviceTable.put(address, device);
+            newDevice = true;
         }
 
-        if (!data.isEmpty()) {
+        device.setLastActivity(System.currentTimeMillis());
+
+        if (data != null && !data.isEmpty()) {
 
             Object obj = data.get("device_id");
-            if (obj != null) {
+            if (obj != null && !obj.equals(device.getDeviceId())) {
                 device.setDeviceId((byte[]) obj);
+                updatedDevice = true;
             }
 
             BigDecimal obj2 = NumberUtils.toBigDecimal(data.get("hardware_version"));
-            if (obj2 != null) {
+            if (obj2 != null && !ObjectUtils.equals(obj2, device.getHardwareVersion())) {
                 device.setHardwareVersion(obj2);
+                updatedDevice = true;
             }
 
             obj2 = NumberUtils.toBigDecimal(data.get("software_version"));
-            if (obj2 != null) {
+            if (obj2 != null && !ObjectUtils.equals(obj2, device.getSoftwareVersion())) {
                 device.setSoftwareVersion(obj2);
+                updatedDevice = true;
             }
 
             obj2 = NumberUtils.toBigDecimal(data.get("vendor"));
-            if (obj2 != null) {
+            if (obj2 != null && !ObjectUtils.equals(obj2.byteValue(), device.getManufacturer())) {
                 int intValue = obj2.intValue();
                 device.setManufacturer((byte) intValue);
+                updatedDevice = true;
             }
         }
 
-        fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.UPDATE, device);
+        if (newDevice) {
+            fireOnDeviceUpdate(IEBusDeviceTableListener.TYPE.NEW, device);
+        } else if (updatedDevice) {
+            fireOnDeviceUpdate(IEBusDeviceTableListener.TYPE.UPDATE, device);
+        } else {
+            fireOnDeviceUpdate(IEBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
+        }
+
+        // if (data == null) {
+        // if (device == null) {
+        // device = new EBusDevice(address, this);
+        // device.setLastActivity(System.currentTimeMillis());
+        //
+        // deviceTable.put(address, device);
+        //
+        // fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.NEW, device);
+        // return;
+        // } else {
+        // device.setLastActivity(System.currentTimeMillis());
+        //
+        // fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
+        // return;
+        // }
+        // }
+        //
+        // if (!data.isEmpty()) {
+        //
+        // Object obj = data.get("device_id");
+        // if (obj != null) {
+        // device.setDeviceId((byte[]) obj);
+        // }
+        //
+        // BigDecimal obj2 = NumberUtils.toBigDecimal(data.get("hardware_version"));
+        // if (obj2 != null) {
+        // device.setHardwareVersion(obj2);
+        // }
+        //
+        // obj2 = NumberUtils.toBigDecimal(data.get("software_version"));
+        // if (obj2 != null) {
+        // device.setSoftwareVersion(obj2);
+        // }
+        //
+        // obj2 = NumberUtils.toBigDecimal(data.get("vendor"));
+        // if (obj2 != null) {
+        // int intValue = obj2.intValue();
+        // device.setManufacturer((byte) intValue);
+        // }
+        // }
+        //
+        // fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.UPDATE, device);
     }
 
     public Collection<EBusDevice> getDeviceTable() {
         return Collections.unmodifiableCollection(deviceTable.values());
     }
 
-    private void fireOnTelegramResolved(IEBusDeviceTableListener.TYPE type, EBusDevice device) {
+    private void fireOnDeviceUpdate(IEBusDeviceTableListener.TYPE type, EBusDevice device) {
         for (IEBusDeviceTableListener listener : listeners) {
             listener.onEBusDeviceUpdate(type, device);
         }

@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusStateMachineTest;
+import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
@@ -30,7 +30,7 @@ public class ClientTest {
 
     @Before
     public void before() throws IOException, EBusConfigurationReaderException {
-        emulator = new EBusEmulatorConnection(null);
+        emulator = new EBusEmulatorConnection();
     }
 
     @Test
@@ -48,14 +48,17 @@ public class ClientTest {
 
         client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
 
+            @Override
             public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
                 // noop
             }
 
+            @Override
             public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
                 fail("No TelegramException expected!");
             }
 
+            @Override
             public void onConnectionException(Exception e) {
                 fail("No ConnectionException expected!");
             }
@@ -63,6 +66,7 @@ public class ClientTest {
 
         client.getResolverService().addEBusParserListener(new IEBusParserListener() {
 
+            @Override
             public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
                     byte[] receivedData, Integer sendQueueId) {
 
@@ -77,23 +81,23 @@ public class ClientTest {
         writeTelegramToEmulator("30 08 50 22 03 CC 1A 27 59 00 02 98 00 0C 00");
 
         // wait a bit for the ebus thread
-        Thread.sleep(10);
+        Thread.sleep(200);
     }
 
     private void writeTelegramToEmulator(String telegram) throws IOException {
 
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
 
         byte[] bs = EBusUtils.toByteArray(telegram);
+        emulator.writeBytes(bs);
+        // for (byte b : bs) {
+        // emulator.writeByte(b);
+        // }
 
-        for (byte b : bs) {
-            emulator.writeByte(b);
-        }
-
-        emulator.writeByte(0xAA);
-        emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
+        // emulator.writeByte(0xAA);
     }
 
 }

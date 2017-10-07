@@ -30,6 +30,7 @@ public class EBusTypeWord extends EBusTypeGenericReplaceValue {
         replaceValue = new byte[] { (byte) 0xFF, (byte) 0xFF };
     }
 
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
@@ -41,6 +42,9 @@ public class EBusTypeWord extends EBusTypeGenericReplaceValue {
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
+
+        applyByteOrder(data);
+
         BigDecimal value = types.decode(EBusTypeInteger.INTEGER, data);
         if (value == null) {
             return null;
@@ -51,7 +55,9 @@ public class EBusTypeWord extends EBusTypeGenericReplaceValue {
     @Override
     public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        return types.encode(EBusTypeInteger.INTEGER, b.intValue() & 0xFFFF);
+        byte[] result = types.encode(EBusTypeInteger.INTEGER, b.intValue() & 0xFFFF);
+        applyByteOrder(result);
+        return result;
     }
 
     @Override

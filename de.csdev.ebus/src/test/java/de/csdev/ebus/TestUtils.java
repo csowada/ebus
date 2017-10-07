@@ -12,6 +12,7 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.utils.EBusUtils;
 
 public class TestUtils {
 
@@ -34,7 +35,12 @@ public class TestUtils {
                 } else {
 
                     for (Entry<String, Object> entry : map.entrySet()) {
-                        logger.trace(entry.getKey() + " > " + entry.getValue());
+                        if (entry.getValue() instanceof byte[]) {
+                            logger.trace(entry.getKey() + " > " + EBusUtils.toHexDumpString((byte[]) entry.getValue()));
+                        } else {
+                            logger.trace(entry.getKey() + " > " + entry.getValue());
+                        }
+
                     }
                 }
             } catch (EBusTypeException e) {

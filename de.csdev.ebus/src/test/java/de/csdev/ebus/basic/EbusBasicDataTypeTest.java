@@ -11,12 +11,15 @@ package de.csdev.ebus.basic;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData1b;
@@ -35,6 +38,21 @@ public class EbusBasicDataTypeTest {
     @Before
     public void before() {
         types = new EBusTypeRegistry();
+    }
+
+    @Test
+    public void test_ReverseByteOrder() throws EBusTypeException {
+
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
+
+        IEBusType<Object> type = types.getType(EBusTypeData2b.DATA2B, properties);
+
+        BigDecimal decodeBCD = (BigDecimal) type.decode(new byte[] { 0x2C, 0x1A });
+        System.out.println("EbusBasicDataTypeTest.test_XXX()" + decodeBCD);
+
+        decodeBCD = (BigDecimal) type.decode(new byte[] { 0x05, 0x00 });
+        System.out.println("EbusBasicDataTypeTest.test_XXX()" + decodeBCD);
     }
 
     @Test

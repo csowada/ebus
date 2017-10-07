@@ -26,30 +26,21 @@ public class EBusCommandMethod implements IEBusCommandMethod {
 
     private List<IEBusValue> masterTypes;
 
+    private IEBusCommandMethod.Method method;
+
+    private IEBusCommand parent;
+
     private List<IEBusValue> slaveTypes;
 
     private Byte sourceAddress;
 
     private ByteBuffer telegramMask;
 
-    private IEBusCommand parent;
-
-    private IEBusCommandMethod.Method method;
-
     public EBusCommandMethod(EBusCommand parent, IEBusCommandMethod.Method method) {
         this.parent = parent;
         this.method = method;
 
         parent.addCommandChannel(this);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.csdev.ebus.command.IEBusCommand#getType()
-     */
-    public IEBusCommandMethod.Method getMethod() {
-        return method;
     }
 
     /*
@@ -86,6 +77,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getCommand()
      */
+    @Override
     public byte[] getCommand() {
         return command;
     }
@@ -95,6 +87,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getDestinationAddress()
      */
+    @Override
     public Byte getDestinationAddress() {
         return destinationAddress;
     }
@@ -104,6 +97,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTelegramMask()
      */
+    @Override
     public ByteBuffer getMasterTelegramMask() {
 
         if (telegramMask == null) {
@@ -119,6 +113,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTypes()
      */
+    @Override
     public List<IEBusValue> getMasterTypes() {
         return masterTypes;
     }
@@ -126,8 +121,19 @@ public class EBusCommandMethod implements IEBusCommandMethod {
     /*
      * (non-Javadoc)
      *
+     * @see de.csdev.ebus.command.IEBusCommand#getType()
+     */
+    @Override
+    public IEBusCommandMethod.Method getMethod() {
+        return method;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see de.csdev.ebus.command.IEBusCommandChannel#getParent()
      */
+    @Override
     public IEBusCommand getParent() {
         return parent;
     }
@@ -137,6 +143,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getSlaveTypes()
      */
+    @Override
     public List<IEBusValue> getSlaveTypes() {
         return slaveTypes;
     }
@@ -146,8 +153,23 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      *
      * @see de.csdev.ebus.command.IEBusCommand#getSourceAddress()
      */
+    @Override
     public Byte getSourceAddress() {
         return sourceAddress;
+    }
+
+    @Override
+    public Type getType() {
+
+        if (method.equals(Method.BROADCAST)) {
+            return Type.BROADCAST;
+        }
+
+        if (slaveTypes != null && !slaveTypes.isEmpty()) {
+            return Type.MASTER_SLAVE;
+        }
+
+        return Type.MASTER_MASTER;
     }
 
     public EBusCommandMethod setCommand(byte[] command) {
@@ -169,19 +191,6 @@ public class EBusCommandMethod implements IEBusCommandMethod {
 
     public void setSourceAddress(Byte sourceAddress) {
         this.sourceAddress = sourceAddress;
-    }
-
-    public Type getType() {
-
-        if (method.equals(Method.BROADCAST)) {
-            return Type.BROADCAST;
-        }
-
-        if (slaveTypes != null && !slaveTypes.isEmpty()) {
-            return Type.MASTER_SLAVE;
-        }
-
-        return Type.MASTER_MASTER;
     }
 
     @Override

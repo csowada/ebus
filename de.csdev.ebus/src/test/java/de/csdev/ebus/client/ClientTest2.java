@@ -27,7 +27,7 @@ public class ClientTest2 {
 
     @Before
     public void before() throws IOException, EBusConfigurationReaderException {
-        emulator = new EBusEmulatorConnection(null);
+        emulator = new EBusEmulatorConnection();
     }
 
     @Test
@@ -78,19 +78,21 @@ public class ClientTest2 {
 
         controller.addToSendQueue(EBusUtils.toByteArray("FF 08 B5 09 03 0D 2F 00 1D"));
 
-        sendAutoSYN(10);
+        Thread.sleep(500);
+
+        // sendAutoSYN(10);
     }
 
-    private void sendAutoSYN(int loopCount) throws IOException {
-
-        for (int i = 0; i < loopCount; i++) {
-            emulator.writeByte(0xAA);
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-            }
-
-        }
-    }
+    // private void sendAutoSYN(int loopCount) throws IOException {
+    //
+    // for (int i = 0; i < loopCount; i++) {
+    // emulator.writeByte(0xAA);
+    // try {
+    // Thread.sleep(50);
+    // } catch (InterruptedException e) {
+    // }
+    //
+    // }
+    // }
 
 }

@@ -29,16 +29,21 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
 
     public static String DATETIME = "datetime";
 
-    public static String DATE = "date";
+    public static String DATE = "date"; // BDA - 4
 
-    public static String TIME = "time";
+    public static String TIME = "time"; // BTI - 3
 
-    public static String DATE_TIME = "datetime";
+    public static String DATE_TIME = "datetime"; // BTI BDA - 7
+
+    public static String DATE_SHORT = "date_short"; // BDA:3 -3
+
+    public static String TIME_SHORT = "time_short"; // BTM -2
 
     private static String[] supportedTypes = new String[] { DATETIME };
 
     private String variant = DATE_TIME;
 
+    @Override
     public String[] getSupportedTypes() {
 
         return supportedTypes;
@@ -50,13 +55,17 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
             return 7;
         } else if (variant.equals(DATE)) {
             return 4;
-        }
-        if (variant.equals(TIME)) {
+        } else if (variant.equals(DATE_SHORT)) {
+            return 4;
+        } else if (variant.equals(TIME)) {
             return 3;
+        } else if (variant.equals(TIME_SHORT)) {
+            return 2;
         }
         return 0;
     }
 
+    @Override
     public EBusDateTime decode(byte[] data) throws EBusTypeException {
 
         if (data == null) {
@@ -78,10 +87,12 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
         boolean anyDate = false;
         boolean anyTime = false;
 
+        if (data.length != getTypeLenght()) {
+            throw new EBusTypeException(
+                    String.format("Input byte array must have a length of %d bytes!", getTypeLenght()));
+        }
+
         if (StringUtils.equals(variant, DATE_TIME)) {
-            if (data.length != getTypeLenght()) {
-                throw new EBusTypeException("Input byte array must have a length of 7 bytes!");
-            }
             sec = bcdType.decode(new byte[] { data[0] });
             min = bcdType.decode(new byte[] { data[1] });
             hr = bcdType.decode(new byte[] { data[2] });
@@ -89,22 +100,27 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
             month = bcdType.decode(new byte[] { data[4] });
             year = bcdType.decode(new byte[] { data[6] });
 
+        } else if (StringUtils.equals(variant, DATE_SHORT)) {
+            day = bcdType.decode(new byte[] { data[0] });
+            month = bcdType.decode(new byte[] { data[1] });
+            year = bcdType.decode(new byte[] { data[2] });
+            anyTime = true;
+
         } else if (StringUtils.equals(variant, DATE)) {
-            if (data.length != getTypeLenght()) {
-                throw new EBusTypeException("Input byte array must have a length of 4 bytes!");
-            }
             day = bcdType.decode(new byte[] { data[0] });
             month = bcdType.decode(new byte[] { data[1] });
             year = bcdType.decode(new byte[] { data[3] });
             anyTime = true;
 
         } else if (StringUtils.equals(variant, TIME)) {
-            if (data.length != getTypeLenght()) {
-                throw new EBusTypeException("Input byte array must have a length of 3 bytes!");
-            }
             sec = bcdType.decode(new byte[] { data[0] });
             min = bcdType.decode(new byte[] { data[1] });
             hr = bcdType.decode(new byte[] { data[2] });
+            anyDate = true;
+
+        } else if (StringUtils.equals(variant, TIME_SHORT)) {
+            min = bcdType.decode(new byte[] { data[0] });
+            hr = bcdType.decode(new byte[] { data[1] });
             anyDate = true;
         }
 
@@ -136,6 +152,7 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
         return new EBusDateTime(calendar, anyDate, anyTime);
     }
 
+    @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
@@ -171,9 +188,19 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
                         bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0], bcdType.encode(dayOfWeek)[0],
                         bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
 
+            } else if (StringUtils.equals(variant, DATE_SHORT)) {
+
+                result = new byte[] { bcdType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
+                        bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0],
+                        bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
+
             } else if (StringUtils.equals(variant, TIME)) {
                 result = new byte[] { bcdType.encode(calendar.get(Calendar.SECOND))[0],
                         bcdType.encode(calendar.get(Calendar.MINUTE))[0],
+                        bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
+
+            } else if (StringUtils.equals(variant, TIME_SHORT)) {
+                result = new byte[] { bcdType.encode(calendar.get(Calendar.MINUTE))[0],
                         bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
             }
         }

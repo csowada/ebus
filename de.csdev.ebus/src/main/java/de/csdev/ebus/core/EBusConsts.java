@@ -36,6 +36,6 @@ public class EBusConsts {
 
     public final static String COMMAND_SIGN_OF_LIFE = "common.sign_of_life";
 
-    public final static String COMMAND_IDENTIFICATIONE = "common.identification";
+    public final static String COMMAND_IDENTIFICATION = "common.identification";
 
 }

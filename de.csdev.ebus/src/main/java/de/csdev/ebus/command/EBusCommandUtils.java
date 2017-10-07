@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.IEBusComplexType;
@@ -28,6 +30,8 @@ import de.csdev.ebus.utils.EBusUtils;
  *
  */
 public class EBusCommandUtils {
+
+    private final static Logger logger = LoggerFactory.getLogger(EBusCommandUtils.class);
 
     public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
             Map<String, Object> values) throws EBusTypeException {
@@ -137,16 +141,14 @@ public class EBusCommandUtils {
                 }
 
                 if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
-                    System.out.println("EBusCommand.encode() >> MIN");
+                    logger.debug("Value {} with {} is smaller then allowed {}", ev.getName(), multiply, nev.getMax());
                     decode = null;
                 }
 
                 if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
-                    System.out.println("EBusCommand.encode() >> MAX");
+                    logger.debug("Value {} with {} is larger then allowed {}", ev.getName(), multiply, nev.getMax());
                     decode = null;
                 }
-
-                // decode = multiply;
             }
         }
 

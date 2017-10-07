@@ -16,7 +16,7 @@ public interface IEBusComplexType {
 
     /**
      * Allows to decode complex values with the complete telegram
-     * 
+     *
      * @param rawData
      * @param pos
      * @return

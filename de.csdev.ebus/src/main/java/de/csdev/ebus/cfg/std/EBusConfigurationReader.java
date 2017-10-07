@@ -11,6 +11,9 @@ package de.csdev.ebus.cfg.std;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -71,10 +74,24 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
 
         Gson gson = new Gson();
-        EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(inputStream), EBusCollectionDTO.class);
+        MessageDigest md = null;
+
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        }
+
+        // collect md5 hash while reading file
+        DigestInputStream dis = new DigestInputStream(inputStream, md);
+
+        EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(dis), EBusCollectionDTO.class);
 
         EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
                 collection.getDescription(), collection.getProperties());
+
+        // add md5 hash
+        commandCollection.setSourceHash(md.digest());
 
         for (EBusCommandDTO commandDto : collection.getCommands()) {
             if (commandDto != null) {

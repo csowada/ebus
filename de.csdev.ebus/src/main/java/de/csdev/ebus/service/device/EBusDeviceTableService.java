@@ -112,7 +112,7 @@ public class EBusDeviceTableService
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommandMethod command = configurationProvider.getConfigurationById(EBusConsts.COLLECTION_STD,
-                EBusConsts.COMMAND_IDENTIFICATIONE, IEBusCommandMethod.Method.GET);
+                EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
 
         if (command == null) {
             logger.warn("Unable to load command with id common.identification");
@@ -188,7 +188,7 @@ public class EBusDeviceTableService
         } else if (id.equals(EBusConsts.COMMAND_INQ_EXISTENCE)) {
             sendSignOfLife();
 
-        } else if (id.equals(EBusConsts.COMMAND_IDENTIFICATIONE)) {
+        } else if (id.equals(EBusConsts.COMMAND_IDENTIFICATION)) {
             deviceTable.updateDevice(masterAddress, result);
         }
     }

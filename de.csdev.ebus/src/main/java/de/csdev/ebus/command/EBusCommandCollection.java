@@ -9,7 +9,9 @@
 package de.csdev.ebus.command;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +23,7 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusCommandCollection implements IEBusCommandCollection {
 
-    private List<IEBusCommand> commands = new ArrayList<IEBusCommand>();
+    private Map<String, IEBusCommand> commands = new HashMap<String, IEBusCommand>();
 
     private String description;
 
@@ -32,6 +34,8 @@ public class EBusCommandCollection implements IEBusCommandCollection {
     private String label;
 
     private Map<String, Object> properties;
+
+    private byte[] sourceHash;
 
     public EBusCommandCollection(String id, String label, String description, Map<String, Object> properties) {
 
@@ -44,15 +48,16 @@ public class EBusCommandCollection implements IEBusCommandCollection {
             this.properties.putAll(properties);
         }
 
-        this.commands.addAll(commands);
     }
 
     public void addCommand(IEBusCommand command) {
-        this.commands.add(command);
+        this.commands.put(command.getId(), command);
     }
 
-    public void addCommandw(List<IEBusCommand> commands) {
-        this.commands.addAll(commands);
+    public void addCommands(List<IEBusCommand> commands) {
+        for (IEBusCommand command : commands) {
+            addCommand(command);
+        }
     }
 
     /*
@@ -61,8 +66,8 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      * @see de.csdev.ebus.command.IEBusCommandCollection#getCommands()
      */
     @Override
-    public List<IEBusCommand> getCommands() {
-        return Collections.unmodifiableList(commands);
+    public Collection<IEBusCommand> getCommands() {
+        return Collections.unmodifiableCollection((commands.values()));
     }
 
     /*
@@ -135,10 +140,24 @@ public class EBusCommandCollection implements IEBusCommandCollection {
         this.identification = identification;
     }
 
+    public void setSourceHash(byte[] sourceHash) {
+        this.sourceHash = sourceHash;
+    }
+
     @Override
     public String toString() {
         return "EBusCommandCollection [commands=" + commands + ", properties=" + properties + ", id=" + id + ", label="
                 + label + ", identification=" + identification + "]";
+    }
+
+    @Override
+    public IEBusCommand getCommand(String id) {
+        return commands.get(id);
+    }
+
+    @Override
+    public byte[] getSourceHash() {
+        return sourceHash;
     }
 
 }

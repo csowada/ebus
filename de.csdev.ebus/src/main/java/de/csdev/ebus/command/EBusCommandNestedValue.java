@@ -19,11 +19,16 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
 
     private List<IEBusValue> list;
 
-    public boolean hasChildren() {
+    public boolean add(IEBusValue value) {
 
-        return list != null && !list.isEmpty();
+        if (list == null) {
+            list = new ArrayList<IEBusValue>();
+        }
+
+        return list.add(value);
     }
 
+    @Override
     public List<IEBusValue> getChildren() {
 
         if (list == null) {
@@ -33,13 +38,10 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
         return list;
     }
 
-    public boolean add(IEBusValue value) {
+    @Override
+    public boolean hasChildren() {
 
-        if (list == null) {
-            list = new ArrayList<IEBusValue>();
-        }
-
-        return list.add(value);
+        return list != null && !list.isEmpty();
     }
 
     @Override

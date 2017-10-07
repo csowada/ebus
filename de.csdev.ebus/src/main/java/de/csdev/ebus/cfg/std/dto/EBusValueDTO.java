@@ -43,6 +43,15 @@ public class EBusValueDTO {
     private String _default;
     private Integer pos;
     private String format;
+    private boolean reverseByteOrder = false;
+
+    public boolean isReverseByteOrder() {
+        return reverseByteOrder;
+    }
+
+    public void setReverseByteOrder(boolean reverseByteOrder) {
+        this.reverseByteOrder = reverseByteOrder;
+    }
 
     public String getFormat() {
         return format;

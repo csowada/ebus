@@ -25,13 +25,13 @@ public class EBusDevice implements IEBusDevice {
 
     private BigDecimal hardwareVersion;
 
-    public long lastActivity;
+    private long lastActivity;
 
     private Byte manufacturer;
 
-    byte masterAddress;
+    private byte masterAddress;
 
-    byte slaveAddress;
+    private byte slaveAddress;
 
     private BigDecimal softwareVersion;
 
