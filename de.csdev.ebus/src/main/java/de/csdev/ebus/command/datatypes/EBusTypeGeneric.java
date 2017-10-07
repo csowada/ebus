@@ -48,7 +48,7 @@ public abstract class EBusTypeGeneric<T> implements IEBusType<T> {
     @Override
     public IEBusType<T> getInstance(Map<String, Object> properties) {
 
-        if (properties.containsKey(IEBusType.REVERSED_BYTE_ORDER)) {
+        if (properties != null && properties.containsKey(IEBusType.REVERSED_BYTE_ORDER)) {
 
             boolean reverseOrder = BooleanUtils.toBoolean((Boolean) properties.get(IEBusType.REVERSED_BYTE_ORDER));
 
