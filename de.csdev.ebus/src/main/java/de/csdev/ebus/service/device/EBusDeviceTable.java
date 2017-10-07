@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -98,9 +99,10 @@ public class EBusDeviceTable {
         boolean newDevice = false;
         boolean updatedDevice = false;
 
-        if (!EBusUtils.isMasterAddress(address)) {
-            logger.error("ups, no master address!");
+        if (address == EBusConsts.BROADCAST_ADDRESS) {
             return;
+        } else if (EBusUtils.isMasterAddress(address)) {
+            address = EBusUtils.getSlaveAddress(address);
         }
 
         EBusDevice device = deviceTable.get(address);
