@@ -218,4 +218,9 @@ public class EBusDeviceTableService
     public void onConnectionException(Exception e) {
         // noop
     }
+
+    @Override
+    public void onTelegramResolveFailed(byte[] receivedData, Integer sendQueueId) {
+        // noop
+    }
 }
