@@ -8,6 +8,7 @@
  */
 package de.csdev.ebus.command.datatypes;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -23,11 +24,11 @@ public abstract class EBusTypeGeneric<T> implements IEBusType<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeGeneric.class);
 
+    protected Map<Object, EBusTypeGeneric<T>> otherInstances = new HashMap<Object, EBusTypeGeneric<T>>();
+
     protected EBusTypeRegistry types;
 
     protected boolean reverseByteOrder = false;
-
-    protected EBusTypeGeneric<T> reversedInstance;
 
     protected void applyByteOrder(byte[] data) {
         if (reverseByteOrder) {
@@ -48,20 +49,40 @@ public abstract class EBusTypeGeneric<T> implements IEBusType<T> {
     @Override
     public IEBusType<T> getInstance(Map<String, Object> properties) {
 
-        if (properties != null && properties.containsKey(IEBusType.REVERSED_BYTE_ORDER)) {
+        if (isReverseByteOrderSet(properties)) {
 
-            boolean reverseOrder = BooleanUtils.toBoolean((Boolean) properties.get(IEBusType.REVERSED_BYTE_ORDER));
-
-            if (reverseOrder) {
-                if (reversedInstance == null) {
-                    reversedInstance = createNewInstance();
-                    reversedInstance.reverseByteOrder = true;
-                }
-                return reversedInstance;
+            // store this instance in our map
+            EBusTypeGeneric<T> reversedInstance = otherInstances.get(IEBusType.REVERSED_BYTE_ORDER);
+            if (reversedInstance == null) {
+                reversedInstance = createNewInstance();
+                applyNewInstanceProperties(reversedInstance, properties);
+                otherInstances.put(IEBusType.REVERSED_BYTE_ORDER, reversedInstance);
             }
+            return reversedInstance;
         }
 
         return this;
+    }
+
+    /**
+     * @param properties
+     * @return
+     */
+    protected boolean isReverseByteOrderSet(Map<String, Object> properties) {
+        if (properties != null && BooleanUtils.isTrue((Boolean) properties.get(IEBusType.REVERSED_BYTE_ORDER))) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param instance
+     * @param properties
+     */
+    protected void applyNewInstanceProperties(EBusTypeGeneric<T> instance, Map<String, Object> properties) {
+        if (isReverseByteOrderSet(properties)) {
+            instance.reverseByteOrder = true;
+        }
     }
 
     /**
