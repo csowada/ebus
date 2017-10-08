@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.basic;
+package de.csdev.ebus.command.datatype;
 
 import static org.junit.Assert.*;
 
@@ -31,7 +31,7 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EbusBasicDataTypeTest {
+public class StandardTest {
 
     EBusTypeRegistry types;
 
