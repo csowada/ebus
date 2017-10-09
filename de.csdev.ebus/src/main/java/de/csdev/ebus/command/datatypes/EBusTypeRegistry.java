@@ -20,6 +20,7 @@ import de.csdev.ebus.command.datatypes.ext.EBusTypeDateTime;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeMultiWord;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeString;
+import de.csdev.ebus.command.datatypes.ext.EBusTypeTime;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeVersion;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBit;
@@ -75,6 +76,7 @@ public class EBusTypeRegistry {
         add(EBusTypeMultiWord.class);
         add(EBusTypeDateTime.class);
         add(EBusTypeDate.class);
+        add(EBusTypeTime.class);
         add(EBusTypeVersion.class);
 
         // vendor specific

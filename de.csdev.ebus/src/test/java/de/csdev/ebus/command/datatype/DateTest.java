@@ -48,6 +48,7 @@ public class DateTest {
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x24, 0x12, 0x07, 0x17 }, bytes);
+
     }
 
     @Test
