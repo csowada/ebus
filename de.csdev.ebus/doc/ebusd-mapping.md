@@ -1,4 +1,12 @@
-ebusd type | eBUS binding type | add. params | xxxx
+# ebusd buildin data type mapping
+
+The list below shows the mapping from ebus build data types to this library. All
+values in bold ar not supported yet.
+
+You can see the list of ebusd data types in the 
+[ebusd wiki](https://github.com/john30/ebusd/wiki/4.3.-Builtin-data-types).
+
+ebusd type | eBUS lib type | add. params | xxxx
 --- | --- | --- | --- 
 IGN | byte | use without ``name``
 STR | string | | filled up with space
@@ -43,12 +51,12 @@ UIN | word/(uint) | | low byte first
 UIR | word/(uint) | reverseByteOrder: true | high byte first
 SIN | int | | low byte first
 SIR | int | reverseByteOrder: true | high byte first
-**U3N** | word/(uint) | length: 3 | low byte first
-**U3R** | word/(uint) | length: 3, reverseByteOrder: true | high byte first
-**S3N** | int | length: 3 | low byte first
-**S3R** | int | length: 3, reverseByteOrder: true | high byte first
-**ULG** | word/(uint) | length: 4 | low byte first
-**ULR** | word/(uint) | length: 4, reverseByteOrder: true | high byte first
-**SLG** | int | length: 4 | low byte first
-**SLR** | int | length: 4, reverseByteOrder: true | high byte first
+**U3N** | byte/(uchar) | length: 3 | low byte first
+**U3R** | byte/(uchar) | length: 3, reverseByteOrder: true | high byte first
+**S3N** | char | length: 3 | low byte first
+**S3R** | char | length: 3, reverseByteOrder: true | high byte first
+**ULG** | byte/(uchar) | length: 4 | low byte first
+**ULR** | byte/(uchar) | length: 4, reverseByteOrder: true | high byte first
+**SLG** | char | length: 4 | low byte first
+**SLR** | char | length: 4, reverseByteOrder: true | high byte first
 DI0-7 | byte | children of ``bit``
