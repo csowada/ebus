@@ -26,6 +26,7 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBit;
 import de.csdev.ebus.command.datatypes.std.EBusTypeByte;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
+import de.csdev.ebus.command.datatypes.std.EBusTypeChar2;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData1b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
@@ -81,6 +82,9 @@ public class EBusTypeRegistry {
 
         // vendor specific
         add(EBusTypeKWCrc.class);
+
+        // test
+        add(EBusTypeChar2.class);
     }
 
     /**
