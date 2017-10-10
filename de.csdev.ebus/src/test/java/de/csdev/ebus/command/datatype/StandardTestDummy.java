@@ -20,7 +20,7 @@ import org.junit.Test;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.ext.DummyTypeChar2;
+import de.csdev.ebus.command.datatypes.std.EBusTypeChar3;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -44,7 +44,7 @@ public class StandardTestDummy {
             properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
         }
 
-        return types.getType(DummyTypeChar2.CHAR, properties);
+        return types.getType(EBusTypeChar3.CHAR, properties);
     }
 
     @Test
@@ -159,6 +159,46 @@ public class StandardTestDummy {
         // encode null - is replace value
         encode = type.encode(null);
         assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFF }, encode);
+
+    }
+
+    @Test
+    public void test_ByteDataImutable() throws EBusTypeException {
+
+        IEBusType<?> type = getType(2, true);
+
+        byte[] data = new byte[] { (byte) 0xFF, (byte) 0xFE };
+        type.decode(data);
+
+        assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFE }, data);
+    }
+
+    @Test
+    public void test_CustomReplaceValue() throws EBusTypeException {
+
+        // 2 byte char
+        byte[] data1 = new byte[] { (byte) 0x80, (byte) 0x00 };
+        EBusTypeChar3 type = (EBusTypeChar3) getType(2, false);
+
+        // replace value as decimal
+        type.setReplaceValue(128);
+        assertNull(type.decode(data1));
+
+        // replace value as byte array
+        type.setReplaceValue(new byte[] { (byte) 0x80, (byte) 0x00 });
+        assertNull(type.decode(data1));
+
+        // 2 byte char in reverted order
+        byte[] data2 = new byte[] { (byte) 0x00, (byte) 0x80 };
+        type = (EBusTypeChar3) getType(2, true);
+
+        // replace value as decimal
+        type.setReplaceValue(128);
+        assertNull(type.decode(data2));
+
+        // replace value as byte array
+        type.setReplaceValue(new byte[] { (byte) 0x00, (byte) 0x80 });
+        assertNull(type.decode(data2));
     }
 
 }

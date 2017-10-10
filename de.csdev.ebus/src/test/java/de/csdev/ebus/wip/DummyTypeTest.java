@@ -21,8 +21,8 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.ext.DummyTypeChar2;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
+import de.csdev.ebus.command.datatypes.std.EBusTypeChar3;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -51,7 +51,7 @@ public class DummyTypeTest {
         properties.put("variant", 99);
         //IEBusType<BigDecimal> instance = de.getInstance(properties);
 
-        IEBusType<Object> type = types.getType(DummyTypeChar2.CHAR, properties);
+        IEBusType<Object> type = types.getType(EBusTypeChar3.CHAR, properties);
         
         
         System.out.println("ConfigurationReaderTest.enclosing_method()");

@@ -14,7 +14,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.command.datatypes.ext.DummyTypeChar2;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeDate;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeDateTime;
@@ -23,6 +22,7 @@ import de.csdev.ebus.command.datatypes.ext.EBusTypeMultiWord;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeString;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeTime;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeVersion;
+import de.csdev.ebus.command.datatypes.std.EBusTypeChar3;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBit;
 import de.csdev.ebus.command.datatypes.std.EBusTypeByte;
@@ -86,7 +86,7 @@ public class EBusTypeRegistry {
 
         // test
         add(EBusTypeChar2.class);
-        add(DummyTypeChar2.class);
+        add(EBusTypeChar3.class);
     }
 
     /**

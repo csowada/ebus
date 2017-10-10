@@ -1,22 +1,21 @@
-package de.csdev.ebus.command.datatypes.ext;
+package de.csdev.ebus.command.datatypes;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
-import de.csdev.ebus.command.datatypes.IEBusType;
+public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
-public abstract class DummyTypeGeneric<T> implements IEBusType<T> {
+    private static final Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(DummyTypeGeneric.class);
+    protected Map<Object, EBusAbstractType<T>> otherInstances = new HashMap<Object, EBusAbstractType<T>>();
 
     protected EBusTypeRegistry types;
 
@@ -40,45 +39,56 @@ public abstract class DummyTypeGeneric<T> implements IEBusType<T> {
 
     @Override
     public T decode(byte[] data) throws EBusTypeException {
-        applyByteOrder(data);
+        data = applyByteOrder(data);
         return decodeInt(data);
     }
 
     @Override
     public byte[] encode(Object data) throws EBusTypeException {
         byte[] result = encodeInt(data);
-        applyByteOrder(result);
+        result = applyByteOrder(result);
         return result;
     }
 
     @Override
     public IEBusType<T> getInstance(Map<String, Object> properties) {
 
-//    	Collections.sort(properties.keySet());
-    	
-//    	Collections.checkedSortedMap(properties, String.class, Object.class)
-    	
-        DummyTypeGeneric<T> instance = createNewInstance();
+        if (properties == null || properties.isEmpty()) {
+            return this;
+        }
 
-        for (Entry<String, Object> entry : properties.entrySet()) {
-            setValue(instance, entry.getKey(), entry.getValue());
+        TreeMap<String, Object> sortedMap = new TreeMap<String, Object>(properties);
+        String instanceKey = sortedMap.toString();
+
+        EBusAbstractType<T> instance = otherInstances.get(instanceKey);
+        if (instance == null) {
+            instance = createNewInstance();
+
+            for (Entry<String, Object> entry : properties.entrySet()) {
+                setValue(instance, entry.getKey(), entry.getValue());
+            }
+            otherInstances.put(instanceKey, instance);
         }
 
         return instance;
     }
 
-    protected void applyByteOrder(byte[] data) {
+    protected byte[] applyByteOrder(byte[] data) {
+
         if (reverseByteOrder) {
+            data = ArrayUtils.clone(data);
             ArrayUtils.reverse(data);
         }
+
+        return data;
     }
 
-    private void setValue(DummyTypeGeneric<T> instance, String property, Object value) {
+    private void setValue(EBusAbstractType<T> instance, String property, Object value) {
         try {
-        	Field field = FieldUtils.getField(instance.getClass(), property, true);
+            Field field = FieldUtils.getField(instance.getClass(), property, true);
 
             if (field != null) {
-            	field.set(instance, value);
+                field.set(instance, value);
             }
 
         } catch (SecurityException e) {
@@ -93,11 +103,11 @@ public abstract class DummyTypeGeneric<T> implements IEBusType<T> {
     /**
      * @return
      */
-    private DummyTypeGeneric<T> createNewInstance() {
+    private EBusAbstractType<T> createNewInstance() {
 
         try {
             @SuppressWarnings("unchecked")
-			DummyTypeGeneric<T> newInstance = this.getClass().newInstance();
+            EBusAbstractType<T> newInstance = this.getClass().newInstance();
             newInstance.types = this.types;
             return newInstance;
 
@@ -105,7 +115,7 @@ public abstract class DummyTypeGeneric<T> implements IEBusType<T> {
             logger.error("error!", e);
         } catch (IllegalAccessException e) {
             logger.error("error!", e);
-		}
+        }
 
         return null;
     }

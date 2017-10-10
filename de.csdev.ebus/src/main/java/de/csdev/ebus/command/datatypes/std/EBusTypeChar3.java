@@ -1,16 +1,17 @@
-package de.csdev.ebus.command.datatypes.ext;
+package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
 
+import de.csdev.ebus.command.datatypes.EBusAbtstractReplaceValueType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.utils.NumberUtils;
 
-public class DummyTypeChar2 extends DummyTypeGenericReplaceValue<BigDecimal> {
+public class EBusTypeChar3 extends EBusAbtstractReplaceValueType<BigDecimal> {
 
-    public static String CHAR = "char2x";
+    public static String CHAR = "char3";
 
     private static String[] supportedTypes = new String[] { CHAR };
-	
+
     protected int variant = 1;
 
     @Override
@@ -19,19 +20,19 @@ public class DummyTypeChar2 extends DummyTypeGenericReplaceValue<BigDecimal> {
     }
 
     @Override
-	public byte[] getReplaceValue() {
-    	
-    	if(replaceValue.length == 0) {
+    public byte[] getReplaceValue() {
+
+        if (replaceValue == null || replaceValue.length == 0) {
             replaceValue = new byte[length];
             for (int i = 0; i < replaceValue.length; i++) {
                 replaceValue[i] = (byte) 0xFF;
             }
-    	}
+        }
 
         return replaceValue;
-	}
+    }
 
-	@Override
+    @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
         long result = 0;
         for (int i = length; i > 0; i--) {
