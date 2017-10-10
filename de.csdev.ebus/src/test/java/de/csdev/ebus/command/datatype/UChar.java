@@ -20,13 +20,13 @@ import org.junit.Test;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.std.EBusTypeChar2;
+import de.csdev.ebus.command.datatypes.std.EBusTypeUChar;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class StandardTest2 {
+public class UChar {
 
     EBusTypeRegistry types;
 
@@ -44,7 +44,7 @@ public class StandardTest2 {
             properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
         }
 
-        return types.getType(EBusTypeChar2.CHAR, properties);
+        return types.getType(EBusTypeUChar.UCHAR, properties);
     }
 
     @Test
@@ -68,11 +68,11 @@ public class StandardTest2 {
         encode = type.encode(value);
         assertArrayEquals(new byte[] { (byte) 0x01 }, encode);
 
-        // decode max value: 65.534
+        // decode max value: 254
         value = (BigDecimal) type.decode(new byte[] { (byte) 0xFE });
         assertEquals(BigDecimal.valueOf(254), value);
 
-        // decode max value: 65.534
+        // decode max value: 254
         encode = type.encode(value);
         assertArrayEquals(new byte[] { (byte) 0xFE }, encode);
 
@@ -159,6 +159,46 @@ public class StandardTest2 {
         // encode null - is replace value
         encode = type.encode(null);
         assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFF }, encode);
+
+    }
+
+    @Test
+    public void test_ByteDataImutable() throws EBusTypeException {
+
+        IEBusType<?> type = getType(2, true);
+
+        byte[] data = new byte[] { (byte) 0xFF, (byte) 0xFE };
+        type.decode(data);
+
+        assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFE }, data);
+    }
+
+    @Test
+    public void test_CustomReplaceValue() throws EBusTypeException {
+
+        // 2 byte char
+        byte[] data1 = new byte[] { (byte) 0x80, (byte) 0x00 };
+        EBusTypeUChar type = (EBusTypeUChar) getType(2, false);
+
+        // replace value as decimal
+        type.setReplaceValue(128);
+        assertNull(type.decode(data1));
+
+        // replace value as byte array
+        type.setReplaceValue(new byte[] { (byte) 0x80, (byte) 0x00 });
+        assertNull(type.decode(data1));
+
+        // 2 byte char in reverted order
+        byte[] data2 = new byte[] { (byte) 0x00, (byte) 0x80 };
+        type = (EBusTypeUChar) getType(2, true);
+
+        // replace value as decimal
+        type.setReplaceValue(128);
+        assertNull(type.decode(data2));
+
+        // replace value as byte array
+        type.setReplaceValue(new byte[] { (byte) 0x00, (byte) 0x80 });
+        assertNull(type.decode(data2));
     }
 
 }

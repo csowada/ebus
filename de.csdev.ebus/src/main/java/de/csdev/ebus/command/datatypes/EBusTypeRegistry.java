@@ -22,17 +22,17 @@ import de.csdev.ebus.command.datatypes.ext.EBusTypeMultiWord;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeString;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeTime;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeVersion;
-import de.csdev.ebus.command.datatypes.std.EBusTypeChar3;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBit;
 import de.csdev.ebus.command.datatypes.std.EBusTypeByte;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
-import de.csdev.ebus.command.datatypes.std.EBusTypeChar2;
+import de.csdev.ebus.command.datatypes.std.EBusTypeChar3;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData1b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
+import de.csdev.ebus.command.datatypes.std.EBusTypeUChar;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
 
 /**
@@ -85,8 +85,8 @@ public class EBusTypeRegistry {
         add(EBusTypeKWCrc.class);
 
         // test
-        add(EBusTypeChar2.class);
         add(EBusTypeChar3.class);
+        add(EBusTypeUChar.class);
     }
 
     /**

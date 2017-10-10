@@ -1,6 +1,9 @@
 package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import org.apache.commons.lang.ArrayUtils;
 
 import de.csdev.ebus.command.datatypes.EBusAbtstractReplaceValueType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
@@ -34,13 +37,9 @@ public class EBusTypeChar3 extends EBusAbtstractReplaceValueType<BigDecimal> {
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-        long result = 0;
-        for (int i = length; i > 0; i--) {
-            result <<= 8;
-            result |= (data[i - 1] & 0xFF);
-        }
-
-        return BigDecimal.valueOf(result);
+        byte[] clone = ArrayUtils.clone(data);
+        ArrayUtils.reverse(clone);
+        return new BigDecimal(new BigInteger(clone));
     }
 
     @Override

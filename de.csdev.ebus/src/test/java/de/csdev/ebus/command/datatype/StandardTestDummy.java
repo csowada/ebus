@@ -68,6 +68,14 @@ public class StandardTestDummy {
         encode = type.encode(value);
         assertArrayEquals(new byte[] { (byte) 0x01 }, encode);
 
+        // decode value: 1
+        value = (BigDecimal) type.decode(new byte[] { (byte) 0x81 });
+        assertEquals(BigDecimal.valueOf(-127), value);
+
+        // decode value: 1
+        encode = type.encode(value);
+        assertArrayEquals(new byte[] { (byte) 0x81 }, encode);
+
         // decode max value: 65.534
         value = (BigDecimal) type.decode(new byte[] { (byte) 0xFE });
         assertEquals(BigDecimal.valueOf(254), value);
