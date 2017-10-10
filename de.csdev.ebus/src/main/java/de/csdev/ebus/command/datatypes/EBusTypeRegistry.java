@@ -14,6 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.command.datatypes.ext.DummyTypeChar2;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeDate;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeDateTime;
@@ -85,6 +86,7 @@ public class EBusTypeRegistry {
 
         // test
         add(EBusTypeChar2.class);
+        add(DummyTypeChar2.class);
     }
 
     /**

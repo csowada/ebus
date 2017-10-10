@@ -1,10 +1,12 @@
 package de.csdev.ebus.command.datatypes.ext;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +54,10 @@ public abstract class DummyTypeGeneric<T> implements IEBusType<T> {
     @Override
     public IEBusType<T> getInstance(Map<String, Object> properties) {
 
+//    	Collections.sort(properties.keySet());
+    	
+//    	Collections.checkedSortedMap(properties, String.class, Object.class)
+    	
         DummyTypeGeneric<T> instance = createNewInstance();
 
         for (Entry<String, Object> entry : properties.entrySet()) {
@@ -69,15 +75,12 @@ public abstract class DummyTypeGeneric<T> implements IEBusType<T> {
 
     private void setValue(DummyTypeGeneric<T> instance, String property, Object value) {
         try {
+        	Field field = FieldUtils.getField(instance.getClass(), property, true);
 
-            Field declaredField = instance.getClass().getDeclaredField(property);
-
-            if (declaredField != null) {
-                declaredField.set(instance, value);
+            if (field != null) {
+            	field.set(instance, value);
             }
 
-        } catch (NoSuchFieldException e) {
-            logger.error("error!", e);
         } catch (SecurityException e) {
             logger.error("error!", e);
         } catch (IllegalArgumentException e) {
@@ -94,7 +97,7 @@ public abstract class DummyTypeGeneric<T> implements IEBusType<T> {
 
         try {
             @SuppressWarnings("unchecked")
-            DummyTypeGeneric<T> newInstance = this.getClass().newInstance();
+			DummyTypeGeneric<T> newInstance = this.getClass().newInstance();
             newInstance.types = this.types;
             return newInstance;
 
@@ -102,7 +105,7 @@ public abstract class DummyTypeGeneric<T> implements IEBusType<T> {
             logger.error("error!", e);
         } catch (IllegalAccessException e) {
             logger.error("error!", e);
-        }
+		}
 
         return null;
     }

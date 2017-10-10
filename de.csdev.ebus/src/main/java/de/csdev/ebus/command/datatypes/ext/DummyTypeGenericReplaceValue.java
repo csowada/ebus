@@ -3,11 +3,16 @@ package de.csdev.ebus.command.datatypes.ext;
 import org.apache.commons.lang.ArrayUtils;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.utils.EBusUtils;
 
 public abstract class DummyTypeGenericReplaceValue<T> extends DummyTypeGeneric<T> {
 
     protected byte[] replaceValue = null;
 
+    public byte[] getReplaceValue() {
+    	return replaceValue;
+    }
+    
     protected boolean equalsReplaceValue(byte[] data) {
         return ArrayUtils.isEquals(data, this.replaceValue);
     }
@@ -35,5 +40,10 @@ public abstract class DummyTypeGenericReplaceValue<T> extends DummyTypeGeneric<T
         applyByteOrder(result);
 
         return encodeInt(result);
+    }
+    
+    @Override
+    public String toString() {
+        return "XXX [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
     }
 }
