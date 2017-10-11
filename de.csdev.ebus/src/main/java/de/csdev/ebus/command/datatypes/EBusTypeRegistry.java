@@ -26,14 +26,14 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBit;
 import de.csdev.ebus.command.datatypes.std.EBusTypeByte;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
-import de.csdev.ebus.command.datatypes.std.EBusTypeChar3;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData1b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
-import de.csdev.ebus.command.datatypes.std.EBusTypeUChar;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeChar3;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeUChar;
 
 /**
  * @author Christian Sowada - Initial contribution

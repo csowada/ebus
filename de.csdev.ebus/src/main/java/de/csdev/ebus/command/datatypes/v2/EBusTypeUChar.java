@@ -6,10 +6,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.command.datatypes.std;
+package de.csdev.ebus.command.datatypes.v2;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -29,9 +30,10 @@ public class EBusTypeUChar extends EBusAbtstractReplaceValueType<BigDecimal> {
 
     private static String[] supportedTypes = new String[] { BYTE, UCHAR };
 
-    // public EBusTypeUChar() {
-    // replaceValue = new byte[] { (byte) 0xFF };
-    // }
+    public EBusTypeUChar() {
+        // set default length
+        length = 1;
+    }
 
     @Override
     public String[] getSupportedTypes() {
@@ -43,53 +45,24 @@ public class EBusTypeUChar extends EBusAbtstractReplaceValueType<BigDecimal> {
 
         if (replaceValue == null || replaceValue.length == 0) {
             replaceValue = new byte[length];
-            for (int i = 0; i < replaceValue.length; i++) {
-                replaceValue[i] = (byte) 0xFF;
-            }
+            Arrays.fill(replaceValue, (byte) 0xFF);
         }
 
         return replaceValue;
     }
-
-    // @Override
-    // public BigDecimal decodeInt(byte[] data) {
-    // return BigDecimal.valueOf(data[0] & 0xFF);
-    // }
-    //
-    // @Override
-    // public byte[] encodeInt(Object data) {
-    //
-    // if (data instanceof byte[]) {
-    // return (byte[]) data;
-    // }
-    //
-    // BigDecimal b = NumberUtils.toBigDecimal(data);
-    //
-    // if (b == null) {
-    // return new byte[] { 0x00 };
-    // }
-    //
-    // return new byte[] { (byte) b.intValue() };
-    // }
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
 
         byte[] clone = ArrayUtils.clone(data);
         ArrayUtils.reverse(clone);
-        return new BigDecimal(new BigInteger(1, clone));
 
-        // long result = 0;
-        // for (int i = length; i > 0; i--) {
-        // result <<= 8;
-        // result |= (data[i - 1] & 0xFF);
-        // }
-        //
-        // return BigDecimal.valueOf(result & Long.MAX_VALUE);
+        return new BigDecimal(new BigInteger(1, clone));
     }
 
     @Override
     public byte[] encodeInt(Object data) throws EBusTypeException {
+
         BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
         long l = b.longValue() & Long.MAX_VALUE;
 

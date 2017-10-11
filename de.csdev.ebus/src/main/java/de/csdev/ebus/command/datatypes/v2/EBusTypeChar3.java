@@ -1,4 +1,4 @@
-package de.csdev.ebus.command.datatypes.std;
+package de.csdev.ebus.command.datatypes.v2;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -17,6 +17,11 @@ public class EBusTypeChar3 extends EBusAbtstractReplaceValueType<BigDecimal> {
 
     protected int variant = 1;
 
+    public EBusTypeChar3() {
+        // set default length
+        length = 1;
+    }
+
     @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
@@ -27,9 +32,7 @@ public class EBusTypeChar3 extends EBusAbtstractReplaceValueType<BigDecimal> {
 
         if (replaceValue == null || replaceValue.length == 0) {
             replaceValue = new byte[length];
-            for (int i = 0; i < replaceValue.length; i++) {
-                replaceValue[i] = (byte) 0xFF;
-            }
+            replaceValue[length - 1] = (byte) 0x80;
         }
 
         return replaceValue;
