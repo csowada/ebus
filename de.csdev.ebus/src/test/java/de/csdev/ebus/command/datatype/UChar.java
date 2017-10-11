@@ -20,7 +20,7 @@ import org.junit.Test;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.std.EBusTypeUChar;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeUChar;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -47,42 +47,34 @@ public class UChar {
         return types.getType(EBusTypeUChar.UCHAR, properties);
     }
 
+    private void check(IEBusType<?> type, byte[] bs, int result) throws EBusTypeException {
+        BigDecimal value = (BigDecimal) type.decode(bs);
+        assertEquals(BigDecimal.valueOf(result), value);
+
+        byte[] encode = type.encode(value);
+        assertArrayEquals(bs, encode);
+    }
+
+    private void checkReplaceValue(IEBusType<?> type, byte[] bs) throws EBusTypeException {
+        BigDecimal value = (BigDecimal) type.decode(bs);
+        assertNull(value);
+
+        byte[] encode = type.encode(value);
+        assertArrayEquals(bs, encode);
+    }
+
     @Test
     public void test_CHAR1() throws EBusTypeException {
 
         IEBusType<?> type = getType(1, false);
 
-        // decode min value: 0
-        BigDecimal value = (BigDecimal) type.decode(new byte[] { (byte) 0x00 });
-        assertEquals(BigDecimal.valueOf(0), value);
+        check(type, new byte[] { (byte) 0x00 }, 0);
 
-        // encode min value: 0
-        byte[] encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0x00 }, encode);
+        check(type, new byte[] { (byte) 0x01 }, 1);
 
-        // decode value: 1
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0x01 });
-        assertEquals(BigDecimal.valueOf(1), value);
+        check(type, new byte[] { (byte) 0xFE }, 254);
 
-        // decode value: 1
-        encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0x01 }, encode);
-
-        // decode max value: 254
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0xFE });
-        assertEquals(BigDecimal.valueOf(254), value);
-
-        // decode max value: 254
-        encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0xFE }, encode);
-
-        // decode FFFF, is replace value
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0xFF });
-        assertNull(value);
-
-        // encode null - is replace value
-        encode = type.encode(null);
-        assertArrayEquals(new byte[] { (byte) 0xFF }, encode);
+        checkReplaceValue(type, new byte[] { (byte) 0xFF });
     }
 
     @Test
@@ -90,37 +82,14 @@ public class UChar {
 
         IEBusType<?> type = getType(2, false);
 
-        // decode min value: 0
-        BigDecimal value = (BigDecimal) type.decode(new byte[] { (byte) 0x00, 0x00 });
-        assertEquals(BigDecimal.valueOf(0), value);
+        check(type, new byte[] { (byte) 0x00, 0x00 }, 0);
 
-        // encode min value: 0
-        byte[] encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0x00, 0x00 }, encode);
+        check(type, new byte[] { (byte) 0x01, 0x00 }, 1);
 
-        // decode value: 1
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0x01, 0x00 });
-        assertEquals(BigDecimal.valueOf(1), value);
+        check(type, new byte[] { (byte) 0xFE, (byte) 0xFF }, 65534);
 
-        // decode value: 1
-        encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0x01, 0x00 }, encode);
+        checkReplaceValue(type, new byte[] { (byte) 0xFF, (byte) 0xFF });
 
-        // decode max value: 65.534
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0xFE, (byte) 0xFF });
-        assertEquals(BigDecimal.valueOf(65534), value);
-
-        // decode max value: 65.534
-        encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0xFE, (byte) 0xFF }, encode);
-
-        // decode FFFF, is replace value
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0xFF, (byte) 0xFF });
-        assertNull(value);
-
-        // encode null - is replace value
-        encode = type.encode(null);
-        assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFF }, encode);
     }
 
     @Test
@@ -128,38 +97,13 @@ public class UChar {
 
         IEBusType<?> type = getType(2, true);
 
-        // decode min value: 0
-        BigDecimal value = (BigDecimal) type.decode(new byte[] { (byte) 0x00, 0x00 });
-        assertEquals(BigDecimal.valueOf(0), value);
+        check(type, new byte[] { (byte) 0x00, 0x00 }, 0);
 
-        // encode min value: 0
-        byte[] encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0x00, 0x00 }, encode);
+        check(type, new byte[] { (byte) 0x00, 0x01 }, 1);
 
-        // decode value: 1
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0x00, 0x01 });
-        assertEquals(BigDecimal.valueOf(1), value);
+        check(type, new byte[] { (byte) 0xFF, (byte) 0xFE }, 65534);
 
-        // decode value: 1
-        encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0x00, 0x01 }, encode);
-
-        // decode max value: 65.534
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0xFF, (byte) 0xFE });
-        assertEquals(BigDecimal.valueOf(65534), value);
-
-        // decode max value: 65.534
-        encode = type.encode(value);
-        assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFE }, encode);
-
-        // decode FFFF, is replace value
-        value = (BigDecimal) type.decode(new byte[] { (byte) 0xFF, (byte) 0xFF });
-        assertNull(value);
-
-        // encode null - is replace value
-        encode = type.encode(null);
-        assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFF }, encode);
-
+        checkReplaceValue(type, new byte[] { (byte) 0xFF, (byte) 0xFF });
     }
 
     @Test

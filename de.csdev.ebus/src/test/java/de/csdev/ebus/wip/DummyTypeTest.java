@@ -22,7 +22,7 @@ import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
-import de.csdev.ebus.command.datatypes.std.EBusTypeChar3;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeChar3;
 
 /**
  * @author Christian Sowada - Initial contribution
