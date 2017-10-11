@@ -25,10 +25,12 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
     public static String MWORD = "mword";
 
+    public static String BLOCK_MULTIPLIER = "block-mul";
+    
     private static String[] supportedTypes = new String[] { MWORD };
 
     private int length = 2;
-    private BigDecimal factor = BigDecimal.valueOf(1000);
+    private BigDecimal multiplier = BigDecimal.valueOf(1000);
 
     @Override
     public String[] getSupportedTypes() {
@@ -55,7 +57,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
             applyByteOrder(dataNew);
             BigDecimal value = types.decode(EBusTypeWord.WORD, dataNew);
 
-            BigDecimal factor = this.factor.pow(i);
+            BigDecimal factor = this.multiplier.pow(i);
             valx = valx.add(value.multiply(factor));
         }
 
@@ -76,7 +78,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
         for (int i = length; i >= 0; i--) {
 
-            BigDecimal factor = this.factor.pow(i);
+            BigDecimal factor = this.multiplier.pow(i);
             BigDecimal[] divideAndRemainder = value.divideAndRemainder(factor);
 
             byte[] encode = types.encode(EBusTypeWord.WORD, divideAndRemainder[0]);
@@ -97,8 +99,8 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
             type.length = (Integer) properties.get(IEBusType.LENGTH);
 
-            if (properties.containsKey(IEBusType.FACTOR)) {
-                type.factor = NumberUtils.toBigDecimal(properties.get(IEBusType.FACTOR));
+            if (properties.containsKey(BLOCK_MULTIPLIER)) {
+                type.multiplier = NumberUtils.toBigDecimal(properties.get(BLOCK_MULTIPLIER));
                 // type.factor = (Integer) properties.get(IEBusType.FACTOR);
             }
 
@@ -110,7 +112,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
     @Override
     public String toString() {
-        return "EBusTypeMultiWord [length=" + length + ", factor=" + factor + "]";
+        return "EBusTypeMultiWord [length=" + length + ", multiplier=" + multiplier + "]";
     }
 
 }
