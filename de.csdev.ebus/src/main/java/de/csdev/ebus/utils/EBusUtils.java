@@ -59,6 +59,26 @@ public class EBusUtils {
             (byte) 0xCF, (byte) 0xF9, (byte) 0x62, (byte) 0x8C, (byte) 0x17, (byte) 0x21, (byte) 0xBA, (byte) 0x4D,
             (byte) 0xD6, (byte) 0xE0, (byte) 0x7B };
 
+	/**
+	 * Left pad byte array to a byte array with given size.
+	 * 
+	 * @param source Source array
+	 * @param size The final byte array size
+	 * @return The new byte arrray or <code>null</code> if the source array is to large
+	 */
+	public static byte[] leftPadByteArray(byte[] source, int size) {
+		byte[] bs = new byte[size];
+		
+		if(size < source.length) {
+			return null;
+		}
+		
+		int startPos = size - source.length;
+		System.arraycopy(source, 0, bs, startPos, source.length);
+		
+		return bs;
+	}
+    
     /**
      * CRC calculation
      *
