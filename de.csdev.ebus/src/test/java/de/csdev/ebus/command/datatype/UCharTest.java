@@ -26,7 +26,7 @@ import de.csdev.ebus.command.datatypes.v2.EBusTypeUChar;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class UChar {
+public class UCharTest {
 
     EBusTypeRegistry types;
 

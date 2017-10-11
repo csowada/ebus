@@ -26,7 +26,7 @@ import de.csdev.ebus.command.datatypes.v2.EBusTypeChar3;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class Char {
+public class CharTest {
 
     EBusTypeRegistry types;
 
