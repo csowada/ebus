@@ -2,8 +2,6 @@ package de.csdev.ebus.command.datatypes;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import de.csdev.ebus.utils.EBusUtils;
-
 public abstract class EBusAbtstractReplaceValueType<T> extends EBusAbstractType<T> {
 
     protected byte[] replaceValue = null;
@@ -41,7 +39,7 @@ public abstract class EBusAbtstractReplaceValueType<T> extends EBusAbstractType<
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.command.datatypes.ext.DummyTypeGeneric#decode(byte[])
      */
     @Override
@@ -49,6 +47,7 @@ public abstract class EBusAbtstractReplaceValueType<T> extends EBusAbstractType<
 
         data = applyByteOrder(data);
 
+        // return null in case of a replace value
         if (equalsReplaceValue(data)) {
             return null;
         }
@@ -58,29 +57,20 @@ public abstract class EBusAbtstractReplaceValueType<T> extends EBusAbstractType<
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.command.datatypes.ext.DummyTypeGeneric#encode(java.lang.Object)
      */
     @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
+        // return the replacec value
         if (data == null) {
-            return replaceValue;
+            return applyByteOrder(replaceValue);
         }
 
         byte[] result = encodeInt(data);
         result = applyByteOrder(result);
 
         return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "XXX [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
     }
 }

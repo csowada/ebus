@@ -39,34 +39,48 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     @Override
     public T decode(byte[] data) throws EBusTypeException {
+
+        // apply the right byte order before processing
         data = applyByteOrder(data);
+
         return decodeInt(data);
     }
 
     @Override
     public byte[] encode(Object data) throws EBusTypeException {
+
         byte[] result = encodeInt(data);
+
+        // apply the right byte order after processing
         result = applyByteOrder(result);
+
         return result;
     }
 
     @Override
     public IEBusType<T> getInstance(Map<String, Object> properties) {
 
+        // use default instance if no properties are set
         if (properties == null || properties.isEmpty()) {
             return this;
         }
 
+        // Sort all members to have a reliable key
         TreeMap<String, Object> sortedMap = new TreeMap<String, Object>(properties);
         String instanceKey = sortedMap.toString();
 
         EBusAbstractType<T> instance = otherInstances.get(instanceKey);
         if (instance == null) {
+
+            // create a new instance
             instance = createNewInstance();
 
+            // apply all properties
             for (Entry<String, Object> entry : properties.entrySet()) {
                 setValue(instance, entry.getKey(), entry.getValue());
             }
+
+            // store as shared instance
             otherInstances.put(instanceKey, instance);
         }
 
@@ -75,6 +89,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     protected byte[] applyByteOrder(byte[] data) {
 
+        // reverse the byte order immutable
         if (reverseByteOrder) {
             data = ArrayUtils.clone(data);
             ArrayUtils.reverse(data);
