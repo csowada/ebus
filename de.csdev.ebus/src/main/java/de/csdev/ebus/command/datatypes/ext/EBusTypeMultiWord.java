@@ -26,7 +26,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
     public static String MWORD = "mword";
 
     public static String BLOCK_MULTIPLIER = "block-mul";
-    
+
     private static String[] supportedTypes = new String[] { MWORD };
 
     private int length = 2;
@@ -54,7 +54,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
         for (int i = 0; i <= x; i++) {
 
             System.arraycopy(data, i * 2, dataNew, 0, dataNew.length);
-            applyByteOrder(dataNew);
+            dataNew = applyByteOrder(dataNew);
             BigDecimal value = types.decode(EBusTypeWord.WORD, dataNew);
 
             BigDecimal factor = this.multiplier.pow(i);
@@ -82,7 +82,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
             BigDecimal[] divideAndRemainder = value.divideAndRemainder(factor);
 
             byte[] encode = types.encode(EBusTypeWord.WORD, divideAndRemainder[0]);
-            applyByteOrder(encode);
+            encode = applyByteOrder(encode);
             value = divideAndRemainder[1];
             System.arraycopy(encode, 0, result, i * 2, 2);
         }

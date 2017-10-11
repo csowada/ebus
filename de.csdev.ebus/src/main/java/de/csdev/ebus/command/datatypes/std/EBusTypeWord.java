@@ -43,7 +43,7 @@ public class EBusTypeWord extends EBusTypeGenericReplaceValue {
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
 
-        applyByteOrder(data);
+        data = applyByteOrder(data);
 
         BigDecimal value = types.decode(EBusTypeInteger.INTEGER, data);
         if (value == null) {
@@ -56,8 +56,8 @@ public class EBusTypeWord extends EBusTypeGenericReplaceValue {
     public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         byte[] result = types.encode(EBusTypeInteger.INTEGER, b.intValue() & 0xFFFF);
-        applyByteOrder(result);
-        return result;
+
+        return applyByteOrder(result);
     }
 
     @Override

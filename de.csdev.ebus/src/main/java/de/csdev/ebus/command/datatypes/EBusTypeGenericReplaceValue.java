@@ -40,7 +40,7 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric<BigDec
     public byte[] encode(Object data) throws EBusTypeException {
 
         if (data == null) {
-            return replaceValue;
+            return applyByteOrder(replaceValue);
         }
 
         return encodeInt(data);

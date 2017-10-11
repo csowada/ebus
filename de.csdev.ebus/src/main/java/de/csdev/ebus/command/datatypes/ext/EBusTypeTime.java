@@ -72,7 +72,7 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
             return null;
         }
 
-        applyByteOrder(data);
+        data = applyByteOrder(data);
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.WORD);
@@ -189,9 +189,7 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
             }
         }
 
-        applyByteOrder(result);
-
-        return result;
+        return applyByteOrder(result);
     }
 
     // @Override

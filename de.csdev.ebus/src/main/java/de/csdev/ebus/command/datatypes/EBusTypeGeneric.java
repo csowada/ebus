@@ -30,10 +30,15 @@ public abstract class EBusTypeGeneric<T> implements IEBusType<T> {
 
     protected boolean reverseByteOrder = false;
 
-    protected void applyByteOrder(byte[] data) {
+    protected byte[] applyByteOrder(byte[] data) {
+
+        // reverse the byte order immutable
         if (reverseByteOrder) {
+            data = ArrayUtils.clone(data);
             ArrayUtils.reverse(data);
         }
+
+        return data;
     }
 
     @Override
