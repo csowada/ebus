@@ -12,9 +12,9 @@ import org.junit.Test;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 
-public class DATA2bTest {
+public class Data2cTest {
 
     EBusTypeRegistry types;
 
@@ -40,44 +40,44 @@ public class DATA2bTest {
     }
 
     @Test
-    public void test_DATA2C() throws EBusTypeException {
+    public void test_DATA2B() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData2c.DATA2C, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData2b.DATA2B, null);
 
         check(type, new byte[] { 0x00, 0x00 }, 0f);
 
-        check(type, new byte[] { 0x01, 0x00 }, 0.0625f);
+        check(type, new byte[] { 0x01, 0x00 }, 0.00390625f);
 
-        check(type, new byte[] { (byte) 0xFF, (byte) 0xFF }, -0.0625f);
+        check(type, new byte[] { (byte) 0xFF, (byte) 0xFF }, -0.00390625f);
 
-        check(type, new byte[] { (byte) 0xF0, (byte) 0xFF }, -1f);
+        check(type, new byte[] { (byte) 0x00, (byte) 0xFF }, -1f);
 
         checkReplaceValue(type, new byte[] { (byte) 0x00, (byte) 0x80 });
 
-        check(type, new byte[] { (byte) 0x01, (byte) 0x80 }, -2047.9f);
+        check(type, new byte[] { (byte) 0x01, (byte) 0x80 }, -127.99f);
 
-        check(type, new byte[] { (byte) 0xFF, (byte) 0x7F }, 2047.9f);
+        check(type, new byte[] { (byte) 0xFF, (byte) 0x7F }, 127.99f);
     }
 
     @Test
-    public void test_DATA2C_Reverse() throws EBusTypeException {
+    public void test_DATA2B_Reverse() throws EBusTypeException {
 
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData2c.DATA2C, properties);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData2b.DATA2B, properties);
 
         check(type, new byte[] { 0x00, 0x00 }, 0f);
 
-        check(type, new byte[] { 0x00, 0x01 }, 0.0625f);
+        check(type, new byte[] { 0x00, 0x01 }, 0.00390625f);
 
-        check(type, new byte[] { (byte) 0xFF, (byte) 0xFF }, -0.0625f);
+        check(type, new byte[] { (byte) 0xFF, (byte) 0xFF }, -0.00390625f);
 
-        check(type, new byte[] { (byte) 0xFF, (byte) 0xF0 }, -1f);
+        check(type, new byte[] { (byte) 0xFF, (byte) 0x00 }, -1f);
 
         checkReplaceValue(type, new byte[] { (byte) 0x80, (byte) 0x00 });
 
-        check(type, new byte[] { (byte) 0x80, (byte) 0x01 }, -2047.9f);
+        check(type, new byte[] { (byte) 0x80, (byte) 0x01 }, -127.99f);
 
-        check(type, new byte[] { (byte) 0x7F, (byte) 0xFF }, 2047.9f);
+        check(type, new byte[] { (byte) 0x7F, (byte) 0xFF }, 127.99f);
     }
 }
