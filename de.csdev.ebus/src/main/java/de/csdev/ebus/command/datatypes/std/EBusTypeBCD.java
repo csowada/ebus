@@ -34,7 +34,16 @@ public class EBusTypeBCD extends EBusTypeGenericReplaceValue {
 
     @Override
     public BigDecimal decodeInt(byte[] data) {
-        return BigDecimal.valueOf((byte) ((data[0] >> 4) * 10 + (data[0] & (byte) 0x0F)));
+    	
+    	byte high = (byte) (data[0] >> 4 & 0x0F);
+    	byte low = (byte) (data[0] & 0x0F);
+    	
+    	// nibbles out of rang 0-9
+    	if(high > 9 || low > 9) {
+    		return null;
+    	}
+    	
+        return BigDecimal.valueOf((byte) ((data[0] >> 4 & 0x0F) * 10 + (data[0] & 0x0F)));
     }
 
     @Override
