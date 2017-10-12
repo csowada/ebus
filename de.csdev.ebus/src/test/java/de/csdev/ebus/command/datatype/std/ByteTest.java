@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.command.datatype;
+package de.csdev.ebus.command.datatype.std;
 
 import static org.junit.Assert.*;
 
@@ -20,13 +20,13 @@ import org.junit.Test;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.v2.EBusTypeChar3;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeNumber;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class CharTest {
+public class ByteTest {
 
     EBusTypeRegistry types;
 
@@ -44,7 +44,7 @@ public class CharTest {
             properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
         }
 
-        return types.getType(EBusTypeChar3.CHAR, properties);
+        return types.getType(EBusTypeNumber.CHAR, properties);
     }
 
     private void check(IEBusType<?> type, byte[] bs, int result) throws EBusTypeException {
@@ -66,7 +66,7 @@ public class CharTest {
     @Test
     public void test_CHAR_Default() throws EBusTypeException {
 
-        IEBusType<?> type = types.getType(EBusTypeChar3.CHAR, null);
+        IEBusType<?> type = types.getType(EBusTypeNumber.CHAR, null);
 
         check(type, new byte[] { (byte) 0x00 }, 0);
 

@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.command.datatype;
+package de.csdev.ebus.command.datatype.std;
 
 import static org.junit.Assert.*;
 
@@ -20,7 +20,7 @@ import org.junit.Test;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.v2.EBusTypeUChar;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeUsignedNumber;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -44,7 +44,7 @@ public class UCharTest {
             properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
         }
 
-        return types.getType(EBusTypeUChar.UCHAR, properties);
+        return types.getType(EBusTypeUsignedNumber.UCHAR, properties);
     }
 
     private void check(IEBusType<?> type, byte[] bs, int result) throws EBusTypeException {
@@ -122,7 +122,7 @@ public class UCharTest {
 
         // 2 byte char
         byte[] data1 = new byte[] { (byte) 0x80, (byte) 0x00 };
-        EBusTypeUChar type = (EBusTypeUChar) getType(2, false);
+        EBusTypeUsignedNumber type = (EBusTypeUsignedNumber) getType(2, false);
 
         // replace value as decimal
         type.setReplaceValue(128);
@@ -134,7 +134,7 @@ public class UCharTest {
 
         // 2 byte char in reverted order
         byte[] data2 = new byte[] { (byte) 0x00, (byte) 0x80 };
-        type = (EBusTypeUChar) getType(2, true);
+        type = (EBusTypeUsignedNumber) getType(2, true);
 
         // replace value as decimal
         type.setReplaceValue(128);

@@ -1,4 +1,4 @@
-package de.csdev.ebus.command.datatype;
+package de.csdev.ebus.command.datatype.std;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

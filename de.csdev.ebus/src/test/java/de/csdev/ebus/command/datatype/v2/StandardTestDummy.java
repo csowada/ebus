@@ -20,7 +20,7 @@ import org.junit.Test;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.v2.EBusTypeChar3;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeNumber;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -44,7 +44,7 @@ public class StandardTestDummy {
             properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
         }
 
-        return types.getType(EBusTypeChar3.CHAR, properties);
+        return types.getType(EBusTypeNumber.CHAR, properties);
     }
 
     @Test
@@ -186,7 +186,7 @@ public class StandardTestDummy {
 
         // 2 byte char
         byte[] data1 = new byte[] { (byte) 0x80, (byte) 0x00 };
-        EBusTypeChar3 type = (EBusTypeChar3) getType(2, false);
+        EBusTypeNumber type = (EBusTypeNumber) getType(2, false);
 
         // replace value as decimal
         type.setReplaceValue(128);
@@ -198,7 +198,7 @@ public class StandardTestDummy {
 
         // 2 byte char in reverted order
         byte[] data2 = new byte[] { (byte) 0x00, (byte) 0x80 };
-        type = (EBusTypeChar3) getType(2, true);
+        type = (EBusTypeNumber) getType(2, true);
 
         // replace value as decimal
         type.setReplaceValue(128);

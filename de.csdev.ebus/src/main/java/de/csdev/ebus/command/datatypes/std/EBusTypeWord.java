@@ -42,21 +42,17 @@ public class EBusTypeWord extends EBusTypeGenericReplaceValue {
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-
         data = applyByteOrder(data);
-
-        BigDecimal value = types.decode(EBusTypeInteger.INTEGER, data);
-        if (value == null) {
-            return null;
-        }
-        return BigDecimal.valueOf((short) (value.intValue() & 0xffff));
+        short value = (short) (data[1] << 8 | data[0] & 0xFF);
+        return BigDecimal.valueOf(value & 0xFFFF);
     }
 
     @Override
     public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        byte[] result = types.encode(EBusTypeInteger.INTEGER, b.intValue() & 0xFFFF);
-
+        short value = b.shortValue();
+        byte[] result = new byte[] { (byte) value, (byte) (value >> 8) };
+        
         return applyByteOrder(result);
     }
 

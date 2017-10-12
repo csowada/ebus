@@ -32,8 +32,8 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
-import de.csdev.ebus.command.datatypes.v2.EBusTypeChar3;
-import de.csdev.ebus.command.datatypes.v2.EBusTypeUChar;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeNumber;
+import de.csdev.ebus.command.datatypes.v2.EBusTypeUsignedNumber;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -85,8 +85,8 @@ public class EBusTypeRegistry {
         add(EBusTypeKWCrc.class);
 
         // test
-        add(EBusTypeChar3.class);
-        add(EBusTypeUChar.class);
+        add(EBusTypeNumber.class);
+        add(EBusTypeUsignedNumber.class);
     }
 
     /**

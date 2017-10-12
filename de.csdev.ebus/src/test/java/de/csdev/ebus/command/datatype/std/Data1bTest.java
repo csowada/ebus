@@ -1,4 +1,4 @@
-package de.csdev.ebus.command.datatype;
+package de.csdev.ebus.command.datatype.std;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -14,9 +14,9 @@ import org.junit.Test;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData1b;
 
-public class Data1cTest {
+public class Data1bTest {
 
     EBusTypeRegistry types;
 
@@ -25,11 +25,11 @@ public class Data1cTest {
         types = new EBusTypeRegistry();
     }
 
-    private void check(IEBusType<?> type, byte[] bs, float result) throws EBusTypeException {
+    private void check(IEBusType<?> type, byte[] bs, int result) throws EBusTypeException {
         BigDecimal value = (BigDecimal) type.decode(bs);
-        assertEquals(result, value.floatValue(), 0.1f);
+        assertEquals(result, value.intValue());
 
-        byte[] encode = type.encode(value.floatValue());
+        byte[] encode = type.encode(value);
         assertArrayEquals(bs, encode);
     }
 
@@ -44,15 +44,17 @@ public class Data1cTest {
     @Test
     public void test_Data1c() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData1c.DATA1C, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData1b.DATA1B, null);
 
-        check(type, new byte[] { (byte) 0x00 }, 0f);
+        check(type, new byte[] { (byte) 0x00 }, 0);
 
-        check(type, new byte[] { (byte) 0x64 }, 50f);
+        check(type, new byte[] { (byte) 0x01 }, 1);
 
-        check(type, new byte[] { (byte) 0xC8 }, 100f);
+        check(type, new byte[] { (byte) 0x7F }, 127);
         
-        checkReplaceValue(type, new byte[] { (byte) 0xFF });
+        checkReplaceValue(type, new byte[] { (byte) 0x80 });
+        
+        check(type, new byte[] { (byte) 0x81 }, -127);
     }
 
     @Test
@@ -60,14 +62,16 @@ public class Data1cTest {
 
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData1c.DATA1C, properties);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData1b.DATA1B, properties);
 
-        check(type, new byte[] { (byte) 0x00 }, 0f);
+        check(type, new byte[] { (byte) 0x00 }, 0);
 
-        check(type, new byte[] { (byte) 0x64 }, 50f);
+        check(type, new byte[] { (byte) 0x01 }, 1);
 
-        check(type, new byte[] { (byte) 0xC8 }, 100f);
+        check(type, new byte[] { (byte) 0x7F }, 127);
         
-        checkReplaceValue(type, new byte[] { (byte) 0xFF });
+        checkReplaceValue(type, new byte[] { (byte) 0x80 });
+        
+        check(type, new byte[] { (byte) 0x81 }, -127);
     }
 }
