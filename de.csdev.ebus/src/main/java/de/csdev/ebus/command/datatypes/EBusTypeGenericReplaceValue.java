@@ -18,6 +18,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@Deprecated
 public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric<BigDecimal> {
 
     protected byte[] replaceValue = null;

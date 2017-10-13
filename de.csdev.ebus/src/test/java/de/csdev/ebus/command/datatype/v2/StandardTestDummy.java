@@ -44,7 +44,7 @@ public class StandardTestDummy {
             properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
         }
 
-        return types.getType(EBusTypeChar.CHAR, properties);
+        return types.getType(EBusTypeChar.TYPE_CHAR, properties);
     }
 
 //    @Test

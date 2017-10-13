@@ -23,11 +23,11 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
-    public static String MWORD = "mword";
+    public static String TYPE_MWORD = "mword";
 
     public static String BLOCK_MULTIPLIER = "block-mul";
 
-    private static String[] supportedTypes = new String[] { MWORD };
+    private static String[] supportedTypes = new String[] { TYPE_MWORD };
 
     private int length = 2;
     private BigDecimal multiplier = BigDecimal.valueOf(1000);
@@ -55,7 +55,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
 
             System.arraycopy(data, i * 2, dataNew, 0, dataNew.length);
             dataNew = applyByteOrder(dataNew);
-            BigDecimal value = types.decode(EBusTypeWord.WORD, dataNew);
+            BigDecimal value = types.decode(EBusTypeWord.TYPE_WORD, dataNew);
 
             BigDecimal factor = this.multiplier.pow(i);
             valx = valx.add(value.multiply(factor));
@@ -81,7 +81,7 @@ public class EBusTypeMultiWord extends EBusTypeGeneric<BigDecimal> {
             BigDecimal factor = this.multiplier.pow(i);
             BigDecimal[] divideAndRemainder = value.divideAndRemainder(factor);
 
-            byte[] encode = types.encode(EBusTypeWord.WORD, divideAndRemainder[0]);
+            byte[] encode = types.encode(EBusTypeWord.TYPE_WORD, divideAndRemainder[0]);
             encode = applyByteOrder(encode);
             value = divideAndRemainder[1];
             System.arraycopy(encode, 0, result, i * 2, 2);

@@ -19,9 +19,9 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  */
 public class EBusTypeBit extends EBusAbstractType<Boolean>  {
 
-    public static String BIT = "bit";
+    public static String TYPE_BIT = "bit";
 
-    private static String[] supportedTypes = new String[] { BIT };
+    private static String[] supportedTypes = new String[] { TYPE_BIT };
 
     private Integer bit = null;
 

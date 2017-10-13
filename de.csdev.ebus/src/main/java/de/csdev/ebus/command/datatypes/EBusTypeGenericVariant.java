@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 
+@Deprecated
 public abstract class EBusTypeGenericVariant<T> extends EBusTypeGeneric<T> {
 
     public static String DEFAULT = "std"; // BTI - 3

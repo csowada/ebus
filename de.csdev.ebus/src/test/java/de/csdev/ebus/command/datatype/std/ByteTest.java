@@ -54,7 +54,7 @@ public class ByteTest {
     @Test
     public void test_Byte() throws EBusTypeException {
 
-        IEBusType<?> type = types.getType(EBusTypeByte.BYTE, null);
+        IEBusType<?> type = types.getType(EBusTypeByte.TYPE_BYTE, null);
 
         check(type, new byte[] { (byte) 0x00 }, 0);
 

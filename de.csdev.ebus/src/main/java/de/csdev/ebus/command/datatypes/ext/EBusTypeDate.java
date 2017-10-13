@@ -29,7 +29,7 @@ import de.csdev.ebus.utils.EBusDateTime;
  */
 public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
 
-    public static String DATE = "date";
+    public static String TYPE_DATE = "date";
 
     public static String DEFAULT = "std"; // BDA - 4
 
@@ -41,7 +41,7 @@ public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
 
     public static String DAYS = "days"; // DAY - 2
 
-    private static String[] supportedTypes = new String[] { DATE };
+    private static String[] supportedTypes = new String[] { TYPE_DATE };
 
     // private String variant = STD;
 
@@ -75,9 +75,9 @@ public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
             return null;
         }
 
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
-        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.WORD);
-        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.CHAR);
+        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
+        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
+        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = new GregorianCalendar();
 
@@ -138,9 +138,9 @@ public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
     @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
-        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.WORD);
-        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.CHAR);
+        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
+        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
+        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = null;
         byte[] result = new byte[this.getTypeLenght()];

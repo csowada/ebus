@@ -18,9 +18,9 @@ import de.csdev.ebus.command.datatypes.IEBusComplexType;
  */
 public class EBusTypeKWCrc extends EBusTypeGeneric<Object> implements IEBusComplexType {
 
-    public static String KW_CRC = "kw-crc";
+    public static String TYPE_KW_CRC = "kw-crc";
 
-    private static String[] supportedTypes = new String[] { KW_CRC };
+    private static String[] supportedTypes = new String[] { TYPE_KW_CRC };
 
     @Override
     public String[] getSupportedTypes() {

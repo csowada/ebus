@@ -37,7 +37,7 @@ public class VersionTest {
     public void test_Version() throws EBusTypeException {
 
         byte[] testValue = new byte[] { 0x02, 0x27 };
-        IEBusType<?> type = types.getType(EBusTypeVersion.VERSION, null);
+        IEBusType<?> type = types.getType(EBusTypeVersion.TYPE_VERSION, null);
 
         // decode
         Object decode = type.decode(testValue);
@@ -52,7 +52,7 @@ public class VersionTest {
     public void test_Version2() throws EBusTypeException {
 
         byte[] testValue = new byte[] { 0x02, 0x01 };
-        IEBusType<?> type = types.getType(EBusTypeVersion.VERSION, null);
+        IEBusType<?> type = types.getType(EBusTypeVersion.TYPE_VERSION, null);
 
         // decode
         Object decode = type.decode(testValue);

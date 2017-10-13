@@ -16,9 +16,9 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusTypeInteger extends EBusTypeNumber {
 
-    public static String INTEGER = "int";
+    public static String TYPE_INTEGER = "int";
 
-    private static String[] supportedTypes = new String[] { INTEGER };
+    private static String[] supportedTypes = new String[] { TYPE_INTEGER };
 
     @Override
     public String[] getSupportedTypes() {

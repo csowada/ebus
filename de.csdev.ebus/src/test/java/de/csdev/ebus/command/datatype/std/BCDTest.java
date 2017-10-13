@@ -42,7 +42,7 @@ public class BCDTest {
     @Test
     public void test_BCD() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeBCD.BCD, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeBCD.TYPE_BCD, null);
 
         check(type, new byte[] { (byte) 0x00 }, 0);
 

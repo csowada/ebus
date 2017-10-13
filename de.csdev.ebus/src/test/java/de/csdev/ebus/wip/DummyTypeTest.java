@@ -52,7 +52,7 @@ public class DummyTypeTest {
         properties.put("variant", 99);
         //IEBusType<BigDecimal> instance = de.getInstance(properties);
 
-        IEBusType<Object> type = types.getType(EBusTypeChar.CHAR, properties);
+        IEBusType<Object> type = types.getType(EBusTypeChar.TYPE_CHAR, properties);
         
         
         System.out.println("ConfigurationReaderTest.enclosing_method()");

@@ -44,7 +44,7 @@ public class DateTest {
         Map<String, Object> properties = new HashMap<String, Object>();
 
         properties.put(IEBusType.TYPE, EBusTypeDate.DEFAULT);
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.DATE, properties);
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x24, 0x12, 0x07, 0x17 }, bytes);
@@ -59,7 +59,7 @@ public class DateTest {
         // short
 
         properties.put(IEBusType.TYPE, EBusTypeDate.SHORT);
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.DATE, properties);
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x24, 0x12, 0x17 }, bytes);
@@ -73,7 +73,7 @@ public class DateTest {
         // short
 
         properties.put(IEBusType.TYPE, EBusTypeDate.HEX);
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.DATE, properties);
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x18, 0x0c, 0x07, 0x11 }, bytes);
@@ -87,7 +87,7 @@ public class DateTest {
         // short
 
         properties.put(IEBusType.TYPE, EBusTypeDate.HEX_SHORT);
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.DATE, properties);
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x18, 0x0c, 0x11 }, bytes);
@@ -102,7 +102,7 @@ public class DateTest {
         // short
 
         properties.put(IEBusType.TYPE, EBusTypeDate.DAYS);
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.DATE, properties);
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x09, 0x00 }, bytes);
@@ -110,7 +110,7 @@ public class DateTest {
         // days 06.06.2079
         calendar = new GregorianCalendar(2079, 5, 6, 0, 0);
         properties.put(IEBusType.TYPE, EBusTypeDate.DAYS);
-        type = types.getType(EBusTypeDate.DATE, properties);
+        type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFF }, bytes);

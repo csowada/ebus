@@ -42,7 +42,7 @@ public class MultiWordTest {
 
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.LENGTH, 3);
-        IEBusType<?> type = types.getType(EBusTypeMultiWord.MWORD, properties);
+        IEBusType<?> type = types.getType(EBusTypeMultiWord.TYPE_MWORD, properties);
 
         // decode
         Object decode = type.decode(testValue);
@@ -59,11 +59,11 @@ public class MultiWordTest {
         byte[] testValue = new byte[] { (byte) 0xF9, 0x00, 0x07, 0x00 };
 
         // decode
-        Object decode = types.decode(EBusTypeMultiWord.MWORD, testValue);
+        Object decode = types.decode(EBusTypeMultiWord.TYPE_MWORD, testValue);
         assertEquals("Decode MultiWord failed!", BigDecimal.valueOf(7249), decode);
 
         // encode
-        byte[] encode = types.encode(EBusTypeMultiWord.MWORD, decode);
+        byte[] encode = types.encode(EBusTypeMultiWord.TYPE_MWORD, decode);
         assertArrayEquals(testValue, encode);
     }
 
@@ -75,7 +75,7 @@ public class MultiWordTest {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.LENGTH, 3);
         properties.put(IEBusType.FACTOR, 500);
-        IEBusType<?> type = types.getType(EBusTypeMultiWord.MWORD, properties);
+        IEBusType<?> type = types.getType(EBusTypeMultiWord.TYPE_MWORD, properties);
 
         // decode
         Object decode = type.decode(testValue);

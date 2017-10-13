@@ -84,7 +84,6 @@ public class EBusTypeRegistry {
         add(EBusTypeKWCrc.class);
 
         // test
-
     }
 
     /**
@@ -119,6 +118,7 @@ public class EBusTypeRegistry {
     }
     
     /**
+     * Returns the type names
      * @return
      */
     public <T> Set<String> getTypesNames() {
@@ -133,9 +133,7 @@ public class EBusTypeRegistry {
      * @throws EBusTypeException
      */
     public byte[] encode(String type, Object data) throws EBusTypeException {
-
         return encode(type, data, (Object[]) null);
-
     }
 
     /**

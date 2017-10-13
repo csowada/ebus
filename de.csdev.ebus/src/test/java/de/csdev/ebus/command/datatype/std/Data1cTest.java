@@ -44,7 +44,7 @@ public class Data1cTest {
     @Test
     public void test_Data1c() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData1c.DATA1C, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData1c.TYPE_DATA1C, null);
 
         check(type, new byte[] { (byte) 0x00 }, 0f);
 
@@ -60,7 +60,7 @@ public class Data1cTest {
 
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData1c.DATA1C, properties);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData1c.TYPE_DATA1C, properties);
 
         check(type, new byte[] { (byte) 0x00 }, 0f);
 

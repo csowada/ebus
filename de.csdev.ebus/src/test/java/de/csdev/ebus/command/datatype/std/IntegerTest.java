@@ -44,7 +44,7 @@ public class IntegerTest {
     @Test
     public void test_Integer() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeInteger.INTEGER, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeInteger.TYPE_INTEGER, null);
 
         check(type, new byte[] { (byte) 0x00, 0x00 }, 0);
 
@@ -65,7 +65,7 @@ public class IntegerTest {
 
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
-        IEBusType<BigDecimal> type = types.getType(EBusTypeInteger.INTEGER, properties);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeInteger.TYPE_INTEGER, properties);
 
         check(type, new byte[] { (byte) 0x00, 0x00 }, 0);
 

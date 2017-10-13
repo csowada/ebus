@@ -48,8 +48,8 @@ public class DateTimeTest {
         GregorianCalendar calendar = new GregorianCalendar(2017, 8, 3, 13, 30, 59);
 
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(IEBusType.TYPE, EBusTypeDateTime.DATETIME);
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeDateTime.DATETIME, properties);
+        properties.put(IEBusType.TYPE, EBusTypeDateTime.TYPE_DATETIME);
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDateTime.TYPE_DATETIME, properties);
 
         byte[] bytes = type.encode(calendar);
 
@@ -61,8 +61,8 @@ public class DateTimeTest {
     public void test_DateTime2() throws EBusTypeException {
 
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(IEBusType.TYPE, EBusTypeDateTime.DATETIME);
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeDateTime.DATETIME, properties);
+        properties.put(IEBusType.TYPE, EBusTypeDateTime.TYPE_DATETIME);
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDateTime.TYPE_DATETIME, properties);
 
         // decode
         EBusDateTime calendar = type.decode(DATE_TIME_BYTES);
@@ -81,7 +81,7 @@ public class DateTimeTest {
 
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.TYPE, EBusTypeDateTime.TIME);
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeDateTime.DATETIME, properties);
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDateTime.TYPE_DATETIME, properties);
 
         // decode
         EBusDateTime calendar = type.decode(TIME_BYTES);

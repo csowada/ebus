@@ -45,7 +45,7 @@ public class TimeTest {
             properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
         }
 
-        return types.getType(EBusTypeTime.TIME, properties);
+        return types.getType(EBusTypeTime.TYPE_TIME, properties);
     }
 
     @Test

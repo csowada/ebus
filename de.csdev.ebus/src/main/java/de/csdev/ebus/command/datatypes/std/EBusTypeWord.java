@@ -16,10 +16,10 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusTypeWord extends EBusTypeUnsignedNumber {
 
-    public static String WORD = "word";
-    public static String UINT = "uint";
+    public static String TYPE_WORD = "word";
+    public static String TYPE_UINT = "uint";
 
-    private static String[] supportedTypes = new String[] { WORD, UINT };
+    private static String[] supportedTypes = new String[] { TYPE_WORD, TYPE_UINT };
 
     @Override
     public String[] getSupportedTypes() {

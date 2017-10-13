@@ -29,7 +29,7 @@ import de.csdev.ebus.utils.EBusDateTime;
  */
 public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
 
-    public static String TIME = "time";
+    public static String TYPE_TIME = "time";
 
     public static String DEFAULT = "std"; // BTI - 3
     public static String HEX = "hex"; // HTI - 3
@@ -39,7 +39,7 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
 
     public static String MINUTES = "minutes"; // MIN - 2
 
-    private static String[] supportedTypes = new String[] { TIME };
+    private static String[] supportedTypes = new String[] { TYPE_TIME };
 
     // private String variant = STD;
 
@@ -74,9 +74,9 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
 
         data = applyByteOrder(data);
 
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
-        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.WORD);
-        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.CHAR);
+        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
+        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
+        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
 
@@ -131,9 +131,9 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
     @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
-        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.WORD);
-        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.CHAR);
+        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
+        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
+        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = null;
         byte[] result = new byte[this.getTypeLenght()];

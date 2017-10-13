@@ -20,9 +20,9 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class EBusTypeData1c extends EBusTypeUnsignedNumber {
 
-    public static String DATA1C = "data1c";
+    public static String TYPE_DATA1C = "data1c";
 
-    private static String[] supportedTypes = new String[] { DATA1C };
+    private static String[] supportedTypes = new String[] { TYPE_DATA1C };
 
     @Override
     public String[] getSupportedTypes() {

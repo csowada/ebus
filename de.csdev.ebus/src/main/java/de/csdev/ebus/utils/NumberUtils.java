@@ -51,4 +51,27 @@ public class NumberUtils {
         return null;
     }
 
+    public static Byte convertDec2Bcd(int data) {
+    	
+    	if(data > 99) {
+    		return null;
+    	}
+    	
+    	return (byte) (((data / 10) << 4) | data % 10);
+    }
+    
+    public static Byte convertBcd2Dec(byte data) {
+		byte high = (byte) (data >> 4 & 0x0F);
+		byte low = (byte) (data & 0x0F);
+
+		// nibbles out of rang 0-9
+		if(high > 9 || low > 9) {
+			return null;
+		}
+
+		return Byte.valueOf((byte) (high *10 + low));
+		
+//		return BigDecimal.valueOf((byte) ((data[0] >> 4 & 0x0F) * 10 + (data[0] & 0x0F)));
+    }
+    
 }

@@ -54,7 +54,7 @@ public class CharTest {
     @Test
     public void test_CHAR() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeChar.CHAR, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeChar.TYPE_CHAR, null);
 
         check(type, new byte[] { (byte) 0x00 }, 0);
 

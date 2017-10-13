@@ -54,7 +54,7 @@ public class UCharTest {
     @Test
     public void test_UChar_Default() throws EBusTypeException {
 
-        IEBusType<?> type = types.getType(EBusTypeByte.UCHAR, null);
+        IEBusType<?> type = types.getType(EBusTypeByte.TYPE_UCHAR, null);
 
         check(type, new byte[] { (byte) 0x00 }, 0);
 

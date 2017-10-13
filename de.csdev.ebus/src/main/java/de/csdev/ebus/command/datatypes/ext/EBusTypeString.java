@@ -19,9 +19,9 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  */
 public class EBusTypeString extends EBusTypeGeneric<String> {
 
-    public static String STRING = "string";
+    public static String TYPE_STRING = "string";
 
-    private static String[] supportedTypes = new String[] { STRING };
+    private static String[] supportedTypes = new String[] { TYPE_STRING };
 
     private Integer length = 1;
 

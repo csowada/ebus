@@ -20,9 +20,9 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class EBusTypeData2c extends EBusTypeNumber {
 
-    public static String DATA2C = "data2c";
+    public static String TYPE_DATA2C = "data2c";
 
-    private static String[] supportedTypes = new String[] { DATA2C };
+    private static String[] supportedTypes = new String[] { TYPE_DATA2C };
 
     @Override
     public String[] getSupportedTypes() {

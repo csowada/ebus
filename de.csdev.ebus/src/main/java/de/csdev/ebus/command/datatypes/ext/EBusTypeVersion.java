@@ -21,9 +21,9 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
 
-    public static String VERSION = "version";
+    public static String TYPE_VERSION = "version";
 
-    private static String[] supportedTypes = new String[] { VERSION };
+    private static String[] supportedTypes = new String[] { TYPE_VERSION };
 
     @Override
     public String[] getSupportedTypes() {
@@ -45,8 +45,8 @@ public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
         byte[] verData = new byte[] { data[0] };
         byte[] revData = new byte[] { data[1] };
 
-        BigDecimal ver = types.decode(EBusTypeBCD.BCD, verData);
-        BigDecimal rev = types.decode(EBusTypeBCD.BCD, revData);
+        BigDecimal ver = types.decode(EBusTypeBCD.TYPE_BCD, verData);
+        BigDecimal rev = types.decode(EBusTypeBCD.TYPE_BCD, revData);
 
         if (ver != null && rev != null) {
             BigDecimal fraction = rev.divide(BigDecimal.valueOf(100));
@@ -68,8 +68,8 @@ public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
         BigDecimal[] values = value.divideAndRemainder(BigDecimal.ONE);
         values[1] = values[1].multiply(BigDecimal.valueOf(100));
 
-        byte[] encode1 = types.encode(EBusTypeBCD.BCD, values[0]);
-        byte[] encode2 = types.encode(EBusTypeBCD.BCD, values[1]);
+        byte[] encode1 = types.encode(EBusTypeBCD.TYPE_BCD, values[0]);
+        byte[] encode2 = types.encode(EBusTypeBCD.TYPE_BCD, values[1]);
 
         return new byte[] { encode1[0], encode2[0] };
     }

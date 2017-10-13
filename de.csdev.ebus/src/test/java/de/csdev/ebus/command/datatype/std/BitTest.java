@@ -38,7 +38,7 @@ public class BitTest {
     public IEBusType<?> getType(int bitPos) {
     	Map<String, Object> properties = new HashMap<String, Object>();
     	properties.put("pos", bitPos);
-        return types.getType(EBusTypeBit.BIT, properties);
+        return types.getType(EBusTypeBit.TYPE_BIT, properties);
     }
     
     @Test

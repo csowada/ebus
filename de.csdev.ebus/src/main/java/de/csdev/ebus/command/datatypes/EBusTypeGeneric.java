@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author Christian Sowada - Initial contribution
  *
  */
+@Deprecated
 public abstract class EBusTypeGeneric<T> implements IEBusType<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeGeneric.class);
