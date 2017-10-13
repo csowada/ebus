@@ -42,7 +42,7 @@ public class WordTest {
     }
 
     @Test
-    public void test_Integer() throws EBusTypeException {
+    public void test_Word() throws EBusTypeException {
 
         IEBusType<BigDecimal> type = types.getType(EBusTypeWord.WORD, null);
 
@@ -63,7 +63,7 @@ public class WordTest {
     }
 
     @Test
-    public void test_Integer_Reverse() throws EBusTypeException {
+    public void test_Word_Reverse() throws EBusTypeException {
 
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);

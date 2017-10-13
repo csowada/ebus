@@ -23,7 +23,7 @@ public abstract class EBusTypeGenericReplaceValue extends EBusTypeGeneric<BigDec
     protected byte[] replaceValue = null;
 
     protected boolean equalsReplaceValue(byte[] data) {
-        return ArrayUtils.isEquals(data, this.replaceValue);
+        return ArrayUtils.isEquals(data, applyByteOrder(this.replaceValue));
     }
 
     @Override

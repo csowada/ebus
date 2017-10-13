@@ -11,8 +11,6 @@ package de.csdev.ebus.command.datatypes.std;
 import java.math.BigDecimal;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGenericReplaceValue;
-import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -20,38 +18,34 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeData1c extends EBusTypeGenericReplaceValue {
+public class EBusTypeData1c extends EBusTypeUnsignedNumber {
 
     public static String DATA1C = "data1c";
 
     private static String[] supportedTypes = new String[] { DATA1C };
 
-    public EBusTypeData1c() {
-        replaceValue = new byte[] { (byte) 0xFF };
-    }
-
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
     @Override
+    public int getTypeLenght() {
+        return 1;
+    }
+
+    @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-        BigDecimal x = (BigDecimal) types.getType(EBusTypeByte.BYTE).decode(data);
-        return x.divide(BigDecimal.valueOf(2));
+    	BigDecimal decodeInt = super.decodeInt(data);
+        return decodeInt.divide(BigDecimal.valueOf(2));
     }
 
     @Override
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        b = b.multiply(BigDecimal.valueOf(2));
-        return new byte[] { (byte) b.intValue() };
+        return super.encodeInt(b.multiply(BigDecimal.valueOf(2)));
     }
-
-    @Override
-    public void setTypesParent(EBusTypeRegistry types) {
-        this.types = types;
-    }
-
+    
     @Override
     public String toString() {
         return "EBusTypeData1c [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";

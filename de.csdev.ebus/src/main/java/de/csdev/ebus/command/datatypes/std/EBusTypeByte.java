@@ -8,50 +8,27 @@
  */
 package de.csdev.ebus.command.datatypes.std;
 
-import java.math.BigDecimal;
-
-import de.csdev.ebus.command.datatypes.EBusTypeGenericReplaceValue;
 import de.csdev.ebus.utils.EBusUtils;
-import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeByte extends EBusTypeGenericReplaceValue {
+public class EBusTypeByte extends EBusTypeUnsignedNumber {
 
     public static String UCHAR = "uchar";
     public static String BYTE = "byte";
 
     private static String[] supportedTypes = new String[] { BYTE, UCHAR };
 
-    public EBusTypeByte() {
-        replaceValue = new byte[] { (byte) 0xFF };
-    }
-
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
     @Override
-    public BigDecimal decodeInt(byte[] data) {
-        return BigDecimal.valueOf(data[0] & 0xFF);
-    }
-
-    @Override
-    public byte[] encodeInt(Object data) {
-
-        if (data instanceof byte[]) {
-            return (byte[]) data;
-        }
-
-        BigDecimal b = NumberUtils.toBigDecimal(data);
-
-        if (b == null) {
-            return new byte[] { 0x00 };
-        }
-
-        return new byte[] { (byte) b.intValue() };
+    public int getTypeLenght() {
+        return 1;
     }
 
     @Override

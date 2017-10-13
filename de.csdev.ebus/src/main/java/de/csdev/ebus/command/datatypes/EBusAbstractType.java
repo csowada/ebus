@@ -21,7 +21,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     protected boolean reverseByteOrder = false;
 
-    protected int length;
+//    protected int length;
 
     public abstract T decodeInt(byte[] data) throws EBusTypeException;
 
@@ -34,7 +34,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     @Override
     public int getTypeLenght() {
-        return length;
+    	return 0;
+//        return length;
     }
 
     @Override

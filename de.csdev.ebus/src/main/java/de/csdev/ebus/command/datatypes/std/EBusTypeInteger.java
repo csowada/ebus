@@ -8,25 +8,17 @@
  */
 package de.csdev.ebus.command.datatypes.std;
 
-import java.math.BigDecimal;
-
-import de.csdev.ebus.command.datatypes.EBusTypeGenericReplaceValue;
 import de.csdev.ebus.utils.EBusUtils;
-import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeInteger extends EBusTypeGenericReplaceValue {
+public class EBusTypeInteger extends EBusTypeNumber {
 
     public static String INTEGER = "int";
 
     private static String[] supportedTypes = new String[] { INTEGER };
-
-    public EBusTypeInteger() {
-        replaceValue = new byte[] { (byte) 0x00, (byte) 0x80 };
-    }
 
     @Override
     public String[] getSupportedTypes() {
@@ -36,21 +28,6 @@ public class EBusTypeInteger extends EBusTypeGenericReplaceValue {
     @Override
     public int getTypeLenght() {
         return 2;
-    }
-
-    @Override
-    public BigDecimal decodeInt(byte[] data) {
-        data = applyByteOrder(data);
-        return BigDecimal.valueOf((short) (data[1] << 8 | data[0] & 0xFF));
-    }
-
-    @Override
-    public byte[] encodeInt(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
-
-        byte[] result = new byte[] { (byte) b.intValue(), (byte) (b.intValue() >> 8) };
-
-        return applyByteOrder(result);
     }
 
     @Override

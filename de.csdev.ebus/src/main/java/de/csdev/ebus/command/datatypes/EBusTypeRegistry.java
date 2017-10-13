@@ -10,6 +10,7 @@ package de.csdev.ebus.command.datatypes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,6 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
-import de.csdev.ebus.command.datatypes.v2.EBusTypeNumber;
-import de.csdev.ebus.command.datatypes.v2.EBusTypeUsignedNumber;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -85,8 +84,7 @@ public class EBusTypeRegistry {
         add(EBusTypeKWCrc.class);
 
         // test
-        add(EBusTypeNumber.class);
-        add(EBusTypeUsignedNumber.class);
+
     }
 
     /**
@@ -119,6 +117,14 @@ public class EBusTypeRegistry {
 
         return eBusType;
     }
+    
+    /**
+     * @return
+     */
+    public <T> Set<String> getTypesNames() {
+    	return types.keySet();
+    }
+    
 
     /**
      * @param type
