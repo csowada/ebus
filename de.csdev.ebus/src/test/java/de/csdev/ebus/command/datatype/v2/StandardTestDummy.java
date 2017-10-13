@@ -28,6 +28,7 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
 public class StandardTestDummy {
 
     EBusTypeRegistry types;
+	private byte[] encode;
 
     @Before
     public void before() {
@@ -46,7 +47,7 @@ public class StandardTestDummy {
         return types.getType(EBusTypeChar.CHAR, properties);
     }
 
-    @Test
+//    @Test
     public void x() throws EBusTypeException {
     	
     	
@@ -58,7 +59,9 @@ public class StandardTestDummy {
 			
 			
 			Object decode = type.decode(bs);
-			byte[] encode = type.encode(decode);
+			encode = type.encode(decode);
+			
+			assertArrayEquals(bs, encode);
 		}
     }
 

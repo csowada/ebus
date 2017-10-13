@@ -21,11 +21,13 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     protected boolean reverseByteOrder = false;
 
-//    protected int length;
+    public T decodeInt(byte[] data) throws EBusTypeException {
+    	throw new RuntimeException("Must be overwritten by superclass!");
+    }
 
-    public abstract T decodeInt(byte[] data) throws EBusTypeException;
-
-    public abstract byte[] encodeInt(Object data) throws EBusTypeException;
+    public byte[] encodeInt(Object data) throws EBusTypeException {
+    	throw new RuntimeException("Must be overwritten by superclass!");
+    }
 
     @Override
     public void setTypesParent(EBusTypeRegistry types) {

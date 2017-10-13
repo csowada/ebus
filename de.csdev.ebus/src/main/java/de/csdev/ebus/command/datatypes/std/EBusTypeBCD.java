@@ -10,7 +10,7 @@ package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
 
-import de.csdev.ebus.command.datatypes.EBusTypeGenericReplaceValue;
+import de.csdev.ebus.command.datatypes.EBusAbtstractReplaceValueType;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -18,43 +18,49 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeBCD extends EBusTypeGenericReplaceValue {
+public class EBusTypeBCD extends EBusAbtstractReplaceValueType<BigDecimal>  {
 
-    public static String BCD = "bcd";
+	public static String BCD = "bcd";
 
-    private static String[] supportedTypes = new String[] { BCD };
+	private static String[] supportedTypes = new String[] { BCD };
 
-    public String[] getSupportedTypes() {
-        return supportedTypes;
-    }
+	public EBusTypeBCD() {
+		replaceValue = new byte[] {(byte) 0xFF};	
+	}
 
-    public EBusTypeBCD() {
-        replaceValue = new byte[] { (byte) 0xFF };
-    }
+	@Override
+	public String[] getSupportedTypes() {
+		return supportedTypes;
+	}
 
-    @Override
-    public BigDecimal decodeInt(byte[] data) {
-    	
-    	byte high = (byte) (data[0] >> 4 & 0x0F);
-    	byte low = (byte) (data[0] & 0x0F);
-    	
-    	// nibbles out of rang 0-9
-    	if(high > 9 || low > 9) {
-    		return null;
-    	}
-    	
-        return BigDecimal.valueOf((byte) ((data[0] >> 4 & 0x0F) * 10 + (data[0] & 0x0F)));
-    }
+	@Override
+	public int getTypeLenght() {
+		return 1;
+	}
 
-    @Override
-    public byte[] encodeInt(Object data) {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
-        return new byte[] { (byte) (((b.intValue() / 10) << 4) | b.intValue() % 10) };
-    }
+	@Override
+	public BigDecimal decodeInt(byte[] data) {
 
-    @Override
-    public String toString() {
-        return "EBusTypeBCD [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
-    }
+		byte high = (byte) (data[0] >> 4 & 0x0F);
+		byte low = (byte) (data[0] & 0x0F);
+
+		// nibbles out of rang 0-9
+		if(high > 9 || low > 9) {
+			return null;
+		}
+
+		return BigDecimal.valueOf((byte) ((data[0] >> 4 & 0x0F) * 10 + (data[0] & 0x0F)));
+	}
+
+	@Override
+	public byte[] encodeInt(Object data) {
+		BigDecimal b = NumberUtils.toBigDecimal(data);
+		return new byte[] { (byte) (((b.intValue() / 10) << 4) | b.intValue() % 10) };
+	}
+
+	@Override
+	public String toString() {
+		return "EBusTypeBCD [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+	}
 
 }
