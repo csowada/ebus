@@ -1,8 +1,12 @@
 package de.csdev.ebus.command.datatypes;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public abstract class EBusAbtstractReplaceValueType<T> extends EBusAbstractType<T> {
+public abstract class EBusAbstractReplaceValueType<T> extends EBusAbstractType<T> {
+
+    private static final Logger logger = LoggerFactory.getLogger(EBusAbstractReplaceValueType.class);
 
     protected byte[] replaceValue = null;
 
@@ -65,7 +69,7 @@ public abstract class EBusAbtstractReplaceValueType<T> extends EBusAbstractType<
 
         // return the replacec value
         if (data == null) {
-            return applyByteOrder(replaceValue);
+            return applyByteOrder(getReplaceValue());
         }
 
         byte[] result = encodeInt(data);
@@ -73,4 +77,18 @@ public abstract class EBusAbtstractReplaceValueType<T> extends EBusAbstractType<
 
         return result;
     }
+
+    @Override
+    protected void setInstanceProperty(EBusAbstractType<T> instance, String property, Object value) {
+        if (property.equals("replaceValue")) {
+            try {
+                setReplaceValue(value);
+            } catch (EBusTypeException e) {
+                logger.error("error!", e);
+            }
+        } else {
+            super.setInstanceProperty(instance, property, value);
+        }
+    }
+
 }

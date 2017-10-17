@@ -5,11 +5,11 @@ import java.math.BigInteger;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import de.csdev.ebus.command.datatypes.EBusAbtstractReplaceValueType;
+import de.csdev.ebus.command.datatypes.EBusAbstractReplaceValueType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.utils.NumberUtils;
 
-public abstract class EBusTypeNumber extends EBusAbtstractReplaceValueType<BigDecimal> {
+public abstract class EBusTypeNumber extends EBusAbstractReplaceValueType<BigDecimal> {
 
     @Override
     public byte[] getReplaceValue() {

@@ -10,7 +10,7 @@ package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
 
-import de.csdev.ebus.command.datatypes.EBusAbtstractReplaceValueType;
+import de.csdev.ebus.command.datatypes.EBusAbstractReplaceValueType;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -18,7 +18,7 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeBCD extends EBusAbtstractReplaceValueType<BigDecimal>  {
+public class EBusTypeBCD extends EBusAbstractReplaceValueType<BigDecimal>  {
 
 	public static String TYPE_BCD = "bcd";
 

@@ -22,11 +22,11 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     protected boolean reverseByteOrder = false;
 
     public T decodeInt(byte[] data) throws EBusTypeException {
-    	throw new RuntimeException("Must be overwritten by superclass!");
+        throw new RuntimeException("Must be overwritten by superclass!");
     }
 
     public byte[] encodeInt(Object data) throws EBusTypeException {
-    	throw new RuntimeException("Must be overwritten by superclass!");
+        throw new RuntimeException("Must be overwritten by superclass!");
     }
 
     @Override
@@ -36,8 +36,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     @Override
     public int getTypeLenght() {
-    	return 0;
-//        return length;
+        return 0;
     }
 
     @Override
@@ -80,7 +79,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
             // apply all properties
             for (Entry<String, Object> entry : properties.entrySet()) {
-                setValue(instance, entry.getKey(), entry.getValue());
+                setInstanceProperty(instance, entry.getKey(), entry.getValue());
             }
 
             // store as shared instance
@@ -101,7 +100,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         return data;
     }
 
-    private void setValue(EBusAbstractType<T> instance, String property, Object value) {
+    protected void setInstanceProperty(EBusAbstractType<T> instance, String property, Object value) {
         try {
             Field field = FieldUtils.getField(instance.getClass(), property, true);
 
