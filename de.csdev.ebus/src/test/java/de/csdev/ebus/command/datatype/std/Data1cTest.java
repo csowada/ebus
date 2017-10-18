@@ -1,8 +1,6 @@
 package de.csdev.ebus.command.datatype.std;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -44,14 +42,14 @@ public class Data1cTest {
     @Test
     public void test_Data1c() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData1c.TYPE_DATA1C, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData1c.TYPE_DATA1C);
 
         check(type, new byte[] { (byte) 0x00 }, 0f);
 
         check(type, new byte[] { (byte) 0x64 }, 50f);
 
         check(type, new byte[] { (byte) 0xC8 }, 100f);
-        
+
         checkReplaceValue(type, new byte[] { (byte) 0xFF });
     }
 
@@ -67,7 +65,7 @@ public class Data1cTest {
         check(type, new byte[] { (byte) 0x64 }, 50f);
 
         check(type, new byte[] { (byte) 0xC8 }, 100f);
-        
+
         checkReplaceValue(type, new byte[] { (byte) 0xFF });
     }
 }

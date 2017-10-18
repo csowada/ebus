@@ -33,4 +33,14 @@ public class CollectionUtils {
     public static <K, V> Map<K, V> newMapIfNull(Map<K, V> map) {
         return map != null ? map : new HashMap<K, V>();
     }
+
+    public static Map<String, Object> createProps(Object... args) {
+        Map<String, Object> properties = new HashMap<String, Object>();
+
+        for (int i = 0; i < args.length; i = i + 2) {
+            properties.put(args[i].toString(), args[i + 1]);
+        }
+
+        return properties;
+    }
 }

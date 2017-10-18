@@ -1,8 +1,6 @@
 package de.csdev.ebus.command.datatype.std;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -44,22 +42,22 @@ public class WordTest {
     @Test
     public void test_Word() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeWord.TYPE_WORD, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeWord.TYPE_WORD);
 
         check(type, new byte[] { (byte) 0x00, 0x00 }, 0);
 
         check(type, new byte[] { (byte) 0x01, 0x00 }, 1);
-        
+
         check(type, new byte[] { (byte) 0xFF, 0x00 }, 255);
 
         check(type, new byte[] { (byte) 0x00, 0x01 }, 256);
-        
+
         check(type, new byte[] { (byte) 0x00, (byte) 0x80 }, 32768);
-        
+
         check(type, new byte[] { (byte) 0xFE, (byte) 0xFF }, 65534);
 
         checkReplaceValue(type, new byte[] { (byte) 0xFF, (byte) 0xFF });
-        
+
     }
 
     @Test
@@ -72,13 +70,13 @@ public class WordTest {
         check(type, new byte[] { (byte) 0x00, 0x00 }, 0);
 
         check(type, new byte[] { (byte) 0x00, 0x01 }, 1);
-        
+
         check(type, new byte[] { (byte) 0x00, (byte) 0xFF }, 255);
 
         check(type, new byte[] { (byte) 0x01, 0x00 }, 256);
-        
+
         check(type, new byte[] { (byte) 0x80, (byte) 0x00 }, 32768);
-        
+
         check(type, new byte[] { (byte) 0xFF, (byte) 0xFE }, 65534);
 
         checkReplaceValue(type, new byte[] { (byte) 0xFF, (byte) 0xFF });

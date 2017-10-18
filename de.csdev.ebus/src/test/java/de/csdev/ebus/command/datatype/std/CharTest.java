@@ -8,9 +8,7 @@
  */
 package de.csdev.ebus.command.datatype.std;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 
@@ -54,7 +52,7 @@ public class CharTest {
     @Test
     public void test_CHAR() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeChar.TYPE_CHAR, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeChar.TYPE_CHAR);
 
         check(type, new byte[] { (byte) 0x00 }, 0);
 

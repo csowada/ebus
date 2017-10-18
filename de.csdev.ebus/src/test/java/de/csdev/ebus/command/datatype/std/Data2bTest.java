@@ -42,7 +42,7 @@ public class Data2bTest {
     @Test
     public void test_Data2b() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData2b.TYPE_DATA2B, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData2b.TYPE_DATA2B);
 
         check(type, new byte[] { 0x00, 0x00 }, 0f);
 

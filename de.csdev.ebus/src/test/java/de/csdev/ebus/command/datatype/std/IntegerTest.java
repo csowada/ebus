@@ -1,8 +1,6 @@
 package de.csdev.ebus.command.datatype.std;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -44,20 +42,20 @@ public class IntegerTest {
     @Test
     public void test_Integer() throws EBusTypeException {
 
-        IEBusType<BigDecimal> type = types.getType(EBusTypeInteger.TYPE_INTEGER, null);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeInteger.TYPE_INTEGER);
 
         check(type, new byte[] { (byte) 0x00, 0x00 }, 0);
 
         check(type, new byte[] { (byte) 0x01, 0x00 }, 1);
 
         check(type, new byte[] { (byte) 0xFF, (byte) 0xFF }, -1);
-        
+
         check(type, new byte[] { (byte) 0xFF, (byte) 0x7F }, 32767);
-        
+
         check(type, new byte[] { (byte) 0x01, (byte) 0x80 }, -32767);
-        
+
         checkReplaceValue(type, new byte[] { (byte) 0x00, (byte) 0x80 });
-        
+
     }
 
     @Test
@@ -72,11 +70,11 @@ public class IntegerTest {
         check(type, new byte[] { (byte) 0x00, 0x01 }, 1);
 
         check(type, new byte[] { (byte) 0xFF, (byte) 0xFF }, -1);
-        
+
         check(type, new byte[] { (byte) 0x7F, (byte) 0xFF }, 32767);
-        
+
         check(type, new byte[] { (byte) 0x80, (byte) 0x01 }, -32767);
-        
+
         checkReplaceValue(type, new byte[] { (byte) 0x80, (byte) 0x00 });
     }
 }

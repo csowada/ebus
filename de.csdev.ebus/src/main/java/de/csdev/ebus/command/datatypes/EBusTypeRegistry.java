@@ -33,6 +33,7 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
+import de.csdev.ebus.utils.CollectionUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -103,6 +104,16 @@ public class EBusTypeRegistry {
 
     /**
      * @param type
+     * @param propertiesArguments
+     * @return
+     */
+    public <T> IEBusType<T> getType(String type, Object... propertiesArguments) {
+        Map<String, Object> properties = CollectionUtils.createProps(propertiesArguments);
+        return this.getType(type, properties);
+    }
+
+    /**
+     * @param type
      * @return
      */
     public <T> IEBusType<T> getType(String type) {
@@ -133,17 +144,7 @@ public class EBusTypeRegistry {
      * @throws EBusTypeException
      */
     public byte[] encode(String type, Object data) throws EBusTypeException {
-        return encode(type, data, (Object[]) null);
-    }
 
-    /**
-     * @param type
-     * @param data
-     * @param args
-     * @return
-     * @throws EBusTypeException
-     */
-    public byte[] encode(String type, Object data, Object... args) throws EBusTypeException {
         IEBusType<?> eBusType = types.get(type);
 
         if (eBusType == null) {

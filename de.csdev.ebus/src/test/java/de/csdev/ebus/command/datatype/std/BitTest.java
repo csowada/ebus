@@ -8,10 +8,9 @@
  */
 package de.csdev.ebus.command.datatype.std;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.csdev.ebus.utils.CollectionUtils.createProps;
+import static org.junit.Assert.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
@@ -36,34 +35,31 @@ public class BitTest {
     }
 
     public IEBusType<?> getType(int bitPos) {
-    	Map<String, Object> properties = new HashMap<String, Object>();
-    	properties.put("pos", bitPos);
+        Map<String, Object> properties = createProps(EBusTypeBit.POS, bitPos);
         return types.getType(EBusTypeBit.TYPE_BIT, properties);
     }
-    
+
     @Test
     public void test_Byte() throws EBusTypeException {
 
-//    	IEBusType<?> typeDef = types.getType(EBusTypeBit.BIT);
-    	IEBusType<?> typeB0 = getType(0);
-    	IEBusType<?> typeB1 = getType(1);
-    	IEBusType<?> typeB2 = getType(2);
-    	IEBusType<?> typeB3 = getType(3);
-    	IEBusType<?> typeB4 = getType(4);
-    	IEBusType<?> typeB5 = getType(5);
-    	IEBusType<?> typeB6 = getType(6);
-    	IEBusType<?> typeB7 = getType(7);
-    	
-    	byte[] b = new byte[] { (byte) 0xA3 };
-    	
-//    	assertTrue((Boolean) typeDef.decode(b));
-    	assertTrue((Boolean) typeB0.decode(b));
-    	assertTrue((Boolean) typeB1.decode(b));
-    	assertFalse((Boolean) typeB2.decode(b));
-    	assertFalse((Boolean) typeB3.decode(b));
-    	assertFalse((Boolean) typeB4.decode(b));
-    	assertTrue((Boolean) typeB5.decode(b));
-    	assertFalse((Boolean) typeB6.decode(b));
-    	assertTrue((Boolean) typeB7.decode(b));
+        IEBusType<?> typeB0 = getType(0);
+        IEBusType<?> typeB1 = getType(1);
+        IEBusType<?> typeB2 = getType(2);
+        IEBusType<?> typeB3 = getType(3);
+        IEBusType<?> typeB4 = getType(4);
+        IEBusType<?> typeB5 = getType(5);
+        IEBusType<?> typeB6 = getType(6);
+        IEBusType<?> typeB7 = getType(7);
+
+        byte[] b = new byte[] { (byte) 0xA3 };
+
+        assertTrue((Boolean) typeB0.decode(b));
+        assertTrue((Boolean) typeB1.decode(b));
+        assertFalse((Boolean) typeB2.decode(b));
+        assertFalse((Boolean) typeB3.decode(b));
+        assertFalse((Boolean) typeB4.decode(b));
+        assertTrue((Boolean) typeB5.decode(b));
+        assertFalse((Boolean) typeB6.decode(b));
+        assertTrue((Boolean) typeB7.decode(b));
     }
 }
