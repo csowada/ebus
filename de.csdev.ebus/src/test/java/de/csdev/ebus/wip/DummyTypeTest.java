@@ -9,7 +9,6 @@
 package de.csdev.ebus.wip;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,6 @@ import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
-import de.csdev.ebus.command.datatypes.std.EBusTypeNumber;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -45,18 +43,17 @@ public class DummyTypeTest {
     @Test
     public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 
-//        DummyTypeChar2 de = new DummyTypeChar2();
+        // DummyTypeChar2 de = new DummyTypeChar2();
 
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(IEBusType.LENGTH, 2);
         properties.put("variant", 99);
-        //IEBusType<BigDecimal> instance = de.getInstance(properties);
+        // IEBusType<BigDecimal> instance = de.getInstance(properties);
 
         IEBusType<Object> type = types.getType(EBusTypeChar.TYPE_CHAR, properties);
-        
-        
+
         System.out.println("ConfigurationReaderTest.enclosing_method()");
 
     }
-    
+
 }

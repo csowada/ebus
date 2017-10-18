@@ -15,8 +15,8 @@ import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGenericVariant;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
@@ -27,7 +27,7 @@ import de.csdev.ebus.utils.EBusDateTime;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
+public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
 
     public static String TYPE_TIME = "time";
 
@@ -41,7 +41,7 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
 
     private static String[] supportedTypes = new String[] { TYPE_TIME };
 
-    // private String variant = STD;
+    private String variant = DEFAULT;
 
     @Override
     public String[] getSupportedTypes() {
@@ -65,14 +65,7 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
     }
 
     @Override
-    public EBusDateTime decode(byte[] data) throws EBusTypeException {
-
-        if (data == null) {
-            // TODO replace value
-            return null;
-        }
-
-        data = applyByteOrder(data);
+    public EBusDateTime decodeInt(byte[] data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
@@ -109,8 +102,6 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
 
         } else if (StringUtils.equals(variant, MINUTES)) {
             BigDecimal minutesSinceMidnight = wordType.decode(data);
-            // calendar.set(1970, 0, 1, 0, 0, 0);
-            // calendar.set(Calendar.MILLISECOND, 0);
             calendar.add(Calendar.MINUTE, minutesSinceMidnight.intValue());
         }
 
@@ -127,9 +118,8 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
         return new EBusDateTime(calendar, true, false);
     }
 
-    @SuppressWarnings("null")
     @Override
-    public byte[] encode(Object data) throws EBusTypeException {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
@@ -189,29 +179,8 @@ public class EBusTypeTime extends EBusTypeGenericVariant<EBusDateTime> {
             }
         }
 
-        return applyByteOrder(result);
+        return result;
     }
-
-    // @Override
-    // public IEBusType<EBusDateTime> getInstance(Map<String, Object> properties) {
-    //
-    // if (properties == null || !properties.containsKey(IEBusType.TYPE)
-    // || ObjectUtils.equals(properties.get(IEBusType.TYPE), STD)) {
-    // return super.getInstance(properties);
-    // }
-    //
-    // String key = (String) properties.get(IEBusType.TYPE) + ":" + isReverseByteOrderSet(properties);
-    // EBusTypeTime type = (EBusTypeTime) otherInstances.get(key);
-    // if (type == null) {
-    // type = (EBusTypeTime) createNewInstance();
-    // type.variant = (String) properties.get(IEBusType.TYPE);
-    // applyNewInstanceProperties(type, properties);
-    //
-    // otherInstances.put(key, type);
-    // }
-    //
-    // return type;
-    // }
 
     @Override
     public String toString() {

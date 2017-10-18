@@ -116,15 +116,15 @@ public class EBusTypeRegistry {
 
         return eBusType;
     }
-    
+
     /**
      * Returns the type names
+     *
      * @return
      */
     public <T> Set<String> getTypesNames() {
-    	return types.keySet();
+        return types.keySet();
     }
-    
 
     /**
      * @param type

@@ -18,9 +18,11 @@ public interface IEBusType<T> {
 
     public static final String LENGTH = "length";
 
-    public static final String TYPE = "type";
+    // public static final String TYPE = "type";
 
     public static final String FACTOR = "factor";
+
+    public static final String VARIANT = "variant";
 
     public static final String REVERSED_BYTE_ORDER = "reverseByteOrder";
 

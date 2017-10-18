@@ -39,7 +39,7 @@ public class TimeTest {
     private IEBusType<EBusDateTime> getType(String type, boolean reverseByteOrder) {
         Map<String, Object> properties = new HashMap<String, Object>();
 
-        properties.put(IEBusType.TYPE, type);
+        properties.put(IEBusType.VARIANT, type);
 
         if (reverseByteOrder) {
             properties.put(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);

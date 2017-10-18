@@ -62,7 +62,7 @@ public class EBusCommandUtils {
         buf.put(commandMethod.getCommand()); // PB SB - Command
         buf.put((byte) 0x00); // NN - Length, will be set later
 
-        Map<Integer, IEBusComplexType> complexTypes = new HashMap<Integer, IEBusComplexType>();
+        Map<Integer, IEBusComplexType<?>> complexTypes = new HashMap<Integer, IEBusComplexType<?>>();
 
         if (commandMethod.getMasterTypes() != null) {
             for (IEBusValue entry : commandMethod.getMasterTypes()) {
@@ -77,7 +77,7 @@ public class EBusCommandUtils {
                     if (type instanceof IEBusComplexType) {
 
                         // add the complex to the list for post processing
-                        complexTypes.put(buf.position(), (IEBusComplexType) type);
+                        complexTypes.put(buf.position(), (IEBusComplexType<?>) type);
 
                         // add placeholder
                         b = new byte[entry.getType().getTypeLenght()];
@@ -107,7 +107,7 @@ public class EBusCommandUtils {
         // replace the placeholders with the complex values
         if (!complexTypes.isEmpty()) {
             int orgPos = buf.position();
-            for (Entry<Integer, IEBusComplexType> entry : complexTypes.entrySet()) {
+            for (Entry<Integer, IEBusComplexType<?>> entry : complexTypes.entrySet()) {
                 // jump to position
                 buf.position(entry.getKey());
                 // put new value
@@ -169,7 +169,7 @@ public class EBusCommandUtils {
                 // use the raw buffer up to this position, used for custom crc calculation etc.
                 // see kw-crc type
                 if (ev.getType() instanceof IEBusComplexType) {
-                    decode = ((IEBusComplexType) ev.getType()).decodeComplex(data, pos);
+                    decode = ((IEBusComplexType<?>) ev.getType()).decodeComplex(data, pos);
 
                 } else {
                     // default encoding

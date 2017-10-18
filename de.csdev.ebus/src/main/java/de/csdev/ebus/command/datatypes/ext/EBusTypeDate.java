@@ -15,8 +15,8 @@ import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGenericVariant;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
@@ -27,7 +27,7 @@ import de.csdev.ebus.utils.EBusDateTime;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
+public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
 
     public static String TYPE_DATE = "date";
 
@@ -43,11 +43,10 @@ public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
 
     private static String[] supportedTypes = new String[] { TYPE_DATE };
 
-    // private String variant = STD;
+    private String variant = DEFAULT;
 
     @Override
     public String[] getSupportedTypes() {
-
         return supportedTypes;
     }
 
@@ -68,7 +67,7 @@ public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
     }
 
     @Override
-    public EBusDateTime decode(byte[] data) throws EBusTypeException {
+    public EBusDateTime decodeInt(byte[] data) throws EBusTypeException {
 
         if (data == null) {
             // TODO replace value
@@ -134,9 +133,8 @@ public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
         return new EBusDateTime(calendar, false, true);
     }
 
-    @SuppressWarnings("null")
     @Override
-    public byte[] encode(Object data) throws EBusTypeException {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
@@ -208,22 +206,9 @@ public class EBusTypeDate extends EBusTypeGenericVariant<EBusDateTime> {
         return result;
     }
 
-    // @Override
-    // public IEBusType<EBusDateTime> getInstance(Map<String, Object> properties) {
-    //
-    // if (properties.containsKey(IEBusType.TYPE)) {
-    // EBusTypeDate type = new EBusTypeDate();
-    // type.variant = (String) properties.get(IEBusType.TYPE);
-    // type.types = this.types;
-    // return type;
-    // }
-    //
-    // return this;
-    // }
-
     @Override
     public String toString() {
-        return "EBusTypeDateTime [variant=" + variant + "]";
+        return "EBusTypeDate [variant=" + variant + "]";
     }
 
 }

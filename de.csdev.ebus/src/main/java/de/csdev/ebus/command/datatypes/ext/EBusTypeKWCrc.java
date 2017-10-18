@@ -8,15 +8,15 @@
  */
 package de.csdev.ebus.command.datatypes.ext;
 
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.command.datatypes.IEBusComplexType;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeKWCrc extends EBusTypeGeneric<Object> implements IEBusComplexType {
+public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComplexType<Byte> {
 
     public static String TYPE_KW_CRC = "kw-crc";
 
@@ -28,25 +28,23 @@ public class EBusTypeKWCrc extends EBusTypeGeneric<Object> implements IEBusCompl
     }
 
     @Override
-    public Object decode(byte[] data) {
-        throw new RuntimeException("Not implmented!");
+    public Byte decodeInt(byte[] data) {
+        throw new RuntimeException("Not implemented by EBusTypeKWCrc!");
     }
 
     @Override
-    public byte[] encode(Object data) {
-        throw new RuntimeException("Not implmented!");
+    public byte[] encodeInt(Object data) {
+        throw new RuntimeException("Not implemented by EBusTypeKWCrc!");
     }
 
     @Override
-    public <T> T decodeComplex(byte[] rawData, int pos) throws EBusTypeException {
-        // TODO Auto-generated method stub
-        return null;
+    public Byte decodeComplex(byte[] rawData, int pos) throws EBusTypeException {
+        return (byte) 0xCC;
     }
 
     @Override
     public byte[] encodeComplex(Object data) throws EBusTypeException {
-        // TODO Auto-generated method stub
-        return new byte[] { 0x11 };
+        return new byte[] { (byte) 0xCC };
     }
 
     @Override

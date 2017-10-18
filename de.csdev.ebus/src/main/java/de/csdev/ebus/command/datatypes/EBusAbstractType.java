@@ -17,46 +17,98 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     protected Map<Object, EBusAbstractType<T>> otherInstances = new HashMap<Object, EBusAbstractType<T>>();
 
-    protected EBusTypeRegistry types;
+    protected byte[] replaceValue = null;
 
     protected boolean reverseByteOrder = false;
 
-    public T decodeInt(byte[] data) throws EBusTypeException {
-        throw new RuntimeException("Must be overwritten by superclass!");
+    protected EBusTypeRegistry types;
+
+    protected byte[] applyByteOrder(byte[] data) {
+
+        data = ArrayUtils.clone(data);
+
+        // reverse the byte order immutable
+        if (reverseByteOrder) {
+            ArrayUtils.reverse(data);
+        }
+
+        return data;
     }
 
-    public byte[] encodeInt(Object data) throws EBusTypeException {
-        throw new RuntimeException("Must be overwritten by superclass!");
-    }
+    /**
+     * @return
+     */
+    private EBusAbstractType<T> createNewInstance() {
 
-    @Override
-    public void setTypesParent(EBusTypeRegistry types) {
-        this.types = types;
-    }
+        try {
+            @SuppressWarnings("unchecked")
+            EBusAbstractType<T> newInstance = this.getClass().newInstance();
+            newInstance.types = this.types;
+            return newInstance;
 
-    @Override
-    public int getTypeLenght() {
-        return 0;
+        } catch (InstantiationException e) {
+            logger.error("error!", e);
+        } catch (IllegalAccessException e) {
+            logger.error("error!", e);
+        }
+
+        return null;
     }
 
     @Override
     public T decode(byte[] data) throws EBusTypeException {
 
+        if (data.length != getTypeLenght()) {
+            throw new EBusTypeException("Input parameter byte-array has size {0}, expected {1} for eBUS type {2}",
+                    data.length, getTypeLenght(), this.getClass().getSimpleName());
+        }
+
         // apply the right byte order before processing
         data = applyByteOrder(data);
+
+        // return null in case of a replace value
+        if (equalsReplaceValue(data)) {
+            return null;
+        }
 
         return decodeInt(data);
     }
 
+    public T decodeInt(byte[] data) throws EBusTypeException {
+        throw new RuntimeException("Must be overwritten by superclass!");
+    }
+
     @Override
     public byte[] encode(Object data) throws EBusTypeException {
+
+        // return the replacec value
+        if (data == null) {
+            return applyByteOrder(getReplaceValue());
+        }
 
         byte[] result = encodeInt(data);
 
         // apply the right byte order after processing
         result = applyByteOrder(result);
 
+        if (result.length != getTypeLenght()) {
+            throw new EBusTypeException("Result byte-array has size {0}, expected {1} for eBUS type {2}", result.length,
+                    getTypeLenght(), this.getClass().getSimpleName());
+        }
+
         return result;
+    }
+
+    public byte[] encodeInt(Object data) throws EBusTypeException {
+        throw new RuntimeException("Must be overwritten by superclass!");
+    }
+
+    /**
+     * @param data
+     * @return
+     */
+    protected boolean equalsReplaceValue(byte[] data) {
+        return ArrayUtils.isEquals(data, getReplaceValue());
     }
 
     @Override
@@ -89,18 +141,29 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         return instance;
     }
 
-    protected byte[] applyByteOrder(byte[] data) {
+    /**
+     * @return
+     */
+    public byte[] getReplaceValue() {
+        return replaceValue;
+    }
 
-        // reverse the byte order immutable
-        if (reverseByteOrder) {
-            data = ArrayUtils.clone(data);
-            ArrayUtils.reverse(data);
-        }
-
-        return data;
+    @Override
+    public int getTypeLenght() {
+        return 0;
     }
 
     protected void setInstanceProperty(EBusAbstractType<T> instance, String property, Object value) {
+
+        if (property.equals("replaceValue")) {
+            try {
+                setReplaceValue(value);
+            } catch (EBusTypeException e) {
+                logger.error("error!", e);
+            }
+            return;
+        }
+
         try {
             Field field = FieldUtils.getField(instance.getClass(), property, true);
 
@@ -118,22 +181,23 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     }
 
     /**
-     * @return
+     * @param replaceValue
+     * @throws EBusTypeException
      */
-    private EBusAbstractType<T> createNewInstance() {
+    public void setReplaceValue(byte[] replaceValue) throws EBusTypeException {
+        this.replaceValue = applyByteOrder(replaceValue);
+    }
 
-        try {
-            @SuppressWarnings("unchecked")
-            EBusAbstractType<T> newInstance = this.getClass().newInstance();
-            newInstance.types = this.types;
-            return newInstance;
+    /**
+     * @param replaceValue
+     * @throws EBusTypeException
+     */
+    public void setReplaceValue(Object replaceValue) throws EBusTypeException {
+        this.replaceValue = encodeInt(replaceValue);
+    }
 
-        } catch (InstantiationException e) {
-            logger.error("error!", e);
-        } catch (IllegalAccessException e) {
-            logger.error("error!", e);
-        }
-
-        return null;
+    @Override
+    public void setTypesParent(EBusTypeRegistry types) {
+        this.types = types;
     }
 }

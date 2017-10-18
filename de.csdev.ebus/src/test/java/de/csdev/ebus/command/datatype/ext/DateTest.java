@@ -43,7 +43,7 @@ public class DateTest {
 
         Map<String, Object> properties = new HashMap<String, Object>();
 
-        properties.put(IEBusType.TYPE, EBusTypeDate.DEFAULT);
+        properties.put(IEBusType.VARIANT, EBusTypeDate.DEFAULT);
         IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
@@ -58,7 +58,7 @@ public class DateTest {
         Map<String, Object> properties = new HashMap<String, Object>();
         // short
 
-        properties.put(IEBusType.TYPE, EBusTypeDate.SHORT);
+        properties.put(IEBusType.VARIANT, EBusTypeDate.SHORT);
         IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
@@ -72,7 +72,7 @@ public class DateTest {
         Map<String, Object> properties = new HashMap<String, Object>();
         // short
 
-        properties.put(IEBusType.TYPE, EBusTypeDate.HEX);
+        properties.put(IEBusType.VARIANT, EBusTypeDate.HEX);
         IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
@@ -86,7 +86,7 @@ public class DateTest {
         Map<String, Object> properties = new HashMap<String, Object>();
         // short
 
-        properties.put(IEBusType.TYPE, EBusTypeDate.HEX_SHORT);
+        properties.put(IEBusType.VARIANT, EBusTypeDate.HEX_SHORT);
         IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
@@ -101,7 +101,7 @@ public class DateTest {
         Map<String, Object> properties = new HashMap<String, Object>();
         // short
 
-        properties.put(IEBusType.TYPE, EBusTypeDate.DAYS);
+        properties.put(IEBusType.VARIANT, EBusTypeDate.DAYS);
         IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
@@ -109,7 +109,7 @@ public class DateTest {
 
         // days 06.06.2079
         calendar = new GregorianCalendar(2079, 5, 6, 0, 0);
-        properties.put(IEBusType.TYPE, EBusTypeDate.DAYS);
+        properties.put(IEBusType.VARIANT, EBusTypeDate.DAYS);
         type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         bytes = type.encode(calendar);

@@ -8,16 +8,13 @@
  */
 package de.csdev.ebus.command.datatypes.ext;
 
-import java.util.Map;
-
-import de.csdev.ebus.command.datatypes.EBusTypeGeneric;
-import de.csdev.ebus.command.datatypes.IEBusType;
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeString extends EBusTypeGeneric<String> {
+public class EBusTypeString extends EBusAbstractType<String> {
 
     public static String TYPE_STRING = "string";
 
@@ -31,12 +28,12 @@ public class EBusTypeString extends EBusTypeGeneric<String> {
     }
 
     @Override
-    public String decode(byte[] data) {
+    public String decodeInt(byte[] data) {
         return new String(data);
     }
 
     @Override
-    public byte[] encode(Object data) {
+    public byte[] encodeInt(Object data) {
 
         // return a empty string with defined len
         if (data == null) {
@@ -58,18 +55,18 @@ public class EBusTypeString extends EBusTypeGeneric<String> {
         return length;
     }
 
-    @Override
-    public IEBusType<String> getInstance(Map<String, Object> properties) {
-
-        if (properties.containsKey("length")) {
-            EBusTypeString type = new EBusTypeString();
-            type.types = this.types;
-            type.length = (Integer) properties.get("length");
-            return type;
-        }
-
-        return this;
-    }
+    // @Override
+    // public IEBusType<String> getInstance(Map<String, Object> properties) {
+    //
+    // if (properties.containsKey("length")) {
+    // EBusTypeString type = new EBusTypeString();
+    // type.types = this.types;
+    // type.length = (Integer) properties.get("length");
+    // return type;
+    // }
+    //
+    // return this;
+    // }
 
     @Override
     public String toString() {

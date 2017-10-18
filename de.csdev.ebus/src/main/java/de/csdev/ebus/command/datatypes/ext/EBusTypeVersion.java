@@ -10,8 +10,8 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.math.BigDecimal;
 
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -19,7 +19,7 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
+public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
     public static String TYPE_VERSION = "version";
 
@@ -36,7 +36,7 @@ public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
     }
 
     @Override
-    public BigDecimal decode(byte[] data) throws EBusTypeException {
+    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
 
         if (data[0] == 0 && data[1] == 0) {
             return null;
@@ -57,7 +57,7 @@ public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
     }
 
     @Override
-    public byte[] encode(Object data) throws EBusTypeException {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
 
         BigDecimal value = NumberUtils.toBigDecimal(data);
 
