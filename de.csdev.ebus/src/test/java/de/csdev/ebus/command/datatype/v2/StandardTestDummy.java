@@ -55,7 +55,7 @@ public class StandardTestDummy {
 			System.out.println("StandardTestDummy.x()" + typeName);
 			IEBusType<Object> type = types.getType(typeName);
 			
-			byte[] bs = new byte[type.getTypeLenght()];
+			byte[] bs = new byte[type.getTypeLength()];
 			
 			
 			Object decode = type.decode(bs);

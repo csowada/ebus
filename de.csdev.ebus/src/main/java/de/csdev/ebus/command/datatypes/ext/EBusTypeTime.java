@@ -49,7 +49,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         if (variant.equals(DEFAULT)) {
             return 3;
         } else if (variant.equals(HEX)) {
@@ -77,9 +77,9 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
         BigDecimal minute = null;
         BigDecimal hour = null;
 
-        if (data.length != getTypeLenght()) {
+        if (data.length != getTypeLength()) {
             throw new EBusTypeException(
-                    String.format("Input byte array must have a length of %d bytes!", getTypeLenght()));
+                    String.format("Input byte array must have a length of %d bytes!", getTypeLength()));
         }
 
         if (StringUtils.equals(variant, SHORT)) {
@@ -126,7 +126,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
         IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = null;
-        byte[] result = new byte[this.getTypeLenght()];
+        byte[] result = new byte[this.getTypeLength()];
 
         if (data instanceof EBusDateTime) {
             calendar = ((EBusDateTime) data).getCalendar();

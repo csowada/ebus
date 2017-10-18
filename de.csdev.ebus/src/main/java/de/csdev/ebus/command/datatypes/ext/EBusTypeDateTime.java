@@ -64,11 +64,11 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         byte[] dateData = null;
 
         if (timeFirst) {
-            timeData = Arrays.copyOf(data, timeType.getTypeLenght());
-            dateData = Arrays.copyOfRange(data, timeData.length, timeData.length + dateType.getTypeLenght());
+            timeData = Arrays.copyOf(data, timeType.getTypeLength());
+            dateData = Arrays.copyOfRange(data, timeData.length, timeData.length + dateType.getTypeLength());
         } else {
-            dateData = Arrays.copyOf(data, dateType.getTypeLenght());
-            timeData = Arrays.copyOfRange(data, dateData.length, dateData.length + timeType.getTypeLenght());
+            dateData = Arrays.copyOf(data, dateType.getTypeLength());
+            timeData = Arrays.copyOfRange(data, dateData.length, dateData.length + timeType.getTypeLength());
         }
 
         EBusDateTime time = (EBusDateTime) timeType.decode(timeData);
@@ -90,7 +90,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         IEBusType<Object> timeType = getTimeType();
 
         Calendar calendar = null;
-        byte[] result = new byte[this.getTypeLenght()];
+        byte[] result = new byte[this.getTypeLength()];
 
         if (data instanceof EBusDateTime) {
             calendar = ((EBusDateTime) data).getCalendar();
@@ -131,11 +131,11 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();
 
-        return dateType.getTypeLenght() + timeType.getTypeLenght();
+        return dateType.getTypeLength() + timeType.getTypeLength();
     }
 
 }

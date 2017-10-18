@@ -80,7 +80,7 @@ public class EBusCommandUtils {
                         complexTypes.put(buf.position(), (IEBusComplexType<?>) type);
 
                         // add placeholder
-                        b = new byte[entry.getType().getTypeLenght()];
+                        b = new byte[entry.getType().getTypeLength()];
 
                     } else if (entry.getDefaultValue() == null) {
                         b = type.encode(null);
@@ -97,7 +97,7 @@ public class EBusCommandUtils {
                 }
                 // buf.p
                 buf.put(b);
-                len += type.getTypeLenght();
+                len += type.getTypeLength();
             }
         }
 
@@ -173,7 +173,7 @@ public class EBusCommandUtils {
 
                 } else {
                     // default encoding
-                    src = new byte[ev.getType().getTypeLenght()];
+                    src = new byte[ev.getType().getTypeLength()];
                     System.arraycopy(data, pos - 1, src, 0, src.length);
                     decode = ev.getType().decode(src);
                 }
@@ -200,7 +200,7 @@ public class EBusCommandUtils {
                     result.put(ev.getName(), decode);
                 }
 
-                pos += ev.getType().getTypeLenght();
+                pos += ev.getType().getTypeLength();
             }
         }
 
@@ -242,11 +242,11 @@ public class EBusCommandUtils {
                 // boolean x = type instanceof EBusTypeBytes;
 
                 if (entry.getName() == null && type instanceof EBusTypeBytes && entry.getDefaultValue() != null) {
-                    for (int i = 0; i < type.getTypeLenght(); i++) {
+                    for (int i = 0; i < type.getTypeLength(); i++) {
                         buf.put((byte) 0xFF);
                     }
                 } else {
-                    for (int i = 0; i < type.getTypeLenght(); i++) {
+                    for (int i = 0; i < type.getTypeLength(); i++) {
                         buf.put((byte) 0x00);
 
                     }

@@ -30,7 +30,7 @@ public class EBusTypeData1c extends EBusTypeUnsignedNumber {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return 1;
     }
 

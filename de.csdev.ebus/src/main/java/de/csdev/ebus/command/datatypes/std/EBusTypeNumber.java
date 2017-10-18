@@ -13,7 +13,7 @@ public abstract class EBusTypeNumber extends EBusAbstractType<BigDecimal> {
 
     @Override
     public byte[] getReplaceValue() {
-        int length = getTypeLenght();
+        int length = getTypeLength();
         if (replaceValue == null || replaceValue.length == 0) {
             replaceValue = new byte[length];
             replaceValue[length - 1] = (byte) 0x80;
@@ -33,7 +33,7 @@ public abstract class EBusTypeNumber extends EBusAbstractType<BigDecimal> {
     public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
         long l = b.longValue();
-        int length = getTypeLenght();
+        int length = getTypeLength();
         byte[] result = new byte[length];
         for (int i = 0; i <= length - 1; i++) {
             result[i] = (byte) (l & 0xFF);

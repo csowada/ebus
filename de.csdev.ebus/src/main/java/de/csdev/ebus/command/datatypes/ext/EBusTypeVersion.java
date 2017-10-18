@@ -31,7 +31,7 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return 2;
     }
 
@@ -62,7 +62,7 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
         BigDecimal value = NumberUtils.toBigDecimal(data);
 
         if (value == null) {
-            return new byte[getTypeLenght()];
+            return new byte[getTypeLength()];
         }
 
         BigDecimal[] values = value.divideAndRemainder(BigDecimal.ONE);

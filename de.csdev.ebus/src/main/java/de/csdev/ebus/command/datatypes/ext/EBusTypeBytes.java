@@ -48,7 +48,7 @@ public class EBusTypeBytes extends EBusAbstractType<byte[]> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return length;
     }
 

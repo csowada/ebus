@@ -36,7 +36,7 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return length * 2;
     }
 
@@ -66,7 +66,7 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
     public byte[] encodeInt(Object data) throws EBusTypeException {
 
         BigDecimal value = NumberUtils.toBigDecimal(data);
-        byte[] result = new byte[getTypeLenght()];
+        byte[] result = new byte[getTypeLength()];
 
         if (value == null) {
             return result;

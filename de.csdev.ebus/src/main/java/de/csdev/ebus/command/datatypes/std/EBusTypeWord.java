@@ -27,7 +27,7 @@ public class EBusTypeWord extends EBusTypeUnsignedNumber {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return 2;
     }
 

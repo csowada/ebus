@@ -28,7 +28,7 @@ public abstract class EBusTypeUnsignedNumber extends EBusAbstractType<BigDecimal
     @Override
     public byte[] getReplaceValue() {
 
-        int length = getTypeLenght();
+        int length = getTypeLength();
         if (replaceValue == null || replaceValue.length == 0) {
             replaceValue = new byte[length];
             Arrays.fill(replaceValue, (byte) 0xFF);
@@ -52,7 +52,7 @@ public abstract class EBusTypeUnsignedNumber extends EBusAbstractType<BigDecimal
         BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
         long l = b.longValue() & Long.MAX_VALUE;
 
-        int length = getTypeLenght();
+        int length = getTypeLength();
         byte[] result = new byte[length];
         for (int i = 0; i <= length - 1; i++) {
             result[i] = (byte) (l & 0xFF);

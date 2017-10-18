@@ -32,7 +32,7 @@ public class EBusTypeBit extends EBusAbstractType<Boolean>  {
 	}
 
 	@Override
-	public int getTypeLenght() {
+	public int getTypeLength() {
 		return 1;
 	}
 

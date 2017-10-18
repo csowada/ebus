@@ -58,9 +58,9 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     @Override
     public T decode(byte[] data) throws EBusTypeException {
 
-        if (data.length != getTypeLenght()) {
+        if (data.length != getTypeLength()) {
             throw new EBusTypeException("Input parameter byte-array has size {0}, expected {1} for eBUS type {2}",
-                    data.length, getTypeLenght(), this.getClass().getSimpleName());
+                    data.length, getTypeLength(), this.getClass().getSimpleName());
         }
 
         // apply the right byte order before processing
@@ -91,9 +91,9 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         // apply the right byte order after processing
         result = applyByteOrder(result);
 
-        if (result.length != getTypeLenght()) {
+        if (result.length != getTypeLength()) {
             throw new EBusTypeException("Result byte-array has size {0}, expected {1} for eBUS type {2}", result.length,
-                    getTypeLenght(), this.getClass().getSimpleName());
+                    getTypeLength(), this.getClass().getSimpleName());
         }
 
         return result;
@@ -149,7 +149,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return 0;
     }
 

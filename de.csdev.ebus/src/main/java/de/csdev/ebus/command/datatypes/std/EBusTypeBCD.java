@@ -24,6 +24,8 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
 
     private static String[] supportedTypes = new String[] { TYPE_BCD };
 
+    private int length = 1;
+
     public EBusTypeBCD() {
         replaceValue = new byte[] { (byte) 0xFF };
     }
@@ -34,8 +36,8 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public int getTypeLenght() {
-        return 1;
+    public int getTypeLength() {
+        return length;
     }
 
     @Override

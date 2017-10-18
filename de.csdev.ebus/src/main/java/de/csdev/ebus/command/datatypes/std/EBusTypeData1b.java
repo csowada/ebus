@@ -26,7 +26,7 @@ public class EBusTypeData1b extends EBusTypeNumber {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return 1;
     }
 

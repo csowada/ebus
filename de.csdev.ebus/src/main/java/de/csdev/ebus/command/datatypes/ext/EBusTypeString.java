@@ -51,7 +51,7 @@ public class EBusTypeString extends EBusAbstractType<String> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return length;
     }
 

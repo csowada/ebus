@@ -63,7 +63,7 @@ public interface IEBusType<T> {
      *
      * @return
      */
-    public int getTypeLenght();
+    public int getTypeLength();
 
     /**
      * Creates a new instance based on the properties. For simple cases the

@@ -27,7 +27,7 @@ public class EBusTypeByte extends EBusTypeUnsignedNumber {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return 1;
     }
 
