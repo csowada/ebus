@@ -43,26 +43,63 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
     @Override
     public BigDecimal decodeInt(byte[] data) {
 
-        byte high = (byte) (data[0] >> 4 & 0x0F);
-        byte low = (byte) (data[0] & 0x0F);
+        BigDecimal result = BigDecimal.valueOf(0);
+
+        for (int i = 0; i < data.length; i++) {
+            Byte convertBcd2Dec = convertBcd2Dec(data[i]);
+
+            if (convertBcd2Dec == null) {
+                return null;
+            }
+
+            result = result.multiply(BigDecimal.valueOf(100));
+            result = result.add(BigDecimal.valueOf(convertBcd2Dec));
+        }
+
+        return result;
+    }
+
+    private Byte convertBcd2Dec(byte bcd) {
+        byte high = (byte) (bcd >> 4 & 0x0F);
+        byte low = (byte) (bcd & 0x0F);
 
         // nibbles out of rang 0-9
         if (high > 9 || low > 9) {
             return null;
         }
 
-        return BigDecimal.valueOf((byte) ((data[0] >> 4 & 0x0F) * 10 + (data[0] & 0x0F)));
+        return (byte) (high * 10 + low);
     }
 
     @Override
     public byte[] encodeInt(Object data) {
+
+        final BigDecimal hundred = BigDecimal.valueOf(100);
+        byte[] result = new byte[getTypeLength()];
+
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        return new byte[] { (byte) (((b.intValue() / 10) << 4) | b.intValue() % 10) };
+
+        for (int i = 0; i < result.length; i++) {
+
+            BigDecimal[] divideAndRemainder = b.divideAndRemainder(hundred);
+
+            // reassign the quotient
+            b = divideAndRemainder[0];
+
+            byte byteValue = divideAndRemainder[1].byteValue();
+            byteValue = (byte) (((byteValue / 10) << 4) | byteValue % 10);
+
+            // put the result into the byte array, revert order
+            result[result.length - (i + 1)] = byteValue;
+        }
+
+        return result;
     }
 
     @Override
     public String toString() {
-        return "EBusTypeBCD [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeBCD [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + ", length=" + length
+                + "]";
     }
 
 }
