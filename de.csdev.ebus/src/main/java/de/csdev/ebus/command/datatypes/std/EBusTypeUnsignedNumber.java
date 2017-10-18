@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import de.csdev.ebus.command.datatypes.EBusAbstractReplaceValueType;
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
@@ -23,12 +23,12 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public abstract class EBusTypeUnsignedNumber extends EBusAbstractReplaceValueType<BigDecimal> {
+public abstract class EBusTypeUnsignedNumber extends EBusAbstractType<BigDecimal> {
 
     @Override
     public byte[] getReplaceValue() {
 
-    	int length = getTypeLenght();
+        int length = getTypeLenght();
         if (replaceValue == null || replaceValue.length == 0) {
             replaceValue = new byte[length];
             Arrays.fill(replaceValue, (byte) 0xFF);

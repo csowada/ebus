@@ -5,15 +5,15 @@ import java.math.BigInteger;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import de.csdev.ebus.command.datatypes.EBusAbstractReplaceValueType;
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.utils.NumberUtils;
 
-public abstract class EBusTypeNumber extends EBusAbstractReplaceValueType<BigDecimal> {
+public abstract class EBusTypeNumber extends EBusAbstractType<BigDecimal> {
 
     @Override
     public byte[] getReplaceValue() {
-    	int length = getTypeLenght();
+        int length = getTypeLenght();
         if (replaceValue == null || replaceValue.length == 0) {
             replaceValue = new byte[length];
             replaceValue[length - 1] = (byte) 0x80;
