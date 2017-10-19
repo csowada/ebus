@@ -29,16 +29,23 @@ public class EBusDevice implements IEBusDevice {
 
     private Byte manufacturer;
 
-    private byte masterAddress;
+    private Byte masterAddress;
 
-    private byte slaveAddress;
+    private Byte slaveAddress;
 
     private BigDecimal softwareVersion;
 
-    public EBusDevice(byte masterAddress, EBusDeviceTable deviceTable) {
-        this.masterAddress = masterAddress;
+    public EBusDevice(Byte address, EBusDeviceTable deviceTable) {
+
         this.deviceTable = deviceTable;
-        this.slaveAddress = EBusUtils.getSlaveAddress(masterAddress);
+
+        if (EBusUtils.isMasterAddress(address)) {
+            this.masterAddress = address;
+            this.slaveAddress = EBusUtils.getSlaveAddress(address);
+        } else {
+            this.slaveAddress = address;
+            this.masterAddress = EBusUtils.getMasterAddress(slaveAddress);
+        }
     }
 
     @Override

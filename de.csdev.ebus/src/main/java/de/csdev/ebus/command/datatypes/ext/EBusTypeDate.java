@@ -9,14 +9,14 @@
 package de.csdev.ebus.command.datatypes.ext;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
@@ -27,11 +27,11 @@ import de.csdev.ebus.utils.EBusDateTime;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
+public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
 
-    public static String DATE = "date";
+    public static String TYPE_DATE = "date";
 
-    public static String STD = "std"; // BDA - 4
+    public static String DEFAULT = "std"; // BDA - 4
 
     public static String SHORT = "short"; // BDA:3 - 3
 
@@ -41,19 +41,18 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
 
     public static String DAYS = "days"; // DAY - 2
 
-    private static String[] supportedTypes = new String[] { DATE };
+    private static String[] supportedTypes = new String[] { TYPE_DATE };
 
-    private String variant = STD;
+    private String variant = DEFAULT;
 
     @Override
     public String[] getSupportedTypes() {
-
         return supportedTypes;
     }
 
     @Override
-    public int getTypeLenght() {
-        if (variant.equals(STD)) {
+    public int getTypeLength() {
+        if (variant.equals(DEFAULT)) {
             return 4;
         } else if (variant.equals(HEX)) {
             return 4;
@@ -68,16 +67,16 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
     }
 
     @Override
-    public EBusDateTime decode(byte[] data) throws EBusTypeException {
+    public EBusDateTime decodeInt(byte[] data) throws EBusTypeException {
 
         if (data == null) {
             // TODO replace value
             return null;
         }
 
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
-        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.WORD);
-        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.CHAR);
+        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
+        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
+        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = new GregorianCalendar();
 
@@ -85,9 +84,9 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
         BigDecimal month = null;
         BigDecimal year = null;
 
-        if (data.length != getTypeLenght()) {
+        if (data.length != getTypeLength()) {
             throw new EBusTypeException(
-                    String.format("Input byte array must have a length of %d bytes!", getTypeLenght()));
+                    String.format("Input byte array must have a length of %d bytes!", getTypeLength()));
         }
 
         if (StringUtils.equals(variant, SHORT)) {
@@ -95,7 +94,7 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
             month = bcdType.decode(new byte[] { data[1] });
             year = bcdType.decode(new byte[] { data[2] });
 
-        } else if (StringUtils.equals(variant, STD)) {
+        } else if (StringUtils.equals(variant, DEFAULT)) {
             day = bcdType.decode(new byte[] { data[0] });
             month = bcdType.decode(new byte[] { data[1] });
             year = bcdType.decode(new byte[] { data[3] });
@@ -116,12 +115,15 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
             calendar.add(Calendar.DAY_OF_YEAR, daysSince1900.intValue());
         }
 
-        if (day != null) {
-            calendar.set(Calendar.DAY_OF_MONTH, day.intValue());
+        if (day != null && month != null && year != null) {
+            if (day.intValue() < 1 || day.intValue() > 31) {
+                throw new EBusTypeException("A valid day must be in a range between 1-31 !");
+            }
+            if (month.intValue() < 1 || month.intValue() > 12) {
+                throw new EBusTypeException("A valid day must be in a range between 1-12 !");
+            }
         }
-        if (month != null) {
-            calendar.set(Calendar.MONTH, month.intValue() - 1);
-        }
+
         if (year != null) {
             if (year.intValue() < 70) {
                 year = year.add(new BigDecimal(2000));
@@ -131,19 +133,26 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
             calendar.set(Calendar.YEAR, year.intValue());
         }
 
+        if (month != null) {
+            calendar.set(Calendar.MONTH, month.intValue() - 1);
+        }
+
+        if (day != null && day.intValue() > 0 && day.intValue() < 32) {
+            calendar.set(Calendar.DAY_OF_MONTH, day.intValue());
+        }
+
         return new EBusDateTime(calendar, false, true);
     }
 
-    @SuppressWarnings("null")
     @Override
-    public byte[] encode(Object data) throws EBusTypeException {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
 
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
-        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.WORD);
-        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.CHAR);
+        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
+        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
+        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = null;
-        byte[] result = new byte[this.getTypeLenght()];
+        byte[] result = new byte[this.getTypeLength()];
 
         if (data instanceof EBusDateTime) {
             calendar = ((EBusDateTime) data).getCalendar();
@@ -160,7 +169,7 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
         calendar.set(Calendar.MILLISECOND, 0);
 
         if (calendar != null) {
-            if (StringUtils.equals(variant, STD)) {
+            if (StringUtils.equals(variant, DEFAULT)) {
 
                 int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
                 dayOfWeek = dayOfWeek == 1 ? 7 : dayOfWeek - 1;
@@ -199,7 +208,7 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
                 long millis1900 = calendar.getTimeInMillis();
 
                 BigDecimal days = new BigDecimal(millis - millis1900);
-                days = days.divide(BigDecimal.valueOf(86400000));
+                days = days.divide(BigDecimal.valueOf(86400000), 0, RoundingMode.HALF_UP);
 
                 result = wordType.encode(days);
             }
@@ -209,21 +218,8 @@ public class EBusTypeDate extends EBusTypeGeneric<EBusDateTime> {
     }
 
     @Override
-    public IEBusType<EBusDateTime> getInstance(Map<String, Object> properties) {
-
-        if (properties.containsKey(IEBusType.TYPE)) {
-            EBusTypeDate type = new EBusTypeDate();
-            type.variant = (String) properties.get(IEBusType.TYPE);
-            type.types = this.types;
-            return type;
-        }
-
-        return this;
-    }
-
-    @Override
     public String toString() {
-        return "EBusTypeDateTime [variant=" + variant + "]";
+        return "EBusTypeDate [variant=" + variant + "]";
     }
 
 }

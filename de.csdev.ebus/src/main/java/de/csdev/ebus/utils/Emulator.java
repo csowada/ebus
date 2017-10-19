@@ -8,19 +8,15 @@
  */
 package de.csdev.ebus.utils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,18 +29,49 @@ import org.slf4j.LoggerFactory;
  */
 public class Emulator {
 
-    private static final Logger logger = LoggerFactory.getLogger(Emulator.class);
+    private final Logger logger = LoggerFactory.getLogger(Emulator.class);
 
     private PipedInputStream in;
+
     private PipedOutputStream out;
 
     private ExecutorService pipeThreadExecutor;
-    private ExecutorService playThreadExecutor;
+
+    private ScheduledExecutorService playThreadExecutor;
+
+    private Future<?> autoSyncFuture = null;
+
+    private int factor = 10;
+
+    private void stopAutoSync() {
+        if (autoSyncFuture != null) {
+            autoSyncFuture.cancel(true);
+            autoSyncFuture = null;
+        }
+    }
+
+    private void startAutoSync() {
+        autoSyncFuture = playThreadExecutor.schedule(new Runnable() {
+
+            @Override
+            public void run() {
+                write((byte) 0xAA);
+            }
+
+        }, 40 * factor, TimeUnit.MILLISECONDS);
+    }
 
     public Emulator() {
+        this(1);
+    }
 
+    public Emulator(int factor) {
+
+        this.factor = factor;
         pipeThreadExecutor = Executors.newSingleThreadExecutor();
-        playThreadExecutor = Executors.newSingleThreadExecutor();
+        playThreadExecutor = Executors.newScheduledThreadPool(1);
+
+        startAutoSync();
 
         try {
             in = new PipedInputStream();
@@ -58,28 +85,24 @@ public class Emulator {
         return in;
     }
 
-    /**
-     * Blocking write
-     *
-     * @param byteArray
-     */
-    public void write(final byte[] byteArray) {
+    public void write(final byte b) {
 
-        Future<?> submit = pipeThreadExecutor.submit(new Runnable() {
+        pipeThreadExecutor.submit(new Runnable() {
 
+        	@Override
             public void run() {
                 try {
                     synchronized (out) {
 
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("Emulator WRITE: {}", EBusUtils.toHexDumpString(byteArray).toString());
-                        }
+                        stopAutoSync();
 
-                        out.write(byteArray);
+                        out.write(b);
                         out.flush();
 
                         // delay for 2400baud
-                        Thread.sleep(4);
+                        Thread.sleep(4 * factor);
+
+                        startAutoSync();
                     }
 
                 } catch (IOException e) {
@@ -89,79 +112,24 @@ public class Emulator {
                 }
             }
         });
-
-        try {
-            // block here !!!
-            submit.get(30, TimeUnit.SECONDS);
-
-        } catch (InterruptedException e) {
-            logger.error("error!", e);
-        } catch (ExecutionException e) {
-            logger.error("error!", e);
-        } catch (TimeoutException e) {
-            logger.error("error!", e);
-        }
     }
 
-    public void play(final InputStream inputStream) {
-        this.play(inputStream, 1f);
-    }
+    /**
+     * Blocking write
+     *
+     * @param byteArray
+     */
+    public void write(final byte[] byteArray) {
 
-    public void play(final InputStream inputStream, final double replaySpeed) {
-        playThreadExecutor.execute(new Runnable() {
+        pipeThreadExecutor.submit(new Runnable() {
 
+            @Override
             public void run() {
-                // long lastTime = 0;
-                LineNumberReader reader = null;
-                String line = "";
 
-                try {
-                    reader = new LineNumberReader(new InputStreamReader(inputStream));
-
-                    while (line != null) {
-
-                        line = reader.readLine();
-
-                        if (line != null) {
-
-                            int timeSepPos = line.indexOf(" - ");
-                            long time = Long.parseLong(line.substring(0, timeSepPos));
-                            byte[] byteArray = EBusUtils.toByteArray(line.substring(timeSepPos + 2));
-
-                            // long sleepTime = (long) (replaySpeed * (time - lastTime));
-                            long sleepTime = (long) (replaySpeed * time);
-                            // lastTime = time;
-
-                            if (sleepTime > 0) {
-                                logger.debug("Sleep for " + sleepTime + " ms ...");
-                                Thread.sleep(sleepTime);
-                            }
-
-                            Emulator.this.write(byteArray);
-                        }
-                    }
-
-                } catch (InterruptedException e) {
-                    logger.error("error!", e);
-
-                } catch (FileNotFoundException e) {
-                    logger.error("error!", e);
-
-                } catch (IOException e) {
-                    logger.error("error!", e);
-
-                } finally {
-
-                    try {
-
-                        if (reader != null) {
-                            reader.close();
-                        }
-
-                    } catch (IOException e) {
-                        logger.error("error!", e);
-                    }
+                for (byte b : byteArray) {
+                    write(b);
                 }
+
             }
         });
     }

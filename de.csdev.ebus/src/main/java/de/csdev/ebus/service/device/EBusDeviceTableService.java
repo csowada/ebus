@@ -141,7 +141,7 @@ public class EBusDeviceTableService
     @Override
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
-        deviceTable.updateDevice(receivedData[0], null);
+        deviceTable.updateDevice(receivedData[1], null);
 
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
             logger.warn("Scan broadcast has been send out!");
@@ -174,22 +174,16 @@ public class EBusDeviceTableService
             Integer sendQueueId) {
 
         String id = commandChannel.getParent().getId();
-        Byte masterAddress = null;
-
-        if (EBusUtils.isMasterAddress(receivedData[1])) {
-            masterAddress = receivedData[1];
-        } else {
-            masterAddress = EBusUtils.getMasterAddress(receivedData[1]);
-        }
+        Byte slaveAddress = receivedData[1];
 
         if (id.equals(EBusConsts.COMMAND_SIGN_OF_LIFE)) {
-            deviceTable.updateDevice(masterAddress, null);
+            deviceTable.updateDevice(slaveAddress, null);
 
         } else if (id.equals(EBusConsts.COMMAND_INQ_EXISTENCE)) {
             sendSignOfLife();
 
         } else if (id.equals(EBusConsts.COMMAND_IDENTIFICATION)) {
-            deviceTable.updateDevice(masterAddress, result);
+            deviceTable.updateDevice(slaveAddress, result);
         }
     }
 
@@ -216,6 +210,11 @@ public class EBusDeviceTableService
 
     @Override
     public void onConnectionException(Exception e) {
+        // noop
+    }
+
+    @Override
+    public void onTelegramResolveFailed(byte[] receivedData, Integer sendQueueId) {
         // noop
     }
 }

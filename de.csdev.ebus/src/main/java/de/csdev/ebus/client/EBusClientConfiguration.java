@@ -32,15 +32,15 @@ import de.csdev.ebus.core.EBusController;
  */
 public class EBusClientConfiguration {
 
-    private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
-
-    protected IEBusConfigurationReader reader;
-
-    protected EBusTypeRegistry dataTypes;
-
     protected ArrayList<IEBusCommandCollection> collections;
 
     protected EBusCommandRegistry configurationProvider;
+
+    protected EBusTypeRegistry dataTypes;
+
+    private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
+
+    protected IEBusConfigurationReader reader;
 
     /**
      * Default constructor
@@ -74,6 +74,29 @@ public class EBusClientConfiguration {
     }
 
     /**
+     * @param collectionId
+     * @return
+     */
+    public IEBusCommandCollection getCollection(String collectionId) {
+        for (IEBusCommandCollection collection : collections) {
+            if (StringUtils.equals(collection.getId(), collectionId)) {
+                return collection;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns all loaded collections
+     *
+     * @return
+     */
+    public List<IEBusCommandCollection> getCollections() {
+        return collections;
+    }
+
+    /**
      * Returns the list of all available internal configuration files
      *
      * @return
@@ -82,32 +105,6 @@ public class EBusClientConfiguration {
         return Arrays.asList("common-configuration.json", "wolf-cgb2-configuration.json", "wolf-sm1-configuration.json",
                 "wolf-bm2-configuration.json", "wolf-mm-configuration.json", "vaillant-bai00-configuration.json",
                 "vaillant-vrc-configuration.json", "vaillant-vr81-configuration.json");
-    }
-
-    /**
-     * Load a internal configuration file.
-     *
-     * @param configurationFile
-     */
-    public void loadInternalConfiguration(String configurationFile) {
-        logger.info("Load internal configuration {}", configurationFile);
-        String configPath = "/commands/" + configurationFile;
-
-        InputStream inputStream = EBusController.class.getResourceAsStream(configPath);
-        if (inputStream == null) {
-            throw new RuntimeException(String.format("Unable to load internal configuration \"%s\" ...", configPath));
-        }
-
-        loadConfiguration(inputStream);
-    }
-
-    /**
-     * Load all internal configuration files.
-     */
-    public void loadInternalConfigurations() {
-        for (String configurationFile : getInternalConfigurationFiles()) {
-            loadInternalConfiguration(configurationFile);
-        }
     }
 
     /**
@@ -134,22 +131,29 @@ public class EBusClientConfiguration {
     }
 
     /**
-     * Returns all loaded collections
+     * Load a internal configuration file.
      *
-     * @return
+     * @param configurationFile
      */
-    public List<IEBusCommandCollection> getCollections() {
-        return collections;
-    }
+    public void loadInternalConfiguration(String configurationFile) {
+        logger.info("Load internal configuration {}", configurationFile);
+        String configPath = "/commands/" + configurationFile;
 
-    public IEBusCommandCollection getCollection(String collectionId) {
-        for (IEBusCommandCollection collection : collections) {
-            if (StringUtils.equals(collection.getId(), collectionId)) {
-                return collection;
-            }
+        InputStream inputStream = EBusController.class.getResourceAsStream(configPath);
+        if (inputStream == null) {
+            throw new RuntimeException(String.format("Unable to load internal configuration \"%s\" ...", configPath));
         }
 
-        return null;
+        loadConfiguration(inputStream);
+    }
+
+    /**
+     * Load all internal configuration files.
+     */
+    public void loadInternalConfigurations() {
+        for (String configurationFile : getInternalConfigurationFiles()) {
+            loadInternalConfiguration(configurationFile);
+        }
     }
 
 }

@@ -12,7 +12,7 @@ package de.csdev.ebus.command.datatypes;
  * @author Christian Sowada - Initial contribution
  *
  */
-public interface IEBusComplexType {
+public interface IEBusComplexType<T> {
 
     /**
      * Allows to decode complex values with the complete telegram
@@ -22,7 +22,7 @@ public interface IEBusComplexType {
      * @return
      * @throws EBusTypeException
      */
-    public <T> T decodeComplex(byte[] rawData, int pos) throws EBusTypeException;
+    public T decodeComplex(byte[] rawData, int pos) throws EBusTypeException;
 
     /**
      * ???

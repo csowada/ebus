@@ -10,7 +10,7 @@ package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
 
-import de.csdev.ebus.command.datatypes.EBusTypeGenericReplaceValue;
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -18,34 +18,75 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeBCD extends EBusTypeGenericReplaceValue {
+public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
 
-    public static String BCD = "bcd";
+    public static String TYPE_BCD = "bcd";
 
-    private static String[] supportedTypes = new String[] { BCD };
+    private static String[] supportedTypes = new String[] { TYPE_BCD };
 
-    public String[] getSupportedTypes() {
-        return supportedTypes;
-    }
+    private int length = 1;
 
     public EBusTypeBCD() {
         replaceValue = new byte[] { (byte) 0xFF };
     }
 
     @Override
+    public String[] getSupportedTypes() {
+        return supportedTypes;
+    }
+
+    @Override
+    public int getTypeLength() {
+        return length;
+    }
+
+    @Override
     public BigDecimal decodeInt(byte[] data) {
-        return BigDecimal.valueOf((byte) ((data[0] >> 4) * 10 + (data[0] & (byte) 0x0F)));
+
+        BigDecimal result = BigDecimal.valueOf(0);
+
+        for (int i = 0; i < data.length; i++) {
+            Byte convertBcd2Dec = NumberUtils.convertBcd2Dec(data[i]);
+
+            if (convertBcd2Dec == null) {
+                return null;
+            }
+
+            result = result.multiply(BigDecimal.valueOf(100));
+            result = result.add(BigDecimal.valueOf(convertBcd2Dec));
+        }
+
+        return result;
     }
 
     @Override
     public byte[] encodeInt(Object data) {
+
+        final BigDecimal hundred = BigDecimal.valueOf(100);
+        byte[] result = new byte[getTypeLength()];
+
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        return new byte[] { (byte) (((b.intValue() / 10) << 4) | b.intValue() % 10) };
+
+        for (int i = 0; i < result.length; i++) {
+
+            BigDecimal[] divideAndRemainder = b.divideAndRemainder(hundred);
+
+            // reassign the quotient
+            b = divideAndRemainder[0];
+
+            Byte bcd = NumberUtils.convertDec2Bcd(divideAndRemainder[1].byteValue());
+
+            // put the result into the byte array, revert order
+            result[result.length - (i + 1)] = bcd;
+        }
+
+        return result;
     }
 
     @Override
     public String toString() {
-        return "EBusTypeBCD [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeBCD [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + ", length="
+                + length + "]";
     }
 
 }

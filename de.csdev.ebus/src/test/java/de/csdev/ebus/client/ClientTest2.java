@@ -72,6 +72,11 @@ public class ClientTest2 {
                 logger.error("ClientTest.xxx().new EBusParserListener() {...}.onTelegramResolved()");
                 System.out.println(result);
             }
+
+            @Override
+            public void onTelegramResolveFailed(byte[] receivedData, Integer sendQueueId) {
+                // noop
+            }
         });
 
         controller.start();

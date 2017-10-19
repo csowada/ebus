@@ -10,14 +10,14 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.util.Map;
 
-import de.csdev.ebus.command.datatypes.EBusTypeGeneric;
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.IEBusType;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeBytes extends EBusTypeGeneric<byte[]> {
+public class EBusTypeBytes extends EBusAbstractType<byte[]> {
 
     public static String BYTES = "bytes";
 
@@ -31,12 +31,12 @@ public class EBusTypeBytes extends EBusTypeGeneric<byte[]> {
     }
 
     @Override
-    public byte[] decode(byte[] data) {
+    public byte[] decodeInt(byte[] data) {
         return data;
     }
 
     @Override
-    public byte[] encode(Object data) {
+    public byte[] encodeInt(Object data) {
 
         byte[] b = new byte[length];
 
@@ -48,7 +48,7 @@ public class EBusTypeBytes extends EBusTypeGeneric<byte[]> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return length;
     }
 

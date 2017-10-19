@@ -18,9 +18,11 @@ public interface IEBusType<T> {
 
     public static final String LENGTH = "length";
 
-    public static final String TYPE = "type";
+    // public static final String TYPE = "type";
 
     public static final String FACTOR = "factor";
+
+    public static final String VARIANT = "variant";
 
     public static final String REVERSED_BYTE_ORDER = "reverseByteOrder";
 
@@ -61,7 +63,7 @@ public interface IEBusType<T> {
      *
      * @return
      */
-    public int getTypeLenght();
+    public int getTypeLength();
 
     /**
      * Creates a new instance based on the properties. For simple cases the

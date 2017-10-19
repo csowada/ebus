@@ -8,156 +8,89 @@
  */
 package de.csdev.ebus.command.datatypes.ext;
 
-import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.command.datatypes.IEBusType;
-import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.utils.EBusDateTime;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
+public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
-    public static String DATETIME = "datetime";
+    private static final Logger logger = LoggerFactory.getLogger(EBusTypeDateTime.class);
 
-    public static String DATE = "date"; // BDA - 4
+    public static String TYPE_DATETIME = "datetime";
 
-    public static String TIME = "time"; // BTI - 3
+    private static String[] supportedTypes = new String[] { TYPE_DATETIME };
 
-    public static String DATE_TIME = "datetime"; // BTI BDA - 7
+    public static String TIME_FIRST = "timeFirst";
 
-    public static String DATE_SHORT = "date_short"; // BDA:3 -3
+    public static String VARIANT_DATE = "variantDate";
 
-    public static String TIME_SHORT = "time_short"; // BTM -2
+    public static String VARIANT_TIME = "variantTime";
 
-    private static String[] supportedTypes = new String[] { DATETIME };
+    private boolean timeFirst = true;
 
-    private String variant = DATE_TIME;
+    private String variantDate = EBusTypeDate.DEFAULT;
+
+    private String variantTime = EBusTypeTime.DEFAULT;
 
     @Override
-    public String[] getSupportedTypes() {
-
-        return supportedTypes;
+    protected byte[] applyByteOrder(byte[] data) {
+        if (reverseByteOrder) {
+            logger.warn("Parameter 'reverseByteOrder' not supported for EBusTypeDateTime yet!");
+        }
+        return ArrayUtils.clone(data);
     }
 
     @Override
-    public int getTypeLenght() {
-        if (variant.equals(DATETIME)) {
-            return 7;
-        } else if (variant.equals(DATE)) {
-            return 4;
-        } else if (variant.equals(DATE_SHORT)) {
-            return 4;
-        } else if (variant.equals(TIME)) {
-            return 3;
-        } else if (variant.equals(TIME_SHORT)) {
-            return 2;
+    public EBusDateTime decodeInt(byte[] data) throws EBusTypeException {
+
+        IEBusType<Object> dateType = getDateType();
+        IEBusType<Object> timeType = getTimeType();
+
+        byte[] timeData = null;
+        byte[] dateData = null;
+
+        if (timeFirst) {
+            timeData = Arrays.copyOf(data, timeType.getTypeLength());
+            dateData = Arrays.copyOfRange(data, timeData.length, timeData.length + dateType.getTypeLength());
+        } else {
+            dateData = Arrays.copyOf(data, dateType.getTypeLength());
+            timeData = Arrays.copyOfRange(data, dateData.length, dateData.length + timeType.getTypeLength());
         }
-        return 0;
+
+        EBusDateTime time = (EBusDateTime) timeType.decode(timeData);
+        EBusDateTime date = (EBusDateTime) dateType.decode(dateData);
+
+        Calendar calendar = date.getCalendar();
+
+        calendar.set(Calendar.HOUR_OF_DAY, time.getCalendar().get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, time.getCalendar().get(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, time.getCalendar().get(Calendar.SECOND));
+
+        return new EBusDateTime(calendar, false, false);
     }
 
     @Override
-    public EBusDateTime decode(byte[] data) throws EBusTypeException {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
 
-        if (data == null) {
-            // TODO replace value
-            return null;
-        }
+        IEBusType<Object> dateType = getDateType();
+        IEBusType<Object> timeType = getTimeType();
 
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
-        Calendar calendar = new GregorianCalendar();
-
-        BigDecimal sec = null;
-        BigDecimal min = null;
-        BigDecimal hr = null;
-
-        BigDecimal day = null;
-        BigDecimal month = null;
-        BigDecimal year = null;
-
-        boolean anyDate = false;
-        boolean anyTime = false;
-
-        if (data.length != getTypeLenght()) {
-            throw new EBusTypeException(
-                    String.format("Input byte array must have a length of %d bytes!", getTypeLenght()));
-        }
-
-        if (StringUtils.equals(variant, DATE_TIME)) {
-            sec = bcdType.decode(new byte[] { data[0] });
-            min = bcdType.decode(new byte[] { data[1] });
-            hr = bcdType.decode(new byte[] { data[2] });
-            day = bcdType.decode(new byte[] { data[3] });
-            month = bcdType.decode(new byte[] { data[4] });
-            year = bcdType.decode(new byte[] { data[6] });
-
-        } else if (StringUtils.equals(variant, DATE_SHORT)) {
-            day = bcdType.decode(new byte[] { data[0] });
-            month = bcdType.decode(new byte[] { data[1] });
-            year = bcdType.decode(new byte[] { data[2] });
-            anyTime = true;
-
-        } else if (StringUtils.equals(variant, DATE)) {
-            day = bcdType.decode(new byte[] { data[0] });
-            month = bcdType.decode(new byte[] { data[1] });
-            year = bcdType.decode(new byte[] { data[3] });
-            anyTime = true;
-
-        } else if (StringUtils.equals(variant, TIME)) {
-            sec = bcdType.decode(new byte[] { data[0] });
-            min = bcdType.decode(new byte[] { data[1] });
-            hr = bcdType.decode(new byte[] { data[2] });
-            anyDate = true;
-
-        } else if (StringUtils.equals(variant, TIME_SHORT)) {
-            min = bcdType.decode(new byte[] { data[0] });
-            hr = bcdType.decode(new byte[] { data[1] });
-            anyDate = true;
-        }
-
-        if (hr != null) {
-            calendar.set(Calendar.HOUR_OF_DAY, hr.intValue());
-        }
-        if (min != null) {
-            calendar.set(Calendar.MINUTE, min.intValue());
-        }
-        if (sec != null) {
-            calendar.set(Calendar.SECOND, sec.intValue());
-        }
-
-        if (day != null) {
-            calendar.set(Calendar.DAY_OF_MONTH, day.intValue());
-        }
-        if (month != null) {
-            calendar.set(Calendar.MONTH, month.intValue() - 1);
-        }
-        if (year != null) {
-            if (year.intValue() < 70) {
-                year = year.add(new BigDecimal(2000));
-            } else {
-                year = year.add(new BigDecimal(1900));
-            }
-            calendar.set(Calendar.YEAR, year.intValue());
-        }
-
-        return new EBusDateTime(calendar, anyDate, anyTime);
-    }
-
-    @Override
-    public byte[] encode(Object data) throws EBusTypeException {
-
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.BCD);
         Calendar calendar = null;
-        byte[] result = new byte[this.getTypeLenght()];
+        byte[] result = new byte[this.getTypeLength()];
 
         if (data instanceof EBusDateTime) {
             calendar = ((EBusDateTime) data).getCalendar();
@@ -166,64 +99,50 @@ public class EBusTypeDateTime extends EBusTypeGeneric<EBusDateTime> {
             calendar = (Calendar) data;
         }
 
-        if (calendar != null) {
-            if (StringUtils.equals(variant, DATE_TIME)) {
+        byte[] timeData = timeType.encode(calendar);
+        byte[] dateData = dateType.encode(calendar);
 
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                dayOfWeek = dayOfWeek == 1 ? 7 : dayOfWeek - 1;
-
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.SECOND))[0],
-                        bcdType.encode(calendar.get(Calendar.MINUTE))[0],
-                        bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0],
-                        bcdType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
-                        bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0], bcdType.encode(dayOfWeek)[0],
-                        bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
-
-            } else if (StringUtils.equals(variant, DATE)) {
-
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                dayOfWeek = dayOfWeek == 1 ? 7 : dayOfWeek - 1;
-
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
-                        bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0], bcdType.encode(dayOfWeek)[0],
-                        bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
-
-            } else if (StringUtils.equals(variant, DATE_SHORT)) {
-
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
-                        bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0],
-                        bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
-
-            } else if (StringUtils.equals(variant, TIME)) {
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.SECOND))[0],
-                        bcdType.encode(calendar.get(Calendar.MINUTE))[0],
-                        bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
-
-            } else if (StringUtils.equals(variant, TIME_SHORT)) {
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.MINUTE))[0],
-                        bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
-            }
+        if (timeFirst) {
+            System.arraycopy(timeData, 0, result, 0, timeData.length);
+            System.arraycopy(dateData, 0, result, timeData.length, dateData.length);
+        } else {
+            System.arraycopy(dateData, 0, result, 0, dateData.length);
+            System.arraycopy(timeData, 0, result, dateData.length, timeData.length);
         }
 
         return result;
     }
 
+    private IEBusType<Object> getDateType() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(IEBusType.VARIANT, variantDate);
+        return types.getType(EBusTypeDate.TYPE_DATE, properties);
+    }
+
     @Override
-    public IEBusType<EBusDateTime> getInstance(Map<String, Object> properties) {
+    public String[] getSupportedTypes() {
+        return supportedTypes;
+    }
 
-        if (properties.containsKey(IEBusType.TYPE)) {
-            EBusTypeDateTime type = new EBusTypeDateTime();
-            type.variant = (String) properties.get(IEBusType.TYPE);
-            type.types = this.types;
-            return type;
-        }
+    private IEBusType<Object> getTimeType() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(IEBusType.VARIANT, variantTime);
+        return types.getType(EBusTypeTime.TYPE_TIME, properties);
+    }
 
-        return this;
+    @Override
+    public int getTypeLength() {
+        IEBusType<Object> dateType = getDateType();
+        IEBusType<Object> timeType = getTimeType();
+
+        return dateType.getTypeLength() + timeType.getTypeLength();
     }
 
     @Override
     public String toString() {
-        return "EBusTypeDateTime [variant=" + variant + "]";
+        return "EBusTypeDateTime [timeFirst=" + timeFirst + ", "
+                + (variantDate != null ? "variantDate=" + variantDate + ", " : "")
+                + (variantTime != null ? "variantTime=" + variantTime : "") + "]";
     }
 
 }

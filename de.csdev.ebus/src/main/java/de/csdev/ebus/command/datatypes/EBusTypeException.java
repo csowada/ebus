@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.command.datatypes;
 
+import java.text.MessageFormat;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -26,6 +28,10 @@ public class EBusTypeException extends Exception {
 
     public EBusTypeException(String message) {
         super(message);
+    }
+
+    public EBusTypeException(String message, Object... args) {
+        super(MessageFormat.format(message, args));
     }
 
     public EBusTypeException(Throwable cause) {

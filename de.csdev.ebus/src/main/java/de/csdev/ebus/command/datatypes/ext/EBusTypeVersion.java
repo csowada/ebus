@@ -10,8 +10,8 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.math.BigDecimal;
 
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGeneric;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -19,11 +19,15 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
+public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
-    public static String VERSION = "version";
+    public static String TYPE_VERSION = "version";
 
-    private static String[] supportedTypes = new String[] { VERSION };
+    private static String[] supportedTypes = new String[] { TYPE_VERSION };
+
+    // public EBusTypeVersion() {
+    // replaceValue = new byte[] { (byte) 0xFF, (byte) 0xFF };
+    // }
 
     @Override
     public String[] getSupportedTypes() {
@@ -31,22 +35,22 @@ public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return 2;
     }
 
     @Override
-    public BigDecimal decode(byte[] data) throws EBusTypeException {
+    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
 
-        if (data[0] == 0 && data[1] == 0) {
-            return null;
-        }
+        // if (data[0] == 0 && data[1] == 0) {
+        // return null;
+        // }
 
         byte[] verData = new byte[] { data[0] };
         byte[] revData = new byte[] { data[1] };
 
-        BigDecimal ver = types.decode(EBusTypeBCD.BCD, verData);
-        BigDecimal rev = types.decode(EBusTypeBCD.BCD, revData);
+        BigDecimal ver = types.decode(EBusTypeBCD.TYPE_BCD, verData);
+        BigDecimal rev = types.decode(EBusTypeBCD.TYPE_BCD, revData);
 
         if (ver != null && rev != null) {
             BigDecimal fraction = rev.divide(BigDecimal.valueOf(100));
@@ -57,19 +61,19 @@ public class EBusTypeVersion extends EBusTypeGeneric<BigDecimal> {
     }
 
     @Override
-    public byte[] encode(Object data) throws EBusTypeException {
+    public byte[] encodeInt(Object data) throws EBusTypeException {
 
         BigDecimal value = NumberUtils.toBigDecimal(data);
 
         if (value == null) {
-            return new byte[getTypeLenght()];
+            return new byte[getTypeLength()];
         }
 
         BigDecimal[] values = value.divideAndRemainder(BigDecimal.ONE);
         values[1] = values[1].multiply(BigDecimal.valueOf(100));
 
-        byte[] encode1 = types.encode(EBusTypeBCD.BCD, values[0]);
-        byte[] encode2 = types.encode(EBusTypeBCD.BCD, values[1]);
+        byte[] encode1 = types.encode(EBusTypeBCD.TYPE_BCD, values[0]);
+        byte[] encode2 = types.encode(EBusTypeBCD.TYPE_BCD, values[1]);
 
         return new byte[] { encode1[0], encode2[0] };
     }

@@ -7,10 +7,12 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.gson,
  com.google.gson.annotations,
  com.google.gson.reflect,
+ de.csdev.ebus.command.datatypes,
  gnu.io,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.lang.builder,
+ org.apache.commons.lang.reflect,
  org.slf4j
 Bundle-ActivationPolicy: lazy
 Export-Package: de.csdev.ebus,

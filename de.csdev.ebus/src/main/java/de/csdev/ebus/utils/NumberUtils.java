@@ -51,4 +51,33 @@ public class NumberUtils {
         return null;
     }
 
+    /**
+     * @param data
+     * @return
+     */
+    public static Byte convertDec2Bcd(int data) {
+
+        if (data > 99) {
+            return null;
+        }
+
+        return (byte) (((data / 10) << 4) | data % 10);
+    }
+
+    /**
+     * @param bcd
+     * @return
+     */
+    public static Byte convertBcd2Dec(byte bcd) {
+        byte high = (byte) (bcd >> 4 & 0x0F);
+        byte low = (byte) (bcd & 0x0F);
+
+        // nibbles out of rang 0-9
+        if (high > 9 || low > 9) {
+            return null;
+        }
+
+        return (byte) (high * 10 + low);
+    }
+
 }

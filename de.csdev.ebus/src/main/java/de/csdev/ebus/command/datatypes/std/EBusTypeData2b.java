@@ -11,7 +11,6 @@ package de.csdev.ebus.command.datatypes.std;
 import java.math.BigDecimal;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGenericReplaceValue;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -19,16 +18,11 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeData2b extends EBusTypeGenericReplaceValue {
+public class EBusTypeData2b extends EBusTypeNumber {
 
-    public static String DATA2B = "data2b";
+    public static String TYPE_DATA2B = "data2b";
 
-    private static String[] supportedTypes = new String[] { DATA2B };
-
-    public EBusTypeData2b() {
-        replaceValue = new byte[] { (byte) 0x00, (byte) 0x80 };
-        applyByteOrder(replaceValue);
-    }
+    private static String[] supportedTypes = new String[] { TYPE_DATA2B };
 
     @Override
     public String[] getSupportedTypes() {
@@ -36,36 +30,25 @@ public class EBusTypeData2b extends EBusTypeGenericReplaceValue {
     }
 
     @Override
-    public int getTypeLenght() {
+    public int getTypeLength() {
         return 2;
     }
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-
-        applyByteOrder(data);
-
-        BigDecimal intValue = types.decode(EBusTypeInteger.INTEGER, data);
-        if (intValue == null) {
-            return null;
-        }
-        return intValue.divide(BigDecimal.valueOf(256));
+        BigDecimal decodeInt = super.decodeInt(data);
+        return decodeInt.divide(BigDecimal.valueOf(256));
     }
 
     @Override
     public byte[] encodeInt(Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        b = b.multiply(BigDecimal.valueOf(256));
-
-        byte[] result = types.encode(EBusTypeInteger.INTEGER, b);
-        applyByteOrder(result);
-
-        return result;
+        return super.encodeInt(b.multiply(BigDecimal.valueOf(256)));
     }
 
     @Override
     public String toString() {
-        return "EBusTypeData2b [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeData2b [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }

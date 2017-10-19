@@ -60,6 +60,26 @@ public class EBusUtils {
             (byte) 0xD6, (byte) 0xE0, (byte) 0x7B };
 
     /**
+     * Left pad byte array to a byte array with given size.
+     *
+     * @param source Source array
+     * @param size The final byte array size
+     * @return The new byte arrray or <code>null</code> if the source array is to large
+     */
+    public static byte[] leftPadByteArray(byte[] source, int size) {
+        byte[] bs = new byte[size];
+
+        if (size < source.length) {
+            return null;
+        }
+
+        int startPos = size - source.length;
+        System.arraycopy(source, 0, bs, startPos, source.length);
+
+        return bs;
+    }
+
+    /**
      * CRC calculation
      *
      * @param data The byte to crc check
@@ -121,12 +141,19 @@ public class EBusUtils {
     }
 
     /**
+     * Returns the master address based on a slave address if possible. Not all slave address have a valid master
+     * address.
+     *
      * @param slaveAddress
      * @return
      */
     static public Byte getMasterAddress(byte slaveAddress) {
+
         if (!isMasterAddress(slaveAddress)) {
-            return (byte) (slaveAddress == (byte) 0x04 ? (byte) 0xFF : slaveAddress - 5);
+            byte masterAddress = (byte) (slaveAddress == (byte) 0x04 ? (byte) 0xFF : slaveAddress - 5);
+            if (isMasterAddress(masterAddress)) {
+                return masterAddress;
+            }
         }
 
         return null;
@@ -197,6 +224,12 @@ public class EBusUtils {
         return toByteArray(hexDumpString)[0];
     }
 
+    /**
+     * Convert a ByteBuffer to a byte array
+     *
+     * @param buffer
+     * @return
+     */
     public static byte[] toByteArray(ByteBuffer buffer) {
         byte[] data = new byte[buffer.position()];
         ((ByteBuffer) buffer.duplicate().clear()).get(data);
@@ -222,7 +255,12 @@ public class EBusUtils {
      * @param data The source
      * @return The hex string
      */
-    static public String toHexDumpString(byte data) {
+    static public String toHexDumpString(Byte data) {
+
+        if (data == null) {
+            return "";
+        }
+
         return String.format("%02X", (0xFF & data));
     }
 
@@ -266,6 +304,8 @@ public class EBusUtils {
     }
 
     /**
+     * Computes a hex string like 0x00
+     * 
      * @param data
      * @return
      */

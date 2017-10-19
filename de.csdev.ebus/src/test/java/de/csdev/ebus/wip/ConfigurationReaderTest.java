@@ -47,6 +47,8 @@ public class ConfigurationReaderTest {
 
     }
 
+
+    
     // @Test
     public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 

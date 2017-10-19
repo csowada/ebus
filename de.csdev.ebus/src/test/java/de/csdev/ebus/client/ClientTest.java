@@ -74,6 +74,11 @@ public class ClientTest {
                 assertEquals(new BigDecimal("1.52"), result.get("pressure"));
                 logger.info("Result correct!");
             }
+
+            @Override
+            public void onTelegramResolveFailed(byte[] receivedData, Integer sendQueueId) {
+                // noop
+            }
         });
 
         controller.start();

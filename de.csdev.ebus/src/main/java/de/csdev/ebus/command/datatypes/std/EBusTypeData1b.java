@@ -8,49 +8,31 @@
  */
 package de.csdev.ebus.command.datatypes.std;
 
-import java.math.BigDecimal;
-
-import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeGenericReplaceValue;
-import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeData1b extends EBusTypeGenericReplaceValue {
+public class EBusTypeData1b extends EBusTypeNumber {
 
-    public static String DATA1B = "data1b";
+    public static String TYPE_DATA1B = "data1b";
 
-    private static String[] supportedTypes = new String[] { DATA1B };
+    private static String[] supportedTypes = new String[] { TYPE_DATA1B };
 
-    public EBusTypeData1b() {
-        replaceValue = new byte[] { (byte) 0x80 };
-    }
-
+    @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
     }
 
     @Override
-    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-        return types.decode(EBusTypeChar.CHAR, data);
-    }
-
-    @Override
-    public byte[] encodeInt(Object data) throws EBusTypeException {
-        return types.encode(EBusTypeChar.CHAR, data);
-    }
-
-    @Override
-    public void setTypesParent(EBusTypeRegistry types) {
-        this.types = types;
+    public int getTypeLength() {
+        return 1;
     }
 
     @Override
     public String toString() {
-        return "EBusTypeData1b [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeData1b [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }

@@ -8,22 +8,26 @@
  */
 package de.csdev.ebus.command.datatypes.std;
 
-import java.util.Map;
-
-import de.csdev.ebus.command.datatypes.EBusTypeGeneric;
-import de.csdev.ebus.command.datatypes.IEBusType;
+import de.csdev.ebus.command.datatypes.EBusAbstractType;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeBit extends EBusTypeGeneric<Boolean> {
+public class EBusTypeBit extends EBusAbstractType<Boolean> {
 
-    public static String BIT = "bit";
+    public static String TYPE_BIT = "bit";
 
-    private static String[] supportedTypes = new String[] { BIT };
+    private static String[] supportedTypes = new String[] { TYPE_BIT };
 
-    private Integer bit = null;
+    public static String POS = "pos";
+
+    private Integer pos = null;
+
+    public EBusTypeBit() {
+        replaceValue = new byte[] { (byte) 0x00 };
+    }
 
     @Override
     public String[] getSupportedTypes() {
@@ -31,37 +35,25 @@ public class EBusTypeBit extends EBusTypeGeneric<Boolean> {
     }
 
     @Override
-    public Boolean decode(byte[] data) {
+    public int getTypeLength() {
+        return 1;
+    }
 
-        if (data == null) {
-            // replace value
-            return Boolean.FALSE;
-        }
-
-        Boolean isSet = (data[0] >> bit & 0x1) == 1;
+    @Override
+    public Boolean decodeInt(byte[] data) {
+        Boolean isSet = (data[0] >> pos & 0x1) == 1;
         return isSet;
     }
 
     @Override
-    public byte[] encode(Object data) {
+    public byte[] encodeInt(Object data) {
         throw new RuntimeException("Not implemented yet!");
     }
 
     @Override
-    public IEBusType<Boolean> getInstance(Map<String, Object> properties) {
-
-        if (properties.containsKey("pos")) {
-            EBusTypeBit x = new EBusTypeBit();
-            x.types = types;
-            x.bit = (Integer) properties.get("pos");
-            return x;
-        }
-
-        return this;
-    }
-
-    @Override
     public String toString() {
-        return "EBusTypeBit [bit=" + bit + "]";
+        return "EBusTypeBit [" + (pos != null ? "pos=" + pos + ", " : "")
+                + (replaceValue != null ? "replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()) : "") + "]";
     }
+
 }
