@@ -1,15 +1,13 @@
 package de.csdev.ebus.wip;
 
-import org.junit.Test;
-
-import de.csdev.ebus.utils.Emulator2;
+import de.csdev.ebus.utils.Emulator;
 
 public class EmulatorTest {
 
-    @Test
+    // @Test
     public void xxx() {
 
-        Emulator2 emu = new Emulator2();
+        Emulator emu = new Emulator();
 
         try {
             Thread.sleep(3000);
