@@ -32,7 +32,7 @@ public class EBusTypeChar extends EBusTypeNumber {
 
     @Override
     public String toString() {
-        return "EBusTypeChar [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeChar [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }

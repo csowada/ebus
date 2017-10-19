@@ -32,7 +32,7 @@ public class EBusTypeInteger extends EBusTypeNumber {
 
     @Override
     public String toString() {
-        return "EBusTypeInteger [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeInteger [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }

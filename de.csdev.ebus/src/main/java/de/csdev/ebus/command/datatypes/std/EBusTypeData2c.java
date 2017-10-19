@@ -36,7 +36,7 @@ public class EBusTypeData2c extends EBusTypeNumber {
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-    	BigDecimal decodeInt = super.decodeInt(data);
+        BigDecimal decodeInt = super.decodeInt(data);
         return decodeInt.divide(BigDecimal.valueOf(16));
     }
 
@@ -48,7 +48,7 @@ public class EBusTypeData2c extends EBusTypeNumber {
 
     @Override
     public String toString() {
-        return "EBusTypeData2c [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeData2c [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }

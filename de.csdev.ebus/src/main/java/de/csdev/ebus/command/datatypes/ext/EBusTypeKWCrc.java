@@ -22,6 +22,15 @@ public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComple
 
     private static String[] supportedTypes = new String[] { TYPE_KW_CRC };
 
+    public EBusTypeKWCrc() {
+        replaceValue = new byte[] { (byte) 0xCC };
+    }
+
+    @Override
+    public int getTypeLength() {
+        return 1;
+    }
+
     @Override
     public String[] getSupportedTypes() {
         return supportedTypes;

@@ -1,6 +1,7 @@
 package de.csdev.ebus.command.datatypes;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -145,6 +146,13 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @return
      */
     public byte[] getReplaceValue() {
+
+        int length = getTypeLength();
+        if (replaceValue == null || replaceValue.length == 0) {
+            replaceValue = new byte[length];
+            Arrays.fill(replaceValue, (byte) 0xFF);
+        }
+
         return replaceValue;
     }
 

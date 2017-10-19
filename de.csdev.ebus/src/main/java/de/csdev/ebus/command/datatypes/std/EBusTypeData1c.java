@@ -36,7 +36,7 @@ public class EBusTypeData1c extends EBusTypeUnsignedNumber {
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-    	BigDecimal decodeInt = super.decodeInt(data);
+        BigDecimal decodeInt = super.decodeInt(data);
         return decodeInt.divide(BigDecimal.valueOf(2));
     }
 
@@ -45,10 +45,10 @@ public class EBusTypeData1c extends EBusTypeUnsignedNumber {
         BigDecimal b = NumberUtils.toBigDecimal(data);
         return super.encodeInt(b.multiply(BigDecimal.valueOf(2)));
     }
-    
+
     @Override
     public String toString() {
-        return "EBusTypeData1c [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeData1c [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }

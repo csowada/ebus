@@ -9,6 +9,7 @@
 package de.csdev.ebus.command.datatypes.std;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -24,6 +25,10 @@ public class EBusTypeBit extends EBusAbstractType<Boolean> {
 
     private Integer pos = null;
 
+    public EBusTypeBit() {
+        replaceValue = new byte[] { (byte) 0x00 };
+    }
+
     @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
@@ -35,25 +40,20 @@ public class EBusTypeBit extends EBusAbstractType<Boolean> {
     }
 
     @Override
-    public Boolean decode(byte[] data) {
-
-        if (data == null) {
-            // replace value
-            return Boolean.FALSE;
-        }
-
+    public Boolean decodeInt(byte[] data) {
         Boolean isSet = (data[0] >> pos & 0x1) == 1;
         return isSet;
     }
 
     @Override
-    public byte[] encode(Object data) {
+    public byte[] encodeInt(Object data) {
         throw new RuntimeException("Not implemented yet!");
     }
 
     @Override
     public String toString() {
-        return "EBusTypeBit [pos=" + pos + "]";
+        return "EBusTypeBit [" + (pos != null ? "pos=" + pos + ", " : "")
+                + (replaceValue != null ? "replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()) : "") + "]";
     }
 
 }

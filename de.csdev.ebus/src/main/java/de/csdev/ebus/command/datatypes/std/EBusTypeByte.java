@@ -33,7 +33,7 @@ public class EBusTypeByte extends EBusTypeUnsignedNumber {
 
     @Override
     public String toString() {
-        return "EBusTypeByte [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeByte [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }

@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
+import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
 /**
@@ -110,7 +111,8 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
 
     @Override
     public String toString() {
-        return "EBusTypeMultiWord [length=" + length + ", multiplier=" + multiplier + "]";
+        return "EBusTypeMultiWord [length=" + length + ", multiplier=" + multiplier + ", replaceValue="
+                + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }

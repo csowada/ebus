@@ -10,13 +10,11 @@ package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 
 import org.apache.commons.lang.ArrayUtils;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
 /**
@@ -24,18 +22,6 @@ import de.csdev.ebus.utils.NumberUtils;
  *
  */
 public abstract class EBusTypeUnsignedNumber extends EBusAbstractType<BigDecimal> {
-
-    @Override
-    public byte[] getReplaceValue() {
-
-        int length = getTypeLength();
-        if (replaceValue == null || replaceValue.length == 0) {
-            replaceValue = new byte[length];
-            Arrays.fill(replaceValue, (byte) 0xFF);
-        }
-
-        return replaceValue;
-    }
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
@@ -60,11 +46,6 @@ public abstract class EBusTypeUnsignedNumber extends EBusAbstractType<BigDecimal
         }
 
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "EBusTypeByte [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
     }
 
 }

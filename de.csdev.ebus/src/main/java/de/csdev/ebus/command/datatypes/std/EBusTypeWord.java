@@ -33,7 +33,7 @@ public class EBusTypeWord extends EBusTypeUnsignedNumber {
 
     @Override
     public String toString() {
-        return "EBusTypeWord [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + "]";
+        return "EBusTypeWord [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + "]";
     }
 
 }
