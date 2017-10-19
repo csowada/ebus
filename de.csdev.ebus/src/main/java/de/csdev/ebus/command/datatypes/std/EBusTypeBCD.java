@@ -46,7 +46,7 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
         BigDecimal result = BigDecimal.valueOf(0);
 
         for (int i = 0; i < data.length; i++) {
-            Byte convertBcd2Dec = convertBcd2Dec(data[i]);
+            Byte convertBcd2Dec = NumberUtils.convertBcd2Dec(data[i]);
 
             if (convertBcd2Dec == null) {
                 return null;
@@ -57,18 +57,6 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
         }
 
         return result;
-    }
-
-    private Byte convertBcd2Dec(byte bcd) {
-        byte high = (byte) (bcd >> 4 & 0x0F);
-        byte low = (byte) (bcd & 0x0F);
-
-        // nibbles out of rang 0-9
-        if (high > 9 || low > 9) {
-            return null;
-        }
-
-        return (byte) (high * 10 + low);
     }
 
     @Override
@@ -86,11 +74,10 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
             // reassign the quotient
             b = divideAndRemainder[0];
 
-            byte byteValue = divideAndRemainder[1].byteValue();
-            byteValue = (byte) (((byteValue / 10) << 4) | byteValue % 10);
+            Byte bcd = NumberUtils.convertDec2Bcd(divideAndRemainder[1].byteValue());
 
             // put the result into the byte array, revert order
-            result[result.length - (i + 1)] = byteValue;
+            result[result.length - (i + 1)] = bcd;
         }
 
         return result;
@@ -98,8 +85,8 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
 
     @Override
     public String toString() {
-        return "EBusTypeBCD [replaceValue=" + EBusUtils.toHexDumpString(replaceValue).toString() + ", length=" + length
-                + "]";
+        return "EBusTypeBCD [replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()).toString() + ", length="
+                + length + "]";
     }
 
 }
