@@ -8,10 +8,7 @@
  */
 package de.csdev.ebus.command.datatype.std;
 
-import static de.csdev.ebus.utils.CollectionUtils.createProps;
 import static org.junit.Assert.*;
-
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +32,7 @@ public class BitTest {
     }
 
     public IEBusType<?> getType(int bitPos) {
-        Map<String, Object> properties = createProps(EBusTypeBit.POS, bitPos);
-        return types.getType(EBusTypeBit.TYPE_BIT, properties);
+        return types.getType(EBusTypeBit.TYPE_BIT, EBusTypeBit.POS, bitPos);
     }
 
     @Test

@@ -115,12 +115,15 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
             calendar.add(Calendar.DAY_OF_YEAR, daysSince1900.intValue());
         }
 
-        if (day != null) {
-            calendar.set(Calendar.DAY_OF_MONTH, day.intValue());
+        if (day != null && month != null && year != null) {
+            if (day.intValue() < 1 || day.intValue() > 31) {
+                throw new EBusTypeException("A valid day must be in a range between 1-31 !");
+            }
+            if (month.intValue() < 1 || month.intValue() > 12) {
+                throw new EBusTypeException("A valid day must be in a range between 1-12 !");
+            }
         }
-        if (month != null) {
-            calendar.set(Calendar.MONTH, month.intValue() - 1);
-        }
+
         if (year != null) {
             if (year.intValue() < 70) {
                 year = year.add(new BigDecimal(2000));
@@ -128,6 +131,14 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
                 year = year.add(new BigDecimal(1900));
             }
             calendar.set(Calendar.YEAR, year.intValue());
+        }
+
+        if (month != null) {
+            calendar.set(Calendar.MONTH, month.intValue() - 1);
+        }
+
+        if (day != null && day.intValue() > 0 && day.intValue() < 32) {
+            calendar.set(Calendar.DAY_OF_MONTH, day.intValue());
         }
 
         return new EBusDateTime(calendar, false, true);

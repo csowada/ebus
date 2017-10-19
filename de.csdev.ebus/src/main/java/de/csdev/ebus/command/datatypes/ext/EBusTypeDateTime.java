@@ -138,4 +138,11 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         return dateType.getTypeLength() + timeType.getTypeLength();
     }
 
+    @Override
+    public String toString() {
+        return "EBusTypeDateTime [timeFirst=" + timeFirst + ", "
+                + (variantDate != null ? "variantDate=" + variantDate + ", " : "")
+                + (variantTime != null ? "variantTime=" + variantTime : "") + "]";
+    }
+
 }

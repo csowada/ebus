@@ -1,10 +1,8 @@
 package de.csdev.ebus.command.datatype.std;
 
-import static de.csdev.ebus.utils.CollectionUtils.createProps;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,8 +56,8 @@ public class Data1bTest {
     @Test
     public void test_Data1b_Reverse() throws EBusTypeException {
 
-        Map<String, Object> properties = createProps(IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE);
-        IEBusType<BigDecimal> type = types.getType(EBusTypeData1b.TYPE_DATA1B, properties);
+        IEBusType<BigDecimal> type = types.getType(EBusTypeData1b.TYPE_DATA1B, IEBusType.REVERSED_BYTE_ORDER,
+                Boolean.TRUE);
 
         check(type, new byte[] { (byte) 0x00 }, 0);
 

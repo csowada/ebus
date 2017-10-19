@@ -93,7 +93,7 @@ public class EBusCommandUtils {
                 }
 
                 if (b == null) {
-                    throw new RuntimeException("Encoded value is null!");
+                    throw new RuntimeException("Encoded value is null! " + type.toString());
                 }
                 // buf.p
                 buf.put(b);

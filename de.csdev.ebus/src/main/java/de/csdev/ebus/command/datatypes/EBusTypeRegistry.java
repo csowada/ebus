@@ -108,7 +108,7 @@ public class EBusTypeRegistry {
      * @return
      */
     public <T> IEBusType<T> getType(String type, Object... propertiesArguments) {
-        Map<String, Object> properties = CollectionUtils.createProps(propertiesArguments);
+        Map<String, Object> properties = CollectionUtils.createProperties(propertiesArguments);
         return this.getType(type, properties);
     }
 

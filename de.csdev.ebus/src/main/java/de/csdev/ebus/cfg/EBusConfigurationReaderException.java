@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.cfg;
 
+import java.text.MessageFormat;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -21,7 +23,7 @@ public class EBusConfigurationReaderException extends Exception {
     }
 
     public EBusConfigurationReaderException(String message, Object... args) {
-        super(String.format(message, args));
+        super(MessageFormat.format(message, args));
     }
 
     public EBusConfigurationReaderException(String message) {

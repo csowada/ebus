@@ -13,7 +13,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.utils.Emulator2;
+import de.csdev.ebus.utils.Emulator;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -23,10 +23,10 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusEmulatorConnection.class);
 
-    private Emulator2 emu;
+    private Emulator emu;
 
     public EBusEmulatorConnection() {
-        emu = new Emulator2();
+        emu = new Emulator();
     }
 
     @Override

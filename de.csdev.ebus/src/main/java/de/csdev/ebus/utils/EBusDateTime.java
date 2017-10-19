@@ -29,14 +29,29 @@ public class EBusDateTime {
 
     }
 
+    /**
+     * Returns a calendar object, take notice of the any date flags.
+     * 
+     * @return
+     */
     public Calendar getCalendar() {
         return calendar;
     }
 
+    /**
+     * Ignore the date in the calendar object
+     *
+     * @return
+     */
     public boolean isAnyDate() {
         return anyDate;
     }
 
+    /**
+     * Ignore the time in the calendar object
+     *
+     * @return
+     */
     public boolean isAnyTime() {
         return anyTime;
     }
