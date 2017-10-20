@@ -94,7 +94,7 @@ public class EBusDeviceTable {
             return null;
         }
 
-        return vendors.get(String.valueOf(vendorCode));
+        return vendors.get(EBusUtils.toHexDumpString(vendorCode));
     }
 
     public void updateDevice(byte address, Map<String, Object> data) {
