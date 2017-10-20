@@ -87,15 +87,24 @@ public class EBusCommandRegistry {
         return Collections.unmodifiableCollection(collections.values());
     }
 
+    public IEBusCommand getCommandById(String collectionId, String id) {
+
+        IEBusCommandCollection collection = collections.get(collectionId);
+        if (collection == null) {
+            return null;
+        }
+
+        return collection.getCommand(id);
+    }
+
     /**
      * @param id
      * @param type
      * @return
      */
-    public IEBusCommandMethod getConfigurationById(String collectionId, String id, IEBusCommandMethod.Method type) {
+    public IEBusCommandMethod getCommandMethodById(String collectionId, String id, IEBusCommandMethod.Method type) {
 
-        IEBusCommandCollection collection = collections.get(collectionId);
-        IEBusCommand command = collection.getCommand(id);
+        IEBusCommand command = getCommandById(collectionId, id);
 
         if (command != null) {
             return command.getCommandMethod(type);

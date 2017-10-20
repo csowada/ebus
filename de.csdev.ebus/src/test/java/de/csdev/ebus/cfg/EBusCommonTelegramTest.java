@@ -62,7 +62,7 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void testIdentification() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById(EBusConsts.COLLECTION_STD,
+        IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
 
         assertNotNull("Command common.identification not found!", commandMethod);
@@ -79,7 +79,7 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void testAutoStroker() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById(EBusConsts.COLLECTION_STD,
+        IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 "auto_stroker.op_data_bc2tc_b1", IEBusCommandMethod.Method.GET);
 
         assertNotNull("Command auto_stroker not found!", commandMethod);
@@ -96,7 +96,7 @@ public class EBusCommonTelegramTest {
 
     @Test
     public void testInquiryOfExistence() {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById(EBusConsts.COLLECTION_STD,
+        IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_INQ_EXISTENCE, Method.BROADCAST);
         assertNotNull("Command common.inquiry_of_existence not found!", commandMethod);
     }
