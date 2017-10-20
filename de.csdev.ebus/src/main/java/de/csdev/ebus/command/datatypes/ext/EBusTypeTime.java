@@ -41,7 +41,11 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
 
     private static String[] supportedTypes = new String[] { TYPE_TIME };
 
+    public static String MINUTE_MULTIPLIER = "multiplier";
+
     private String variant = DEFAULT;
+
+    private int minuteMultplier = 1;
 
     @Override
     public String[] getSupportedTypes() {
@@ -78,8 +82,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
         BigDecimal hour = null;
 
         if (data.length != getTypeLength()) {
-            throw new EBusTypeException(
-                    String.format("Input byte array must have a length of %d bytes!", getTypeLength()));
+            throw new EBusTypeException("Input byte array must have a length of %d bytes!", getTypeLength());
         }
 
         if (StringUtils.equals(variant, SHORT)) {
@@ -102,6 +105,11 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
 
         } else if (StringUtils.equals(variant, MINUTES)) {
             BigDecimal minutesSinceMidnight = wordType.decode(data);
+            minutesSinceMidnight = minutesSinceMidnight.multiply(BigDecimal.valueOf(minuteMultplier));
+
+            if (minutesSinceMidnight.intValue() > 1440) {
+                throw new EBusTypeException("Value 'minutes since midnight' to large!");
+            }
             calendar.add(Calendar.MINUTE, minutesSinceMidnight.intValue());
         }
 
@@ -173,7 +181,12 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
                 long millisMidnight = calendar.getTimeInMillis();
 
                 BigDecimal minutes = new BigDecimal(millis - millisMidnight);
-                minutes = minutes.divide(BigDecimal.valueOf(1000), 0, RoundingMode.HALF_UP);
+
+                // milliseconds to minutes
+                minutes = minutes.divide(BigDecimal.valueOf(1000 * 60), 0, RoundingMode.HALF_UP);
+
+                // xxx
+                minutes = minutes.divide(BigDecimal.valueOf(minuteMultplier), 0, RoundingMode.HALF_UP);
 
                 result = wordType.encode(minutes);
             }
