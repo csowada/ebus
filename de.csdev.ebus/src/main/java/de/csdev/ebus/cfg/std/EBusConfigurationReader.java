@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
@@ -33,6 +34,7 @@ import de.csdev.ebus.cfg.std.dto.EBusCollectionDTO;
 import de.csdev.ebus.cfg.std.dto.EBusCommandDTO;
 import de.csdev.ebus.cfg.std.dto.EBusCommandMethodDTO;
 import de.csdev.ebus.cfg.std.dto.EBusValueDTO;
+import de.csdev.ebus.cfg.std.dto.EBusValueDTODummy;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandMethod;
@@ -56,6 +58,27 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     private EBusTypeRegistry registry;
 
+    // public class FooDeserializerFromJsonWithDifferentFields implements JsonDeserializer<EBusValueDTO> {
+    //
+    // // public EBusValueDTO deserialize(JsonElement jElement, Type typeOfT, JsonDeserializationContext context)
+    // // throws JsonParseException {
+    // // JsonObject jObject = jElement.getAsJsonObject();
+    // // int intValue = jObject.get("valueInt").getAsInt();
+    // // String stringValue = jObject.get("valueString").getAsString();
+    // // return new EBusValueDTO();
+    // // }
+    //
+    // @Override
+    // public EBusValueDTO deserialize(JsonElement jElement, Type typeOfT, JsonDeserializationContext context)
+    // throws JsonParseException {
+    //
+    // JsonObject jObject = jElement.getAsJsonObject();
+    // EBusValueDTOInternal deserialize = context.deserialize(jObject, EBusValueDTOInternal.class);
+    //
+    // return (EBusValueDTO) deserialize;
+    // }
+    // }
+
     /*
      * (non-Javadoc)
      *
@@ -74,6 +97,10 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
 
         Gson gson = new Gson();
+        gson = new GsonBuilder().registerTypeAdapter(EBusValueDTODummy.class, new EBusValueJsonDeserializer())
+                // .registerTypeAdapterFactory(new ValidatorAdapterFactory())
+                .create();
+
         MessageDigest md = null;
 
         try {
