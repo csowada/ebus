@@ -24,20 +24,20 @@ VTM | time | variant: hex_short | minute first
 HTI | time | variant: hex, reverseByteOrder: true | hours first
 HTM | time | variant: hex_short, reverseByteOrder: true | hours first
 MIN | time | variant: min | minutes since midnight
-**TTM** | time | variant: min, factor: 10 | multiple of 10 minutes since midnight
-**TTH** | time | variant: min, factor: 30 | multiple of 30 minutes since midnight
-**TTQ** | time | variant: min, factor: 15 | multiple of 15 minutes since midnight
+**TTM** | time | variant: min, step: 10 | multiple of 10 minutes since midnight
+**TTH** | time | variant: min, step: 30 | multiple of 30 minutes since midnight
+**TTQ** | time | variant: min, step: 15 | multiple of 15 minutes since midnight
 **BDY** | | | | Weekday, Sunday=0x06
 **HDY** | | | | Weekday, Sunday=0x07
 BCD | bcd | | BCD value
-**BCD:2* | bcd | length: 2 | BCD value
-**BCD:3** | bcd | length: 3 | BCD value
-**BCD:4** | bcd | length: 4 | BCD value
+BCD:2 | bcd | length: 2 | BCD value
+BCD:3 | bcd | length: 3 | BCD value
+BCD:4 | bcd | length: 4 | BCD value
 **HCD** |||each BCD byte converted to hex
 **HCD:1** |||each BCD byte converted to hex
 **HCD:2** |||each BCD byte converted to hex
 **HCD:3** |||each BCD byte converted to hex
-**PIN** | bcd | length: 2 | BCD value
+PIN | bcd | length: 2 | BCD value
 UCH | byte/(uchar) | | unsigned char, primary type 
 SCH | char | | signed char, primary type 
 D1C | data1c | | same as ``char``
@@ -51,12 +51,12 @@ UIN | word/(uint) | | low byte first
 UIR | word/(uint) | reverseByteOrder: true | high byte first
 SIN | int | | low byte first
 SIR | int | reverseByteOrder: true | high byte first
-**U3N** | byte/(uchar) | length: 3 | low byte first
-**U3R** | byte/(uchar) | length: 3, reverseByteOrder: true | high byte first
-**S3N** | char | length: 3 | low byte first
-**S3R** | char | length: 3, reverseByteOrder: true | high byte first
-**ULG** | byte/(uchar) | length: 4 | low byte first
-**ULR** | byte/(uchar) | length: 4, reverseByteOrder: true | high byte first
-**SLG** | char | length: 4 | low byte first
-**SLR** | char | length: 4, reverseByteOrder: true | high byte first
+U3N | byte/(uchar) | length: 3 | low byte first
+U3R | byte/(uchar) | length: 3, reverseByteOrder: true | high byte first
+S3N | char | length: 3 | low byte first
+S3R | char | length: 3, reverseByteOrder: true | high byte first
+ULG | byte/(uchar) | length: 4 | low byte first
+ULR | byte/(uchar) | length: 4, reverseByteOrder: true | high byte first
+SLG | char | length: 4 | low byte first
+SLR | char | length: 4, reverseByteOrder: true | high byte first
 DI0-7 | byte | children of ``bit``
