@@ -1,46 +1,42 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.command.datatypes.std;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import de.csdev.ebus.utils.EBusUtils;
 
-import org.apache.commons.lang.ArrayUtils;
+/**
+ * @author Christian Sowada - Initial contribution
+ *
+ */
+public class EBusTypeNumber extends AbstractEBusTypeNumber {
 
-import de.csdev.ebus.command.datatypes.EBusAbstractType;
-import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.utils.NumberUtils;
+    public static String TYPE_NUMBER = "number";
 
-public abstract class EBusTypeNumber extends EBusAbstractType<BigDecimal> {
+    private static String[] supportedTypes = new String[] { TYPE_NUMBER };
+
+    private int length = 1;
 
     @Override
-    public byte[] getReplaceValue() {
-        int length = getTypeLength();
-        if (replaceValue == null || replaceValue.length == 0) {
-            replaceValue = new byte[length];
-            replaceValue[length - 1] = (byte) 0x80;
-        }
-
-        return replaceValue;
+    public String[] getSupportedTypes() {
+        return supportedTypes;
     }
 
     @Override
-    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-        byte[] clone = ArrayUtils.clone(data);
-        ArrayUtils.reverse(clone);
-        return new BigDecimal(new BigInteger(clone));
+    public int getTypeLength() {
+        return length;
     }
 
     @Override
-    public byte[] encodeInt(Object data) throws EBusTypeException {
-        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
-        long l = b.longValue();
-        int length = getTypeLength();
-        byte[] result = new byte[length];
-        for (int i = 0; i <= length - 1; i++) {
-            result[i] = (byte) (l & 0xFF);
-            l >>= 8;
-        }
-
-        return result;
+    public String toString() {
+        return "EBusTypeNumber [length=" + length + ", "
+                + (replaceValue != null ? "replaceValue=" + EBusUtils.toHexDumpString(getReplaceValue()) + ", " : "")
+                + "reverseByteOrder=" + reverseByteOrder + "]";
     }
 
 }

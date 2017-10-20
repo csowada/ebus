@@ -14,7 +14,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeInteger extends EBusTypeNumber {
+public class EBusTypeInteger extends AbstractEBusTypeNumber {
 
     public static String TYPE_INTEGER = "int";
 

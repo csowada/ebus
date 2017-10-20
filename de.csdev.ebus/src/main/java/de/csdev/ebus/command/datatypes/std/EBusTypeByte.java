@@ -14,7 +14,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeByte extends EBusTypeUnsignedNumber {
+public class EBusTypeByte extends AbstractEBusTypeUnsignedNumber {
 
     public static String TYPE_UCHAR = "uchar";
     public static String TYPE_BYTE = "byte";

@@ -32,6 +32,8 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
+import de.csdev.ebus.command.datatypes.std.EBusTypeNumber;
+import de.csdev.ebus.command.datatypes.std.EBusTypeUnsignedNumber;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
 import de.csdev.ebus.utils.CollectionUtils;
 
@@ -64,6 +66,8 @@ public class EBusTypeRegistry {
         add(EBusTypeChar.class);
         add(EBusTypeInteger.class);
         add(EBusTypeWord.class);
+        add(EBusTypeNumber.class);
+        add(EBusTypeUnsignedNumber.class);
 
         // secondary types
         add(EBusTypeBCD.class);
