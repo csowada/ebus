@@ -1,3 +1,23 @@
+## Alpha 0.0.12 (2017-10-21)
+
+Features:
+
+  - new data types ``date`` and ``time`` for variable length signed / unsigned numbers
+  - more source code documentation
+
+Bugfixes:
+
+  - fix issue if master/slave CRCs are escaped
+  - fix ignored properties for some non-standard properties in json files
+  - adjust some maven build properties 
+  - fix and enhance manufacture id/name mapping
+
+Configurations:
+
+  - add date and time to Vaillant VRC470
+  - fix identifier for Vailant BAI00
+
+
 ## Alpha 0.0.11 (2017-10-15)
 
 Features:
