@@ -45,7 +45,7 @@ public class EBusCommandRegistry {
      */
     public List<IEBusCommandMethod> find(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);
-        buffer.position(data.length);
+        buffer.limit(data.length);
         return find(buffer);
     }
 
@@ -132,7 +132,7 @@ public class EBusCommandRegistry {
 
             ByteBuffer mask = command.getMasterTelegramMask();
 
-            for (int i = 0; i < mask.position(); i++) {
+            for (int i = 0; i < mask.limit(); i++) {
                 byte b = mask.get(i);
 
                 if (b == (byte) 0xFF) {
@@ -140,7 +140,7 @@ public class EBusCommandRegistry {
                         break;
                     }
                 }
-                if (i == mask.position() - 1) {
+                if (i == mask.limit() - 1) {
                     return true;
                 }
             }
