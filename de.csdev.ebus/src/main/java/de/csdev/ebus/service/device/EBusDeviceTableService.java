@@ -53,6 +53,14 @@ public class EBusDeviceTableService
         this.controller.addEBusEventListener(this);
     }
 
+    public boolean isDisableIdentificationRequests() {
+        return disableIdentificationRequests;
+    }
+
+    public void setDisableIdentificationRequests(boolean disableIdentificationRequests) {
+        this.disableIdentificationRequests = disableIdentificationRequests;
+    }
+
     /**
      *
      */
