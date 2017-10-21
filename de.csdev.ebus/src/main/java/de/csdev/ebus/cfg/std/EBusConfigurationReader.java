@@ -284,7 +284,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             byte[] byteArray = EBusUtils.toByteArray(template.getDefault());
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("length", byteArray.length);
-            final IEBusType<?> typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
+            final IEBusType<?> typeByte = registry.getType(EBusTypeBytes.TYPE_BYTES, properties);
 
             EBusCommandValue commandValue = EBusCommandValue.getInstance(typeByte, byteArray);
             commandValue.setParent(commandMethod);
