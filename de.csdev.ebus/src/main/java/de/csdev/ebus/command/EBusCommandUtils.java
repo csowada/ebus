@@ -202,6 +202,10 @@ public class EBusCommandUtils {
 
         }
 
+        // reset pos to zero and set the new limit
+        buf.limit(buf.position());
+        buf.position(0);
+
         return buf;
     }
 
@@ -215,9 +219,6 @@ public class EBusCommandUtils {
      */
     public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
             Map<String, Object> values) throws EBusTypeException {
-        //
-        // byte len = 0;
-        // ByteBuffer buf = ByteBuffer.allocate(50);
 
         if (source == null && commandMethod.getSourceAddress() != null) {
             source = commandMethod.getSourceAddress();
@@ -238,108 +239,9 @@ public class EBusCommandUtils {
         }
 
         byte[] data = EBusUtils.toByteArray(composeMasterData(commandMethod, values));
-        return buildTelegram(source, target, commandMethod.getCommand(), data, null);
-    }
+        ByteBuffer byteBuffer = buildTelegram(source, target, commandMethod.getCommand(), data, null);
 
-    /**
-     * @param commandMethod
-     * @param source
-     * @param target
-     * @param values
-     * @return
-     * @throws EBusTypeException
-     */
-    public static ByteBuffer buildMasterTelegramX(IEBusCommandMethod commandMethod, Byte source, Byte target,
-            Map<String, Object> values) throws EBusTypeException {
-
-        byte len = 0;
-        ByteBuffer buf = ByteBuffer.allocate(50);
-
-        if (source == null && commandMethod.getSourceAddress() != null) {
-            source = commandMethod.getSourceAddress();
-        }
-
-        if (target == null && commandMethod.getDestinationAddress() != null) {
-            target = commandMethod.getDestinationAddress();
-        }
-
-        if (commandMethod == null) {
-            throw new IllegalArgumentException("Parameter command is null!");
-        }
-        if (source == null) {
-            throw new IllegalArgumentException("Parameter source is null!");
-        }
-        if (target == null) {
-            throw new IllegalArgumentException("Parameter target is null!");
-        }
-
-        buf.put(source); // QQ - Source
-        buf.put(target); // ZZ - Target
-        buf.put(commandMethod.getCommand()); // PB SB - Command
-        buf.put((byte) 0x00); // NN - Length, will be set later
-
-        Map<Integer, IEBusComplexType<?>> complexTypes = new HashMap<Integer, IEBusComplexType<?>>();
-
-        if (commandMethod.getMasterTypes() != null) {
-            for (IEBusValue entry : commandMethod.getMasterTypes()) {
-                IEBusType<?> type = entry.getType();
-                byte[] b = null;
-
-                // use the value from the values map if set
-                if (values != null && values.containsKey(entry.getName())) {
-                    b = type.encode(values.get(entry.getName()));
-
-                } else {
-                    if (type instanceof IEBusComplexType) {
-
-                        // add the complex to the list for post processing
-                        complexTypes.put(buf.position(), (IEBusComplexType<?>) type);
-
-                        // add placeholder
-                        b = new byte[entry.getType().getTypeLength()];
-
-                    } else if (entry.getDefaultValue() == null) {
-                        b = type.encode(null);
-
-                    } else {
-                        b = type.encode(entry.getDefaultValue());
-
-                    }
-
-                }
-
-                if (b == null) {
-                    throw new RuntimeException("Encoded value is null! " + type.toString());
-                }
-                // buf.p
-                buf.put(b);
-                len += type.getTypeLength();
-            }
-        }
-
-        // set len
-        buf.put(4, len);
-
-        // replace the placeholders with the complex values
-        if (!complexTypes.isEmpty()) {
-            int orgPos = buf.position();
-            for (Entry<Integer, IEBusComplexType<?>> entry : complexTypes.entrySet()) {
-                // jump to position
-                buf.position(entry.getKey());
-                // put new value
-                buf.put(entry.getValue().encodeComplex(buf));
-
-            }
-            buf.position(orgPos);
-
-        }
-
-        // calculate crc
-        byte crc8 = EBusUtils.crc8(buf.array(), buf.position());
-
-        buf.put(crc8);
-
-        return buf;
+        return byteBuffer;
     }
 
     /**
@@ -478,8 +380,6 @@ public class EBusCommandUtils {
             for (IEBusValue entry : commandChannel.getMasterTypes()) {
                 IEBusType<?> type = entry.getType();
 
-                // boolean x = type instanceof EBusTypeBytes;
-
                 if (entry.getName() == null && type instanceof EBusTypeBytes && entry.getDefaultValue() != null) {
                     for (int i = 0; i < type.getTypeLength(); i++) {
                         buf.put((byte) 0xFF);
@@ -490,13 +390,14 @@ public class EBusCommandUtils {
 
                     }
                 }
-
-                // buf.put(type.encode(entry.getDefaultValue()));
-
             }
         }
 
         buf.put((byte) 0x00); // Master CRC
+
+        // set limit and reset position
+        buf.limit(buf.position());
+        buf.position(0);
 
         return buf;
     }

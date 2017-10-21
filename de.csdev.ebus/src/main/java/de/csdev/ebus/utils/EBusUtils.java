@@ -231,7 +231,15 @@ public class EBusUtils {
      * @return
      */
     public static byte[] toByteArray(ByteBuffer buffer) {
-        byte[] data = new byte[buffer.position()];
+
+        int size = 0;
+        if (buffer.position() == 0) {
+            size = buffer.limit();
+        } else {
+            size = buffer.position();
+        }
+
+        byte[] data = new byte[size];
         ((ByteBuffer) buffer.duplicate().clear()).get(data);
         return data;
     }
@@ -293,7 +301,7 @@ public class EBusUtils {
      */
     static public StringBuilder toHexDumpString(ByteBuffer data) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < data.position(); i++) {
+        for (int i = 0; i < data.limit(); i++) {
             byte c = data.get(i);
             if (i > 0) {
                 sb.append(' ');
@@ -305,7 +313,7 @@ public class EBusUtils {
 
     /**
      * Computes a hex string like 0x00
-     * 
+     *
      * @param data
      * @return
      */
