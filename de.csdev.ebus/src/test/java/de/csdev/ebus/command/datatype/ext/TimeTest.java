@@ -244,12 +244,12 @@ public class TimeTest {
     }
 
     @Test
-    public void test_TimeMinutes_X() throws EBusTypeException {
+    public void test_TimeMinutes_Multi_10() throws EBusTypeException {
 
         GregorianCalendar calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
 
         IEBusType<EBusDateTime> type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT, EBusTypeTime.MINUTES,
-                "x", 10);
+                EBusTypeTime.MINUTE_MULTIPLIER, 10);
 
         // default 00:00
 
@@ -276,7 +276,7 @@ public class TimeTest {
 
         // check encode
         type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT, EBusTypeTime.MINUTES,
-                IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE, "x", 10);
+                IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE, EBusTypeTime.MINUTE_MULTIPLIER, 10);
 
         bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x00, (byte) 0x8D }, bytes);

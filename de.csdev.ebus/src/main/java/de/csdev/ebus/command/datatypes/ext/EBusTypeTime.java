@@ -41,7 +41,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
 
     private static String[] supportedTypes = new String[] { TYPE_TIME };
 
-    public static String MINUTE_MULTIPLIER = "multiplier";
+    public static String MINUTE_MULTIPLIER = "minuteMultplier";
 
     private String variant = DEFAULT;
 
