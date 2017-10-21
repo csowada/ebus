@@ -46,6 +46,9 @@ public class ClientTest {
 
         client.connect(controller, (byte) 0xFF);
 
+        // disable auto identification requests for the test!
+        client.getDeviceTableService().setDisableIdentificationRequests(true);
+
         client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
 
             @Override
@@ -54,12 +57,14 @@ public class ClientTest {
             }
 
             @Override
-            public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+            public void onTelegramException(EBusDataException e, Integer sendQueueId) {
+                logger.error("error!", e);
                 fail("No TelegramException expected!");
             }
 
             @Override
             public void onConnectionException(Exception e) {
+                logger.error("error!", e);
                 fail("No ConnectionException expected!");
             }
         });
