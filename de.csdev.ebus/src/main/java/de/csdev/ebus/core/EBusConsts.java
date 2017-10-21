@@ -29,6 +29,12 @@ public class EBusConsts {
     /** The escape byte for expanded bytes */
     public final static byte ESCAPE = (byte) 0xA9;
 
+    /** replacement for an excape symbol */
+    public final static byte[] ESCAPE_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x00 };
+
+    /** replacement for an sync symbol */
+    public final static byte[] SYN_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x01 };
+
     /** eBUS standard collection id */
     public final static String COLLECTION_STD = "std";
 

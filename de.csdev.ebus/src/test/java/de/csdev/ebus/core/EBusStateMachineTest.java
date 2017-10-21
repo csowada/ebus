@@ -10,6 +10,8 @@ package de.csdev.ebus.core;
 
 import static org.junit.Assert.*;
 
+import java.nio.ByteBuffer;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,9 +19,9 @@ import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.command.EBusCommandUtils;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusDataException.EBusError;
-import de.csdev.ebus.core.EBusReceiveStateMachine;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -351,6 +353,53 @@ public class EBusStateMachineTest {
         } catch (EBusDataException e) {
             fail("No exception expected!");
         }
+    }
+
+    @Test
+    public void testB() {
+
+        int errors = 0;
+
+        byte[] command = new byte[] { 0x01, 0x02 };
+        byte[] data = new byte[2];
+        for (short i = 0; i < 256; i++) {
+            data[0] = (byte) i;
+
+            for (short j = 0; j < 256; j++) {
+                data[1] = (byte) j;
+
+                ByteBuffer bb = ByteBuffer.allocate(50);
+
+                try {
+                    ByteBuffer masterTelegramPart = EBusCommandUtils.buildTelegram((byte) 0xFF, (byte) 0x08, command,
+                            data, data);
+
+                    // ByteBuffer slaveTelegramPart = EBusCommandUtils.buildSlaveTelegramPart(data);
+
+                    bb.put(masterTelegramPart);
+                    // bb.put(slaveTelegramPart);
+                    // bb.put(EBusConsts.ACK_OK);
+                    // bb.put(EBusConsts.SYN);
+
+                    runMachine(EBusUtils.toByteArray(masterTelegramPart));
+
+                } catch (EBusTypeException e) {
+
+                    logger.info(EBusUtils.toHexDumpString(bb).toString());
+                    logger.info(e.getLocalizedMessage());
+                    errors++;
+
+                } catch (EBusDataException e) {
+
+                    logger.info(EBusUtils.toHexDumpString(bb).toString());
+                    logger.info(e.getLocalizedMessage());
+                    errors++;
+                }
+
+            }
+        }
+
+        logger.info("Errors {}", errors);
     }
 
     private void runMachine(byte[] byteArray) throws EBusDataException {
