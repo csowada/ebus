@@ -11,6 +11,7 @@ package de.csdev.ebus.cfg.std;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
@@ -34,7 +36,6 @@ import de.csdev.ebus.cfg.std.dto.EBusCollectionDTO;
 import de.csdev.ebus.cfg.std.dto.EBusCommandDTO;
 import de.csdev.ebus.cfg.std.dto.EBusCommandMethodDTO;
 import de.csdev.ebus.cfg.std.dto.EBusValueDTO;
-import de.csdev.ebus.cfg.std.dto.EBusValueDTODummy;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandMethod;
@@ -96,8 +97,12 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             throw new IllegalArgumentException("Required argument inputStream is null!");
         }
 
+        Type merchantListType = new TypeToken<List<EBusValueDTO>>() {
+        }.getType();
+
         Gson gson = new Gson();
-        gson = new GsonBuilder().registerTypeAdapter(EBusValueDTODummy.class, new EBusValueJsonDeserializer())
+        gson = new GsonBuilder().registerTypeAdapter(merchantListType, new EBusValueJsonDeserializer())
+                // .registerTypeAdapter(EBusValueDTODummy.class, new EBusValueJsonDeserializer())
                 // .registerTypeAdapterFactory(new ValidatorAdapterFactory())
                 .create();
 

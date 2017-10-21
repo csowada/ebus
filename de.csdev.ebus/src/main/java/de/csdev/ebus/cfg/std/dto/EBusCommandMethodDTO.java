@@ -10,10 +10,6 @@ package de.csdev.ebus.cfg.std.dto;
 
 import java.util.List;
 
-import com.google.gson.annotations.JsonAdapter;
-
-import de.csdev.ebus.cfg.std.EBusValueJsonDeserializer;
-
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -22,10 +18,8 @@ public class EBusCommandMethodDTO {
 
     private String command;
 
-    @JsonAdapter(EBusValueJsonDeserializer.class)
     private List<EBusValueDTO> master;
 
-    @JsonAdapter(EBusValueJsonDeserializer.class)
     private List<EBusValueDTO> slave;
 
     private String type;
