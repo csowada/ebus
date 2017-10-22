@@ -33,6 +33,8 @@ public class EBusCommandRegistry {
     private Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
 
     /**
+     * Adds a command collection
+     *
      * @param collection
      */
     public void addCommandCollection(IEBusCommandCollection collection) {
@@ -40,18 +42,21 @@ public class EBusCommandRegistry {
     }
 
     /**
-     * @param data
-     * @return
+     * Search for a command method for the given telegram
+     *
+     * @param data The complete unescaped eBUS telegram
+     * @return Returns the a list of all matching configuration methods or an empty list
      */
     public List<IEBusCommandMethod> find(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);
-        buffer.position(data.length);
         return find(buffer);
     }
 
     /**
-     * @param data
-     * @return
+     * Search for a command method for the given telegram
+     *
+     * @param data The complete unescaped eBUS telegram
+     * @return Returns the a list of all matching configuration methods or an empty list
      */
     public List<IEBusCommandMethod> find(ByteBuffer data) {
 
@@ -60,6 +65,8 @@ public class EBusCommandRegistry {
         for (IEBusCommandCollection collection : collections.values()) {
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
+
+                    // check if telegram matches
                     if (matchesCommand(commandChannel, data)) {
                         result.add(commandChannel);
                     }
@@ -73,6 +80,8 @@ public class EBusCommandRegistry {
     }
 
     /**
+     * Returns a registered command collection with given id or <code>null</code>
+     *
      * @param id
      * @return
      */
@@ -81,6 +90,8 @@ public class EBusCommandRegistry {
     }
 
     /**
+     * Return all registered command collections
+     *
      * @return
      */
     public Collection<IEBusCommandCollection> getCommandCollections() {
@@ -88,14 +99,32 @@ public class EBusCommandRegistry {
     }
 
     /**
+     * Returns a command by collectionId and command id or <code>null</code>
+     *
+     * @param collectionId
+     * @param id
+     * @return
+     */
+    public IEBusCommand getCommandById(String collectionId, String id) {
+
+        IEBusCommandCollection collection = collections.get(collectionId);
+        if (collection == null) {
+            return null;
+        }
+
+        return collection.getCommand(id);
+    }
+
+    /**
+     * Returns a command method by collectionId and command id or <code>null</code>
+     *
      * @param id
      * @param type
      * @return
      */
-    public IEBusCommandMethod getConfigurationById(String collectionId, String id, IEBusCommandMethod.Method type) {
+    public IEBusCommandMethod getCommandMethodById(String collectionId, String id, IEBusCommandMethod.Method type) {
 
-        IEBusCommandCollection collection = collections.get(collectionId);
-        IEBusCommand command = collection.getCommand(id);
+        IEBusCommand command = getCommandById(collectionId, id);
 
         if (command != null) {
             return command.getCommandMethod(type);
@@ -105,6 +134,8 @@ public class EBusCommandRegistry {
     }
 
     /**
+     * Checks if the given command method is acceptable for the unescaped telegram
+     * 
      * @param command
      * @param data
      * @return
@@ -123,7 +154,7 @@ public class EBusCommandRegistry {
 
             ByteBuffer mask = command.getMasterTelegramMask();
 
-            for (int i = 0; i < mask.position(); i++) {
+            for (int i = 0; i < mask.limit(); i++) {
                 byte b = mask.get(i);
 
                 if (b == (byte) 0xFF) {
@@ -131,7 +162,7 @@ public class EBusCommandRegistry {
                         break;
                     }
                 }
-                if (i == mask.position() - 1) {
+                if (i == mask.limit() - 1) {
                     return true;
                 }
             }

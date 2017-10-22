@@ -58,7 +58,7 @@ public class KW_CRC_Test {
 
     // @Test
     public void xxx() throws EBusTypeException {
-        IEBusCommandMethod commandMethod = commandRegistry.getConfigurationById("wolf-cgb2", "boiler.pressure",
+        IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById("wolf-cgb2", "boiler.pressure",
                 IEBusCommandMethod.Method.GET);
         ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0x0FF, null);
 

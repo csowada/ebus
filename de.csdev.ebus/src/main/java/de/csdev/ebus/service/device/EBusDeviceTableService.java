@@ -53,6 +53,14 @@ public class EBusDeviceTableService
         this.controller.addEBusEventListener(this);
     }
 
+    public boolean isDisableIdentificationRequests() {
+        return disableIdentificationRequests;
+    }
+
+    public void setDisableIdentificationRequests(boolean disableIdentificationRequests) {
+        this.disableIdentificationRequests = disableIdentificationRequests;
+    }
+
     /**
      *
      */
@@ -67,7 +75,7 @@ public class EBusDeviceTableService
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
-        IEBusCommandMethod command = configurationProvider.getConfigurationById(EBusConsts.COLLECTION_STD,
+        IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_INQ_EXISTENCE, IEBusCommandMethod.Method.BROADCAST);
 
         try {
@@ -93,7 +101,7 @@ public class EBusDeviceTableService
      */
     private void sendSignOfLife() {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommandMethod command = configurationProvider.getConfigurationById(EBusConsts.COLLECTION_STD,
+        IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_SIGN_OF_LIFE, IEBusCommandMethod.Method.BROADCAST);
 
         try {
@@ -111,7 +119,7 @@ public class EBusDeviceTableService
      */
     public void sendIdentificationRequest(byte slaveAddress) {
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-        IEBusCommandMethod command = configurationProvider.getConfigurationById(EBusConsts.COLLECTION_STD,
+        IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
 
         if (command == null) {

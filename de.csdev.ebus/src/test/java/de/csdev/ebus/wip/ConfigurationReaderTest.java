@@ -94,7 +94,7 @@ public class ConfigurationReaderTest {
         }
 
         Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-                tr.getConfigurationById("wolf-sm1", "solar.solar_data", IEBusCommandMethod.Method.BROADCAST),
+                tr.getCommandMethodById("wolf-sm1", "solar.solar_data", IEBusCommandMethod.Method.BROADCAST),
                 StaticTestTelegrams.WOLF_SOLAR_B);
 
         for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {

@@ -14,7 +14,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusTypeData1b extends EBusTypeNumber {
+public class EBusTypeData1b extends AbstractEBusTypeNumber {
 
     public static String TYPE_DATA1B = "data1b";
 

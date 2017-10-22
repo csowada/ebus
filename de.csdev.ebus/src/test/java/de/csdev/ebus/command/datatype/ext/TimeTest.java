@@ -204,4 +204,86 @@ public class TimeTest {
         assertEquals(calendar, decode.getCalendar());
     }
 
+    @Test
+    public void test_TimeMinutes() throws EBusTypeException {
+
+        GregorianCalendar calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
+        IEBusType<EBusDateTime> type = getType(EBusTypeTime.MINUTES, false);
+
+        // default 00:00
+
+        // check encode
+        byte[] bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { 0x00, 0x00 }, bytes);
+
+        // check decode
+        EBusDateTime decode = type.decode(bytes);
+        assertEquals(calendar, decode.getCalendar());
+
+        // default 23:30
+
+        // check encode 1410
+        calendar = new GregorianCalendar(1970, 0, 1, 23, 30, 0);
+        bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { (byte) 0x82, 0x05 }, bytes);
+
+        // check decode
+        decode = type.decode(bytes);
+        assertEquals(calendar, decode.getCalendar());
+
+        // default 23:30 - reversed byte order
+
+        // check encode
+        type = getType(EBusTypeTime.MINUTES, true);
+        bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { 0x05, (byte) 0x82 }, bytes);
+
+        // check decode
+        decode = type.decode(bytes);
+        assertEquals(calendar, decode.getCalendar());
+    }
+
+    @Test
+    public void test_TimeMinutes_Multi_10() throws EBusTypeException {
+
+        GregorianCalendar calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
+
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT, EBusTypeTime.MINUTES,
+                EBusTypeTime.MINUTE_MULTIPLIER, 10);
+
+        // default 00:00
+
+        // check encode
+        byte[] bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { 0x00, 0x00 }, bytes);
+
+        // check decode
+        EBusDateTime decode = type.decode(bytes);
+        assertEquals(calendar, decode.getCalendar());
+
+        // default 23:30
+
+        // check encode
+        calendar = new GregorianCalendar(1970, 0, 1, 23, 30, 0);
+        bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { (byte) 0x8D, (byte) 0x00 }, bytes);
+
+        // check decode
+        decode = type.decode(bytes);
+        assertEquals(calendar, decode.getCalendar());
+
+        // default 23:30 - reversed byte order
+
+        // check encode
+        type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT, EBusTypeTime.MINUTES,
+                IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE, EBusTypeTime.MINUTE_MULTIPLIER, 10);
+
+        bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { 0x00, (byte) 0x8D }, bytes);
+
+        // check decode
+        decode = type.decode(bytes);
+        assertEquals(calendar, decode.getCalendar());
+    }
+
 }

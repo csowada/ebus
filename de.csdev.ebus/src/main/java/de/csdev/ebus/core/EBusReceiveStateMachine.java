@@ -13,6 +13,7 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -57,41 +58,75 @@ public class EBusReceiveStateMachine {
         telegramAvailable = true;
     }
 
+    /**
+     * Returns the current state
+     *
+     * @return
+     */
     public State getState() {
         return state;
     }
 
+    /**
+     * Rturns a copy of the current received telegram
+     *
+     * @return
+     */
     public byte[] getTelegramData() {
-
-        byte[] receivedRawData = new byte[bb.position()];
-        bb.position(0);
-        bb.get(receivedRawData);
-
-        return receivedRawData;
+        return EBusUtils.toByteArray(bb);
     }
 
+    /**
+     * Returns true if we are waiting for a slave answer
+     *
+     * @return
+     */
     public boolean isWaitingForSlaveAnswer() {
         // after master crc byte
         return state == State.CRC1 && bb.get(1) != EBusConsts.BROADCAST_ADDRESS;
     }
 
+    /**
+     * Returns true if we currently receive a telegram
+     *
+     * @return
+     */
     public boolean isReceivingTelegram() {
-        // return state.compareTo(State.SYN) > 1;
         return state != State.UNKNOWN && state != State.SYN;
     }
 
+    /**
+     * Is current state a SYNC
+     *
+     * @return
+     */
     public boolean isSync() {
         return state == State.SYN;
     }
 
+    /**
+     * Returns true if a complete valid telegram is available
+     *
+     * @return
+     */
     public boolean isTelegramAvailable() {
         return telegramAvailable;
     }
 
+    /**
+     * Returns true if the next step is waiting for master ACK
+     *
+     * @return
+     */
     public boolean isWaitingForMasterACK() {
         return state.equals(State.CRC2);
     }
 
+    /**
+     * Returns true if the next step is waiting for master SYN
+     *
+     * @return
+     */
     public boolean isWaitingForMasterSYN() {
 
         if (state.equals(State.CRC1) && bb.get(1) == EBusConsts.BROADCAST_ADDRESS) {
@@ -105,6 +140,9 @@ public class EBusReceiveStateMachine {
         return false;
     }
 
+    /**
+     * Reset the state machine
+     */
     public void reset() {
         reset(false);
     }
@@ -135,10 +173,21 @@ public class EBusReceiveStateMachine {
         }
     }
 
+    /**
+     * Returns the current telegram as hex string
+     *
+     * @return
+     */
     public String toDumpString() {
         return EBusUtils.toHexDumpString(bb).toString();
     }
 
+    /**
+     * Update the state machine
+     *
+     * @param data The next byte
+     * @throws EBusDataException throws an exception on any telegram error
+     */
     public void update(byte data) throws EBusDataException {
 
         try {
@@ -239,7 +288,7 @@ public class EBusReceiveStateMachine {
                     }
 
                     len = data;
-                    logger.trace("Data Length: " + len);
+                    logger.trace("Master data length: " + len);
 
                     // add data to result and crc
                     bb.put(data);
@@ -264,8 +313,7 @@ public class EBusReceiveStateMachine {
 
                         // encode 0xA9 and 0xAA
                         if (isEscapedByte) {
-                            data = data == (byte) 0x00 ? EBusConsts.ESCAPE
-                                    : data == (byte) 0x01 ? EBusConsts.SYN : data;
+                            data = EBusCommandUtils.unescapeSymbol(data);
                             isEscapedByte = false;
                         }
 
@@ -288,19 +336,20 @@ public class EBusReceiveStateMachine {
 
                     // no syn symbol allowed
                     throwExceptionIfSYN(data);
-                    bb.put(data);
 
                     // escaped crc value
-                    if (!isEscapedByte && crc == EBusConsts.ESCAPE) {
+                    if (!isEscapedByte && data == EBusConsts.ESCAPE) {
                         isEscapedByte = true;
                         break;
                     }
 
                     // overwrite data with new value
                     if (isEscapedByte) {
-                        data = data == (byte) 0x00 ? EBusConsts.ESCAPE : data == (byte) 0x01 ? EBusConsts.SYN : data;
+                        data = EBusCommandUtils.unescapeSymbol(data);
                         isEscapedByte = false;
                     }
+
+                    bb.put(data);
 
                     // now check master crc
                     if (data == crc) {
@@ -387,9 +436,9 @@ public class EBusReceiveStateMachine {
                     }
 
                     len = data;
-                    logger.trace("xData Length: " + len);
+                    logger.trace("Slave data Length: " + len);
 
-                    // if no payload goto xxx
+                    // if no payload goto CRC2
                     setState(len == 0 ? State.CRC2 : State.LENGTH2);
                     break;
 
@@ -410,8 +459,7 @@ public class EBusReceiveStateMachine {
 
                         // is the encode flag enabled? then this symbol is a encoded value and we modify data
                         if (isEscapedByte) {
-                            data = data == (byte) 0x00 ? EBusConsts.ESCAPE
-                                    : data == (byte) 0x01 ? EBusConsts.SYN : data;
+                            data = EBusCommandUtils.unescapeSymbol(data);
                             isEscapedByte = false;
                         }
 
@@ -437,6 +485,18 @@ public class EBusReceiveStateMachine {
 
                     // no syn symbol allowed
                     throwExceptionIfSYN(data);
+
+                    // escaped crc value
+                    if (!isEscapedByte && data == EBusConsts.ESCAPE) {
+                        isEscapedByte = true;
+                        break;
+                    }
+
+                    // overwrite data with new value
+                    if (isEscapedByte) {
+                        data = EBusCommandUtils.unescapeSymbol(data);
+                        isEscapedByte = false;
+                    }
 
                     // add data to result
                     bb.put(data);

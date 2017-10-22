@@ -116,10 +116,10 @@ Key              | Required | Description
 name             | x        | The unique name within this command.<br />Use underscore ``_`` for multiple-word names. Use a leading ``_`` to mark this value as advanced.
 type             | x        | The data type of this value
 label            |          | The label of this value
-format           |          | Formatter for this value,   see String.format
+format           |          | Formatter for this value, see String.format
 min              |          | A minimal allowed value
 max              |          | A maximal allowed value
-factor           |          | Multiply the raw value with this factor
+factor           |          | Multiply the result value with this factor
 step             |          | The allowed step size for this value
 length           |          | The length for variable data types like ``bytes``, ``string`` and ``mword``
 children         |          | sub values for type ``byte``
@@ -131,29 +131,32 @@ reverseByteOrder |          | Reverse the byte order of some datatypes
 
 ### Standard data types
 
-Key    | Alias | Len | Description
----    | ---   | --- | ---
-bcd    |       | 1   | BCD number
-bit    |       | 1   | Bit as child of ``byte``
-byte   | uchar | 1   | Byte
-char   |       | 1   | Char
-data1b |       | 1   | DATA1B
-data1c |       | 1   | DATA1C
-data2b |       | 2   | DATA2B
-data2c |       | 2   | DATA2C
-int    |       | 2   | Integer
-word   | uint  | 2   | Unsigned Word
+Key     | Alias | Len | Description
+------- | ----- | --- | -----------
+bcd     |       | 1(*)| BCD number, ``length`` for larger values
+bit     |       | 1   | Bit as child of ``byte``
+byte    | uchar | 1   | Byte
+char    |       | 1   | Char
+data1b  |       | 1   | DATA1B
+data1c  |       | 1   | DATA1C
+data2b  |       | 2   | DATA2B
+data2c  |       | 2   | DATA2C
+int     |       | 2   | Integer
+word    | uint  | 2   | Unsigned Word
+number  |       | *   | Signed number, variable length
+unumber |       | *   | Unsigned number, variable length
 
 ### Advanced data types
 
 Key      | Alias | Len   | Add. Param              | Description
 ---      | ---   | ---   | ---                     | ---
 bytes    |       | len   | ``length``              | Byte Array, requires ``length``
-_datetime_ |       | 3,4,7 | ``variant``             | Needs Update! > A DateTime value (variants: ``datetime`` (default), ``date`` and ``time``
-date     |       | 3,4,7 | ``variant``             | A Date value (default), ``std``
-time     |       | 3,4,7 | ``variant``             | A Time value (default), ``std``
+datetime |       | *     | ``variantTime``, ``variantDate``, ``timeFirst`` | A combination of type ``date`` and ``time``. Use their variants. Switch Time/date order with ``timeFirst``
+date     |       | 3,4,7 | ``variant``             | A Date value (default), ``std``, see list below
+time     |       | 2, 3  | ``variant``             | A Time value (default), ``std``, see list below
 kw-crc   |       | 1     |                         | Kromschröder/Wolf CRC, often seen as ``0xCC``
-mword    |       | len*2 | ``length``, ``factor`` | Multiple word, requires ``length`` and allows to set ``factor`` (default: 1000)
+version  |       | 2     |                         | A BCD encoded version number
+mword    |       | len*2 | ``length``, ``multiplier`` | Multiple word, requires ``length`` and allows to set ``multiplier`` (default: 1000)
 string   |       | len   | ``length``              | ASCII String, requires ``length``
 static   |       | len   | ``default``             | A static byte array with the value of ``default``
 template |       |       | ``name``                | Adds the value with the given ``name`` from the template block
@@ -162,36 +165,48 @@ template-block | |       |                         | Adds the complete template 
 #### Details
 
 
+**datetime**
+
+Property    | Information
+---         | ---
+timeFirst   | The first bytes are the time (default), to change set ``false``
+variantTime | Use variant from type ``date`` 
+variantDate | Use variant from type ``time`` 
+
+
 **date**
 
-Parameter | xxxx
----    | ---
-variant | ``std``, ``short``, ``hex``, ``hex_short``, ``days`` 
+Property         | Information
+---              | ---
+variant          | Use ``std``, ``short``, ``hex``, ``hex_short`` or ``days`` 
 reverseByteOrder | Reverse the byte order of this value
 
 List of variants ...
 
-Variant | Length | Desciption
----  | --- | ---
-std | 4 | BCD date include weekday
-short | 3 | BCD date without weekday
-hex | 4 | HEX date without weekday
-hex_short | 3 | HEX date without weekday
-days | 2 | Days since 01.0.1970
+Variant   | Length | Desciption
+---       | ---    | ---
+std       | 4      | BCD date include weekday
+short     | 3      | BCD date without weekday
+hex       | 4      | HEX date without weekday
+hex_short | 3      | HEX date without weekday
+days      | 2      | Days since 01.0.1970
+
 
 **time**
 
-Parameter | xxxx
----    | ---
-variant | ``std``, ``short``, ``hex``, ``hex_short``, ``minutes`` 
+Property         | Information
+---              | ---
+variant          | Use ``std``, ``short``, ``hex``, ``hex_short`` or ``minutes`` 
+minuteMultplier  | multiple of n minutes
 reverseByteOrder | Reverse the byte order of this value
+
 
 **mword**
 
-Parameter | xxxx
----    | ---
-lenght | Number of word blocks
-factor | Multiply each block with factor
+Property         | Information
+---              | ---
+lenght           | Number of word blocks
+multiplier       | Multiply each block with factor
 reverseByteOrder | Reverse the byte order of this value
 
 

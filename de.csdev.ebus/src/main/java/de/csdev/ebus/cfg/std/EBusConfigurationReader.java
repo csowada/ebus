@@ -11,6 +11,7 @@ package de.csdev.ebus.cfg.std;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
@@ -73,7 +76,12 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             throw new IllegalArgumentException("Required argument inputStream is null!");
         }
 
+        Type merchantListType = new TypeToken<List<EBusValueDTO>>() {
+        }.getType();
+
         Gson gson = new Gson();
+        gson = new GsonBuilder().registerTypeAdapter(merchantListType, new EBusValueJsonDeserializer()).create();
+
         MessageDigest md = null;
 
         try {
@@ -257,7 +265,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             byte[] byteArray = EBusUtils.toByteArray(template.getDefault());
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("length", byteArray.length);
-            final IEBusType<?> typeByte = registry.getType(EBusTypeBytes.BYTES, properties);
+            final IEBusType<?> typeByte = registry.getType(EBusTypeBytes.TYPE_BYTES, properties);
 
             EBusCommandValue commandValue = EBusCommandValue.getInstance(typeByte, byteArray);
             commandValue.setParent(commandMethod);

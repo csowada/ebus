@@ -17,8 +17,11 @@ import java.util.List;
 public class EBusCommandMethodDTO {
 
     private String command;
+
     private List<EBusValueDTO> master;
+
     private List<EBusValueDTO> slave;
+
     private String type;
 
     public String getCommand() {

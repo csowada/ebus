@@ -32,6 +32,8 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
+import de.csdev.ebus.command.datatypes.std.EBusTypeNumber;
+import de.csdev.ebus.command.datatypes.std.EBusTypeUnsignedNumber;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
 import de.csdev.ebus.utils.CollectionUtils;
 
@@ -64,6 +66,8 @@ public class EBusTypeRegistry {
         add(EBusTypeChar.class);
         add(EBusTypeInteger.class);
         add(EBusTypeWord.class);
+        add(EBusTypeNumber.class);
+        add(EBusTypeUnsignedNumber.class);
 
         // secondary types
         add(EBusTypeBCD.class);
@@ -113,6 +117,8 @@ public class EBusTypeRegistry {
     }
 
     /**
+     * Returns a data type by id or <code>null</code>
+     * 
      * @param type
      * @return
      */
@@ -138,6 +144,8 @@ public class EBusTypeRegistry {
     }
 
     /**
+     * Encodes an object with the given data type or <code>null</code>
+     *
      * @param type
      * @param data
      * @return
@@ -156,6 +164,8 @@ public class EBusTypeRegistry {
     }
 
     /**
+     * Decodes a byte-array data with the data type or <code>null</code>
+     *
      * @param type
      * @param data
      * @return
@@ -174,6 +184,7 @@ public class EBusTypeRegistry {
     }
 
     /**
+     * Add a new IEBusType to the registry
      *
      * @param clazz
      */

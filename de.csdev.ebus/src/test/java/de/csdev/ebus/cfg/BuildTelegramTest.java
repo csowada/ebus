@@ -61,4 +61,27 @@ public class BuildTelegramTest {
             }
         }
     }
+
+    @Test
+    public void test_BuildMasterTelegramMask() {
+
+        EBusClientConfiguration reader = new EBusClientConfiguration();
+        reader.loadInternalConfigurations();
+
+        EBusClient client = new EBusClient(reader);
+
+        for (IEBusCommandCollection collection : client.getCommandCollections()) {
+            for (IEBusCommand command : collection.getCommands()) {
+                for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
+
+                    ByteBuffer mask = commandChannel.getMasterTelegramMask();
+
+                    logger.info(String.format("%-9s| %-40s| %-8s| %s", commandChannel.getMethod(), command.getId(),
+                            collection.getId(), EBusUtils.toHexDumpString(mask)));
+
+                }
+
+            }
+        }
+    }
 }

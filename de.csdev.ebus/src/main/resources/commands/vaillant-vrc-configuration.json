@@ -293,7 +293,57 @@
                 ]
             }
         },
+        
+        {
+            "label":    "Controller time",
+            "id":       "controller.time",
+            "command":  "B5 09",
 
+            "template": [
+                {"name": "time", "type": "time", "variant": "hex_short", "label": "Controller time"}
+            ],
+    
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 60 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 60 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Controller date",
+            "id":       "controller.date",
+            "command":  "B5 09",
+
+            "template": [
+                {"name": "date", "type": "date", "variant": "hex_short", "label": "Controller date"}
+            ],
+    
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 60 00"}
+                ],
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            },
+            "set": {
+                "master": [
+                    {"type": "static", "default": "0E 60 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
         {
             "label":    "Outside temperature",
             "id":       "controller.temp_outside",

@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.annotations.SerializedName;
 
+import de.csdev.ebus.utils.CollectionUtils;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -44,6 +46,21 @@ public class EBusValueDTO {
     private Integer pos;
     private String format;
     private boolean reverseByteOrder = false;
+    private Map<String, Object> properties;
+
+    public void setProperty(String key, Object value) {
+        properties = CollectionUtils.newMapIfNull(properties);
+        properties.put(key, value);
+    }
+
+    public Object getProperty(String key, Object value) {
+        return CollectionUtils.get(properties, key);
+    }
+
+    public Map<String, Object> getProperties() {
+        properties = CollectionUtils.newMapIfNull(properties);
+        return CollectionUtils.unmodifiableNotNullMap(properties);
+    }
 
     public boolean isReverseByteOrder() {
         return reverseByteOrder;
@@ -183,6 +200,10 @@ public class EBusValueDTO {
             } catch (IllegalAccessException e) {
                 logger.error("error!", e);
             }
+        }
+
+        if (properties != null) {
+            map.putAll(properties);
         }
 
         return map;

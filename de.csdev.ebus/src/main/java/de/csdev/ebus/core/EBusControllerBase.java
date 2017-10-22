@@ -32,7 +32,7 @@ public abstract class EBusControllerBase extends Thread {
     private ExecutorService threadPool;
 
     /**
-     * Add an eBus listener to receive valid eBus telegrams
+     * Add an eBUS listener to receive valid eBus telegrams
      *
      * @param listener
      */
@@ -41,7 +41,7 @@ public abstract class EBusControllerBase extends Thread {
     }
 
     /**
-     * Remove an eBus listener
+     * Remove an eBUS listener
      *
      * @param listener
      * @return
@@ -54,16 +54,23 @@ public abstract class EBusControllerBase extends Thread {
      * @param e
      */
     protected void fireOnConnectionException(final Exception e) {
+
         if (threadPool == null) {
             logger.warn("ThreadPool not ready!");
             return;
         }
 
         threadPool.execute(new Runnable() {
+            @Override
             public void run() {
                 for (IEBusConnectorEventListener listener : listeners) {
-                    listener.onConnectionException(e);
+                    try {
+                        listener.onConnectionException(e);
+                    } catch (Exception e) {
+                        logger.error("Error while firing onConnectionException events!", e);
+                    }
                 }
+
             }
         });
     }
@@ -74,26 +81,27 @@ public abstract class EBusControllerBase extends Thread {
      *
      * @param telegram
      */
-    protected void fireOnEBusTelegramReceived(final byte[] receivedRawData, final Integer sendQueueId) {
+    protected void fireOnEBusTelegramReceived(final byte[] receivedData, final Integer sendQueueId) {
 
         if (threadPool == null) {
-            logger.warn("ThreadPool not ready!");
+            logger.warn("ThreadPool not ready!  Can't fire onTelegramReceived events ...");
+            return;
+        }
+
+        if (receivedData == null || receivedData.length == 0) {
+            logger.warn("Telegram data is null or empty! Can't fire onTelegramReceived events ...");
             return;
         }
 
         threadPool.execute(new Runnable() {
+            @Override
             public void run() {
-
-                // try {
-                byte[] receivedData = null;
-                receivedData = receivedRawData;
-
-                if (receivedData != null) {
-                    for (IEBusConnectorEventListener listener : listeners) {
+                for (IEBusConnectorEventListener listener : listeners) {
+                    try {
                         listener.onTelegramReceived(receivedData, sendQueueId);
+                    } catch (Exception e) {
+                        logger.error("Error while firing onTelegramReceived events!", e);
                     }
-                } else {
-                    logger.debug("Received telegram was invalid, skip!");
                 }
             }
         });
@@ -111,9 +119,14 @@ public abstract class EBusControllerBase extends Thread {
         }
 
         threadPool.execute(new Runnable() {
+            @Override
             public void run() {
                 for (IEBusConnectorEventListener listener : listeners) {
-                    listener.onTelegramException(exception, sendQueueId);
+                    try {
+                        listener.onTelegramException(exception, sendQueueId);
+                    } catch (Exception e) {
+                        logger.error("Error while firing onTelegramException events!", e);
+                    }
                 }
             }
         });
@@ -124,7 +137,7 @@ public abstract class EBusControllerBase extends Thread {
      */
     protected void initThreadPool() {
         // create new thread pool to send received telegrams
-        threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-send-receive"));
+        threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-receiver"));
     }
 
     /**

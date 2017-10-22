@@ -24,7 +24,9 @@ public class EBusCommandDTO {
     private EBusCommandMethodDTO get;
     private String id;
     private EBusCommandMethodDTO set;
+
     private List<EBusValueDTO> template;
+
     private String src;
 
     public String getSrc() {
