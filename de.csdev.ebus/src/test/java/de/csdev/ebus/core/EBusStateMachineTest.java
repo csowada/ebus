@@ -371,8 +371,8 @@ public class EBusStateMachineTest {
                 ByteBuffer bb = ByteBuffer.allocate(50);
 
                 try {
-                    ByteBuffer masterTelegramPart = EBusCommandUtils.buildTelegram((byte) 0xFF, (byte) 0x08, command,
-                            data, data);
+                    ByteBuffer masterTelegramPart = EBusCommandUtils.buildCompleteTelegram((byte) 0xFF, (byte) 0x08,
+                            command, data, data);
 
                     // ByteBuffer slaveTelegramPart = EBusCommandUtils.buildSlaveTelegramPart(data);
 

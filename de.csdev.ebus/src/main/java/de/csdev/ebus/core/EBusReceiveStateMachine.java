@@ -288,7 +288,7 @@ public class EBusReceiveStateMachine {
                     }
 
                     len = data;
-                    logger.trace("Data Length: " + len);
+                    logger.trace("Master data length: " + len);
 
                     // add data to result and crc
                     bb.put(data);
@@ -313,7 +313,7 @@ public class EBusReceiveStateMachine {
 
                         // encode 0xA9 and 0xAA
                         if (isEscapedByte) {
-                            data = EBusCommandUtils.reverseEscapeSymbol(data);
+                            data = EBusCommandUtils.unescapeSymbol(data);
                             isEscapedByte = false;
                         }
 
@@ -345,7 +345,7 @@ public class EBusReceiveStateMachine {
 
                     // overwrite data with new value
                     if (isEscapedByte) {
-                        data = EBusCommandUtils.reverseEscapeSymbol(data);
+                        data = EBusCommandUtils.unescapeSymbol(data);
                         isEscapedByte = false;
                     }
 
@@ -436,9 +436,9 @@ public class EBusReceiveStateMachine {
                     }
 
                     len = data;
-                    logger.trace("xData Length: " + len);
+                    logger.trace("Slave data Length: " + len);
 
-                    // if no payload goto xxx
+                    // if no payload goto CRC2
                     setState(len == 0 ? State.CRC2 : State.LENGTH2);
                     break;
 
@@ -459,7 +459,7 @@ public class EBusReceiveStateMachine {
 
                         // is the encode flag enabled? then this symbol is a encoded value and we modify data
                         if (isEscapedByte) {
-                            data = EBusCommandUtils.reverseEscapeSymbol(data);
+                            data = EBusCommandUtils.unescapeSymbol(data);
                             isEscapedByte = false;
                         }
 
@@ -494,7 +494,7 @@ public class EBusReceiveStateMachine {
 
                     // overwrite data with new value
                     if (isEscapedByte) {
-                        data = EBusCommandUtils.reverseEscapeSymbol(data);
+                        data = EBusCommandUtils.unescapeSymbol(data);
                         isEscapedByte = false;
                     }
 

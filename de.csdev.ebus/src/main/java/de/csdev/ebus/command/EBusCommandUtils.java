@@ -40,7 +40,7 @@ public class EBusCommandUtils {
      * @param reversedByte The byte 0x00 or 0x01 to reverse
      * @return
      */
-    public static byte reverseEscapeSymbol(byte reversedByte) {
+    public static byte unescapeSymbol(byte reversedByte) {
         return reversedByte == (byte) 0x00 ? EBusConsts.ESCAPE
                 : reversedByte == (byte) 0x01 ? EBusConsts.SYN : reversedByte;
     }
@@ -62,6 +62,8 @@ public class EBusCommandUtils {
     }
 
     /**
+     * Build a complete telegram for master/slave, master/master and broadcasts
+     *
      * @param source
      * @param target
      * @param command
@@ -70,8 +72,54 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static ByteBuffer buildTelegram(byte source, byte target, byte[] command, byte[] masterData,
+    public static ByteBuffer buildCompleteTelegram(byte source, byte target, byte[] command, byte[] masterData,
             byte[] slaveData) throws EBusTypeException {
+
+        boolean isMastereMaster = EBusUtils.isMasterAddress(target);
+        boolean isBroadcast = target == EBusConsts.BROADCAST_ADDRESS;
+        boolean isMasterSlave = !isMastereMaster && !isBroadcast;
+
+        ByteBuffer buf = ByteBuffer.allocate(50);
+        buf.put(buildPartMasterTelegram(source, target, command, masterData));
+
+        // if used compute a complete telegram
+        if (isMasterSlave && slaveData != null) {
+            ByteBuffer slaveTelegramPart = buildPartSlave(slaveData);
+            buf.put(slaveTelegramPart);
+
+            buf.put(EBusConsts.ACK_OK);
+            buf.put(EBusConsts.SYN);
+        }
+
+        if (isMastereMaster) {
+            buf.put(EBusConsts.ACK_OK);
+            buf.put(EBusConsts.SYN);
+        }
+
+        if (isBroadcast) {
+            buf.put(EBusConsts.SYN);
+        }
+
+        // set limit and reset position
+        buf.limit(buf.position());
+        buf.position(0);
+
+        return buf;
+    }
+
+    /**
+     * Builds an escaped master telegram part or if slaveData is used a complete telegram incl. master ACK and SYN
+     *
+     * @param source
+     * @param target
+     * @param command
+     * @param masterData
+     * @param slaveData
+     * @return
+     * @throws EBusTypeException
+     */
+    public static ByteBuffer buildPartMasterTelegram(byte source, byte target, byte[] command, byte[] masterData)
+            throws EBusTypeException {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
@@ -90,15 +138,6 @@ public class EBusCommandUtils {
 
         buf.put(escapeSymbol(crc8));
 
-        // if used compute a complete telegram
-        if (slaveData != null) {
-            ByteBuffer slaveTelegramPart = buildSlaveTelegramPart(slaveData);
-            buf.put(slaveTelegramPart);
-
-            buf.put(EBusConsts.ACK_OK);
-            buf.put(EBusConsts.SYN);
-        }
-
         // set limit and reset position
         buf.limit(buf.position());
         buf.position(0);
@@ -107,28 +146,36 @@ public class EBusCommandUtils {
     }
 
     /**
+     * Build an escaped telegram part for a slave answer
+     *
      * @param slaveData
      * @return
      * @throws EBusTypeException
      */
-    public static ByteBuffer buildSlaveTelegramPart(byte[] slaveData) throws EBusTypeException {
+    public static ByteBuffer buildPartSlave(byte[] slaveData) throws EBusTypeException {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
         buf.put(EBusConsts.ACK_OK); // ACK
 
-        buf.put((byte) slaveData.length); // NN - Length
+        // if payload available
+        if (slaveData != null && slaveData.length > 0) {
+            buf.put((byte) slaveData.length); // NN - Length
 
-        // add the escaped bytes
-        for (byte b : slaveData) {
-            buf.put(escapeSymbol(b));
+            // add the escaped bytes
+            for (byte b : slaveData) {
+                buf.put(escapeSymbol(b));
+            }
+
+            // calculate crc
+            byte crc8 = EBusUtils.crc8(buf.array(), buf.position());
+
+            // add the crc, maybe escaped
+            buf.put(escapeSymbol(crc8));
+        } else {
+            // only set len = 0
+            buf.put((byte) 0x00); // NN - Length
         }
-
-        // calculate crc
-        byte crc8 = EBusUtils.crc8(buf.array(), buf.position());
-
-        // add the crc, maybe escaped
-        buf.put(escapeSymbol(crc8));
 
         // set limit and reset position
         buf.limit(buf.position());
@@ -168,9 +215,6 @@ public class EBusCommandUtils {
 
                         // add placeholder
                         b = new byte[entry.getType().getTypeLength()];
-
-                        // } else if (entry.getDefaultValue() == null) {
-                        // b = type.encode(null);
 
                     } else {
                         b = type.encode(entry.getDefaultValue());
@@ -231,20 +275,24 @@ public class EBusCommandUtils {
         if (commandMethod == null) {
             throw new IllegalArgumentException("Parameter command is null!");
         }
+
         if (source == null) {
             throw new IllegalArgumentException("Parameter source is null!");
         }
+
         if (target == null) {
             throw new IllegalArgumentException("Parameter target is null!");
         }
 
         byte[] data = EBusUtils.toByteArray(composeMasterData(commandMethod, values));
-        ByteBuffer byteBuffer = buildTelegram(source, target, commandMethod.getCommand(), data, null);
+        ByteBuffer byteBuffer = buildPartMasterTelegram(source, target, commandMethod.getCommand(), data);
 
         return byteBuffer;
     }
 
     /**
+     * Apply all post number operations like multiply, range check etc.
+     *
      * @param decode
      * @param ev
      * @return
@@ -288,8 +336,6 @@ public class EBusCommandUtils {
      */
     private static int decodeValueList(List<IEBusValue> values, byte[] data, HashMap<String, Object> result, int pos)
             throws EBusTypeException {
-
-        // HashMap<String, Object> result = new HashMap<String, Object>();
 
         if (values != null) {
             for (IEBusValue ev : values) {
