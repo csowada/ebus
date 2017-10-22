@@ -24,6 +24,12 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     protected EBusTypeRegistry types;
 
+    /**
+     * Create a clone of the input array and reverse the byte order if set
+     *
+     * @param data
+     * @return
+     */
     protected byte[] applyByteOrder(byte[] data) {
 
         data = ArrayUtils.clone(data);
@@ -37,6 +43,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     }
 
     /**
+     * Creates a new instance of this type
+     *
      * @return
      */
     private EBusAbstractType<T> createNewInstance() {
@@ -56,6 +64,11 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.datatypes.IEBusType#decode(byte[])
+     */
     @Override
     public T decode(byte[] data) throws EBusTypeException {
 
@@ -75,10 +88,22 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         return decodeInt(data);
     }
 
+    /**
+     * Post decodes the byte-array extract from the telegram to valid result, replaceValue and byteOrder already applied
+     *
+     * @param data
+     * @return
+     * @throws EBusTypeException
+     */
     public T decodeInt(byte[] data) throws EBusTypeException {
         throw new RuntimeException("Must be overwritten by superclass!");
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.datatypes.IEBusType#encode(java.lang.Object)
+     */
     @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
@@ -100,11 +125,20 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         return result;
     }
 
+    /**
+     * Post encodes the given object to a byte-array value, replaceValue and byteOrder already applied
+     *
+     * @param data
+     * @return
+     * @throws EBusTypeException
+     */
     public byte[] encodeInt(Object data) throws EBusTypeException {
         throw new RuntimeException("Must be overwritten by superclass!");
     }
 
     /**
+     * Check if the input data is equals to the replaceValue
+     *
      * @param data
      * @return
      */
@@ -112,6 +146,11 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         return ArrayUtils.isEquals(data, getReplaceValue());
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.datatypes.IEBusType#getInstance(java.util.Map)
+     */
     @Override
     public IEBusType<T> getInstance(Map<String, Object> properties) {
 
@@ -143,6 +182,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     }
 
     /**
+     * Returns the replace value or <code>null</code>
+     *
      * @return
      */
     public byte[] getReplaceValue() {
@@ -156,11 +197,23 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         return replaceValue;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.datatypes.IEBusType#getTypeLength()
+     */
     @Override
     public int getTypeLength() {
         return 0;
     }
 
+    /**
+     * Sets a property to a type instance
+     *
+     * @param instance
+     * @param property
+     * @param value
+     */
     protected void setInstanceProperty(EBusAbstractType<T> instance, String property, Object value) {
 
         if (property.equals("replaceValue")) {
@@ -189,6 +242,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     }
 
     /**
+     * Set the replace value
+     *
      * @param replaceValue
      * @throws EBusTypeException
      */
@@ -197,6 +252,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     }
 
     /**
+     * Set the replace value
+     *
      * @param replaceValue
      * @throws EBusTypeException
      */
@@ -204,6 +261,11 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         this.replaceValue = encodeInt(replaceValue);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.command.datatypes.IEBusType#setTypesParent(de.csdev.ebus.command.datatypes.EBusTypeRegistry)
+     */
     @Override
     public void setTypesParent(EBusTypeRegistry types) {
         this.types = types;

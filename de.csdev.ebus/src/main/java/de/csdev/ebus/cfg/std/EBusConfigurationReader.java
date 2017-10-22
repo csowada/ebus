@@ -59,27 +59,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     private EBusTypeRegistry registry;
 
-    // public class FooDeserializerFromJsonWithDifferentFields implements JsonDeserializer<EBusValueDTO> {
-    //
-    // // public EBusValueDTO deserialize(JsonElement jElement, Type typeOfT, JsonDeserializationContext context)
-    // // throws JsonParseException {
-    // // JsonObject jObject = jElement.getAsJsonObject();
-    // // int intValue = jObject.get("valueInt").getAsInt();
-    // // String stringValue = jObject.get("valueString").getAsString();
-    // // return new EBusValueDTO();
-    // // }
-    //
-    // @Override
-    // public EBusValueDTO deserialize(JsonElement jElement, Type typeOfT, JsonDeserializationContext context)
-    // throws JsonParseException {
-    //
-    // JsonObject jObject = jElement.getAsJsonObject();
-    // EBusValueDTOInternal deserialize = context.deserialize(jObject, EBusValueDTOInternal.class);
-    //
-    // return (EBusValueDTO) deserialize;
-    // }
-    // }
-
     /*
      * (non-Javadoc)
      *
@@ -101,10 +80,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }.getType();
 
         Gson gson = new Gson();
-        gson = new GsonBuilder().registerTypeAdapter(merchantListType, new EBusValueJsonDeserializer())
-                // .registerTypeAdapter(EBusValueDTODummy.class, new EBusValueJsonDeserializer())
-                // .registerTypeAdapterFactory(new ValidatorAdapterFactory())
-                .create();
+        gson = new GsonBuilder().registerTypeAdapter(merchantListType, new EBusValueJsonDeserializer()).create();
 
         MessageDigest md = null;
 

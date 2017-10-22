@@ -283,10 +283,8 @@ public class EBusController extends EBusControllerBase {
             // for (int i = 0; i < dataOutputBuffers.length; i++) {
             byte b = dataOutputBuffers[0];
 
-            logger.trace("Send {}", b);
+            logger.trace("Send {}", EBusUtils.toHexDumpString(b));
             connection.writeByte(b);
-
-            // if (i == 0) {
 
             readByte = (byte) (connection.readByte(true) & 0xFF);
             sendMachine.update(readByte);
@@ -327,7 +325,6 @@ public class EBusController extends EBusControllerBase {
 
                 logger.trace("Send {}", EBusUtils.toHexDumpString(b0));
                 connection.writeByte(b0);
-
             }
 
             // start of transfer successful

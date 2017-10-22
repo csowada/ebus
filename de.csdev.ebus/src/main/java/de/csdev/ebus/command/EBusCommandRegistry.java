@@ -33,6 +33,8 @@ public class EBusCommandRegistry {
     private Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
 
     /**
+     * Adds a command collection
+     *
      * @param collection
      */
     public void addCommandCollection(IEBusCommandCollection collection) {
@@ -40,18 +42,21 @@ public class EBusCommandRegistry {
     }
 
     /**
-     * @param data
-     * @return
+     * Search for a command method for the given telegram
+     *
+     * @param data The complete unescaped eBUS telegram
+     * @return Returns the a list of all matching configuration methods or an empty list
      */
     public List<IEBusCommandMethod> find(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);
-        buffer.limit(data.length);
         return find(buffer);
     }
 
     /**
-     * @param data
-     * @return
+     * Search for a command method for the given telegram
+     *
+     * @param data The complete unescaped eBUS telegram
+     * @return Returns the a list of all matching configuration methods or an empty list
      */
     public List<IEBusCommandMethod> find(ByteBuffer data) {
 
@@ -60,6 +65,8 @@ public class EBusCommandRegistry {
         for (IEBusCommandCollection collection : collections.values()) {
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
+
+                    // check if telegram matches
                     if (matchesCommand(commandChannel, data)) {
                         result.add(commandChannel);
                     }
@@ -73,6 +80,8 @@ public class EBusCommandRegistry {
     }
 
     /**
+     * Returns a registered command collection with given id or <code>null</code>
+     *
      * @param id
      * @return
      */
@@ -81,12 +90,21 @@ public class EBusCommandRegistry {
     }
 
     /**
+     * Return all registered command collections
+     *
      * @return
      */
     public Collection<IEBusCommandCollection> getCommandCollections() {
         return Collections.unmodifiableCollection(collections.values());
     }
 
+    /**
+     * Returns a command by collectionId and command id or <code>null</code>
+     *
+     * @param collectionId
+     * @param id
+     * @return
+     */
     public IEBusCommand getCommandById(String collectionId, String id) {
 
         IEBusCommandCollection collection = collections.get(collectionId);
@@ -98,6 +116,8 @@ public class EBusCommandRegistry {
     }
 
     /**
+     * Returns a command method by collectionId and command id or <code>null</code>
+     *
      * @param id
      * @param type
      * @return
@@ -114,6 +134,8 @@ public class EBusCommandRegistry {
     }
 
     /**
+     * Checks if the given command method is acceptable for the unescaped telegram
+     * 
      * @param command
      * @param data
      * @return

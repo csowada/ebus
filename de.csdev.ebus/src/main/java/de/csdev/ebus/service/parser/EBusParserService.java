@@ -20,6 +20,7 @@ import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusConnectorEventListener;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -52,7 +53,7 @@ public class EBusParserService extends EBusConnectorEventListener {
     }
 
     /**
-     * Add an eBus listener to receive parsed eBUS telegram values
+     * Add an eBUS listener to receive parsed eBUS telegram values
      *
      * @param listener
      */
@@ -79,6 +80,13 @@ public class EBusParserService extends EBusConnectorEventListener {
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
         final List<IEBusCommandMethod> commandChannelList = commandRegistry.find(receivedData);
+
+        if (commandChannelList == null || commandChannelList.isEmpty()) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("No command method matches the telegram {} ...", EBusUtils.toHexDumpString(receivedData));
+            }
+        }
+
         for (IEBusCommandMethod commandChannel : commandChannelList) {
 
             try {
@@ -101,7 +109,11 @@ public class EBusParserService extends EBusConnectorEventListener {
             byte[] receivedData, Integer sendQueueId) {
 
         for (IEBusParserListener listener : listeners) {
-            listener.onTelegramResolved(commandChannel, result, receivedData, sendQueueId);
+            try {
+                listener.onTelegramResolved(commandChannel, result, receivedData, sendQueueId);
+            } catch (Exception e) {
+                logger.error("Error while firing onTelegramResolved events!", e);
+            }
         }
     }
 

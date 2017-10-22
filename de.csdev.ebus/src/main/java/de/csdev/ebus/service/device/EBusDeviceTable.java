@@ -154,49 +154,6 @@ public class EBusDeviceTable {
         } else {
             fireOnDeviceUpdate(IEBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
         }
-
-        // if (data == null) {
-        // if (device == null) {
-        // device = new EBusDevice(address, this);
-        // device.setLastActivity(System.currentTimeMillis());
-        //
-        // deviceTable.put(address, device);
-        //
-        // fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.NEW, device);
-        // return;
-        // } else {
-        // device.setLastActivity(System.currentTimeMillis());
-        //
-        // fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.UPDATE_ACTIVITY, device);
-        // return;
-        // }
-        // }
-        //
-        // if (!data.isEmpty()) {
-        //
-        // Object obj = data.get("device_id");
-        // if (obj != null) {
-        // device.setDeviceId((byte[]) obj);
-        // }
-        //
-        // BigDecimal obj2 = NumberUtils.toBigDecimal(data.get("hardware_version"));
-        // if (obj2 != null) {
-        // device.setHardwareVersion(obj2);
-        // }
-        //
-        // obj2 = NumberUtils.toBigDecimal(data.get("software_version"));
-        // if (obj2 != null) {
-        // device.setSoftwareVersion(obj2);
-        // }
-        //
-        // obj2 = NumberUtils.toBigDecimal(data.get("vendor"));
-        // if (obj2 != null) {
-        // int intValue = obj2.intValue();
-        // device.setManufacturer((byte) intValue);
-        // }
-        // }
-        //
-        // fireOnTelegramResolved(IEBusDeviceTableListener.TYPE.UPDATE, device);
     }
 
     public Collection<EBusDevice> getDeviceTable() {
@@ -205,7 +162,11 @@ public class EBusDeviceTable {
 
     private void fireOnDeviceUpdate(IEBusDeviceTableListener.TYPE type, EBusDevice device) {
         for (IEBusDeviceTableListener listener : listeners) {
-            listener.onEBusDeviceUpdate(type, device);
+            try {
+                listener.onEBusDeviceUpdate(type, device);
+            } catch (Exception e) {
+                logger.error("Error while firing onEBusDeviceUpdate events!", e);
+            }
         }
     }
 

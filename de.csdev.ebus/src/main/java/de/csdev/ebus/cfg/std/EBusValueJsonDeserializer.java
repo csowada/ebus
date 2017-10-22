@@ -36,6 +36,7 @@ import de.csdev.ebus.cfg.std.dto.EBusValueDTO;
  */
 public class EBusValueJsonDeserializer implements JsonDeserializer<List<EBusValueDTO>> {
 
+    @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(EBusValueJsonDeserializer.class);
 
     @Override
@@ -63,7 +64,6 @@ public class EBusValueJsonDeserializer implements JsonDeserializer<List<EBusValu
 
             for (Entry<String, JsonElement> entry : jObject.entrySet()) {
                 if (!fields.contains(entry.getKey())) {
-                    logger.warn("Unknown property {} ...", entry.getKey());
                     valueDTO.setProperty(entry.getKey(), entry.getValue().getAsString());
                 }
             }

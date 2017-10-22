@@ -117,6 +117,8 @@ public class EBusTypeRegistry {
     }
 
     /**
+     * Returns a data type by id or <code>null</code>
+     * 
      * @param type
      * @return
      */
@@ -142,6 +144,8 @@ public class EBusTypeRegistry {
     }
 
     /**
+     * Encodes an object with the given data type or <code>null</code>
+     *
      * @param type
      * @param data
      * @return
@@ -160,6 +164,8 @@ public class EBusTypeRegistry {
     }
 
     /**
+     * Decodes a byte-array data with the data type or <code>null</code>
+     *
      * @param type
      * @param data
      * @return
@@ -178,6 +184,7 @@ public class EBusTypeRegistry {
     }
 
     /**
+     * Add a new IEBusType to the registry
      *
      * @param clazz
      */
