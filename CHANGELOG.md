@@ -1,9 +1,10 @@
-## Alpha 0.0.12 (2017-10-21)
+## Alpha 0.0.12 (2017-10-22)
 
 Features:
 
   - new data types ``date`` and ``time`` for variable length signed / unsigned numbers
   - more source code documentation
+  - enhance logging on firing event handler s
 
 Bugfixes:
 
