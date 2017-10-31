@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -73,11 +72,11 @@ public class EBusCommandRegistry {
         }
 
         if (loadBuildInCommands) {
-            loadBuildInCommands();
+            loadBuildInCommandCollections();
         }
     }
 
-    public void loadBuildInCommands() {
+    public void loadBuildInCommandCollections() {
         List<IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurations();
 
         if (loadBuildInConfigurations != null && !loadBuildInConfigurations.isEmpty()) {
@@ -181,8 +180,8 @@ public class EBusCommandRegistry {
      *
      * @return
      */
-    public Collection<IEBusCommandCollection> getCommandCollections() {
-        return Collections.unmodifiableCollection(collections.values());
+    public List<IEBusCommandCollection> getCommandCollections() {
+        return Collections.unmodifiableList(new ArrayList<IEBusCommandCollection>(collections.values()));
     }
 
     /**
@@ -245,6 +244,10 @@ public class EBusCommandRegistry {
         }
 
         return false;
+    }
+
+    public void clear() {
+        collections.clear();
     }
 
     @Override
