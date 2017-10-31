@@ -49,8 +49,6 @@ public class EBusClient {
 
     private EBusCommandRegistry commandRegistry;
 
-    // private EBusClientConfiguration configuration;
-
     /**
      * Disposes the eBUS client with all dependend services
      */
@@ -76,13 +74,6 @@ public class EBusClient {
             resolverService = null;
         }
     }
-
-    // /**
-    // * Creates a new eBUS client
-    // */
-    // public EBusClient() {
-    // this(new EBusClientConfiguration());
-    // }
 
     /**
      * Creates a new eBUS client with given configuration

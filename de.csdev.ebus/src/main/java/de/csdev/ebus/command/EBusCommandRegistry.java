@@ -44,19 +44,17 @@ public class EBusCommandRegistry {
         return reader;
     }
 
+    /**
+     * @param readerClass
+     */
     public EBusCommandRegistry(Class<? extends IEBusConfigurationReader> readerClass) {
         this(readerClass, false);
     }
 
-    // public EBusCommandRegistry(IEBusConfigurationReader reader, boolean loadBuildInCommands) {
-    // this.reader = reader;
-    // typeRegistry = new EBusTypeRegistry();
-    //
-    // if (loadBuildInCommands) {
-    // loadBuildInCommands();
-    // }
-    // }
-
+    /**
+     * @param readerClass
+     * @param loadBuildInCommands
+     */
     public EBusCommandRegistry(Class<? extends IEBusConfigurationReader> readerClass, boolean loadBuildInCommands) {
 
         typeRegistry = new EBusTypeRegistry();
@@ -76,6 +74,9 @@ public class EBusCommandRegistry {
         }
     }
 
+    /**
+     * Loads all build-in command collections
+     */
     public void loadBuildInCommandCollections() {
         List<IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurations();
 
@@ -86,6 +87,11 @@ public class EBusCommandRegistry {
         }
     }
 
+    /**
+     * Loads a configuration file
+     * 
+     * @param inputStream
+     */
     public void loadCommandCollection(InputStream inputStream) {
 
         try {

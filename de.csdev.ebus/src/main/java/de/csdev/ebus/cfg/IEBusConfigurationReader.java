@@ -39,5 +39,10 @@ public interface IEBusConfigurationReader {
      */
     public void setEBusTypes(EBusTypeRegistry ebusTypes);
 
+    /**
+     * Loads all build-in command collections implemented by the reader
+     *
+     * @return
+     */
     public List<IEBusCommandCollection> loadBuildInConfigurations();
 }

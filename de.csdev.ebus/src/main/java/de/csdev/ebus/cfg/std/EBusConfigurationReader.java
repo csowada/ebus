@@ -61,10 +61,46 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             "wolf-mm-configuration.json", "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json",
             "vaillant-vr81-configuration.json");
 
-    @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(EBusConfigurationReader.class);
 
     private EBusTypeRegistry registry;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.cfg.IEBusConfigurationReader#loadBuildInConfigurations()
+     */
+    @Override
+    public List<IEBusCommandCollection> loadBuildInConfigurations() {
+
+        List<IEBusCommandCollection> result = new ArrayList<IEBusCommandCollection>();
+
+        for (String configurationFile : BUILDIN_FILES) {
+
+            try {
+                logger.info("Load internal configuration {}", configurationFile);
+                String configPath = "/commands/" + configurationFile;
+
+                InputStream inputStream = EBusController.class.getResourceAsStream(configPath);
+                if (inputStream == null) {
+                    throw new RuntimeException(
+                            String.format("Unable to load internal configuration \"%s\" ...", configPath));
+                }
+
+                IEBusCommandCollection collection = loadConfigurationCollection(inputStream);
+                if (collection != null) {
+                    result.add(collection);
+                }
+
+            } catch (IOException e) {
+                logger.error("error!", e);
+            } catch (EBusConfigurationReaderException e) {
+                logger.error("error!", e);
+            }
+        }
+
+        return result;
+    }
 
     /*
      * (non-Javadoc)
@@ -117,16 +153,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         commandCollection.setIdentification(collection.getIdentification());
 
         return commandCollection;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.csdev.ebus.cfg.IEBusConfigurationReader#setEBusTypes(de.csdev.ebus.command.datatypes.EBusTypeRegistry)
-     */
-    @Override
-    public void setEBusTypes(EBusTypeRegistry ebusTypes) {
-        registry = ebusTypes;
     }
 
     /**
@@ -328,36 +354,14 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         return result;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.csdev.ebus.cfg.IEBusConfigurationReader#setEBusTypes(de.csdev.ebus.command.datatypes.EBusTypeRegistry)
+     */
     @Override
-    public List<IEBusCommandCollection> loadBuildInConfigurations() {
-
-        List<IEBusCommandCollection> result = new ArrayList<IEBusCommandCollection>();
-
-        for (String configurationFile : BUILDIN_FILES) {
-
-            try {
-                logger.info("Load internal configuration {}", configurationFile);
-                String configPath = "/commands/" + configurationFile;
-
-                InputStream inputStream = EBusController.class.getResourceAsStream(configPath);
-                if (inputStream == null) {
-                    throw new RuntimeException(
-                            String.format("Unable to load internal configuration \"%s\" ...", configPath));
-                }
-
-                IEBusCommandCollection collection = loadConfigurationCollection(inputStream);
-                if (collection != null) {
-                    result.add(collection);
-                }
-
-            } catch (IOException e) {
-                logger.error("error!", e);
-            } catch (EBusConfigurationReaderException e) {
-                logger.error("error!", e);
-            }
-        }
-
-        return result;
+    public void setEBusTypes(EBusTypeRegistry ebusTypes) {
+        registry = ebusTypes;
     }
 
 }
