@@ -14,21 +14,18 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
@@ -191,55 +188,6 @@ public class EBusDeviceTable {
      */
     public boolean removeEBusDeviceTableListener(IEBusDeviceTableListener listener) {
         return listeners.remove(listener);
-    }
-
-    /**
-     * @return
-     */
-    public String getDeviceTableInformation(Collection<IEBusCommandCollection> collections) {
-
-        StringBuilder sb = new StringBuilder();
-
-        Map<String, String> mapping = new HashMap<String, String>();
-
-        for (IEBusCommandCollection collection : collections) {
-            for (String identification : collection.getIdentification()) {
-                mapping.put(identification, collection.getId());
-            }
-        }
-
-        EBusDevice ownDevice = getOwnDevice();
-
-        sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-20s | %-2s | %-10s | %-10s | %-20s\n", "MA", "SA",
-                "Identifier", "Device", "Manufacture", "ID", "Firmware", "Hardware", "Last Activity"));
-
-        sb.append(String.format("%-2s-+-%-2s-+-%-14s-+-%-14s-+-%-20s-+-%-2s-+-%-10s-+-%-10s-+-%-20s\n",
-                StringUtils.repeat("-", 2), StringUtils.repeat("-", 2), StringUtils.repeat("-", 14),
-                StringUtils.repeat("-", 14), StringUtils.repeat("-", 20), StringUtils.repeat("-", 2),
-                StringUtils.repeat("-", 10), StringUtils.repeat("-", 10), StringUtils.repeat("-", 20)));
-
-        for (EBusDevice device : deviceTable.values()) {
-
-            boolean isBridge = device.equals(ownDevice);
-            String masterAddress = EBusUtils.toHexDumpString(device.getMasterAddress());
-            String slaveAddress = EBusUtils.toHexDumpString(device.getSlaveAddress());
-
-            String activity = device.getLastActivity() == 0 ? "---" : new Date(device.getLastActivity()).toString();
-            String id = EBusUtils.toHexDumpString(device.getDeviceId()).toString();
-            String deviceName = isBridge ? "<interface>" : mapping.getOrDefault(id, "---");
-            String manufacture = isBridge ? "eBUS Library" : device.getManufacturerName();
-
-            sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-20s | %-2s | %-10s | %-10s | %-20s\n",
-                    masterAddress, slaveAddress, id, deviceName, manufacture,
-                    EBusUtils.toHexDumpString(device.getManufacturer()), device.getSoftwareVersion(),
-                    device.getHardwareVersion(), activity));
-
-        }
-
-        sb.append(StringUtils.repeat("-", 118) + "\n");
-        sb.append("MA = Master Address / SA = Slave Address / ID = Manufacture ID\n");
-
-        return sb.toString();
     }
 
 }

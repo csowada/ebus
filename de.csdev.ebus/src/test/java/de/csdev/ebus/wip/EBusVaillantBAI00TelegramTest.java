@@ -47,8 +47,7 @@ public class EBusVaillantBAI00TelegramTest {
         EBusConfigurationReader cfg = new EBusConfigurationReader();
         cfg.setEBusTypes(types);
 
-        commandRegistry = new EBusCommandRegistry();
-        commandRegistry.addCommandCollection(cfg.loadConfigurationCollection(inputStream));
+        commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
     }
 
 }

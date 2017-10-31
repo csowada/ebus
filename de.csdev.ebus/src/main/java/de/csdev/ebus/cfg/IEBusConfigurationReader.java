@@ -10,6 +10,7 @@ package de.csdev.ebus.cfg;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
@@ -33,9 +34,10 @@ public interface IEBusConfigurationReader {
 
     /**
      * Sets the eBUS type registry to use
-     * 
+     *
      * @param ebusTypes
      */
     public void setEBusTypes(EBusTypeRegistry ebusTypes);
 
+    public List<IEBusCommandCollection> loadBuildInConfigurations();
 }

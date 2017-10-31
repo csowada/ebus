@@ -24,6 +24,8 @@ import de.csdev.ebus.command.datatypes.IEBusComplexType;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.core.EBusConsts;
+import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.core.EBusReceiveStateMachine;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -33,6 +35,19 @@ import de.csdev.ebus.utils.EBusUtils;
 public class EBusCommandUtils {
 
     private final static Logger logger = LoggerFactory.getLogger(EBusCommandUtils.class);
+
+    public static byte[] checkRawTelegram(byte[] data) throws EBusDataException {
+        EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+
+        // init machine
+        machine.update(EBusConsts.SYN);
+
+        for (byte b : data) {
+            machine.update(b);
+        }
+
+        return machine.getTelegramData();
+    }
 
     /**
      * Reverse an escaped SYN or EXSCAPE back to its decoded value

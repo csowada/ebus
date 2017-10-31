@@ -16,6 +16,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -46,6 +47,7 @@ import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
+import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -53,6 +55,11 @@ import de.csdev.ebus.utils.EBusUtils;
  *
  */
 public class EBusConfigurationReader implements IEBusConfigurationReader {
+
+    private static final List<String> BUILDIN_FILES = Arrays.asList("common-configuration.json",
+            "wolf-cgb2-configuration.json", "wolf-sm1-configuration.json", "wolf-bm2-configuration.json",
+            "wolf-mm-configuration.json", "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json",
+            "vaillant-vr81-configuration.json");
 
     @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(EBusConfigurationReader.class);
@@ -318,6 +325,38 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         ev.setParent(commandMethod);
 
         result.add(ev);
+        return result;
+    }
+
+    @Override
+    public List<IEBusCommandCollection> loadBuildInConfigurations() {
+
+        List<IEBusCommandCollection> result = new ArrayList<IEBusCommandCollection>();
+
+        for (String configurationFile : BUILDIN_FILES) {
+
+            try {
+                logger.info("Load internal configuration {}", configurationFile);
+                String configPath = "/commands/" + configurationFile;
+
+                InputStream inputStream = EBusController.class.getResourceAsStream(configPath);
+                if (inputStream == null) {
+                    throw new RuntimeException(
+                            String.format("Unable to load internal configuration \"%s\" ...", configPath));
+                }
+
+                IEBusCommandCollection collection = loadConfigurationCollection(inputStream);
+                if (collection != null) {
+                    result.add(collection);
+                }
+
+            } catch (IOException e) {
+                logger.error("error!", e);
+            } catch (EBusConfigurationReaderException e) {
+                logger.error("error!", e);
+            }
+        }
+
         return result;
     }
 
