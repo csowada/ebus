@@ -47,7 +47,7 @@ public class EBusClient {
 
     private EBusDeviceTableService deviceTableService;
 
-    private EBusClientConfiguration configuration;
+    private EBusCommandRegistry commandRegistry;
 
     /**
      * Disposes the eBUS client with all dependend services
@@ -55,9 +55,8 @@ public class EBusClient {
     public void dispose() {
         controller.interrupt();
 
-        if (configuration != null) {
-            configuration.clear();
-            configuration = null;
+        if (commandRegistry != null) {
+            commandRegistry = null;
         }
 
         if (deviceTableService != null) {
@@ -77,22 +76,16 @@ public class EBusClient {
     }
 
     /**
-     * Creates a new eBUS client
-     */
-    public EBusClient() {
-        this(new EBusClientConfiguration());
-    }
-
-    /**
      * Creates a new eBUS client with given configuration
      *
      * @param configuration
      */
-    public EBusClient(EBusClientConfiguration configuration) {
-        this.configuration = configuration;
+    public EBusClient(EBusCommandRegistry commandRegistry) {
+
+        this.commandRegistry = commandRegistry;
 
         deviceTable = new EBusDeviceTable();
-        resolverService = new EBusParserService(configuration.configurationProvider);
+        resolverService = new EBusParserService(commandRegistry);
     }
 
     /**
@@ -109,7 +102,7 @@ public class EBusClient {
 
         deviceTable.setOwnAddress(masterAddress);
 
-        deviceTableService = new EBusDeviceTableService(controller, configuration.configurationProvider, deviceTable);
+        deviceTableService = new EBusDeviceTableService(controller, commandRegistry, deviceTable);
 
         resolverService.addEBusParserListener(deviceTableService);
         deviceTable.addEBusDeviceTableListener(deviceTableService);
@@ -146,7 +139,7 @@ public class EBusClient {
      * @return
      */
     public EBusTypeRegistry getDataTypes() {
-        return configuration.dataTypes;
+        return commandRegistry.getTypeRegistry();
     }
 
     /**
@@ -164,7 +157,7 @@ public class EBusClient {
      * @return
      */
     public EBusCommandRegistry getConfigurationProvider() {
-        return configuration.configurationProvider;
+        return commandRegistry;
     }
 
     /**

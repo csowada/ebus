@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
+import de.csdev.ebus.cfg.std.EBusConfigurationReader;
+import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusController;
@@ -32,11 +34,10 @@ public class ClientTest2 {
 
     @Test
     public void testNoSlaveResponse() throws EBusTypeException, IOException, InterruptedException {
-        EBusClientConfiguration clientConfiguration = new EBusClientConfiguration();
 
-        clientConfiguration.loadInternalConfigurations();
+        EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
 
-        EBusClient client = new EBusClient(clientConfiguration);
+        EBusClient client = new EBusClient(commandRegistry);
 
         EBusController controller = new EBusController(emulator);
 

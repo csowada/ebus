@@ -451,8 +451,8 @@
         },
         
         {
-            "label":    "Outside temperature D.047",
-            "id":       "boiler.temp_outside",
+            "label":    "Boiler pressure",
+            "id":       "boiler.pressure",
             "command":  "B5 09",
 
             "get": {
@@ -460,8 +460,8 @@
                     {"type": "static", "default": "0D 02 00"}
                 ],
                 "slave": [
-                    {"name": "temp_outside", "type": "int", "label": "Outside temperature", "factor": 0.001, "format":"%.1f bar"},
-                    {"name": "status", "type": "uchar", "label": "Status Outside temperature", 
+                    {"name": "pressure", "type": "int", "label": "Boilder pressure", "factor": 0.001, "format":"%.1f bar"},
+                    {"name": "status", "type": "uchar", "label": "Status Boilder pressure", 
                         "mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
                 ]
             }

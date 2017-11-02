@@ -8,9 +8,10 @@
  */
 package de.csdev.ebus.command;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,10 @@ import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.cfg.EBusConfigurationReaderException;
+import de.csdev.ebus.cfg.IEBusConfigurationReader;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -28,9 +32,78 @@ import de.csdev.ebus.command.datatypes.EBusTypeException;
  */
 public class EBusCommandRegistry {
 
+    private Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
+
     private final Logger logger = LoggerFactory.getLogger(EBusCommandRegistry.class);
 
-    private Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
+    private EBusTypeRegistry typeRegistry;
+
+    private IEBusConfigurationReader reader;
+
+    public IEBusConfigurationReader getConfigurationReader() {
+        return reader;
+    }
+
+    /**
+     * @param readerClass
+     */
+    public EBusCommandRegistry(Class<? extends IEBusConfigurationReader> readerClass) {
+        this(readerClass, false);
+    }
+
+    /**
+     * @param readerClass
+     * @param loadBuildInCommands
+     */
+    public EBusCommandRegistry(Class<? extends IEBusConfigurationReader> readerClass, boolean loadBuildInCommands) {
+
+        typeRegistry = new EBusTypeRegistry();
+
+        try {
+            this.reader = readerClass.newInstance();
+            this.reader.setEBusTypes(typeRegistry);
+
+        } catch (InstantiationException e) {
+            logger.error("error!", e);
+        } catch (IllegalAccessException e) {
+            logger.error("error!", e);
+        }
+
+        if (loadBuildInCommands) {
+            loadBuildInCommandCollections();
+        }
+    }
+
+    /**
+     * Loads all build-in command collections
+     */
+    public void loadBuildInCommandCollections() {
+        List<IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurations();
+
+        if (loadBuildInConfigurations != null && !loadBuildInConfigurations.isEmpty()) {
+            for (IEBusCommandCollection collection : loadBuildInConfigurations) {
+                addCommandCollection(collection);
+            }
+        }
+    }
+
+    /**
+     * Loads a configuration file
+     * 
+     * @param inputStream
+     */
+    public void loadCommandCollection(InputStream inputStream) {
+
+        try {
+            addCommandCollection(reader.loadConfigurationCollection(inputStream));
+
+        } catch (EBusConfigurationReaderException e) {
+            logger.error("error!", e);
+        } catch (IOException e) {
+            logger.error("error!", e);
+        }
+
+    }
 
     /**
      * Adds a command collection
@@ -38,7 +111,9 @@ public class EBusCommandRegistry {
      * @param collection
      */
     public void addCommandCollection(IEBusCommandCollection collection) {
-        collections.put(collection.getId(), collection);
+        if (collection != null) {
+            collections.put(collection.getId(), collection);
+        }
     }
 
     /**
@@ -80,25 +155,6 @@ public class EBusCommandRegistry {
     }
 
     /**
-     * Returns a registered command collection with given id or <code>null</code>
-     *
-     * @param id
-     * @return
-     */
-    public IEBusCommandCollection getCommandCollection(String id) {
-        return collections.get(id);
-    }
-
-    /**
-     * Return all registered command collections
-     *
-     * @return
-     */
-    public Collection<IEBusCommandCollection> getCommandCollections() {
-        return Collections.unmodifiableCollection(collections.values());
-    }
-
-    /**
      * Returns a command by collectionId and command id or <code>null</code>
      *
      * @param collectionId
@@ -113,6 +169,25 @@ public class EBusCommandRegistry {
         }
 
         return collection.getCommand(id);
+    }
+
+    /**
+     * Returns a registered command collection with given id or <code>null</code>
+     *
+     * @param id
+     * @return
+     */
+    public IEBusCommandCollection getCommandCollection(String id) {
+        return collections.get(id);
+    }
+
+    /**
+     * Return all registered command collections
+     *
+     * @return
+     */
+    public List<IEBusCommandCollection> getCommandCollections() {
+        return Collections.unmodifiableList(new ArrayList<IEBusCommandCollection>(collections.values()));
     }
 
     /**
@@ -133,9 +208,13 @@ public class EBusCommandRegistry {
         return null;
     }
 
+    public EBusTypeRegistry getTypeRegistry() {
+        return typeRegistry;
+    }
+
     /**
      * Checks if the given command method is acceptable for the unescaped telegram
-     * 
+     *
      * @param command
      * @param data
      * @return
@@ -171,6 +250,10 @@ public class EBusCommandRegistry {
         }
 
         return false;
+    }
+
+    public void clear() {
+        collections.clear();
     }
 
     @Override

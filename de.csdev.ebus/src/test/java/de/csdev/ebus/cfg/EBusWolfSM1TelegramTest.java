@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.csdev.ebus.TestUtils;
-import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
@@ -45,8 +44,8 @@ public class EBusWolfSM1TelegramTest {
         EBusConfigurationReader cfg = new EBusConfigurationReader();
         cfg.setEBusTypes(types);
 
-        commandRegistry = new EBusCommandRegistry();
-        commandRegistry.addCommandCollection(cfg.loadConfigurationCollection(inputStream));
+        commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
+        commandRegistry.loadCommandCollection(inputStream);
     }
 
     @Test

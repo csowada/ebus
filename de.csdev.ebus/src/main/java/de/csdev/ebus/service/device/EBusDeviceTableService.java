@@ -71,7 +71,7 @@ public class EBusDeviceTableService
             return;
         }
 
-        logger.info("Start scan process ...");
+        logger.info("Start eBUS scan  ...");
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
@@ -118,6 +118,7 @@ public class EBusDeviceTableService
      * @param slaveAddress
      */
     public void sendIdentificationRequest(byte slaveAddress) {
+
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);

@@ -1,11 +1,16 @@
 {
     "id":           "vrc430",
     "vendor":       "Vaillant",
-    "label":        "Vaillant VRC 430/470",
-    "description":  "Programming unit Vaillant VRC 430 and VRC 470",
+    "label":        "Vaillant VRC 430(f)/470(f)",
+    "description":  "Programming unit Vaillant VRC 430, 430f, 470 and 470f",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": ["34 33 30 30 30", "34 37 30 30 30"],
+    "identification": [
+                    "34 33 30 30 30",
+                    "34 37 30 30 30",
+                    "46 34 37 30 30",
+                    "46 34 33 30 30"
+                    ],
     
     "commands":
     [

@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.Before;
-
 import de.csdev.ebus.StaticTestTelegrams;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
@@ -26,8 +24,6 @@ import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
-import de.csdev.ebus.command.datatypes.ext.EBusTypeKWCrc;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -36,31 +32,21 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class ConfigurationReaderTest {
 
-    EBusCommandRegistry tr;
-    EBusTypeRegistry types;
-
-    @Before
-    public void before() {
-        tr = new EBusCommandRegistry();
-        types = new EBusTypeRegistry();
-        types.add(EBusTypeKWCrc.class);
-
-    }
-
-
-    
     // @Test
     public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 
         InputStream inputStream = EBusConfigurationReader.class
                 .getResourceAsStream("/commands/wolf-sm1-configuration.json");
 
-        EBusConfigurationReader reader = new EBusConfigurationReader();
-        reader.setEBusTypes(types);
+        EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
+        commandRegistry.loadCommandCollection(inputStream);
 
-        tr.addCommandCollection(reader.loadConfigurationCollection(inputStream));
+        // EBusConfigurationReader reader = new EBusConfigurationReader();
+        // reader.setEBusTypes(types);
 
-        for (IEBusCommandCollection collection : tr.getCommandCollections()) {
+        // tr.addCommandCollection(reader.loadConfigurationCollection(inputStream));
+
+        for (IEBusCommandCollection collection : commandRegistry.getCommandCollections()) {
 
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
@@ -83,7 +69,7 @@ public class ConfigurationReaderTest {
         //
         // byte[] bs3 = EBusUtils.toByteArray("30 76 50 22 03 CC 2B 0A BF 00 02 11 01 84");
 
-        List<IEBusCommandMethod> find = tr.find(StaticTestTelegrams.WOLF_SOLAR_B);
+        List<IEBusCommandMethod> find = commandRegistry.find(StaticTestTelegrams.WOLF_SOLAR_B);
         for (IEBusCommandMethod eBusCommand : find) {
             System.out.println("ConfigurationReaderTest.testIsMasterAddress()");
             Map<String, Object> encode = EBusCommandUtils.decodeTelegram(eBusCommand, StaticTestTelegrams.WOLF_SOLAR_B);
@@ -93,9 +79,8 @@ public class ConfigurationReaderTest {
             }
         }
 
-        Map<String, Object> encode = EBusCommandUtils.decodeTelegram(
-                tr.getCommandMethodById("wolf-sm1", "solar.solar_data", IEBusCommandMethod.Method.BROADCAST),
-                StaticTestTelegrams.WOLF_SOLAR_B);
+        Map<String, Object> encode = EBusCommandUtils.decodeTelegram(commandRegistry.getCommandMethodById("wolf-sm1",
+                "solar.solar_data", IEBusCommandMethod.Method.BROADCAST), StaticTestTelegrams.WOLF_SOLAR_B);
 
         for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
             System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "

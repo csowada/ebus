@@ -1,3 +1,16 @@
+## Alpha 0.0.13 (2017-11-02)
+
+Features:
+
+  - restructure internal configuration handling
+  - removed outdated maven modules from source
+
+Configurations:
+
+  - add identification for Vaillant VRC430f and VRC470f
+  - add pressure for Vailant BAI00
+  - fix outside_temp for Vailant BAI00
+
 ## Alpha 0.0.12 (2017-10-22)
 
 Features:

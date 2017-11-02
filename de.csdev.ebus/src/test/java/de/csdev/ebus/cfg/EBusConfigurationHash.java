@@ -46,8 +46,8 @@ public class EBusConfigurationHash {
         EBusConfigurationReader cfg = new EBusConfigurationReader();
         cfg.setEBusTypes(types);
 
-        EBusCommandRegistry commandRegistry = new EBusCommandRegistry();
-        commandRegistry.addCommandCollection(cfg.loadConfigurationCollection(inputStream));
+        EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
+        commandRegistry.loadCommandCollection(inputStream);
 
         return commandRegistry;
     }

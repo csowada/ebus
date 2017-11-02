@@ -52,8 +52,8 @@ public class KW_CRC_Test {
         EBusConfigurationReader cfg = new EBusConfigurationReader();
         cfg.setEBusTypes(types);
 
-        commandRegistry = new EBusCommandRegistry();
-        commandRegistry.addCommandCollection(cfg.loadConfigurationCollection(inputStream));
+        commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
+        commandRegistry.loadCommandCollection(inputStream);
     }
 
     // @Test
