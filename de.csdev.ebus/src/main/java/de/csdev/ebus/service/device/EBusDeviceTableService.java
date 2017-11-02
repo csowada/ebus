@@ -150,6 +150,7 @@ public class EBusDeviceTableService
     @Override
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
+        deviceTable.updateDevice(receivedData[0], null);
         deviceTable.updateDevice(receivedData[1], null);
 
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
