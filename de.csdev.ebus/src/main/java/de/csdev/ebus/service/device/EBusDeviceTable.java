@@ -105,6 +105,11 @@ public class EBusDeviceTable {
             address = EBusUtils.getSlaveAddress(address);
         }
 
+        if (address == ownAddress) {
+            // ignore own address
+            return;
+        }
+
         EBusDevice device = deviceTable.get(address);
 
         if (device == null) {
