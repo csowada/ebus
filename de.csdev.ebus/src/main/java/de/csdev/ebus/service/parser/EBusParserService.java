@@ -93,6 +93,7 @@ public class EBusParserService extends EBusConnectorEventListener {
                 Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, receivedData);
                 fireOnTelegramResolved(commandChannel, map, receivedData, sendQueueId);
             } catch (EBusTypeException e) {
+                fireOnTelegramFailed(commandChannel, receivedData, sendQueueId, e.getMessage());
                 logger.error("error!", e);
             }
         }
@@ -111,6 +112,24 @@ public class EBusParserService extends EBusConnectorEventListener {
         for (IEBusParserListener listener : listeners) {
             try {
                 listener.onTelegramResolved(commandChannel, result, receivedData, sendQueueId);
+            } catch (Exception e) {
+                logger.error("Error while firing onTelegramResolved events!", e);
+            }
+        }
+    }
+
+    /**
+     * @param commandChannel
+     * @param result
+     * @param receivedData
+     * @param sendQueueId
+     */
+    private void fireOnTelegramFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
+            String exceptionMessage) {
+
+        for (IEBusParserListener listener : listeners) {
+            try {
+                listener.onTelegramResolveFailed(commandChannel, receivedData, sendQueueId, exceptionMessage);
             } catch (Exception e) {
                 logger.error("Error while firing onTelegramResolved events!", e);
             }

@@ -81,7 +81,8 @@ public class ClientTest {
             }
 
             @Override
-            public void onTelegramResolveFailed(byte[] receivedData, Integer sendQueueId) {
+            public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData,
+                    Integer sendQueueId, String exceptionMessage) {
                 // noop
             }
         });

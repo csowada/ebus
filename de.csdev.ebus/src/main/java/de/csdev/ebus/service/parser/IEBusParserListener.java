@@ -29,6 +29,7 @@ public interface IEBusParserListener {
     public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
             Integer sendQueueId);
 
-    public void onTelegramResolveFailed(byte[] receivedData, Integer sendQueueId);
+    public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
+            String exceptionMessage);
 
 }
