@@ -2,7 +2,6 @@
 	"files": [
 		{"name": "common", "url": "./commands/common-configuration.json"},
 		{"name": "vaillant-bai00", "url": "./commands/vaillant-bai00-configuration.json"},
-		{"name": "vaillant-bc", "url": "./commands/vaillant-bc-configuration.json"},
 		{"name": "vaillant-vr81", "url": "./commands/vaillant-vr81-configuration.json"},
 		{"name": "wolf-bm2", "url": "./commands/wolf-bm2-configuration.json"},
 		{"name": "wolf-cgb2", "url": "./commands/wolf-cgb2-configuration.json"},

@@ -4,7 +4,11 @@
     "label":        "Vaillant VRC 430(f)/470(f)",
     "description":  "Programming unit Vaillant VRC 430, 430f, 470 and 470f",
     
-    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    "authors":      [
+    				"Christian Sowada, opensource@cs-dev.de",
+    				"Christophe P @ openhab community"
+    				],
+    
     "identification": [
                     "34 33 30 30 30",
                     "34 37 30 30 30",
@@ -392,6 +396,32 @@
                 ],
                 "slave": [
                     {"name": "temp_d_actual_dhw", "type": "data1c", "label": "DHW actual desired temperature", "min": 0, "max": 100, "format":"%.1f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Outside temperature",
+            "id":       "controller.bc.temp_outside",
+            "command":  "B5 16",
+    
+            "broadcast": {
+                "master": [
+                    {"type": "static", "default": "01"},
+                    {"name":"temp_outside", "type": "data2b", "label": "Outside Temperature", "min": -50, "max": 70, "format":"%.1f°C"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Outside temperature",
+            "id":       "controller.bc.datetime",
+            "command":  "B5 16",
+    
+            "broadcast": {
+                "master": [
+                    {"type": "static", "default": "00"},
+                    {"name": "datetime", "type":"datetime"}
                 ]
             }
         }
