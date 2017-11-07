@@ -10,6 +10,7 @@ package de.csdev.ebus.cfg;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import de.csdev.ebus.command.IEBusCommandCollection;
@@ -20,6 +21,13 @@ import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
  *
  */
 public interface IEBusConfigurationReader {
+
+    /**
+     * Loads all build-in command collections implemented by the reader
+     *
+     * @return
+     */
+    public List<IEBusCommandCollection> loadBuildInConfigurationCollections();
 
     /**
      * Loads the configuration from an InputStream and returns a command collection
@@ -33,16 +41,15 @@ public interface IEBusConfigurationReader {
             throws EBusConfigurationReaderException, IOException;
 
     /**
+     * @param url
+     * @return
+     */
+    public List<IEBusCommandCollection> loadConfigurationCollectionBundle(URL url);
+    
+    /**
      * Sets the eBUS type registry to use
      *
      * @param ebusTypes
      */
     public void setEBusTypes(EBusTypeRegistry ebusTypes);
-
-    /**
-     * Loads all build-in command collections implemented by the reader
-     *
-     * @return
-     */
-    public List<IEBusCommandCollection> loadBuildInConfigurations();
 }
