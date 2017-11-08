@@ -39,6 +39,9 @@ public abstract class AbstractEBusConnection implements IEBusConnection {
         IOUtils.closeQuietly(inputStream);
         IOUtils.closeQuietly(outputStream);
 
+        inputStream = null;
+        outputStream = null;
+        
         return true;
     }
 
