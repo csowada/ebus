@@ -160,10 +160,4 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
         outputStream.write(b);
         // no flush, sometimes it blocks infinitely
     }
-
-    // @Override
-    // public void reset() throws IOException {
-    // inputStream.skip(inputStream.available());
-    // }
-
 }
