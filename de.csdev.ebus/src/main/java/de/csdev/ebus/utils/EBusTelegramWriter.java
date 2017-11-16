@@ -49,12 +49,12 @@ public class EBusTelegramWriter implements IEBusParserListener {
         try {
             if (writerResolved == null) {
                 writerResolved = open("ebus-resolved.csv");
-
-                String comment = String.format("%s > %s.%s", commandChannel.getMethod(),
-                        commandChannel.getParent().getParentCollection().getId(), commandChannel.getParent().getId());
-
-                write(writerResolved, receivedData, comment);
             }
+            String comment = String.format("%s > %s.%s", commandChannel.getMethod(),
+                    commandChannel.getParent().getParentCollection().getId(), commandChannel.getParent().getId());
+
+            write(writerResolved, receivedData, comment);
+
         } catch (IOException e) {
             logger.error("error!", e);
         }
@@ -68,9 +68,9 @@ public class EBusTelegramWriter implements IEBusParserListener {
         try {
             if (writerUnresolved == null) {
                 writerUnresolved = open("ebus-unresolved.csv");
-
-                write(writerUnresolved, receivedData, "");
             }
+            write(writerUnresolved, receivedData, "");
+
         } catch (IOException e) {
             logger.error("error!", e);
         }
@@ -144,7 +144,7 @@ public class EBusTelegramWriter implements IEBusParserListener {
         writer.write('"' + EBusUtils.toHexDumpString(command).toString() + '"');
         writer.write(";");
 
-        byte[] rest = Arrays.copyOfRange(receivedData, 6, receivedData.length);
+        byte[] rest = Arrays.copyOfRange(receivedData, 5, receivedData.length);
         writer.write('"' + EBusUtils.toHexDumpString(rest).toString() + '"');
         writer.write(";");
 

@@ -85,6 +85,7 @@ public class EBusParserService extends EBusConnectorEventListener {
             if (logger.isTraceEnabled()) {
                 logger.trace("No command method matches the telegram {} ...", EBusUtils.toHexDumpString(receivedData));
             }
+            fireOnTelegramFailed(null, receivedData, sendQueueId, "No command method matches the telegram!");
         }
 
         for (IEBusCommandMethod commandChannel : commandChannelList) {
