@@ -29,6 +29,7 @@ import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.service.device.EBusDevice;
 import de.csdev.ebus.service.device.EBusDeviceTable;
+import de.csdev.ebus.service.metrics.EBusMetricsService;
 
 /**
  *
@@ -39,6 +40,21 @@ public class EBusConsoleUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
 
+    public static String getMetricsInformation(EBusMetricsService service) {
+    	StringBuilder sb = new StringBuilder();
+    	
+        sb.append(String.format("%-25s | %-10s\n", "Successful received", service.getReceived()));
+        sb.append(String.format("%-25s | %-10s\n", "Failed received", service.getFailed()));
+        sb.append(String.format("%-25s | %-10s\n", "Successful/Failed ratio", service.getFailureRatio()));
+        sb.append("\n");
+        
+        sb.append(String.format("%-25s | %-10s\n", "Resolved telegrams", service.getResolved()));
+        sb.append(String.format("%-25s | %-10s\n", "Unresolved telegrams", service.getUnresolved()));
+        sb.append(String.format("%-25s | %-10s\n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
+        
+        return sb.toString();
+    }
+    
     /**
      * @return
      */

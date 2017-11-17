@@ -20,12 +20,12 @@ import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.service.device.EBusDeviceTable;
 import de.csdev.ebus.service.device.EBusDeviceTableService;
 import de.csdev.ebus.service.device.IEBusDeviceTableListener;
+import de.csdev.ebus.service.metrics.EBusMetricsService;
 import de.csdev.ebus.service.parser.EBusParserService;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 
@@ -37,44 +37,20 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
  */
 public class EBusClient {
 
-    private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
-
-    private EBusDeviceTable deviceTable;
+	private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
+	
+    private EBusCommandRegistry commandRegistry;
 
     private EBusController controller;
 
-    private EBusParserService resolverService;
+    private EBusDeviceTable deviceTable;
 
     private EBusDeviceTableService deviceTableService;
 
-    private EBusCommandRegistry commandRegistry;
+    private EBusMetricsService metricsService;
 
-    /**
-     * Disposes the eBUS client with all dependend services
-     */
-    public void dispose() {
-        controller.interrupt();
-
-        if (commandRegistry != null) {
-            commandRegistry = null;
-        }
-
-        if (deviceTableService != null) {
-            deviceTableService.dispose();
-            deviceTableService = null;
-        }
-
-        if (deviceTable != null) {
-            deviceTable.dispose();
-            deviceTable = null;
-        }
-
-        if (resolverService != null) {
-            resolverService.dispose();
-            resolverService = null;
-        }
-    }
-
+    private EBusParserService resolverService;
+    
     /**
      * Creates a new eBUS client with given configuration
      *
@@ -85,27 +61,63 @@ public class EBusClient {
         this.commandRegistry = commandRegistry;
 
         deviceTable = new EBusDeviceTable();
+        
         resolverService = new EBusParserService(commandRegistry);
+        
+        metricsService = new EBusMetricsService();
+    }
+    
+    /**
+     * Add a listener
+     *
+     * @param listener
+     * @see de.csdev.ebus.service.device.EBusDeviceTable#addEBusDeviceTableListener(IEBusDeviceTableListener)
+     */
+    public void addEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+        getDeviceTable().addEBusDeviceTableListener(listener);
     }
 
     /**
-     * Initialize the eBUS client
+     * Add an eBus listener to receive valid eBus telegrams
      *
-     * @param controller
-     * @param masterAddress
+     * @param listener
+     * @see de.csdev.ebus.core.EBusControllerBase#addEBusEventListener(IEBusConnectorEventListener)
      */
-    public void connect(EBusController controller, byte masterAddress) {
+    public void addEBusEventListener(IEBusConnectorEventListener listener) {
+        getController().addEBusEventListener(listener);
+    }
 
-        this.controller = controller;
+    /**
+     * Add an eBUS listener to receive parsed eBUS telegram values
+     *
+     * @param listener
+     * @see de.csdev.ebus.client.EBusClient#addEBusParserListener(IEBusParserListener)
+     */
+    public void addEBusParserListener(IEBusParserListener listener) {
+        getResolverService().addEBusParserListener(listener);
+    }
 
-        this.controller.addEBusEventListener(resolverService);
+    /**
+     * Add a raw telegram to send queue
+     *
+     * @param buffer
+     * @return
+     * @see de.csdev.ebus.core.EBusController#addToSendQueue(byte[])
+     */
+    public Integer addToSendQueue(byte[] buffer) {
+        return getController().addToSendQueue(buffer);
+    }
 
-        deviceTable.setOwnAddress(masterAddress);
-
-        deviceTableService = new EBusDeviceTableService(controller, commandRegistry, deviceTable);
-
-        resolverService.addEBusParserListener(deviceTableService);
-        deviceTable.addEBusDeviceTableListener(deviceTableService);
+    /**
+     * Add a raw telegram to send queue
+     *
+     * @param buffer
+     * @param maxAttemps
+     * @return
+     * @see de.csdev.ebus.core.EBusController#addToSendQueue(byte[], int)
+     */
+    public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
+        return getController().addToSendQueue(buffer, maxAttemps);
     }
 
     /**
@@ -134,21 +146,77 @@ public class EBusClient {
     }
 
     /**
-     * Return the data type registry
+     * Initialize the eBUS client
      *
-     * @return
+     * @param controller
+     * @param masterAddress
      */
-    public EBusTypeRegistry getDataTypes() {
-        return commandRegistry.getTypeRegistry();
+    public void connect(EBusController controller, byte masterAddress) {
+
+        this.controller = controller;
+
+        this.controller.addEBusEventListener(resolverService);
+
+        deviceTable.setOwnAddress(masterAddress);
+        deviceTableService = new EBusDeviceTableService(controller, commandRegistry, deviceTable);
+
+        // add device table service
+        resolverService.addEBusParserListener(deviceTableService);
+        deviceTable.addEBusDeviceTableListener(deviceTableService);
+        
+        // add metrics service
+        this.controller.addEBusEventListener(metricsService);
+        resolverService.addEBusParserListener(metricsService);
     }
 
     /**
-     * Returns the eBUS controller
-     *
+     * Disposes the eBUS client with all depended services
+     */
+    public void dispose() {
+        controller.interrupt();
+
+        if (commandRegistry != null) {
+            commandRegistry = null;
+        }
+
+        if (deviceTableService != null) {
+            deviceTableService.dispose();
+            deviceTableService = null;
+        }
+
+        if (deviceTable != null) {
+            deviceTable.dispose();
+            deviceTable = null;
+        }
+
+        if (resolverService != null) {
+            resolverService.dispose();
+            resolverService = null;
+        }
+        
+        if(metricsService != null) {
+        	metricsService = null;
+        }
+
+        if(controller != null) {
+        	controller.dispose();
+        	controller = null;
+        }
+    }
+
+    /**
+     * @param id
      * @return
      */
-    public EBusController getController() {
-        return controller;
+    public IEBusCommandCollection getCommandCollection(String id) {
+        return getConfigurationProvider().getCommandCollection(id);
+    }
+
+    /**
+     * @return
+     */
+    public Collection<IEBusCommandCollection> getCommandCollections() {
+        return getConfigurationProvider().getCommandCollections();
     }
 
     /**
@@ -161,12 +229,30 @@ public class EBusClient {
     }
 
     /**
-     * Returns the Resolver Service (resolves the raw telegrams to result maps)
+     * Returns the eBUS controller
      *
      * @return
      */
-    public EBusParserService getResolverService() {
-        return resolverService;
+    public EBusController getController() {
+        return controller;
+    }
+
+//    /**
+//     * Return the data type registry
+//     *
+//     * @return
+//     */
+//    public EBusTypeRegistry getDataTypes() {
+//        return commandRegistry.getTypeRegistry();
+//    }
+
+    /**
+     * Returns the device table
+     *
+     * @return
+     */
+    public EBusDeviceTable getDeviceTable() {
+        return deviceTable;
     }
 
     /**
@@ -179,22 +265,21 @@ public class EBusClient {
     }
 
     /**
-     * Returns the device table
-     *
+     * Returns the metrics service
+     * 
      * @return
      */
-    public EBusDeviceTable getDeviceTable() {
-        return deviceTable;
+    public EBusMetricsService getMetricsService() {
+    	return metricsService;
     }
 
     /**
-     * Add a listener
+     * Returns the Resolver Service (resolves the raw telegrams to result maps)
      *
-     * @param listener
-     * @see de.csdev.ebus.service.device.EBusDeviceTable#addEBusDeviceTableListener(IEBusDeviceTableListener)
+     * @return
      */
-    public void addEBusDeviceTableListener(IEBusDeviceTableListener listener) {
-        getDeviceTable().addEBusDeviceTableListener(listener);
+    public EBusParserService getResolverService() {
+        return resolverService;
     }
 
     /**
@@ -209,16 +294,6 @@ public class EBusClient {
     }
 
     /**
-     * Add an eBus listener to receive valid eBus telegrams
-     *
-     * @param listener
-     * @see de.csdev.ebus.core.EBusControllerBase#addEBusEventListener(IEBusConnectorEventListener)
-     */
-    public void addEBusEventListener(IEBusConnectorEventListener listener) {
-        getController().addEBusEventListener(listener);
-    }
-
-    /**
      * Remove an eBUS listener
      *
      * @param listener
@@ -230,16 +305,6 @@ public class EBusClient {
     }
 
     /**
-     * Add an eBUS listener to receive parsed eBUS telegram values
-     *
-     * @param listener
-     * @see de.csdev.ebus.client.EBusClient#addEBusParserListener(IEBusParserListener)
-     */
-    public void addEBusParserListener(IEBusParserListener listener) {
-        getResolverService().addEBusParserListener(listener);
-    }
-
-    /**
      * Remove an eBUS listener
      *
      * @param listener
@@ -248,43 +313,5 @@ public class EBusClient {
      */
     public boolean removeEBusParserListener(IEBusParserListener listener) {
         return getResolverService().removeEBusParserListener(listener);
-    }
-
-    /**
-     * Add a raw telegram to send queue
-     *
-     * @param buffer
-     * @param maxAttemps
-     * @return
-     * @see de.csdev.ebus.core.EBusController#addToSendQueue(byte[], int)
-     */
-    public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
-        return getController().addToSendQueue(buffer, maxAttemps);
-    }
-
-    /**
-     * Add a raw telegram to send queue
-     *
-     * @param buffer
-     * @return
-     * @see de.csdev.ebus.core.EBusController#addToSendQueue(byte[])
-     */
-    public Integer addToSendQueue(byte[] buffer) {
-        return getController().addToSendQueue(buffer);
-    }
-
-    /**
-     * @return
-     */
-    public Collection<IEBusCommandCollection> getCommandCollections() {
-        return getConfigurationProvider().getCommandCollections();
-    }
-
-    /**
-     * @param id
-     * @return
-     */
-    public IEBusCommandCollection getCommandCollection(String id) {
-        return getConfigurationProvider().getCommandCollection(id);
     }
 }
