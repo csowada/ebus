@@ -220,23 +220,7 @@ public class EBusController extends EBusControllerBase {
             }
         }
 
-        logger.debug("eBUS connection thread is shuting down ...");
-
-        // *******************************
-        // ** end of thread **
-        // *******************************
-
-        // shutdown threadpool
-        shutdownThreadPool();
-
-        // disconnect the connector e.g. close serial port
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (IOException e) {
-            logger.error(e.toString(), e);
-        }
+        dispose();
     }
 
     /**
@@ -392,5 +376,30 @@ public class EBusController extends EBusControllerBase {
             }
 
         }
+    }
+    
+    @Override
+    public void dispose() {
+
+        logger.debug("eBUS connection thread is shuting down ...");
+
+        super.dispose();
+        
+        // *******************************
+        // ** end of thread **
+        // *******************************
+
+        // disconnect the connector e.g. close serial port
+        try {
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
+        } catch (IOException e) {
+            logger.error(e.toString(), e);
+        }
+
+        queue = null;
+        machine = null;
     }
 }
