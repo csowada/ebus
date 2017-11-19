@@ -37,8 +37,8 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
  */
 public class EBusClient {
 
-	private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
-	
+    private final Logger logger = LoggerFactory.getLogger(EBusClient.class);
+
     private EBusCommandRegistry commandRegistry;
 
     private EBusController controller;
@@ -50,7 +50,7 @@ public class EBusClient {
     private EBusMetricsService metricsService;
 
     private EBusParserService resolverService;
-    
+
     /**
      * Creates a new eBUS client with given configuration
      *
@@ -61,12 +61,12 @@ public class EBusClient {
         this.commandRegistry = commandRegistry;
 
         deviceTable = new EBusDeviceTable();
-        
+
         resolverService = new EBusParserService(commandRegistry);
-        
+
         metricsService = new EBusMetricsService();
     }
-    
+
     /**
      * Add a listener
      *
@@ -163,7 +163,7 @@ public class EBusClient {
         // add device table service
         resolverService.addEBusParserListener(deviceTableService);
         deviceTable.addEBusDeviceTableListener(deviceTableService);
-        
+
         // add metrics service
         this.controller.addEBusEventListener(metricsService);
         resolverService.addEBusParserListener(metricsService);
@@ -193,14 +193,14 @@ public class EBusClient {
             resolverService.dispose();
             resolverService = null;
         }
-        
-        if(metricsService != null) {
-        	metricsService = null;
+
+        if (metricsService != null) {
+            metricsService = null;
         }
 
-        if(controller != null) {
-        	controller.dispose();
-        	controller = null;
+        if (controller != null) {
+            controller.dispose();
+            controller = null;
         }
     }
 
@@ -237,15 +237,6 @@ public class EBusClient {
         return controller;
     }
 
-//    /**
-//     * Return the data type registry
-//     *
-//     * @return
-//     */
-//    public EBusTypeRegistry getDataTypes() {
-//        return commandRegistry.getTypeRegistry();
-//    }
-
     /**
      * Returns the device table
      *
@@ -266,11 +257,11 @@ public class EBusClient {
 
     /**
      * Returns the metrics service
-     * 
+     *
      * @return
      */
     public EBusMetricsService getMetricsService() {
-    	return metricsService;
+        return metricsService;
     }
 
     /**
