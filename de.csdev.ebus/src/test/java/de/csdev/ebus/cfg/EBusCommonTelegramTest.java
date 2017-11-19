@@ -11,7 +11,7 @@ package de.csdev.ebus.cfg;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
 import org.junit.Before;
@@ -46,10 +46,9 @@ public class EBusCommonTelegramTest {
 
         types = new EBusTypeRegistry();
 
-        InputStream inputStream = EBusConfigurationReader.class
-                .getResourceAsStream("/commands/common-configuration.json");
+        URL url = EBusConfigurationReader.class.getResource("/commands/common-configuration.json");
 
-        if (inputStream == null) {
+        if (url == null) {
             throw new RuntimeException("Unable to load json file ...");
         }
 
@@ -57,7 +56,7 @@ public class EBusCommonTelegramTest {
         cfg.setEBusTypes(types);
 
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(inputStream);
+        commandRegistry.loadCommandCollection(url);
     }
 
     @Test

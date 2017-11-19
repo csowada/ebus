@@ -9,7 +9,7 @@
 package de.csdev.ebus.cfg;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,10 +34,9 @@ public class EBusConfigurationHash {
 
     private EBusCommandRegistry xx() throws IOException, EBusConfigurationReaderException {
 
-        InputStream inputStream = EBusConfigurationReader.class
-                .getResourceAsStream("/commands/common-configuration.json");
+        URL url = EBusConfigurationReader.class.getResource("/commands/common-configuration.json");
 
-        if (inputStream == null) {
+        if (url == null) {
             throw new RuntimeException("Unable to load json file ...");
         }
 
@@ -47,7 +46,7 @@ public class EBusConfigurationHash {
         cfg.setEBusTypes(types);
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(inputStream);
+        commandRegistry.loadCommandCollection(url);
 
         return commandRegistry;
     }

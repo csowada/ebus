@@ -8,10 +8,10 @@
  */
 package de.csdev.ebus.cfg;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +40,9 @@ public class EBusVaillantVRC430TelegramTest {
 
         types = new EBusTypeRegistry();
 
-        InputStream inputStream = EBusConfigurationReader.class
-                .getResourceAsStream("/commands/vaillant-vrc-configuration.json");
+        URL url = EBusConfigurationReader.class.getResource("/commands/vaillant-vrc-configuration.json");
 
-        if (inputStream == null) {
+        if (url == null) {
             throw new RuntimeException("Unable to load json file ...");
         }
 
@@ -51,29 +50,28 @@ public class EBusVaillantVRC430TelegramTest {
         cfg.setEBusTypes(types);
 
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(inputStream);
+        commandRegistry.loadCommandCollection(url);
     }
 
     @Test
     public void testDateTimeBroadcast() {
-    	
-    	// 22:00:34 06.11.2017 (Monday)
-    	byte[] byteArray = EBusUtils.toByteArray("10 FE B5 16 08 00 34 00 22 06 11 01 17 CE AA");
-    	
-    	List<IEBusCommandMethod> find = commandRegistry.find(byteArray);
-    	
-    	for (IEBusCommandMethod method : find) {
-    		try {
-				Map<String, Object> map = EBusCommandUtils.decodeTelegram(method, byteArray);
-				Object object = map.get("datetime");
-				
-				assertNotNull(object);
 
-				
-			} catch (EBusTypeException e) {
-				e.printStackTrace();
-			}
-		}
+        // 22:00:34 06.11.2017 (Monday)
+        byte[] byteArray = EBusUtils.toByteArray("10 FE B5 16 08 00 34 00 22 06 11 01 17 CE AA");
+
+        List<IEBusCommandMethod> find = commandRegistry.find(byteArray);
+
+        for (IEBusCommandMethod method : find) {
+            try {
+                Map<String, Object> map = EBusCommandUtils.decodeTelegram(method, byteArray);
+                Object object = map.get("datetime");
+
+                assertNotNull(object);
+
+            } catch (EBusTypeException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

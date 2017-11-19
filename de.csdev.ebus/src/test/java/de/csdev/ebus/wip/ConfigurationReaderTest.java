@@ -9,7 +9,7 @@
 package de.csdev.ebus.wip;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +35,10 @@ public class ConfigurationReaderTest {
     // @Test
     public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 
-        InputStream inputStream = EBusConfigurationReader.class
-                .getResourceAsStream("/commands/wolf-sm1-configuration.json");
+        URL url = EBusConfigurationReader.class.getResource("/commands/wolf-sm1-configuration.json");
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(inputStream);
+        commandRegistry.loadCommandCollection(url);
 
         // EBusConfigurationReader reader = new EBusConfigurationReader();
         // reader.setEBusTypes(types);

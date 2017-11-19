@@ -1,7 +1,6 @@
 package de.csdev.ebus.service.metrics;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.EnumMap;
 import java.util.Map;
@@ -14,98 +13,109 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
 
 public class EBusMetricsService implements IEBusParserListener, IEBusConnectorEventListener {
 
-	private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
-	
-	private BigInteger resolved = BigInteger.valueOf(0);
-	
-	private BigInteger unresolved = BigInteger.valueOf(0);
-	
-	private BigInteger received = BigInteger.valueOf(0);
-	
-	private BigInteger failed = BigInteger.valueOf(0);
-	
-	private BigInteger connectionFailed = BigInteger.valueOf(0);
-	
-	private BigInteger receivedAmount = BigInteger.valueOf(0);
-	
-	private Map<EBusError, BigInteger> failedMap = new EnumMap<EBusDataException.EBusError, BigInteger>(EBusError.class);
-	
-	public void clear() {
-		resolved = BigInteger.valueOf(0);
-		unresolved = BigInteger.valueOf(0);
-		received = BigInteger.valueOf(0);
-		failed = BigInteger.valueOf(0);
-		connectionFailed = BigInteger.valueOf(0);
-		receivedAmount = BigInteger.valueOf(0);
-		failedMap.clear();
-	}
-	
-	@Override
-	public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
-			Integer sendQueueId) {
-		resolved = resolved.add(BigInteger.ONE);
-	}
+    private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
 
-	@Override
-	public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
-			String exceptionMessage) {
-		unresolved = unresolved.add(BigInteger.ONE);
-	}
+    private BigDecimal resolved = BigDecimal.valueOf(0);
 
-	@Override
-	public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
-		received = received.add(BigInteger.ONE);
-		receivedAmount = receivedAmount.add(BigInteger.valueOf(receivedData.length));
-	}
+    private BigDecimal unresolved = BigDecimal.valueOf(0);
 
-	@Override
-	public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
-		
-		BigInteger val = failedMap.get(exception.getErrorCode());
-		if(val == null) {
-			val = BigInteger.valueOf(0);
-		}
-		
-		val = val.add(BigInteger.ONE);
-		failedMap.put(exception.getErrorCode(), val);
+    private BigDecimal received = BigDecimal.valueOf(0);
 
-		failed = failed.and(BigInteger.ONE);
-	}
+    private BigDecimal failed = BigDecimal.valueOf(0);
 
-	@Override
-	public void onConnectionException(Exception e) {
-		connectionFailed = connectionFailed.add(BigInteger.ONE);
-	}
+    private BigDecimal connectionFailed = BigDecimal.valueOf(0);
 
-	public BigInteger getReceivedAmount() {
-		return receivedAmount;
-	}
+    private BigDecimal receivedAmount = BigDecimal.valueOf(0);
 
-	public BigInteger getResolved() {
-		return resolved;
-	}
+    private Map<EBusError, BigDecimal> failedMap = new EnumMap<EBusDataException.EBusError, BigDecimal>(
+            EBusError.class);
 
-	public BigInteger getUnresolved() {
-		return unresolved;
-	}
+    public void clear() {
+        resolved = BigDecimal.valueOf(0);
+        unresolved = BigDecimal.valueOf(0);
+        received = BigDecimal.valueOf(0);
+        failed = BigDecimal.valueOf(0);
+        connectionFailed = BigDecimal.valueOf(0);
+        receivedAmount = BigDecimal.valueOf(0);
+        failedMap.clear();
+    }
 
-	public BigInteger getReceived() {
-		return received;
-	}
+    @Override
+    public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
+            Integer sendQueueId) {
+        resolved = resolved.add(BigDecimal.ONE);
+    }
 
-	public BigInteger getFailed() {
-		return failed;
-	}
+    @Override
+    public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
+            String exceptionMessage) {
+        unresolved = unresolved.add(BigDecimal.ONE);
+    }
 
-	public BigInteger getConnectionFailed() {
-		return connectionFailed;
-	}
+    @Override
+    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+        received = received.add(BigDecimal.ONE);
+        receivedAmount = receivedAmount.add(BigDecimal.valueOf(receivedData.length));
+    }
 
-	public BigDecimal getFailureRatio() {
-		return new BigDecimal(received).divide(new BigDecimal(failed), RoundingMode.HALF_UP).multiply(HUNDRED);
-	}
-	
-	public BigDecimal getUnresolvedRatio() {
-		return new BigDecimal(failed).divide(new BigDecimal(received), RoundingMode.HALF_UP).multiply(HUNDRED);
-	}
+    @Override
+    public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+
+        BigDecimal val = failedMap.get(exception.getErrorCode());
+        if (val == null) {
+            val = BigDecimal.valueOf(0);
+        }
+
+        val = val.add(BigDecimal.ONE);
+        failedMap.put(exception.getErrorCode(), val);
+
+        failed = failed.add(BigDecimal.ONE);
+    }
+
+    @Override
+    public void onConnectionException(Exception e) {
+        connectionFailed = connectionFailed.add(BigDecimal.ONE);
+    }
+
+    public BigDecimal getReceivedAmount() {
+        return receivedAmount;
+    }
+
+    public BigDecimal getResolved() {
+        return resolved;
+    }
+
+    public BigDecimal getUnresolved() {
+        return unresolved;
+    }
+
+    public BigDecimal getReceived() {
+        return received;
+    }
+
+    public BigDecimal getFailed() {
+        return failed;
+    }
+
+    public BigDecimal getConnectionFailed() {
+        return connectionFailed;
+    }
+
+    public BigDecimal getFailureRatio() {
+        if (!failed.equals(BigDecimal.ZERO)) {
+            return received.setScale(1, RoundingMode.HALF_UP).divide(failed, RoundingMode.HALF_UP).multiply(HUNDRED);
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    public BigDecimal getUnresolvedRatio() {
+        if (!resolved.equals(BigDecimal.ZERO)) {
+            BigDecimal multiply = unresolved.setScale(1, RoundingMode.HALF_UP).divide(resolved, RoundingMode.HALF_UP)
+                    .multiply(HUNDRED);
+            return multiply;
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
 }

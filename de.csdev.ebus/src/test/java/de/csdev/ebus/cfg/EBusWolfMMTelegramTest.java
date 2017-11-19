@@ -9,7 +9,7 @@
 package de.csdev.ebus.cfg;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,10 +34,9 @@ public class EBusWolfMMTelegramTest {
 
         types = new EBusTypeRegistry();
 
-        InputStream inputStream = EBusConfigurationReader.class
-                .getResourceAsStream("/commands/wolf-mm-configuration.json");
+        URL url = EBusConfigurationReader.class.getResource("/commands/wolf-mm-configuration.json");
 
-        if (inputStream == null) {
+        if (url == null) {
             throw new RuntimeException("Unable to load json file ...");
         }
 
@@ -45,7 +44,7 @@ public class EBusWolfMMTelegramTest {
         cfg.setEBusTypes(types);
 
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(inputStream);
+        commandRegistry.loadCommandCollection(url);
     }
 
     @Test
