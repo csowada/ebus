@@ -9,7 +9,6 @@
 package de.csdev.ebus.cfg;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public interface IEBusConfigurationReader {
      * @throws EBusConfigurationReaderException
      * @throws IOException
      */
-    public IEBusCommandCollection loadConfigurationCollection(InputStream inputStream)
+    public IEBusCommandCollection loadConfigurationCollection(URL url)
             throws EBusConfigurationReaderException, IOException;
 
     /**
@@ -45,7 +44,7 @@ public interface IEBusConfigurationReader {
      * @return
      */
     public List<IEBusCommandCollection> loadConfigurationCollectionBundle(URL url);
-    
+
     /**
      * Sets the eBUS type registry to use
      *

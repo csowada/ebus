@@ -9,7 +9,6 @@
 package de.csdev.ebus.command;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -90,13 +89,13 @@ public class EBusCommandRegistry {
 
     /**
      * Loads a configuration file
-     * 
+     *
      * @param inputStream
      */
-    public void loadCommandCollection(InputStream inputStream) {
+    public void loadCommandCollection(URL url) {
 
         try {
-            addCommandCollection(reader.loadConfigurationCollection(inputStream));
+            addCommandCollection(reader.loadConfigurationCollection(url));
 
         } catch (EBusConfigurationReaderException e) {
             logger.error("error!", e);
@@ -105,16 +104,16 @@ public class EBusCommandRegistry {
         }
 
     }
-    
+
     /**
      * @param url
      */
     public void loadCommandCollectionBundle(URL url) {
-    	List<IEBusCommandCollection> collections = reader.loadConfigurationCollectionBundle(url);
-    	
-    	for (IEBusCommandCollection collection : collections) {
-			addCommandCollection(collection);
-		}
+        List<IEBusCommandCollection> collections = reader.loadConfigurationCollectionBundle(url);
+
+        for (IEBusCommandCollection collection : collections) {
+            addCommandCollection(collection);
+        }
     }
 
     /**
