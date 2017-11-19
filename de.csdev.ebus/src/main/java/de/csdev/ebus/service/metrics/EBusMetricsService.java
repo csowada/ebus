@@ -102,18 +102,18 @@ public class EBusMetricsService implements IEBusParserListener, IEBusConnectorEv
     }
 
     public BigDecimal getFailureRatio() {
-        if (!failed.equals(BigDecimal.ZERO)) {
-            return received.setScale(1, RoundingMode.HALF_UP).divide(failed, RoundingMode.HALF_UP).multiply(HUNDRED);
+        BigDecimal all = received.add(failed);
+        if (!failed.equals(BigDecimal.ZERO) && !all.equals(BigDecimal.ZERO)) {
+            return failed.setScale(1, RoundingMode.HALF_UP).divide(all, RoundingMode.HALF_UP).multiply(HUNDRED);
         } else {
             return BigDecimal.ZERO;
         }
     }
 
     public BigDecimal getUnresolvedRatio() {
-        if (!resolved.equals(BigDecimal.ZERO)) {
-            BigDecimal multiply = unresolved.setScale(1, RoundingMode.HALF_UP).divide(resolved, RoundingMode.HALF_UP)
-                    .multiply(HUNDRED);
-            return multiply;
+        BigDecimal all = unresolved.add(resolved);
+        if (!resolved.equals(BigDecimal.ZERO) && !all.equals(BigDecimal.ZERO)) {
+            return resolved.setScale(1, RoundingMode.HALF_UP).divide(all, RoundingMode.HALF_UP).multiply(HUNDRED);
         } else {
             return BigDecimal.ZERO;
         }
