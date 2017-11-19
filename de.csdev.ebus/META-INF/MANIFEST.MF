@@ -27,6 +27,7 @@ Export-Package: de.csdev.ebus,
  de.csdev.ebus.core,
  de.csdev.ebus.core.connection,
  de.csdev.ebus.service.device,
+ de.csdev.ebus.service.metrics,
  de.csdev.ebus.service.parser,
  de.csdev.ebus.utils
 Require-Bundle: org.junit;resolution:=optional
