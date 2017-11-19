@@ -18,10 +18,10 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
-import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -29,8 +29,8 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusDeviceTableService
-        implements IEBusConnectorEventListener, IEBusParserListener, IEBusDeviceTableListener {
+public class EBusDeviceTableService extends EBusConnectorEventListener
+        implements IEBusParserListener, IEBusDeviceTableListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
 
@@ -45,8 +45,6 @@ public class EBusDeviceTableService
     private boolean disableIdentificationRequests = false;
 
     private byte scanSlaveAddress = 0;
-
-    // private boolean scanEnabled = false;
 
     private boolean scanRunning = false;
 
@@ -332,11 +330,6 @@ public class EBusDeviceTableService
                 sendIdentificationRequest(device.getSlaveAddress());
             }
         }
-    }
-
-    @Override
-    public void onConnectionException(Exception e) {
-        // noop
     }
 
     @Override

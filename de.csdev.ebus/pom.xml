@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.csdev.ebus</groupId>
 	<artifactId>core</artifactId>
-	<version>0.6.0</version>
+	<version>0.7.0</version>
 	<name>eBUS core library</name>
 	<url>https://github.com/csowada/ebus</url>
 	<packaging>bundle</packaging>
