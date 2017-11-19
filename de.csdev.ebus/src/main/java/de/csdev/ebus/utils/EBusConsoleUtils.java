@@ -41,20 +41,20 @@ public class EBusConsoleUtils {
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
 
     public static String getMetricsInformation(EBusMetricsService service) {
-    	StringBuilder sb = new StringBuilder();
-    	
+        StringBuilder sb = new StringBuilder();
+
         sb.append(String.format("%-25s | %-10s\n", "Successful received", service.getReceived()));
         sb.append(String.format("%-25s | %-10s\n", "Failed received", service.getFailed()));
         sb.append(String.format("%-25s | %-10s\n", "Successful/Failed ratio", service.getFailureRatio()));
         sb.append("\n");
-        
+
         sb.append(String.format("%-25s | %-10s\n", "Resolved telegrams", service.getResolved()));
         sb.append(String.format("%-25s | %-10s\n", "Unresolved telegrams", service.getUnresolved()));
         sb.append(String.format("%-25s | %-10s\n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
-        
+
         return sb.toString();
     }
-    
+
     /**
      * @return
      */
@@ -129,6 +129,8 @@ public class EBusConsoleUtils {
             sb.append(msg + "\n");
             sb.append(StringUtils.repeat("*", len) + "\n");
             sb.append("\n");
+
+            return sb.toString();
         }
 
         sb.append("\n");
@@ -170,8 +172,7 @@ public class EBusConsoleUtils {
         sb.append(createTelegramResoverRow(1, 1, dataLen,
                 String.format(FORMAT, "Destination address", "Type: " + addressType(edata[1]), hex(edata[1]))));
 
-        sb.append(createTelegramResoverRow(2, 2, dataLen,
-                String.format(FORMAT, "Command", addressType(edata[1]), hex(command))));
+        sb.append(createTelegramResoverRow(2, 2, dataLen, String.format(FORMAT, "Command", "", hex(command))));
 
         sb.append(createTelegramResoverRow(4, 1, dataLen,
                 String.format(FORMAT, "Master Data Length", "Length: " + edata[4], hex(edata[4]))));
