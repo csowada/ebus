@@ -155,4 +155,9 @@ public abstract class EBusControllerBase extends Thread {
         }
     }
 
+    public void dispose() {
+    	listeners.clear();
+    	shutdownThreadPool();
+    }
+    
 }

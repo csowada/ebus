@@ -9,7 +9,7 @@
 package de.csdev.ebus.command;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,7 +78,7 @@ public class EBusCommandRegistry {
      * Loads all build-in command collections
      */
     public void loadBuildInCommandCollections() {
-        List<IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurations();
+        List<IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurationCollections();
 
         if (loadBuildInConfigurations != null && !loadBuildInConfigurations.isEmpty()) {
             for (IEBusCommandCollection collection : loadBuildInConfigurations) {
@@ -89,13 +89,13 @@ public class EBusCommandRegistry {
 
     /**
      * Loads a configuration file
-     * 
+     *
      * @param inputStream
      */
-    public void loadCommandCollection(InputStream inputStream) {
+    public void loadCommandCollection(URL url) {
 
         try {
-            addCommandCollection(reader.loadConfigurationCollection(inputStream));
+            addCommandCollection(reader.loadConfigurationCollection(url));
 
         } catch (EBusConfigurationReaderException e) {
             logger.error("error!", e);
@@ -103,6 +103,17 @@ public class EBusCommandRegistry {
             logger.error("error!", e);
         }
 
+    }
+
+    /**
+     * @param url
+     */
+    public void loadCommandCollectionBundle(URL url) {
+        List<IEBusCommandCollection> collections = reader.loadConfigurationCollectionBundle(url);
+
+        for (IEBusCommandCollection collection : collections) {
+            addCommandCollection(collection);
+        }
     }
 
     /**

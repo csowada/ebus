@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package de.csdev.ebus.utils;
 
 import java.util.Arrays;
@@ -21,10 +29,31 @@ import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.service.device.EBusDevice;
 import de.csdev.ebus.service.device.EBusDeviceTable;
+import de.csdev.ebus.service.metrics.EBusMetricsService;
 
+/**
+ *
+ * @author Christian Sowada - Initial contribution
+ *
+ */
 public class EBusConsoleUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
+
+    public static String getMetricsInformation(EBusMetricsService service) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(String.format("%-25s | %-10s\n", "Successful received", service.getReceived()));
+        sb.append(String.format("%-25s | %-10s\n", "Failed received", service.getFailed()));
+        sb.append(String.format("%-25s | %-10s\n", "Successful/Failed ratio", service.getFailureRatio()));
+        sb.append("\n");
+
+        sb.append(String.format("%-25s | %-10s\n", "Resolved telegrams", service.getResolved()));
+        sb.append(String.format("%-25s | %-10s\n", "Unresolved telegrams", service.getUnresolved()));
+        sb.append(String.format("%-25s | %-10s\n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
+
+        return sb.toString();
+    }
 
     /**
      * @return
@@ -100,6 +129,8 @@ public class EBusConsoleUtils {
             sb.append(msg + "\n");
             sb.append(StringUtils.repeat("*", len) + "\n");
             sb.append("\n");
+
+            return sb.toString();
         }
 
         sb.append("\n");
@@ -141,8 +172,7 @@ public class EBusConsoleUtils {
         sb.append(createTelegramResoverRow(1, 1, dataLen,
                 String.format(FORMAT, "Destination address", "Type: " + addressType(edata[1]), hex(edata[1]))));
 
-        sb.append(createTelegramResoverRow(2, 2, dataLen,
-                String.format(FORMAT, "Command", addressType(edata[1]), hex(command))));
+        sb.append(createTelegramResoverRow(2, 2, dataLen, String.format(FORMAT, "Command", "", hex(command))));
 
         sb.append(createTelegramResoverRow(4, 1, dataLen,
                 String.format(FORMAT, "Master Data Length", "Length: " + edata[4], hex(edata[4]))));

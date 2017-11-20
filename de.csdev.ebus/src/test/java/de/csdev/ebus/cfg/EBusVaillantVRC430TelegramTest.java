@@ -8,15 +8,21 @@
  */
 package de.csdev.ebus.cfg;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import de.csdev.ebus.TestUtils;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.EBusCommandUtils;
+import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -24,7 +30,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusWolfMMTelegramTest {
+public class EBusVaillantVRC430TelegramTest {
 
     EBusTypeRegistry types;
     EBusCommandRegistry commandRegistry;
@@ -34,7 +40,7 @@ public class EBusWolfMMTelegramTest {
 
         types = new EBusTypeRegistry();
 
-        URL url = EBusConfigurationReader.class.getResource("/commands/wolf-mm-configuration.json");
+        URL url = EBusConfigurationReader.class.getResource("/commands/vaillant-vrc-configuration.json");
 
         if (url == null) {
             throw new RuntimeException("Unable to load json file ...");
@@ -48,13 +54,24 @@ public class EBusWolfMMTelegramTest {
     }
 
     @Test
-    public void testSolarCommands() {
-        TestUtils.canResolve(commandRegistry, EBusUtils
-                .toByteArray("70 51 50 14 07 00 00 2C 1A 14 00 14 58 00 09 00 00 E6 12 00 D8 14 64 00 42 00 AA"));
+    public void testDateTimeBroadcast() {
 
-        TestUtils.canResolve(commandRegistry, EBusUtils
-                .toByteArray("70 51 50 14 07 41 00 05 00 17 00 5A 0D 00 09 00 40 80 16 00 D8 14 64 00 4B 00 AA"));
+        // 22:00:34 06.11.2017 (Monday)
+        byte[] byteArray = EBusUtils.toByteArray("10 FE B5 16 08 00 34 00 22 06 11 01 17 CE AA");
 
+        List<IEBusCommandMethod> find = commandRegistry.find(byteArray);
+
+        for (IEBusCommandMethod method : find) {
+            try {
+                Map<String, Object> map = EBusCommandUtils.decodeTelegram(method, byteArray);
+                Object object = map.get("datetime");
+
+                assertNotNull(object);
+
+            } catch (EBusTypeException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

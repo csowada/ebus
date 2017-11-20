@@ -9,14 +9,13 @@
 package de.csdev.ebus.cfg.std;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -29,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
@@ -47,7 +48,6 @@ import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
-import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -56,50 +56,19 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusConfigurationReader implements IEBusConfigurationReader {
 
-    private static final List<String> BUILDIN_FILES = Arrays.asList("common-configuration.json",
-            "wolf-cgb2-configuration.json", "wolf-sm1-configuration.json", "wolf-bm2-configuration.json",
-            "wolf-mm-configuration.json", "vaillant-bai00-configuration.json", "vaillant-vrc-configuration.json",
-            "vaillant-vr81-configuration.json");
-
     private final Logger logger = LoggerFactory.getLogger(EBusConfigurationReader.class);
 
     private EBusTypeRegistry registry;
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.cfg.IEBusConfigurationReader#loadBuildInConfigurations()
      */
     @Override
-    public List<IEBusCommandCollection> loadBuildInConfigurations() {
-
-        List<IEBusCommandCollection> result = new ArrayList<IEBusCommandCollection>();
-
-        for (String configurationFile : BUILDIN_FILES) {
-
-            try {
-                logger.info("Load internal configuration {}", configurationFile);
-                String configPath = "/commands/" + configurationFile;
-
-                InputStream inputStream = EBusController.class.getResourceAsStream(configPath);
-                if (inputStream == null) {
-                    throw new RuntimeException(
-                            String.format("Unable to load internal configuration \"%s\" ...", configPath));
-                }
-
-                IEBusCommandCollection collection = loadConfigurationCollection(inputStream);
-                if (collection != null) {
-                    result.add(collection);
-                }
-
-            } catch (IOException e) {
-                logger.error("error!", e);
-            } catch (EBusConfigurationReaderException e) {
-                logger.error("error!", e);
-            }
-        }
-
-        return result;
+    public List<IEBusCommandCollection> loadBuildInConfigurationCollections() {
+        return loadConfigurationCollectionBundle(
+                EBusConfigurationReader.class.getResource("/index-configuration.json"));
     }
 
     /*
@@ -108,15 +77,15 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
      * @see de.csdev.ebus.cfg.IEBusConfigurationReader#loadConfigurationCollection(java.io.InputStream)
      */
     @Override
-    public IEBusCommandCollection loadConfigurationCollection(InputStream inputStream)
+    public IEBusCommandCollection loadConfigurationCollection(URL url)
             throws IOException, EBusConfigurationReaderException {
 
         if (registry == null) {
             throw new RuntimeException("Unable to load configuration without EBusType set!");
         }
 
-        if (inputStream == null) {
-            throw new IllegalArgumentException("Required argument inputStream is null!");
+        if (url == null) {
+            throw new IllegalArgumentException("Required argument url is null!");
         }
 
         Type merchantListType = new TypeToken<List<EBusValueDTO>>() {
@@ -134,7 +103,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
 
         // collect md5 hash while reading file
-        DigestInputStream dis = new DigestInputStream(inputStream, md);
+        DigestInputStream dis = new DigestInputStream(url.openStream(), md);
 
         EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(dis), EBusCollectionDTO.class);
 
@@ -362,6 +331,53 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
     @Override
     public void setEBusTypes(EBusTypeRegistry ebusTypes) {
         registry = ebusTypes;
+    }
+
+    @Override
+    public List<IEBusCommandCollection> loadConfigurationCollectionBundle(URL url) {
+        List<IEBusCommandCollection> result = new ArrayList<IEBusCommandCollection>();
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, ?>>() {
+        }.getType();
+
+        try {
+
+            Map<String, ?> mapping = gson.fromJson(new InputStreamReader(url.openStream()), type);
+
+            if (mapping.containsKey("files")) {
+
+                @SuppressWarnings("unchecked")
+                List<Map<String, String>> files = (List<Map<String, String>>) mapping.get("files");
+
+                for (Map<String, String> file : files) {
+                    URL fileUrl = new URL(url, file.get("url"));
+
+                    try {
+                        logger.debug("Load configuration from url {} ...", fileUrl);
+                        IEBusCommandCollection collection = loadConfigurationCollection(fileUrl);
+                        if (collection != null) {
+                            result.add(collection);
+                        }
+
+                    } catch (EBusConfigurationReaderException e) {
+                        logger.error("error!", e);
+                    } catch (IOException e) {
+                        logger.error("error!", e);
+                    }
+
+                }
+            }
+
+        } catch (JsonSyntaxException e) {
+            logger.error("error!", e);
+        } catch (JsonIOException e) {
+            logger.error("error!", e);
+        } catch (IOException e) {
+            logger.error("error!", e);
+        }
+
+        return result;
     }
 
 }

@@ -18,10 +18,10 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusDataException;
-import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -29,8 +29,8 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusDeviceTableService
-        implements IEBusConnectorEventListener, IEBusParserListener, IEBusDeviceTableListener {
+public class EBusDeviceTableService extends EBusConnectorEventListener
+        implements IEBusParserListener, IEBusDeviceTableListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
 
@@ -43,6 +43,10 @@ public class EBusDeviceTableService
     private EBusDeviceTable deviceTable;
 
     private boolean disableIdentificationRequests = false;
+
+    private byte scanSlaveAddress = 0;
+
+    private boolean scanRunning = false;
 
     public EBusDeviceTableService(EBusController controller, EBusCommandRegistry configurationProvider,
             EBusDeviceTable deviceTable) {
@@ -64,10 +68,10 @@ public class EBusDeviceTableService
     /**
      *
      */
-    public void startDeviceScan() {
+    public void inquiryDeviceExistence() {
 
         if (scanQueueId != -1) {
-            logger.warn("Scan is still in progress ...");
+            logger.warn("Inquiry is still in progress ...");
             return;
         }
 
@@ -86,6 +90,96 @@ public class EBusDeviceTableService
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         }
+    }
+
+    public void startDeviceScan() {
+
+        if (scanRunning) {
+            logger.warn("eBUS scan is already running! Skip start ...");
+            return;
+        }
+
+        if (scanQueueId != -1) {
+            logger.warn("Inquiry is still in progress ...");
+            return;
+        }
+
+        // first slave address
+        scanSlaveAddress = 0x02;
+
+        scanRunning = true;
+
+        scanDevice2(false);
+    }
+
+    public void stopDeviceScan() {
+        // scanEnabled = false;
+        scanRunning = false;
+    }
+
+    private synchronized boolean scanDevice2(boolean nextDevice) {
+
+        if (nextDevice) {
+            Byte addr = nextSlaveAddress(scanSlaveAddress);
+
+            if (addr == null) {
+                return false;
+            }
+
+            scanSlaveAddress = addr;
+        }
+
+        logger.info("Scan address {} ...", EBusUtils.toHexDumpString(scanSlaveAddress));
+
+        byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
+
+        IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
+                EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
+
+        try {
+            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, scanSlaveAddress, null);
+
+            scanQueueId = controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
+
+            return true;
+
+        } catch (EBusTypeException e) {
+            logger.error("error!", e);
+        }
+
+        return false;
+    }
+
+    // private void scanDevice(byte slaveAddress) {
+    //
+    // logger.info("Scann address {} ...", EBusUtils.toHexDumpString(slaveAddress));
+    //
+    // byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
+    //
+    // IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
+    // EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
+    //
+    // try {
+    // ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
+    //
+    // scanQueueId = controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
+    // } catch (EBusTypeException e) {
+    // logger.error("error!", e);
+    // }
+    //
+    // }
+
+    private Byte nextSlaveAddress(byte slaveAddress) {
+
+        if (slaveAddress == (byte) 0xFD) {
+            return null;
+        }
+
+        do {
+            slaveAddress++;
+        } while (EBusUtils.isMasterAddress(slaveAddress) || slaveAddress == EBusConsts.BROADCAST_ADDRESS);
+
+        return slaveAddress;
     }
 
     /**
@@ -150,10 +244,22 @@ public class EBusDeviceTableService
     @Override
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
 
+        deviceTable.updateDevice(receivedData[0], null);
         deviceTable.updateDevice(receivedData[1], null);
 
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
-            logger.warn("Scan broadcast has been send out!");
+
+            if (scanRunning) {
+                if (!scanDevice2(true)) {
+                    stopDeviceScan();
+                }
+
+            } else {
+                // inquiry
+                logger.warn("Scan broadcast has been send out!");
+
+            }
+
             scanQueueId = -1;
         }
     }
@@ -167,7 +273,16 @@ public class EBusDeviceTableService
     @Override
     public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
-            logger.warn("Scan broadcast failed!");
+
+            if (scanRunning) {
+                if (!scanDevice2(true)) {
+                    stopDeviceScan();
+                }
+
+            } else {
+                logger.warn("Scan broadcast failed!");
+            }
+
             scanQueueId = -1;
         }
     }
@@ -218,12 +333,8 @@ public class EBusDeviceTableService
     }
 
     @Override
-    public void onConnectionException(Exception e) {
-        // noop
-    }
-
-    @Override
-    public void onTelegramResolveFailed(byte[] receivedData, Integer sendQueueId) {
+    public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
+            String exceptionMessage) {
         // noop
     }
 }

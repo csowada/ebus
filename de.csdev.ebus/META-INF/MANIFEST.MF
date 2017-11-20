@@ -7,7 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.gson,
  com.google.gson.annotations,
  com.google.gson.reflect,
- de.csdev.ebus.command.datatypes,
  gnu.io,
  org.apache.commons.io,
  org.apache.commons.lang,
@@ -27,6 +26,7 @@ Export-Package: de.csdev.ebus,
  de.csdev.ebus.core,
  de.csdev.ebus.core.connection,
  de.csdev.ebus.service.device,
+ de.csdev.ebus.service.metrics,
  de.csdev.ebus.service.parser,
  de.csdev.ebus.utils
 Require-Bundle: org.junit;resolution:=optional

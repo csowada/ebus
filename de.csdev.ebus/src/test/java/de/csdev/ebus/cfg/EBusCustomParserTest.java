@@ -2,10 +2,9 @@ package de.csdev.ebus.cfg;
 
 import static org.junit.Assert.fail;
 
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,13 +26,13 @@ public class EBusCustomParserTest {
 
     private final Logger logger = LoggerFactory.getLogger(EBusCustomParserTest.class);
 
-    @Test
+    // @Test
     public void test_BuildMasterTelegram() {
 
-        InputStream inputStream = EBusConfigurationReader.class.getResourceAsStream("/custom.json");
+        URL url = EBusConfigurationReader.class.getResource("/custom.json");
 
         EBusCommandRegistry registry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        registry.loadCommandCollection(inputStream);
+        registry.loadCommandCollection(url);
 
         EBusClient client = new EBusClient(registry);
 

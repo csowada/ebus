@@ -5,7 +5,7 @@
     "description":  "Wolf Mixer Module",
     
     "authors":      ["Christian Sowada, opensource@cs-dev.de"],
-    "identification": [],
+    "identification": ["01 21 00 5A 00"],
     
     "commands":
     [
