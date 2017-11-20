@@ -1,3 +1,24 @@
+## Alpha 0.0.14 (2017-11-20)
+
+Features:
+
+  - add support to load complete configuration bundles via URL
+  - add device scan function, rename inquire function
+  - add CSV writer for resolved and unresolved telegrams
+  - add metrics service to collect eBUS data
+
+Bugfixes:
+
+  - also use master addresses for device table
+  - activate unused resolve failed events
+  - delete unused projects from source
+  - remove closed connection streams on close
+
+Configurations:
+
+  - add identification for Wolf MM
+  - add outside temperature and datetime to Vaillant VRC 4307470
+
 ## Alpha 0.0.13 (2017-11-02)
 
 Features:
