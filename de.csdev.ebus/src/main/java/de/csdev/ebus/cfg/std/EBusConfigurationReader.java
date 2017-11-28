@@ -37,6 +37,7 @@ import de.csdev.ebus.cfg.IEBusConfigurationReader;
 import de.csdev.ebus.cfg.std.dto.EBusCollectionDTO;
 import de.csdev.ebus.cfg.std.dto.EBusCommandDTO;
 import de.csdev.ebus.cfg.std.dto.EBusCommandMethodDTO;
+import de.csdev.ebus.cfg.std.dto.EBusCommandTemplatesDTO;
 import de.csdev.ebus.cfg.std.dto.EBusValueDTO;
 import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandCollection;
@@ -60,6 +61,9 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     private EBusTypeRegistry registry;
 
+    private Map<String, Collection<EBusCommandValue>> templateValueRegistry = new HashMap<String, Collection<EBusCommandValue>>();
+    private Map<String, Collection<EBusCommandValue>> templateBlockRegistry = new HashMap<String, Collection<EBusCommandValue>>();
+    
     /*
      * (non-Javadoc)
      *
@@ -113,9 +117,50 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         // add md5 hash
         commandCollection.setSourceHash(md.digest());
 
-        for (EBusCommandDTO commandDto : collection.getCommands()) {
-            if (commandDto != null) {
-                commandCollection.addCommand(parseTelegramConfiguration(commandCollection, commandDto));
+        // extract templates
+        List<EBusCommandTemplatesDTO> templateSection = collection.getTemplates();
+        if(templateSection != null) {
+            for (EBusCommandTemplatesDTO templates : templateSection) {
+            	List<EBusValueDTO> templateValues = templates.getTemplate();
+            	if(templateValues != null) {
+
+            		Collection<EBusCommandValue> blockList = new ArrayList<EBusCommandValue>();
+            		
+                	for (EBusValueDTO value : templateValues) {
+                		
+                		Collection<EBusCommandValue> pv = parseValueConfiguration(value, null, null);
+                		blockList.addAll(pv);
+                		
+                		// global id
+                		String id = collection.getId() + "." + templates.getName() + "." + value.getName();
+                		logger.trace("Add template with global id {} to registry ...", id);
+                		templateValueRegistry.put(id, pv);
+
+                		// local id
+                		id = templates.getName() + "." + value.getName();
+                		logger.trace("Add template with local id {} to registry ...", id);
+                		templateValueRegistry.put(id, pv);
+    				}
+
+            		String id = collection.getId() + "." + templates.getName();
+            		
+            		// global id
+            		logger.trace("Add template block with global id {} to registry ...", id);
+            		templateBlockRegistry.put(id, blockList);
+            		
+            		// local id
+            		id = templates.getName();
+            		logger.trace("Add template block with local id {} to registry ...", id);
+            		templateBlockRegistry.put(templates.getName(), blockList);
+            	}
+    		}
+        }
+        
+        if(collection.getCommands() != null) {
+            for (EBusCommandDTO commandDto : collection.getCommands()) {
+                if (commandDto != null) {
+                    commandCollection.addCommand(parseTelegramConfiguration(commandCollection, commandDto));
+                }
             }
         }
 
@@ -236,29 +281,91 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
      * @param templateMap
      * @param commandMethod
      * @return
+     * @throws EBusConfigurationReaderException 
      */
     protected Collection<EBusCommandValue> parseValueConfiguration(EBusValueDTO template,
-            Map<String, EBusCommandValue> templateMap, EBusCommandMethod commandMethod) {
+            Map<String, EBusCommandValue> templateMap, EBusCommandMethod commandMethod) throws EBusConfigurationReaderException {
 
         Collection<EBusCommandValue> result = new ArrayList<EBusCommandValue>();
         String typeStr = template.getType();
 
         if (typeStr.equals("template-block")) {
-            // return the complete template block as clone
-            for (EBusCommandValue commandValue : templateMap.values()) {
-                EBusCommandValue clone = commandValue.clone();
-                clone.setParent(commandMethod);
-                result.add(clone);
+
+        	Collection<EBusCommandValue> templateCollection = null;
+        	
+        	if(StringUtils.isNotEmpty(template.getName())) {
+        		logger.warn("Property 'name' is not allowed for type 'template-block', ignore property !");
+        	}
+        	
+        	// use the global or local id as template block, new with alpha 15
+        	String id = (String) template.getProperty("id");
+        	if(StringUtils.isNotEmpty(id)) {
+        		if(!templateBlockRegistry.containsKey(id)) {
+        			throw new EBusConfigurationReaderException("Unable to find a template-block with id {0}!", id);
+        		}
+        		templateCollection = templateBlockRegistry.get(id);
+        		
+        	} else if(templateMap != null) {
+        		// return the complete template block from within command block
+        		templateCollection = templateMap.values();
+        		
+        	} else {
+        		throw new EBusConfigurationReaderException("No additional information for type 'template-block' defined!");
+        	}
+
+            if(templateCollection != null) {
+                for (EBusCommandValue commandValue : templateCollection) {
+                	
+                	// clone the original value
+                    EBusCommandValue clone = commandValue.clone();
+                    clone.setParent(commandMethod);
+                    
+                    overwritePropertiesFromTemplate(clone, template);
+                    
+                    result.add(clone);
+                }
             }
+            
             return result;
 
         } else if (typeStr.equals("template")) {
 
-            // use command value from template map as clone
-            EBusCommandValue commandValue = templateMap.get(template.getName());
-            EBusCommandValue clone = commandValue.clone();
-            clone.setParent(commandMethod);
-            result.add(clone);
+        	String id = (String) template.getProperty("id");
+        	
+        	Collection<EBusCommandValue> templateCollection = null;
+        	
+        	if(StringUtils.isNotEmpty(id)) {
+        		if(!templateValueRegistry.containsKey(id)) {
+        			throw new EBusConfigurationReaderException("Unable to find a template with id {0}!", id);
+        		}
+        		templateCollection = templateValueRegistry.get(id);
+
+        	} else if(templateMap != null) {
+        		// return the complete template block from within command block
+        		templateCollection = new ArrayList<EBusCommandValue>();
+        		templateCollection.add(templateMap.get(template.getName()));
+        		
+        	} else {
+        		throw new EBusConfigurationReaderException("No additional information for type 'template' defined!");
+        	}
+        	
+        	if(templateCollection != null && !templateCollection.isEmpty()) {
+            	for (EBusCommandValue commandValue : templateCollection) {
+
+                    EBusCommandValue clone = commandValue.clone();
+                    clone.setParent(commandMethod);
+                    
+                    overwritePropertiesFromTemplate(clone, template);
+                    
+                    // allow owerwrite for single names
+                    clone.setName(StringUtils.defaultIfEmpty(template.getName(), clone.getName()));
+                    
+                    result.add(clone);
+    			}
+        	} else {
+        		throw new EBusConfigurationReaderException("Internal template collection is empty!");
+        	}
+
             return result;
 
         } else if (typeStr.equals("static")) {
@@ -323,6 +430,21 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         return result;
     }
 
+    private void overwritePropertiesFromTemplate(EBusCommandValue clone, EBusValueDTO template) {
+    	
+        // allow placeholders in template-block mode
+        if(StringUtils.isNotEmpty(template.getLabel())) {
+            if(clone.getLabel().contains("%s")) {
+            	clone.setLabel(String.format(clone.getLabel(), template.getLabel()));
+            } else {
+            	clone.setLabel(template.getLabel());
+            }
+        }
+    	
+//        clone.setName(StringUtils.defaultIfEmpty(template.g, clone.getName()));
+        
+    }
+    
     /*
      * (non-Javadoc)
      *
@@ -361,7 +483,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                         }
 
                     } catch (EBusConfigurationReaderException e) {
-                        logger.error("error!", e);
+                        logger.error(e.getMessage());
                     } catch (IOException e) {
                         logger.error("error!", e);
                     }
@@ -378,6 +500,11 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
 
         return result;
+    }
+    
+    public void clear() {
+    	templateBlockRegistry.clear();
+    	templateValueRegistry.clear();
     }
 
 }

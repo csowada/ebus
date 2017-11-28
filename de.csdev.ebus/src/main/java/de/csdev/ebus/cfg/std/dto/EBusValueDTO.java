@@ -53,7 +53,7 @@ public class EBusValueDTO {
         properties.put(key, value);
     }
 
-    public Object getProperty(String key, Object value) {
+    public Object getProperty(String key) {
         return CollectionUtils.get(properties, key);
     }
 

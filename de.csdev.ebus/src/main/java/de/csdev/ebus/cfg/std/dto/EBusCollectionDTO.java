@@ -20,41 +20,32 @@ import de.csdev.ebus.utils.CollectionUtils;
 public class EBusCollectionDTO {
 
     private List<String> authors;
+    
     private List<EBusCommandDTO> commands;
+    
     private String description;
+    
     private String id;
+    
     private List<String> identification;
+    
     private String label;
-    private String vendor;
-
+    
     private Map<String, Object> properties;
 
-    public void setProperty(String key, Object value) {
-        properties = CollectionUtils.newMapIfNull(properties);
-        properties.put(key, value);
-    }
+    private List<EBusCommandTemplatesDTO> templates;
 
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-
-    public Object getProperty(String key) {
-        return CollectionUtils.get(properties, key);
-    }
-
-    public Map<String, Object> getProperties() {
-        return CollectionUtils.unmodifiableNotNullMap(properties);
-    }
+    private String vendor;
 
     public List<String> getAuthors() {
         return authors;
     }
 
-    public List<EBusCommandDTO> getCommands() {
+	public List<EBusCommandDTO> getCommands() {
         return commands;
     }
 
-    public String getDescription() {
+	public String getDescription() {
         return description;
     }
 
@@ -69,6 +60,18 @@ public class EBusCollectionDTO {
     public String getLabel() {
         return label;
     }
+
+    public Map<String, Object> getProperties() {
+        return CollectionUtils.unmodifiableNotNullMap(properties);
+    }
+
+    public Object getProperty(String key) {
+        return CollectionUtils.get(properties, key);
+    }
+
+    public List<EBusCommandTemplatesDTO> getTemplates() {
+		return templates;
+	}
 
     public String getVendor() {
         return vendor;
@@ -97,6 +100,19 @@ public class EBusCollectionDTO {
     public void setLabel(String label) {
         this.label = label;
     }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
+    public void setProperty(String key, Object value) {
+        properties = CollectionUtils.newMapIfNull(properties);
+        properties.put(key, value);
+    }
+
+    public void setTemplates(List<EBusCommandTemplatesDTO> templates) {
+		this.templates = templates;
+	}
 
     public void setVendor(String vendor) {
         this.vendor = vendor;
