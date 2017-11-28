@@ -19,6 +19,14 @@
     "properties":   {
                         "key" : "value"
                     },
+    "templates":    [
+		{"name":"temp_sensor", "template": [
+			{"name": "value", "type": "data2c", "label": "Temp. %s actual value", "min": 0, "max": 100, "format":"%.1f°C"},
+			{"name": "status", "type": "uchar", "label": "Temp. %s actual value status", 
+				"mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+			]}
+	],
+                    
     "commands":     [
         <command>,
         <command>,
@@ -36,7 +44,15 @@ description    | x        | A longer description
 authors        |          | Multiple authors of this file as array
 identification |          | The device identifications as hex string with five bytes. Multiple values allowed.
 properties     |          | Additional key-values
+commands       | x        | The array of templates, see template block below
 commands       | x        | The array of commands, see command block below
+
+### Template block
+
+Key            | Required | Description
+---            | ---      | ---
+name           | x        | The name of the template block. Must be unique within the file
+template       | x        | An array of value blocks
 
 ### Command block
 
@@ -54,15 +70,15 @@ commands       | x        | The array of commands, see command block below
 }
 ```
 
-Key | Required | Description
---- | --- | ---
-label | x | A label for this command
-id | x | A unique identifier within this file
-command | | The two byte hex string for the eBUS command
-template | | 
-get | | 
-set | | 
-broadcast | | 
+Key       | Required | Description
+---       |---       | ---
+label     | x        | A label for this command
+id        | x        | A unique identifier within this file
+command   |          | The two byte hex string for the eBUS command
+template  |          | 
+get       |          | 
+set       |          | 
+broadcast |          | 
 
 ### Method block
 
@@ -148,19 +164,41 @@ unumber |       | *   | Unsigned number, variable length
 
 ### Advanced data types
 
-Key      | Alias | Len   | Add. Param              | Description
----      | ---   | ---   | ---                     | ---
-bytes    |       | len   | ``length``              | Byte Array, requires ``length``
+Key      | Alias | Len   | Add. Param       | Description
+---      | ---   | ---   | ---              | ---
+bytes    |       | len   | ``length``    | Byte Array, requires ``length``
 datetime |       | *     | ``variantTime``, ``variantDate``, ``timeFirst`` | A combination of type ``date`` and ``time``. Use their variants. Switch Time/date order with ``timeFirst``
-date     |       | 3,4,7 | ``variant``             | A Date value (default), ``std``, see list below
-time     |       | 2, 3  | ``variant``             | A Time value (default), ``std``, see list below
-kw-crc   |       | 1     |                         | Kromschröder/Wolf CRC, often seen as ``0xCC``
-version  |       | 2     |                         | A BCD encoded version number
+date     |       | 3,4,7 | ``variant``   | A Date value (default), ``std``, see list below
+time     |       | 2, 3  | ``variant``   | A Time value (default), ``std``, see list below
+kw-crc   |       | 1     |                  | Kromschröder/Wolf CRC, often seen as ``0xCC``
+version  |       | 2     |                  | A BCD encoded version number
 mword    |       | len*2 | ``length``, ``multiplier`` | Multiple word, requires ``length`` and allows to set ``multiplier`` (default: 1000)
-string   |       | len   | ``length``              | ASCII String, requires ``length``
-static   |       | len   | ``default``             | A static byte array with the value of ``default``
-template |       |       | ``name``                | Adds the value with the given ``name`` from the template block
-template-block | |       |                         | Adds the complete template block on this position
+string   |       | len   | ``length``    | ASCII String, requires ``length``
+static   |       | len   | ``default``   | A static byte array with the value of ``default``
+template |       |       | ``id``         | Adds the template with the id, use collectionId.templateBlockName.templateValueName for global templates, templateBlockName.templateValueName for file templates or templateValueName for block templates
+value with the given ``id`` from the template block
+template-block | |       | ``id``         | Adds the complete template block on this position, if you use property ``id`` it uses a file or global template. Use collectionId.templateBlockName for global templates or templateValueName for file templates
+
+#### Template
+
+You can add a whole template block or a single template value to your configuration. If you use ``template-block``
+
+** Example for template-block **
+
+id value           | Description
+---                | ---
+-                  | Loads the complete template block from this command block
+temp_sensor        | Loads the **temp_sensor** block from templates block from the json file
+vtempl.temp_sensor | Loads the **temp_sensor** block from the global  vaillant template file
+
+** Example for template **
+
+id value                 | Description
+---                      | ---
+-                        | Not allowed
+temp_sensor.value        | Loads the **value** from the **temp_sensor** block from templates block from the json file
+vtempl.temp_sensor.value | Loads the **temp_sensor** block from the global  vaillant template file
+
 
 #### Details
 
