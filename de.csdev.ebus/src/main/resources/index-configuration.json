@@ -1,5 +1,7 @@
 {
 	"files": [
+		{"name": "vaillant-templates", "url": "./commands/vaillant-templates.json"},
+
 		{"name": "common", "url": "./commands/common-configuration.json"},
 		{"name": "vaillant-bai00", "url": "./commands/vaillant-bai00-configuration.json"},
 		{"name": "vaillant-vr81", "url": "./commands/vaillant-vr81-configuration.json"},
