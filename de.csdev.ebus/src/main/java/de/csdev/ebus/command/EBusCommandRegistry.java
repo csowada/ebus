@@ -264,6 +264,7 @@ public class EBusCommandRegistry {
     }
 
     public void clear() {
+    	reader.clear();
         collections.clear();
     }
 

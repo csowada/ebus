@@ -334,21 +334,23 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         	
         	Collection<EBusCommandValue> templateCollection = null;
         	
-        	if(StringUtils.isNotEmpty(id)) {
-        		if(!templateValueRegistry.containsKey(id)) {
-        			throw new EBusConfigurationReaderException("Unable to find a template with id {0}!", id);
-        		}
-        		templateCollection = templateValueRegistry.get(id);
-
-        	} else if(templateMap != null) {
-        		// return the complete template block from within command block
-        		templateCollection = new ArrayList<EBusCommandValue>();
-        		templateCollection.add(templateMap.get(template.getName()));
-        		
-        	} else {
+        	if(StringUtils.isEmpty(id)) {
         		throw new EBusConfigurationReaderException("No additional information for type 'template' defined!");
         	}
-        	
+        		
+    		if(templateValueRegistry.containsKey(id)) {
+    			templateCollection = templateValueRegistry.get(id);
+    			
+    		} else if(templateMap.containsKey(id)) {
+    			// return the complete template block from within command block
+        		templateCollection = new ArrayList<EBusCommandValue>();
+        		templateCollection.add(templateMap.get(id));
+        		
+    		} else {
+    			throw new EBusConfigurationReaderException("Unable to find a template with id {0}!", id);
+    			
+    		}
+
         	if(templateCollection != null && !templateCollection.isEmpty()) {
             	for (EBusCommandValue commandValue : templateCollection) {
 
