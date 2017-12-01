@@ -414,7 +414,7 @@
         },
         
         {
-            "label":    "Outside temperature",
+            "label":    "Controller Date",
             "id":       "controller.bc.datetime",
             "command":  "B5 16",
     

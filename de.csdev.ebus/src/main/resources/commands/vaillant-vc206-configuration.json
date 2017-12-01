@@ -1,0 +1,61 @@
+{
+    "id": "custom-vc206",
+    "vendor": "Vaillant",
+    "label": "Vaillant ecoTec 206",
+    "description": "Vaillant ecoTec 206",
+
+    "authors":      ["Witold Wojcik, witek_1308@poczta.onet.pl"],
+    "identification": ["66 65 73 48 48"],
+
+    "commands":
+    [
+        {
+            "label":    "VF2 flow sensor temperature",
+            "id":       "heating.vf2_sensor_hc2",
+            "command":  "B5 09",
+
+            "get": {
+                "master": [
+                    {"type": "static", "default": "0D 00 00"}
+                ],
+                "slave": [
+                    {"name": "temp_room", "type": "data2c", "label": "Flow temperature", "min": 0, "max": 60, "format":"%.1f°C"},
+                    {"name": "status", "type": "uchar", "label": "Flow temperature status",
+                        "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+
+        {
+            "label": "Heating circuit hours D.080 (h)",
+            "id": "heating.runtime",
+            "command": "B5 09",
+
+            "get": {
+                    "master": [
+                        {"type": "static", "default": "0D 28 00"}
+                    ],
+
+                    "slave": [
+                        {"name": "runtime", "type": "word", "label": "Heating hours", "format":"%d hours"}
+                    ]
+            }
+        },
+
+        {
+            "label": "Heating water hours D.081 (h)",
+            "id": "dhw.runtime",
+            "command": "B5 09",
+
+            "get": {
+                    "master": [
+                        {"type": "static", "default": "0D 22 00"}
+                    ],
+
+                    "slave": [
+                        {"name": "runtime", "type": "word", "label": "Heating hours", "format":"%d hours"}
+                    ]
+            }
+        }
+    ]
+}

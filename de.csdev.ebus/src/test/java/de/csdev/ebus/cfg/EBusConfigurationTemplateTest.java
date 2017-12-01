@@ -8,13 +8,10 @@
  */
 package de.csdev.ebus.cfg;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.net.URL;
 import java.util.List;
-
-import org.junit.Test;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
@@ -30,35 +27,35 @@ import de.csdev.ebus.command.IEBusValue;
  */
 public class EBusConfigurationTemplateTest {
 
-    @Test
+    // @Test
     public void test_BuildMasterTelegram() {
 
         URL url = EBusCommandRegistry.class.getResource("/index-configuration.json");
 
         EBusCommandRegistry registry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        
-    	registry.loadCommandCollectionBundle(url);
-    	assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
 
-    	registry.clear();
-    	assertTrue("collection should be empty!", registry.getCommandCollections().isEmpty());
-    	
-    	registry.loadBuildInCommandCollections();
-    	assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
+        registry.loadCommandCollectionBundle(url);
+        assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
 
-    	IEBusCommand commandById = registry.getCommandById("bai", "boiler.temp_outletx");
-    	IEBusCommandMethod commandMethod = commandById.getCommandMethod(Method.GET);
-    	
-    	Type type = commandMethod.getType();
-    	List<IEBusValue> slaveTypes = commandMethod.getSlaveTypes();
-    	
-//    	System.out.println(slaveTypes);
-    	
-    	for (IEBusValue ieBusValue : slaveTypes) {
-    		System.out.println(ieBusValue);
-		}
-    	
-    	System.out.println("EBusConfigurationTemplateTest.test_BuildMasterTelegram()");
+        registry.clear();
+        assertTrue("collection should be empty!", registry.getCommandCollections().isEmpty());
+
+        registry.loadBuildInCommandCollections();
+        assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
+
+        IEBusCommand commandById = registry.getCommandById("bai", "boiler.temp_outletx");
+        IEBusCommandMethod commandMethod = commandById.getCommandMethod(Method.GET);
+
+        Type type = commandMethod.getType();
+        List<IEBusValue> slaveTypes = commandMethod.getSlaveTypes();
+
+        // System.out.println(slaveTypes);
+
+        for (IEBusValue ieBusValue : slaveTypes) {
+            System.out.println(ieBusValue);
+        }
+
+        System.out.println("EBusConfigurationTemplateTest.test_BuildMasterTelegram()");
     }
 
 }
