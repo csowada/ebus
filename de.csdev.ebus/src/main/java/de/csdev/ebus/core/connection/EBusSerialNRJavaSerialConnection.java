@@ -41,6 +41,12 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
         this.port = port;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.connection.IEBusConnection#open()
+     */
+    @Override
     public boolean open() throws IOException {
         try {
 
@@ -88,6 +94,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
      *
      * @see gnu.io.SerialPortEventListener#serialEvent(gnu.io.SerialPortEvent)
      */
+    @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             synchronized (inputStream) {
@@ -96,6 +103,11 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.connection.AbstractEBusConnection#close()
+     */
     @Override
     public boolean close() throws IOException {
         if (serialPort == null) {
@@ -105,6 +117,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
         // run the serial.close in a new not-interrupted thread to
         // prevent an IllegalMonitorStateException error
         Thread shutdownThread = new Thread(new Runnable() {
+            @Override
             public void run() {
 
                 IOUtils.closeQuietly(inputStream);
@@ -128,11 +141,11 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
         return true;
     }
 
-    @Override
-    public boolean isOpen() throws IOException {
-        return inputStream != null;
-    }
-
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.connection.AbstractEBusConnection#readByte(boolean)
+     */
     @Override
     public int readByte(boolean lowLatency) throws IOException {
         if (lowLatency) {
@@ -153,11 +166,5 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
                 }
             }
         }
-    }
-
-    @Override
-    public void writeByte(int b) throws IOException {
-        outputStream.write(b);
-        // no flush, sometimes it blocks infinitely
     }
 }
