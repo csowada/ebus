@@ -29,6 +29,14 @@ public interface IEBusParserListener {
     public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
             Integer sendQueueId);
 
+    /**
+     * A parsed eBUS telegram was received but failed to resolve.
+     *
+     * @param commandChannel
+     * @param receivedData
+     * @param sendQueueId
+     * @param exceptionMessage
+     */
     public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
             String exceptionMessage);
 
