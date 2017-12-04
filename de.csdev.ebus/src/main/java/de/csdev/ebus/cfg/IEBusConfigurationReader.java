@@ -51,4 +51,9 @@ public interface IEBusConfigurationReader {
      * @param ebusTypes
      */
     public void setEBusTypes(EBusTypeRegistry ebusTypes);
+    
+    /**
+     * Clears all internal states
+     */
+    public void clear();
 }

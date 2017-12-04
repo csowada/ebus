@@ -1,9 +1,11 @@
 {
 	"files": [
+		{"name": "vaillant-templates", "url": "./commands/vaillant-templates.json"},
 		{"name": "common", "url": "./commands/common-configuration.json"},
 		{"name": "vaillant-bai00", "url": "./commands/vaillant-bai00-configuration.json"},
 		{"name": "vaillant-vr81", "url": "./commands/vaillant-vr81-configuration.json"},
 		{"name": "vaillant-vrc", "url": "./commands/vaillant-vrc-configuration.json"},
+		{"name": "vaillant-vc206", "url": "./commands/vaillant-vc206-configuration.json"},
 		{"name": "wolf-bm2", "url": "./commands/wolf-bm2-configuration.json"},
 		{"name": "wolf-cgb2", "url": "./commands/wolf-cgb2-configuration.json"},
 		{"name": "wolf-mm", "url": "./commands/wolf-mm-configuration.json"},

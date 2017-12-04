@@ -3,101 +3,48 @@
     "vendor":       "Vaillant",
     "label":        "Vaillant BAI00",
     "description":  "Condensing gas boiler like Vaillant atmoCOMPACT, ecoCOMPACT, auroCOMPACT, ecoTEC, ecoCRAFT ...",
-
-    "authors":      [
-                    "Christian Sowada, opensource@cs-dev.de",
-                    "Christophe P @ openhab community"
-                    ],
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
     "identification": ["42 41 49 30 30"],
+    
+    "templates": [
+    
+    	{"name":"vtempl.temp_sensor", "template": [
+			{"name": "value", "type": "data2c", "label": "Temp. %s actual value", "min": 0, "max": 100, "format":"%.1f°C"},
+			{"name": "status", "type": "uchar", "label": "Temp. %s actual value status", 
+				"mapping": {"0":"ok", "85":"circuit", "170":"cutoff"}}
+    	]}
+
+    ],
     
     "commands":
     [
+    
         {
-            "label":    "DateTime",
-            "id":       "boiler.control.datetime",
-            "command":  "B5 04",
+            "label":    "???? Outlet temp. actual value D.003",
+            "id":       "boiler.temp_outletx",
+            "command":  "B5 09",
 
-            "broadcast": {
+            "get": {
                 "master": [
-                    {"type": "static", "default": "00"}
+                    {"type": "static", "default": "0D 16 00"}
                 ],
                 "slave": [
-                    {"name":"status", "type": "byte", "label":"Status", "format":"%d",
-                        "mapping": {"0":"No Reception", "1":"Reception", "2":"Synchronized", "3":"Data Valid"}},
-                    {"name": "datetime", "type":"datetime", "label": "Date time value"},
-                    {"name":"temp_outside", "type": "data2b", "label": "Outside Temperature", "min": -50, "max": 50, "format":"%.1f°C"}
+                	{"type":"template-block", "id":"vtempl.temp_sensor", "name": "outlety", "label": "Outlet"},
+                	{"type":"template", "id":"xtemp_sensor.value", "name": "outletx", "label": "Outlet"}
                 ]
             }
         },
-
-        {
-            "label":    "Operational Data from Room Controller to Burner Control Unit",
-            "id":       "boiler.control.setopdata",
-            "command":  "B5 10",
-
-            "broadcast": {
-                "master": [
-                    {"type": "static", "default": "00 00"},
-                    {"name": "temp_d_lead_water", "type": "data1c", "label": "Lead water target temperature", "min": 0, "max": 100, "format":"%.1f°C"},
-                    {"name": "temp_d_srv_water", "type": "data1c", "label": "Service water target temperature", "min": 0, "max": 100, "format":"%.1f°C"},
-                    {"type": "static", "default": "FF FF"},
-                    {"type": "byte", "children": [
-                        {"name": "turnoff_water_heating", "type": "bit", "label": "Turn off water heating"},
-                        {"type": "bit"},
-                        {"name": "turnoffservice_water_heating", "type": "bit", "label": "Turn off service water heating"},
-                        {"type": "bit"},
-                        {"type": "bit"},
-                        {"type": "bit"},
-                        {"type": "bit"},
-                        {"type": "bit"}
-                        ]},
-                    {"type": "static", "default": "00 00"}
-                ],
-                "slave": [
-                    {"type": "static", "default": "01"}
-                ]
-            }
-        },
-
-        {
-            "label":    "Operational Data of Burner Control Unit to Room Control Unit",
-            "id":       "boiler.control.getopdata",
-            "command":  "B5 11",
-
-            "broadcast": {
-                "master": [
-                    {"type": "static", "default": "01"}
-                ],
-                "slave": [
-                    {"name": "temp_lead_water", "type": "data1c", "label": "Lead water temperature", "min": 0, "max": 100, "format":"%.1f°C"},
-                    {"name": "temp_return_lead_water", "type": "data1c", "label": "Lead water return temperature", "min": 0, "max": 100, "format":"%.1f°C"},
-                    {"name": "temp_outside", "type": "data2b", "label": "Outside Temperature", "min": -50, "max": 50, "format":"%.1f°C"},
-                    {"name": "temp_srv_water", "type": "data1c", "label": "Service water temperature", "min": 0, "max": 100, "format":"%.1f°C"},
-                    {"name": "temp_return_srv_water", "type": "data1c", "label": "Service water return temperature", "min": 0, "max": 100, "format":"%.1f°C"},
-                    {"type": "byte", "children": [
-                        {"name": "status_lead_heating", "type": "bit", "label": "Lead water heating", "mapping": {"0":"Off", "1":"On"}},
-                        {"name": "status_servicewater_heating", "type": "bit", "label": "Service water heating", "mapping": {"0":"Off", "1":"On"}},
-                        {"type": "bit"},
-                        {"type": "bit"},
-                        {"type": "bit"},
-                        {"type": "bit"},
-                        {"type": "bit"},
-                        {"type": "bit"}
-                    ]},
-                    {"type": "static", "default": "00 FF"}
-                ]
-            }
-        },
-
+    
         {
             "label":    "Heating partial load D.000",
             "id":       "boiler.level_part_load",
             "command":  "B5 09",
-
+    
             "template": [
                 {"name": "level_part_load", "type": "uchar", "label": "Heating partial load", "min": 1, "max": 200, "format":"%.1f kW"}
             ],
-
+    
             "get": {
                 "master": [
                     {"type": "static", "default": "0D 07 04"}
@@ -113,16 +60,16 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Overrun time of internal pump for heating mode D.001 (min)",
             "id":       "boiler.postrun_pump",
             "command":  "B5 09",
-
+    
             "template": [
                 {"name": "postrun_pump", "type": "uchar", "label": "Overrun time of internal pump for heating mode", "min": 0, "max": 60, "format":"%d min"}
             ],
-
+    
             "get": {
                 "master": [
                     {"type": "static", "default": "0D F7 03"}
@@ -138,7 +85,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Max. burner anti-cycling time heating at 20 °C flow temperature D.002",
             "id":       "boiler.blocktime_boiler",
@@ -163,7 +110,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Outlet temp. actual value D.003",
             "id":       "boiler.temp_outlet",
@@ -180,7 +127,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Measured value of hot water sensor D.004",
             "id":       "boiler.temp_cylinder",
@@ -197,7 +144,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Flow temperature target value (or return target value) D.005",
             "id":       "boiler.temp_d_flow",
@@ -212,7 +159,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Hot water temperature target value (VUW boilers only) D.006",
             "id":       "boiler.temp_d_dhw",
@@ -227,7 +174,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Warm start temperature target value (only with VUW boilers) - Cylinder temperature target value (only with VU boilers) D.007",
             "id":       "boiler.temp_d_cylinder",
@@ -242,7 +189,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Room thermostat at terminal RT D.008",
             "id":       "controller.state_thermostat_RT",
@@ -258,7 +205,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Target value from external eBus controller D.009",
             "id":       "boiler.temp_d_flow_ext",
@@ -273,7 +220,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Status of internal pump D.010",
             "id":       "boiler.state_pump",
@@ -289,7 +236,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Status of external heating pump D.011",
             "id":       "boiler.state_pump_ext",
@@ -305,7 +252,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Actual pump speed (high-efficiency pump) D.015",
             "id":       "boiler.modulation_pump",
@@ -320,7 +267,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Room thermostat 24 V DC open/closed D.016",
             "id":       "boiler.state_thermostat_24V",
@@ -336,7 +283,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Heating flow/return regulation changeover D.017",
             "id":       "boiler.state_return_regulation",
@@ -352,7 +299,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Hot water requirement via C1/C2, impeller or APC D.022",
             "id":       "dhw.state_dhw_demand",
@@ -400,7 +347,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Gas valve status D.030",
             "id":       "boiler.state_gas_valve",
@@ -416,7 +363,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Fan speed target value D.033",
             "id":       "boiler.speed_d_fan",
@@ -431,7 +378,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Fan speed actual value D.034",
             "id":       "boiler.speed_fan",
@@ -446,7 +393,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Position of the diverter valve D.035",
             "id":       "boiler.state_diverter_valve",
@@ -462,7 +409,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Flow temperature D.040",
             "id":       "boiler.temp_flow",
@@ -479,7 +426,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Return temperature D.041",
             "id":       "boiler.temp_return",
@@ -496,7 +443,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Digitised ionisation value D.044",
             "id":       "boiler.value_io",
@@ -511,7 +458,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Outside temperature D.047",
             "id":       "boiler.temp_outside",
@@ -528,7 +475,7 @@
                 ]
             }
         },
-
+        
         {
             "label":    "Boiler pressure",
             "id":       "boiler.pressure",

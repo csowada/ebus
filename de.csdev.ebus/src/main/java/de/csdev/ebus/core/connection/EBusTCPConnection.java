@@ -42,6 +42,12 @@ public class EBusTCPConnection extends AbstractEBusConnection {
         this.port = port;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.connection.IEBusConnection#open()
+     */
+    @Override
     public boolean open() throws IOException {
         try {
             socket = new Socket(hostname, port);
@@ -66,6 +72,11 @@ public class EBusTCPConnection extends AbstractEBusConnection {
         return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.csdev.ebus.core.connection.AbstractEBusConnection#close()
+     */
     @Override
     public boolean close() throws IOException {
 

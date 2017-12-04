@@ -1,7 +1,7 @@
 # ebusd buildin data type mapping
 
 The list below shows the mapping from ebus build data types to this library. All
-values in bold ar not supported yet.
+values in bold are not supported yet.
 
 You can see the list of ebusd data types in the 
 [ebusd wiki](https://github.com/john30/ebusd/wiki/4.3.-Builtin-data-types).
