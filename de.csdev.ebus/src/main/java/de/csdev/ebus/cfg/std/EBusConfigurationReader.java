@@ -153,11 +153,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                         String id = collection.getId() + "." + templates.getName() + "." + value.getName();
                         logger.trace("Add template with global id {} to registry ...", id);
                         templateValueRegistry.put(id, pv);
-
-                        // local id
-                        // id = templates.getName() + "." + value.getName();
-                        // logger.trace("Add template with local id {} to registry ...", id);
-                        // templateValueRegistry.put(id, pv);
                     }
 
                     String id = collection.getId() + "." + templates.getName();
@@ -165,11 +160,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                     // global id
                     logger.trace("Add template block with global id {} to registry ...", id);
                     templateBlockRegistry.put(id, blockList);
-
-                    // local id
-                    // id = templates.getName();
-                    // logger.trace("Add template block with local id {} to registry ...", id);
-                    // templateBlockRegistry.put(templates.getName(), blockList);
                 }
             }
         }
@@ -294,8 +284,14 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             throws EBusConfigurationReaderException {
 
         Collection<EBusCommandValue> result = new ArrayList<EBusCommandValue>();
-        String collectionId = commandMethod.getParent().getParentCollection().getId();
         String typeStr = template.getType();
+        String collectionId = null;
+
+        // check if really set
+        if (commandMethod != null && commandMethod.getParent() != null
+                && commandMethod.getParent().getParentCollection() != null) {
+            collectionId = commandMethod.getParent().getParentCollection().getId();
+        }
 
         if (typeStr.equals("template-block")) {
 
