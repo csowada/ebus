@@ -1,0 +1,152 @@
+{
+    "id":           "vaillant_rcc",
+    "vendor":       "Vaillant",
+    "label":        "Vaillant VR90",
+    "description":  "Commands for Vaillant VR90",
+    
+    "authors":      ["Dominic Kuschmierz"],
+    "identification": ["52 43 20 43 20"],
+    
+    "commands":
+    [
+        {
+            "label":    "Identifikation",
+            "id":       "vaillant_rcc.identification",
+            "command":  "07 04",
+    
+            "template": [
+                {"name": "vendor", "type": "byte", "label": "Vendor"},
+                {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
+                {"name": "software_version", "type": "version", "label": "Software Version", "format":"%4.2f"},
+                {"name": "hardware_version", "type": "version", "label": "Hardware Version", "format":"%4.2f"}
+            ],
+    
+            "broadcast": {
+                "master": [
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Außentemperatur",
+            "id":       "vaillant_rcc.outsideTemp",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 01 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_outside", "type": "data2c", "label": "Außentemperatur", "min": -30, "max": 60, "format":"%.1f°C"}                   ,
+                    {"name": "status", "type": "uchar", "label": "Außentemperatur Status",
+                     "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Raumtemperatur Rohwert",
+            "id":       "vaillant_rcc.temp_room_raw",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 00 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_room_raw", "type": "data2c", "label": "Raumtemperatur Rohwert", "min": -30, "max": 60, "format":"%.1f°C"},
+                    {"name": "status", "type": "uchar", "label": "Raumtemperatur Status",
+                     "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+
+
+        {
+            "label":    "Raumtemperatur Korrektur",
+            "id":       "vaillant_rcc.temp_room_correction",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 1F 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_room_correction", "type": "data2c", "label": "Raumtemperatur Korrektur", "min": -30, "max": 60, "format":"%.1f°C"}                   
+                ]
+            }
+        },
+
+        {
+            "label":    "Eigenerwärmung",
+            "id":       "vaillant_rcc.temp_room_selfheating",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 20 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_room_selfheating", "type": "data2c", "label": "Eigenerwärmung", "min": -30, "max": 60, "format":"%.1f°C"}                   
+                ]
+            }
+        },
+
+        {
+            "label":    "LCD Kontrast",
+            "id":       "vaillant_rcc.lcd_contrast",
+            "command":  "B5 09",
+
+            "template": 
+            [
+                {"name":"lcd_contrast", "type": "byte", "label":"LCD-Kontrast", "format":"%d"}
+            ],
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 36 00"}
+                ],
+
+                "slave": 
+                [
+                    {"type": "template-block"}                   
+                ]
+            },
+
+            "set": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0E 36 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        }
+
+    ]
+}
