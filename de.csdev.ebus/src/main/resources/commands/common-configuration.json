@@ -114,8 +114,8 @@
             "template": [
                 {"name": "vendor", "type": "byte", "label": "Vendor"},
                 {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
-                {"name": "software_version", "type": "version", "label": "Software Version"},
-                {"name": "hardware_version", "type": "version", "label": "Hardware Version"}
+                {"name": "software_version", "type": "version", "label": "Software Version", "format":"%4.2f"},
+                {"name": "hardware_version", "type": "version", "label": "Hardware Version", "format":"%4.2f"}
             ],
     
             "broadcast": {
