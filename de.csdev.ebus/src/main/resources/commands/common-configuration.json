@@ -112,10 +112,12 @@
             "command":  "07 04",
     
             "template": [
-                {"name": "vendor", "type": "byte", "label": "Vendor"},
-                {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
-                {"name": "software_version", "type": "version", "label": "Software Version"},
-                {"name": "hardware_version", "type": "version", "label": "Hardware Version"}
+                {"name": "vendor", "type": "byte", "label": "Vendor",
+                "mapping": {"181":"Vaillant"}},
+                {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID",
+                "mapping": {"52 43 20 43 20":"RC C", "45 48 50 30 30":"EHP00", "55 49 48 30 30":"UIH00","50 4D 57 30 30":"PMW00","4F 4D 55 30 30":"OMU00"}},
+                {"name": "software_version", "type": "version", "label": "Software Version", "format":"%4.2f"},
+                {"name": "hardware_version", "type": "version", "label": "Hardware Version", "format":"%4.2f"}
             ],
     
             "broadcast": {
