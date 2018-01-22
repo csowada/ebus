@@ -1,0 +1,452 @@
+{
+    "id":           "vaillant_pmw",
+    "vendor":       "Vaillant",
+    "label":        "Vaillant PMW",
+    "description":  "Commands for Vaillant PMW Fresh Water Station",
+    
+    "authors":      ["Dominic Kuschmierz"],
+    "identification": ["50 4D 57 30 30"],
+    
+    "commands":
+    [
+        {
+            "label":    "Identifikation",
+            "id":       "vaillant_pmw.identification",
+            "command":  "07 04",
+    
+            "template": [
+                {"name": "vendor", "type": "byte", "label": "Vendor", 
+                "mapping": {"181":"Vaillant"}},
+                {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID",
+                "mapping": {"52 43 20 43 20":"RC C", "45 48 50 30 30":"EHP00", "55 49 48 30 30":"UIH00","50 4D 57 30 30":"PMW00","4F 4D 55 30 30":"OMU00"}},
+                {"name": "software_version", "type": "version", "label": "Software Version", "format":"%4.2f"},
+                {"name": "hardware_version", "type": "version", "label": "Hardware Version", "format":"%4.2f"}
+            ],
+    
+            "broadcast": {
+                "master": [
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        },
+
+        {
+            "label":    "Temperatur T1",
+            "id":       "vaillant_pmw.TempT1",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 00 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_t1", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                   ,
+                    {"name": "temp_t1_status", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Temperatur T2",
+            "id":       "vaillant_pmw.TempT2",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 01 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_t2", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                   ,
+                    {"name": "temp_t2_status", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Temperatur T3",
+            "id":       "vaillant_pmw.TempT3",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 02 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_t3", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                   ,
+                    {"name": "temp_t3_status", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Zirkulationspumpe",
+            "id":       "vaillant_pmw.CirPump",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 04 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "cirpump", "type": "uchar", "label": "Leistung"}                    
+                ]
+            }
+        },
+
+        {
+            "label":    "Einschaltdauer Zirkulationspumpe",
+            "id":       "vaillant_pmw.CirPumpED",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 05 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "cirpumpED", "type": "uchar", "label": "Einschaltdauer"}                    
+                ]
+            }
+        },
+
+        {
+            "label":    "Berechnete Mischerposition",
+            "id":       "vaillant_pmw.CalculatedMixerPosition",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 06 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "CalculatedMixerPosition", "type": "word", "label": "Mischerposition", "format":"%d"}                    
+                ]
+            }
+        },
+
+        {
+            "label":    "Heizstab",
+            "id":       "vaillant_pmw.ElectricalHeater",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 08 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "ElectricalHeater", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"AUS", "1":"EIN"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Wärmeanforderung",
+            "id":       "vaillant_pmw.HeatDemand",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 09 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "HeatDemand", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                ]
+            }
+        },
+
+        {
+            "label":    "Betriebsart",
+            "id":       "vaillant_pmw.OperatingMode",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 0A 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "OperatingMode", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"AUS", "1":"EIN","2":"AUTO","3":"MANUELL"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Manueller Zapfsollwert",
+            "id":       "vaillant_pmw.ManualTappingTempDesired",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 0B 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "ManualTappingTempDesired", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                ]
+            }
+        },
+
+        {
+            "label":    "Automatischer Zapfsollwert",
+            "id":       "vaillant_pmw.AutomaticTappingTempDesired",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 0C 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "AutomaticTappingTempDesired", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                ]
+            }
+        },
+
+        {
+            "label":    "Quick Veto Sollwert",
+            "id":       "vaillant_pmw.QuickVetoTempDesired",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 0D 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "QuickVetoTempDesired", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                ]
+            }
+        },
+
+        {
+            "label":    "Aktueller Zapfsollwert",
+            "id":       "vaillant_pmw.ActualTappingTempDesired",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 0E 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "ActualTappingTempDesired", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                ]
+            }
+        },
+
+        {
+            "label":    "Quick Veto Start",
+            "id":       "vaillant_pmw.QuickVetoStart",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 0F 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "QuickVetoStart", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"AUS", "1":"EIN"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Starttag Legionellenschutz",
+            "id":       "vaillant_pmw.LegioStartDay",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 10 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "LegioStartDay", "type": "uchar", "label": "Starttag",
+                     "mapping": {"0":"Montag", "1":"Dienstag", "2":"Mittwoch", "3":"Donnerstag", "4":"Freitag", "5":"Samstag", "6":"Sonntag", "7":"AUS", "8":"Täglich"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Startzeit Legionellenschutz",
+            "id":       "vaillant_pmw.LegioStartTime",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 11 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "LegioStartTime", "type": "time", "variant":"hex", "label": "Startzeit"}                          
+                ]
+            }
+        },
+
+        {
+            "label":    "Partyfunktion",
+            "id":       "vaillant_pmw.PartyStart",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 12 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "PartyStart", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"AUS", "1":"EIN"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Ferienfunktion",
+            "id":       "vaillant_pmw.HolidayStart",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 13 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "HolidayStart", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"AUS", "1":"EIN"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Betriebsstunden",
+            "id":       "vaillant_pmw.WorkingHours",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 45 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "WorkingHours", "type": "word", "label": "Stunden", "format":"%d"}                    
+                ]
+            }
+        },
+
+        {
+            "label":    "Stationstyp",
+            "id":       "vaillant_pmw.stationType",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 0A 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "stationType", "type": "uchar", "label": "Stationstyp",
+                     "mapping": {"1":"VPM 20/25W","2":"VPM 30/35W"}}
+                ]
+            }
+        },
+
+        {
+            "label":    "Vortex",
+            "id":       "vaillant_pmw.vortex",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 03 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "vortex", "type": "uchar", "label": "Vortex", "factor":"0.185", "format":"%4.2fl/min"}                    
+                ]
+            }
+        },
+
+    ]
+}
