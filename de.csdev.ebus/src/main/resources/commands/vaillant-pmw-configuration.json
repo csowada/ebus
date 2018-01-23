@@ -4,13 +4,13 @@
     "label":        "Vaillant PMW",
     "description":  "Commands for Vaillant PMW Fresh Water Station",
     
-    "authors":      ["Dominic Kuschmierz"],
+    "authors":      ["Dominic Kuschmierz, dk_github@icloud.com"],
     "identification": ["50 4D 57 30 30"],
     
     "commands":
     [
         {
-            "label":    "Identifikation",
+            "label":    "Identification",
             "id":       "vaillant_pmw.identification",
             "command":  "07 04",
     
@@ -37,7 +37,7 @@
         },
 
         {
-            "label":    "Temperatur T1",
+            "label":    "Temperature T1",
             "id":       "vaillant_pmw.TempT1",
             "command":  "B5 09",
 
@@ -50,7 +50,7 @@
 
                 "slave": 
                 [
-                    {"name": "temp_t1", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                   ,
+                    {"name": "temp_t1", "type": "data2c", "label": "Temperature", "format":"%.1f°C"}                   ,
                     {"name": "temp_t1_status", "type": "uchar", "label": "Status",
                      "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
                 ]
@@ -58,7 +58,7 @@
         },
         
         {
-            "label":    "Temperatur T2",
+            "label":    "Temperature T2",
             "id":       "vaillant_pmw.TempT2",
             "command":  "B5 09",
 
@@ -71,7 +71,7 @@
 
                 "slave": 
                 [
-                    {"name": "temp_t2", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                   ,
+                    {"name": "temp_t2", "type": "data2c", "label": "Temperatuer", "format":"%.1f°C"}                   ,
                     {"name": "temp_t2_status", "type": "uchar", "label": "Status",
                      "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
                 ]
@@ -79,7 +79,7 @@
         },
 
         {
-            "label":    "Temperatur T3",
+            "label":    "Temperature T3",
             "id":       "vaillant_pmw.TempT3",
             "command":  "B5 09",
 
@@ -92,7 +92,7 @@
 
                 "slave": 
                 [
-                    {"name": "temp_t3", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                   ,
+                    {"name": "temp_t3", "type": "data2c", "label": "Temperature", "format":"%.1f°C"}                   ,
                     {"name": "temp_t3_status", "type": "uchar", "label": "Status",
                      "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
                 ]
@@ -100,7 +100,7 @@
         },
 
         {
-            "label":    "Zirkulationspumpe",
+            "label":    "Circulation Pump",
             "id":       "vaillant_pmw.CirPump",
             "command":  "B5 09",
 
@@ -113,13 +113,13 @@
 
                 "slave": 
                 [
-                    {"name": "cirpump", "type": "uchar", "label": "Leistung"}                    
+                    {"name": "cirpump", "type": "uchar", "label": "Power"}                    
                 ]
             }
         },
 
         {
-            "label":    "Einschaltdauer Zirkulationspumpe",
+            "label":    "CirculationPump ED",
             "id":       "vaillant_pmw.CirPumpED",
             "command":  "B5 09",
 
@@ -132,13 +132,13 @@
 
                 "slave": 
                 [
-                    {"name": "cirpumpED", "type": "uchar", "label": "Einschaltdauer"}                    
+                    {"name": "cirpumpED", "type": "uchar", "label": "Enable Duration"}                    
                 ]
             }
         },
 
         {
-            "label":    "Berechnete Mischerposition",
+            "label":    "Calculated mixer position",
             "id":       "vaillant_pmw.CalculatedMixerPosition",
             "command":  "B5 09",
 
@@ -151,13 +151,13 @@
 
                 "slave": 
                 [
-                    {"name": "CalculatedMixerPosition", "type": "word", "label": "Mischerposition", "format":"%d"}                    
+                    {"name": "CalculatedMixerPosition", "type": "word", "label": "Mixer position", "format":"%d"}                    
                 ]
             }
         },
 
         {
-            "label":    "Heizstab",
+            "label":    "Electrical Heater",
             "id":       "vaillant_pmw.ElectricalHeater",
             "command":  "B5 09",
 
@@ -171,13 +171,13 @@
                 "slave": 
                 [
                     {"name": "ElectricalHeater", "type": "uchar", "label": "Status",
-                     "mapping": {"0":"AUS", "1":"EIN"}}
+                     "mapping": {"0":"OFF", "1":"ON"}}
                 ]
             }
         },
 
         {
-            "label":    "Wärmeanforderung",
+            "label":    "Heat demand",
             "id":       "vaillant_pmw.HeatDemand",
             "command":  "B5 09",
 
@@ -190,13 +190,13 @@
 
                 "slave": 
                 [
-                    {"name": "HeatDemand", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                    {"name": "HeatDemand", "type": "data2c", "label": "Temperature", "format":"%.1f°C"}                          
                 ]
             }
         },
 
         {
-            "label":    "Betriebsart",
+            "label":    "Operating mode",
             "id":       "vaillant_pmw.OperatingMode",
             "command":  "B5 09",
 
@@ -210,13 +210,13 @@
                 "slave": 
                 [
                     {"name": "OperatingMode", "type": "uchar", "label": "Status",
-                     "mapping": {"0":"AUS", "1":"EIN","2":"AUTO","3":"MANUELL"}}
+                     "mapping": {"0":"OFF", "1":"ON","2":"AUTO","3":"MANUAL"}}
                 ]
             }
         },
 
         {
-            "label":    "Manueller Zapfsollwert",
+            "label":    "Manual tapping temp desired",
             "id":       "vaillant_pmw.ManualTappingTempDesired",
             "command":  "B5 09",
 
@@ -229,13 +229,13 @@
 
                 "slave": 
                 [
-                    {"name": "ManualTappingTempDesired", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                    {"name": "ManualTappingTempDesired", "type": "data2c", "label": "Temperature", "format":"%.1f°C"}                          
                 ]
             }
         },
 
         {
-            "label":    "Automatischer Zapfsollwert",
+            "label":    "Automatic tapping temp desired",
             "id":       "vaillant_pmw.AutomaticTappingTempDesired",
             "command":  "B5 09",
 
@@ -248,13 +248,13 @@
 
                 "slave": 
                 [
-                    {"name": "AutomaticTappingTempDesired", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                    {"name": "AutomaticTappingTempDesired", "type": "data2c", "label": "Temperature", "format":"%.1f°C"}                          
                 ]
             }
         },
 
         {
-            "label":    "Quick Veto Sollwert",
+            "label":    "Quick Veto temp desired",
             "id":       "vaillant_pmw.QuickVetoTempDesired",
             "command":  "B5 09",
 
@@ -267,13 +267,13 @@
 
                 "slave": 
                 [
-                    {"name": "QuickVetoTempDesired", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                    {"name": "QuickVetoTempDesired", "type": "data2c", "label": "Temperature", "format":"%.1f°C"}                          
                 ]
             }
         },
 
         {
-            "label":    "Aktueller Zapfsollwert",
+            "label":    "Actual tapping temp desired",
             "id":       "vaillant_pmw.ActualTappingTempDesired",
             "command":  "B5 09",
 
@@ -286,7 +286,7 @@
 
                 "slave": 
                 [
-                    {"name": "ActualTappingTempDesired", "type": "data2c", "label": "Temperatur", "format":"%.1f°C"}                          
+                    {"name": "ActualTappingTempDesired", "type": "data2c", "label": "Temperature", "format":"%.1f°C"}                          
                 ]
             }
         },
@@ -306,13 +306,13 @@
                 "slave": 
                 [
                     {"name": "QuickVetoStart", "type": "uchar", "label": "Status",
-                     "mapping": {"0":"AUS", "1":"EIN"}}
+                     "mapping": {"0":"OFF", "1":"ON"}}
                 ]
             }
         },
 
         {
-            "label":    "Starttag Legionellenschutz",
+            "label":    "Legio start day",
             "id":       "vaillant_pmw.LegioStartDay",
             "command":  "B5 09",
 
@@ -325,14 +325,14 @@
 
                 "slave": 
                 [
-                    {"name": "LegioStartDay", "type": "uchar", "label": "Starttag",
-                     "mapping": {"0":"Montag", "1":"Dienstag", "2":"Mittwoch", "3":"Donnerstag", "4":"Freitag", "5":"Samstag", "6":"Sonntag", "7":"AUS", "8":"Täglich"}}
+                    {"name": "LegioStartDay", "type": "uchar", "label": "Start day",
+                     "mapping": {"0":"Monday", "1":"Tuesday", "2":"Wednsday", "3":"Thursday", "4":"Friday", "5":"Saturday", "6":"Sunday", "7":"Off", "8":"Daily"}}
                 ]
             }
         },
 
         {
-            "label":    "Startzeit Legionellenschutz",
+            "label":    "Legio start time",
             "id":       "vaillant_pmw.LegioStartTime",
             "command":  "B5 09",
 
@@ -345,13 +345,13 @@
 
                 "slave": 
                 [
-                    {"name": "LegioStartTime", "type": "time", "variant":"hex", "label": "Startzeit"}                          
+                    {"name": "LegioStartTime", "type": "time", "variant":"hex", "label": "Start day"}                          
                 ]
             }
         },
 
         {
-            "label":    "Partyfunktion",
+            "label":    "Partyfunction",
             "id":       "vaillant_pmw.PartyStart",
             "command":  "B5 09",
 
@@ -365,13 +365,13 @@
                 "slave": 
                 [
                     {"name": "PartyStart", "type": "uchar", "label": "Status",
-                     "mapping": {"0":"AUS", "1":"EIN"}}
+                     "mapping": {"0":"OFF", "1":"ON"}}
                 ]
             }
         },
 
         {
-            "label":    "Ferienfunktion",
+            "label":    "Holidayfunction",
             "id":       "vaillant_pmw.HolidayStart",
             "command":  "B5 09",
 
@@ -385,13 +385,13 @@
                 "slave": 
                 [
                     {"name": "HolidayStart", "type": "uchar", "label": "Status",
-                     "mapping": {"0":"AUS", "1":"EIN"}}
+                     "mapping": {"0":"OFF", "1":"ON"}}
                 ]
             }
         },
 
         {
-            "label":    "Betriebsstunden",
+            "label":    "Working hours",
             "id":       "vaillant_pmw.WorkingHours",
             "command":  "B5 09",
 
@@ -404,13 +404,13 @@
 
                 "slave": 
                 [
-                    {"name": "WorkingHours", "type": "word", "label": "Stunden", "format":"%d"}                    
+                    {"name": "WorkingHours", "type": "word", "label": "Hours", "format":"%d"}                    
                 ]
             }
         },
 
         {
-            "label":    "Stationstyp",
+            "label":    "VPM type",
             "id":       "vaillant_pmw.stationType",
             "command":  "B5 09",
 
@@ -423,7 +423,7 @@
 
                 "slave": 
                 [
-                    {"name": "stationType", "type": "uchar", "label": "Stationstyp",
+                    {"name": "stationType", "type": "uchar", "label": "Type",
                      "mapping": {"1":"VPM 20/25W","2":"VPM 30/35W"}}
                 ]
             }
