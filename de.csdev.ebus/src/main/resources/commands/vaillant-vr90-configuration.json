@@ -1,0 +1,154 @@
+{
+    "id":           "vaillant_rcc",
+    "vendor":       "Vaillant",
+    "label":        "Vaillant VR90",
+    "description":  "Commands for Vaillant VR90",
+    
+    "authors":      ["Dominic Kuschmierz, dk_github@icloud.com"],
+    "identification": ["52 43 20 43 20"],
+    
+    "commands":
+    [
+        {
+            "label":    "Identification",
+            "id":       "vaillant_rcc.identification",
+            "command":  "07 04",
+    
+            "template": [
+                {"name": "vendor", "type": "byte", "label": "Vendor", 
+                "mapping": {"181":"Vaillant"}},
+                {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID",
+                "mapping": {"52 43 20 43 20":"RC C", "45 48 50 30 30":"EHP00", "55 49 48 30 30":"UIH00","50 4D 57 30 30":"PMW00","4F 4D 55 30 30":"OMU00"}},
+                {"name": "software_version", "type": "version", "label": "Software Version", "format":"%4.2f"},
+                {"name": "hardware_version", "type": "version", "label": "Hardware Version", "format":"%4.2f"}
+            ],
+    
+            "broadcast": {
+                "master": [
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Outside temperature",
+            "id":       "vaillant_rcc.outsideTemp",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 01 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_outside", "type": "data2c", "label": "Temperature", "min": -30, "max": 60, "format":"%.1f°C"}                   ,
+                    {"name": "status", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+        
+        {
+            "label":    "Roomtemperature raw value",
+            "id":       "vaillant_rcc.temp_room_raw",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 00 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_room_raw", "type": "data2c", "label": "Temperature", "min": -30, "max": 60, "format":"%.1f°C"},
+                    {"name": "status", "type": "uchar", "label": "Status",
+                     "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+                ]
+            }
+        },
+
+
+        {
+            "label":    "Roomtemperature correction value",
+            "id":       "vaillant_rcc.temp_room_correction",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 1F 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_room_correction", "type": "data2c", "label": "Temperature", "min": -30, "max": 60, "format":"%.1f°C"}                   
+                ]
+            }
+        },
+
+        {
+            "label":    "Selfheating",
+            "id":       "vaillant_rcc.temp_room_selfheating",
+            "command":  "B5 09",
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 20 00"}
+                ],
+
+                "slave": 
+                [
+                    {"name": "temp_room_selfheating", "type": "data2c", "label": "Temperature", "min": -30, "max": 60, "format":"%.1f°C"}                   
+                ]
+            }
+        },
+
+        {
+            "label":    "LCD Contrast",
+            "id":       "vaillant_rcc.lcd_contrast",
+            "command":  "B5 09",
+
+            "template": 
+            [
+                {"name":"lcd_contrast", "type": "byte", "label":"LCD-Contrast", "format":"%d"}
+            ],
+
+            "get": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0D 36 00"}
+                ],
+
+                "slave": 
+                [
+                    {"type": "template-block"}                   
+                ]
+            },
+
+            "set": 
+            {
+                "master": 
+                [
+                    {"type": "static", "default": "0E 36 00"},
+                    {"type": "template-block"}
+                ]
+            }
+        }
+
+    ]
+}
