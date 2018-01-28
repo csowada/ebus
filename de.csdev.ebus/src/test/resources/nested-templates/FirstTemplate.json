@@ -1,0 +1,16 @@
+{
+    "id":           "vaillant",
+    "label":        "Vaillant (vendor B5) templates",
+    "description":  "Templates for Vaillant devices",
+
+    "templates": [
+  		{"name":"templ", "template": [
+			{"name": "tth", "type": "time", "variant": "minutes_short", "minuteMultiplier": 10, 
+  			"replaceValue": "90", "min":0, "max": 144}
+    	]},
+    	
+    	{"name":"to", "template": [						
+			{"name": "value", "type": "template", "id": "vaillant.templ.tth"}			
+    	]}
+	]
+}

@@ -77,7 +77,7 @@ public class ReplaceValueTest {
         }
     }
 
-    // @Test
+    @Test
     public void x() throws EBusTypeException {
 
         for (String typeName : types.getTypesNames()) {

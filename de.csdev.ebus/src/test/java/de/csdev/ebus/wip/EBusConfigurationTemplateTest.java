@@ -6,11 +6,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package de.csdev.ebus.cfg;
+package de.csdev.ebus.wip;
 
 import static org.junit.Assert.*;
 
-import java.net.URL;
 import java.util.List;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
@@ -30,11 +29,9 @@ public class EBusConfigurationTemplateTest {
     // @Test
     public void test_BuildMasterTelegram() {
 
-        URL url = EBusCommandRegistry.class.getResource("/index-configuration.json");
-
         EBusCommandRegistry registry = new EBusCommandRegistry(EBusConfigurationReader.class);
+        registry.loadBuildInCommandCollections();
 
-        registry.loadCommandCollectionBundle(url);
         assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
 
         registry.clear();
@@ -46,6 +43,7 @@ public class EBusConfigurationTemplateTest {
         IEBusCommand commandById = registry.getCommandById("bai", "boiler.temp_outletx");
         IEBusCommandMethod commandMethod = commandById.getCommandMethod(Method.GET);
 
+        @SuppressWarnings("unused")
         Type type = commandMethod.getType();
         List<IEBusValue> slaveTypes = commandMethod.getSlaveTypes();
 

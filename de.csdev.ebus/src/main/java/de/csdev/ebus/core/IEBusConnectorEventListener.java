@@ -19,14 +19,16 @@ public interface IEBusConnectorEventListener {
     /**
      * A new valid telegram has been received.
      *
-     * @param telegram
+     * @param receivedData
+     * @param sendQueueId
      */
     public void onTelegramReceived(byte[] receivedData, Integer sendQueueId);
 
     /**
      * A new valid telegram has been received.
      *
-     * @param telegram
+     * @param exception
+     * @param sendQueueId
      */
     public void onTelegramException(EBusDataException exception, Integer sendQueueId);
 

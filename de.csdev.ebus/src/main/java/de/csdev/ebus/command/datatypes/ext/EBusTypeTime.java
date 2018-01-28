@@ -20,6 +20,7 @@ import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
 import de.csdev.ebus.command.datatypes.std.EBusTypeChar;
+import de.csdev.ebus.command.datatypes.std.EBusTypeUnsignedNumber;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
 import de.csdev.ebus.utils.EBusDateTime;
 
@@ -38,14 +39,15 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
     public static String HEX_SHORT = "hex_short"; // HTM - 2
 
     public static String MINUTES = "minutes"; // MIN - 2
+    public static String MINUTES_SHORT = "minutes_short"; // MIN - 1
 
     private static String[] supportedTypes = new String[] { TYPE_TIME };
 
-    public static String MINUTE_MULTIPLIER = "minuteMultplier";
+    public static String MINUTE_MULTIPLIER = "minuteMultiplier";
 
     private String variant = DEFAULT;
 
-    private int minuteMultplier = 1;
+    private BigDecimal minuteMultiplier = BigDecimal.valueOf(1);
 
     @Override
     public String[] getSupportedTypes() {
@@ -64,16 +66,14 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
             return 2;
         } else if (variant.equals(MINUTES)) {
             return 2;
+        } else if (variant.equals(MINUTES_SHORT)) {
+            return 1;
         }
         return 0;
     }
 
     @Override
     public EBusDateTime decodeInt(byte[] data) throws EBusTypeException {
-
-        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
-        IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
-        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
 
@@ -86,30 +86,44 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
         }
 
         if (StringUtils.equals(variant, SHORT)) {
+            IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
             minute = bcdType.decode(new byte[] { data[0] });
             hour = bcdType.decode(new byte[] { data[1] });
 
         } else if (StringUtils.equals(variant, DEFAULT)) {
+            IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
             second = bcdType.decode(new byte[] { data[0] });
             minute = bcdType.decode(new byte[] { data[1] });
             hour = bcdType.decode(new byte[] { data[2] });
 
         } else if (StringUtils.equals(variant, HEX)) {
+            IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
             second = charType.decode(new byte[] { data[0] });
             minute = charType.decode(new byte[] { data[1] });
             hour = charType.decode(new byte[] { data[2] });
 
         } else if (StringUtils.equals(variant, HEX_SHORT)) {
+            IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
             minute = charType.decode(new byte[] { data[0] });
             hour = charType.decode(new byte[] { data[1] });
 
-        } else if (StringUtils.equals(variant, MINUTES)) {
-            BigDecimal minutesSinceMidnight = wordType.decode(data);
-            minutesSinceMidnight = minutesSinceMidnight.multiply(BigDecimal.valueOf(minuteMultplier));
+        } else if (StringUtils.equals(variant, MINUTES) || StringUtils.equals(variant, MINUTES_SHORT)) {
+
+            BigDecimal minutesSinceMidnight = null;
+            if (StringUtils.equals(variant, MINUTES_SHORT)) {
+                IEBusType<BigDecimal> type = types.getType(EBusTypeUnsignedNumber.TYPE_UNUMBER, IEBusType.LENGTH, 1);
+                minutesSinceMidnight = type.decode(data);
+            } else {
+                IEBusType<BigDecimal> type = types.getType(EBusTypeUnsignedNumber.TYPE_UNUMBER, IEBusType.LENGTH, 2);
+                minutesSinceMidnight = type.decode(data);
+            }
+
+            minutesSinceMidnight = minutesSinceMidnight.multiply(minuteMultiplier);
 
             if (minutesSinceMidnight.intValue() > 1440) {
                 throw new EBusTypeException("Value 'minutes since midnight' to large!");
             }
+
             calendar.add(Calendar.MINUTE, minutesSinceMidnight.intValue());
         }
 
@@ -170,7 +184,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
                 result = new byte[] { charType.encode(calendar.get(Calendar.MINUTE))[0],
                         charType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-            } else if (StringUtils.equals(variant, MINUTES)) {
+            } else if (StringUtils.equals(variant, MINUTES) || StringUtils.equals(variant, MINUTES_SHORT)) {
 
                 long millis = calendar.getTimeInMillis();
 
@@ -186,9 +200,14 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
                 minutes = minutes.divide(BigDecimal.valueOf(1000 * 60), 0, RoundingMode.HALF_UP);
 
                 // xxx
-                minutes = minutes.divide(BigDecimal.valueOf(minuteMultplier), 0, RoundingMode.HALF_UP);
+                minutes = minutes.divide(minuteMultiplier, 0, RoundingMode.HALF_UP);
 
-                result = wordType.encode(minutes);
+                if (StringUtils.equals(variant, MINUTES_SHORT)) {
+                    result = charType.encode(minutes);
+                } else {
+                    result = wordType.encode(minutes);
+                }
+
             }
         }
 
@@ -197,7 +216,8 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
 
     @Override
     public String toString() {
-        return "EBusTypeDateTime [variant=" + variant + "]";
+        return "EBusTypeTime [" + (variant != null ? "variant=" + variant + ", " : "") + "minuteMultiplier="
+                + minuteMultiplier + "]";
     }
 
 }

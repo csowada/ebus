@@ -184,6 +184,7 @@ string         | ASCII String, requires ``length``
 static         | A static byte array with the value of ``default``
 template       | Adds the template with the id,
 template-block | Adds the complete template block on this position
+float          | A 4 byte float value
 
 For more deails see [Advance Data Types](./types.md)
 

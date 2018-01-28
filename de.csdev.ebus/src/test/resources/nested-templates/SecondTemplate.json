@@ -1,0 +1,16 @@
+{
+    "id":           "b5",
+    "label":        "Vaillant (vendor B5) templates",
+    "description":  "Templates for Vaillant devices",
+
+    "templates": [
+    	{"name":"slot1-3", "template": [						
+			{"name": "from1", "type": "template", "id": "vaillant.templ.tth"},
+			{"name": "to1", "type": "template", "id": "vaillant.templ.tth"},	
+			{"name": "from2", "type": "template", "id": "vaillant.templ.tth"},
+			{"name": "to2", "type": "template", "id": "vaillant.templ.tth"},	
+			{"name": "from3", "type": "template", "id": "vaillant.templ.tth"},
+			{"name": "to3", "type": "template", "id": "vaillant.templ.tth"}					
+    	]}
+	]
+}

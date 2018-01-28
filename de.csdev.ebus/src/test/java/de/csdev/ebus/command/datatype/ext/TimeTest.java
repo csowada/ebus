@@ -10,6 +10,7 @@ package de.csdev.ebus.command.datatype.ext;
 
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -249,7 +250,7 @@ public class TimeTest {
         GregorianCalendar calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
 
         IEBusType<EBusDateTime> type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT, EBusTypeTime.MINUTES,
-                EBusTypeTime.MINUTE_MULTIPLIER, 10);
+                EBusTypeTime.MINUTE_MULTIPLIER, BigDecimal.valueOf(10));
 
         // default 00:00
 
@@ -276,10 +277,62 @@ public class TimeTest {
 
         // check encode
         type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT, EBusTypeTime.MINUTES,
-                IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE, EBusTypeTime.MINUTE_MULTIPLIER, 10);
+                IEBusType.REVERSED_BYTE_ORDER, Boolean.TRUE, EBusTypeTime.MINUTE_MULTIPLIER, BigDecimal.valueOf(10));
 
         bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x00, (byte) 0x8D }, bytes);
+
+        // check decode
+        decode = type.decode(bytes);
+        assertEquals(calendar, decode.getCalendar());
+    }
+
+    public void test_TimeMinutes8BitX() throws EBusTypeException {
+
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT,
+                EBusTypeTime.MINUTES_SHORT, EBusTypeTime.MINUTE_MULTIPLIER, 15, "replaceValue",
+                new byte[] { (byte) 0x90 });
+
+        EBusDateTime decode = type.decode(new byte[] { (byte) 0x90 });
+
+        System.out.println("TimeTest.test_TimeMinutes8BitX()" + decode.getCalendar().getTime());
+
+    }
+
+    @Test
+    public void test_TimeMinutes8Bit() throws EBusTypeException {
+
+        GregorianCalendar calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
+        IEBusType<EBusDateTime> type = getType(EBusTypeTime.MINUTES_SHORT, false);
+
+        type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT, EBusTypeTime.MINUTES_SHORT,
+                EBusTypeTime.MINUTE_MULTIPLIER, BigDecimal.valueOf(15));
+
+        // check encode
+        byte[] bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { 0x00 }, bytes);
+
+        // check decode
+        EBusDateTime decode = type.decode(bytes);
+        assertEquals(calendar, decode.getCalendar());
+
+        // default 23:30
+
+        // check encode 1410
+        calendar = new GregorianCalendar(1970, 0, 1, 23, 30, 0);
+        bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { (byte) 0x5E }, bytes);
+
+        // check decode
+        decode = type.decode(bytes);
+        assertEquals(calendar.getTime(), decode.getCalendar().getTime());
+
+        // default 23:30 - reversed byte order
+
+        // check encode
+        type = getType(EBusTypeTime.MINUTES, true);
+        bytes = type.encode(calendar);
+        assertArrayEquals(new byte[] { 0x05, (byte) 0x82 }, bytes);
 
         // check decode
         decode = type.decode(bytes);

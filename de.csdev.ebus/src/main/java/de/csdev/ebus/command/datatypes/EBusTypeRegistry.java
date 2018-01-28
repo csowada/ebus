@@ -31,6 +31,7 @@ import de.csdev.ebus.command.datatypes.std.EBusTypeData1b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
 import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
+import de.csdev.ebus.command.datatypes.std.EBusTypeFloat;
 import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
 import de.csdev.ebus.command.datatypes.std.EBusTypeNumber;
 import de.csdev.ebus.command.datatypes.std.EBusTypeUnsignedNumber;
@@ -84,7 +85,7 @@ public class EBusTypeRegistry {
         add(EBusTypeDate.class);
         add(EBusTypeTime.class);
         add(EBusTypeVersion.class);
-
+        add(EBusTypeFloat.class);
         // vendor specific
         add(EBusTypeKWCrc.class);
 
@@ -118,7 +119,7 @@ public class EBusTypeRegistry {
 
     /**
      * Returns a data type by id or <code>null</code>
-     * 
+     *
      * @param type
      * @return
      */

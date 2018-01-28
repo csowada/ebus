@@ -2,15 +2,52 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.csdev.ebus</groupId>
-	<artifactId>core</artifactId>
-	<version>0.7.0</version>
+	
 	<name>eBUS core library</name>
+	<description>eBUS core library</description>
+	<groupId>de.csdev.ebus</groupId>
+	<artifactId>ebus-core</artifactId>
+	<version>0.9.16</version>
 	<url>https://github.com/csowada/ebus</url>
 	<packaging>bundle</packaging>
 
+	<licenses>
+		<license>
+			<name>EPL License</name>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<email>git@cs-dev.de</email>
+			<name>Christian Sowada</name>
+			<url>https://github.com/csowada</url>
+			<id>csowada</id>
+		</developer>
+	</developers>
+
+	<issueManagement>
+		<url>https://github.com/csowada/ebus/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+
+    <scm>
+        <connection>scm:git:git://github.com/csowada/ebus.git</connection>
+        <developerConnection>scm:git:git://github.com/csowada/ebus.git</developerConnection>
+        <url>scm:git:git@github.com/csowada/ebus.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+    </properties>
+
 	<build>
-		<finalName>${project.groupId}.${project.artifactId}-${project.version}_${maven.build.timestamp}</finalName>
+<!-- 		<finalName>${project.groupId}.${project.artifactId}-${project.version}_${maven.build.timestamp}</finalName> -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -26,16 +63,26 @@
 					</instructions>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<pushChanges>false</pushChanges> <!--Release Plugin don't push to remote-->
+                    <localCheckout>true</localCheckout> <!--Release Plugin clone from local repo-->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+			</plugin>
+
 		</plugins>
 	</build>
-
-	<properties>
-		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-	</properties>
 
 	<dependencies>
 
@@ -92,5 +139,13 @@
 		</dependency>
 
 	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>bintray-csowada-mvn</id>
+			<name>csowada-mvn</name>
+			<url>https://api.bintray.com/maven/csowada/mvn/ebus/;publish=0</url>
+		</repository>
+	</distributionManagement>
 
 </project>

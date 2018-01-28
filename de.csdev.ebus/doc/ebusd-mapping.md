@@ -24,9 +24,9 @@ VTM | time | variant: hex_short | minute first
 HTI | time | variant: hex, reverseByteOrder: true | hours first
 HTM | time | variant: hex_short, reverseByteOrder: true | hours first
 MIN | time | variant: minutes | minutes since midnight
-TTM | time | variant: minutes, minuteMultplier: 10 | multiple of 10 minutes since midnight
-TTH | time | variant: minutes, minuteMultplier: 30 | multiple of 30 minutes since midnight
-TTQ | time | variant: minutes, minuteMultplier: 15 | multiple of 15 minutes since midnight
+TTM | time | variant: minutes_short, minuteMultplier: 10 | multiple of 10 minutes since midnight
+TTH | time | variant: minutes_short, minuteMultplier: 30 | multiple of 30 minutes since midnight
+TTQ | time | variant: minutes_short, minuteMultplier: 15 | multiple of 15 minutes since midnight
 **BDY** | | | | Weekday, Sunday=0x06
 **HDY** | | | | Weekday, Sunday=0x07
 BCD | bcd | | BCD value
@@ -45,8 +45,8 @@ D2B | data2b | | divisor 2
 D2C | data2c | | divisor 256
 FLT | int | factor: 0.001
 FLR | int | factor: 0.001, reverseByteOrder: true
-**EXP** | |
-**EXR** | | reverseByteOrder: true
+EXP | float |
+EXR | float | reverseByteOrder: true
 UIN | word/(uint) | | low byte first
 UIR | word/(uint) | reverseByteOrder: true | high byte first
 SIN | int | | low byte first

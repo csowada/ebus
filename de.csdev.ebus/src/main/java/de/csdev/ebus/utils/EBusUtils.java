@@ -131,7 +131,7 @@ public class EBusUtils {
      * CRC calculation with tab operations
      *
      * @param data The byte to crc check
-     * @param crc_init The current crc result or another start value
+     * @param crcInit The current crc result or another start value
      * @return The crc result
      */
     public static byte crc8_tab(byte data, byte crcInit) {
@@ -300,8 +300,16 @@ public class EBusUtils {
      * @return The StringBuilder with hex dump
      */
     static public StringBuilder toHexDumpString(ByteBuffer data) {
+
+        int size = 0;
+        if (data.position() == 0) {
+            size = data.limit();
+        } else {
+            size = data.position();
+        }
+
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < data.limit(); i++) {
+        for (int i = 0; i < size; i++) {
             byte c = data.get(i);
             if (i > 0) {
                 sb.append(' ');

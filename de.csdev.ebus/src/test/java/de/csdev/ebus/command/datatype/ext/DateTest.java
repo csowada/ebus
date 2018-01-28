@@ -8,7 +8,7 @@
  */
 package de.csdev.ebus.command.datatype.ext;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class DateTest {
     @Test
     public void test_DateTimeStd() throws EBusTypeException {
 
-        GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 13, 30, 59);
+        GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 0, 0, 0);
 
         Map<String, Object> properties = new HashMap<String, Object>();
 
@@ -49,12 +49,14 @@ public class DateTest {
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x24, 0x12, 0x07, 0x17 }, bytes);
 
+        EBusDateTime decode = type.decode(bytes);
+        assertEquals(calendar.getTime(), decode.getCalendar().getTime());
     }
 
     @Test
     public void test_DateTimeShort() throws EBusTypeException {
 
-        GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 13, 30, 59);
+        GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 0, 0, 0);
         Map<String, Object> properties = new HashMap<String, Object>();
         // short
 
@@ -63,12 +65,15 @@ public class DateTest {
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x24, 0x12, 0x17 }, bytes);
+
+        EBusDateTime decode = type.decode(bytes);
+        assertEquals(calendar.getTime(), decode.getCalendar().getTime());
     }
 
     @Test
     public void test_DateTimeHex() throws EBusTypeException {
 
-        GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 13, 30, 59);
+        GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 0, 0, 0);
         Map<String, Object> properties = new HashMap<String, Object>();
         // short
 
@@ -77,20 +82,25 @@ public class DateTest {
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x18, 0x0c, 0x07, 0x11 }, bytes);
+
+        EBusDateTime decode = type.decode(bytes);
+        assertEquals(calendar.getTime(), decode.getCalendar().getTime());
     }
 
     @Test
     public void test_DateTimeHexShort() throws EBusTypeException {
 
-        GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 13, 30, 59);
+        GregorianCalendar calendar = new GregorianCalendar(2017, 11, 24, 0, 0, 0);
         Map<String, Object> properties = new HashMap<String, Object>();
-        // short
 
         properties.put(IEBusType.VARIANT, EBusTypeDate.HEX_SHORT);
         IEBusType<EBusDateTime> type = types.getType(EBusTypeDate.TYPE_DATE, properties);
 
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x18, 0x0c, 0x11 }, bytes);
+
+        EBusDateTime decode = type.decode(bytes);
+        assertEquals(calendar.getTime(), decode.getCalendar().getTime());
     }
 
     @Test
@@ -107,6 +117,9 @@ public class DateTest {
         byte[] bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { 0x09, 0x00 }, bytes);
 
+        EBusDateTime decode = type.decode(bytes);
+        assertEquals(calendar.getTime(), decode.getCalendar().getTime());
+
         // days 06.06.2079
         calendar = new GregorianCalendar(2079, 5, 6, 0, 0);
         properties.put(IEBusType.VARIANT, EBusTypeDate.DAYS);
@@ -114,6 +127,7 @@ public class DateTest {
 
         bytes = type.encode(calendar);
         assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 0xFF }, bytes);
+
     }
 
 }

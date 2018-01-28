@@ -116,6 +116,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         // add md5 hash
         commandCollection.setSourceHash(md.digest());
+        commandCollection.setIdentification(collection.getIdentification());
 
         // parse the template block
         parseTemplateConfiguration(collection);
@@ -127,8 +128,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 }
             }
         }
-
-        commandCollection.setIdentification(collection.getIdentification());
 
         return commandCollection;
     }
@@ -213,6 +212,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         cfg.setId(id);
         cfg.setLabel(label);
         cfg.setDevice(device);
+        cfg.setParentCollection(commandCollection);
 
         // loop all available channnels
         for (String channel : methods) {
@@ -267,8 +267,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             }
         }
 
-        cfg.setParentCollection(commandCollection);
-
         return cfg;
     }
 
@@ -307,16 +305,19 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
             if (StringUtils.isNotEmpty(id)) {
 
-                if (!templateBlockRegistry.containsKey(id)) {
+                templateCollection = templateBlockRegistry.get(id);
+
+                if (templateCollection == null) {
 
                     // try to convert the local id to a global id
-                    logger.info("Unable to find a template with id {0}, second try with {1} ...", id, globalId);
+                    logger.trace("Unable to find a template with id {}, second try with {} ...", id, globalId);
 
-                    if (!templateBlockRegistry.containsKey(id)) {
+                    templateCollection = templateBlockRegistry.get(globalId);
+
+                    if (templateCollection == null) {
                         throw new EBusConfigurationReaderException("Unable to find a template-block with id {0}!", id);
                     }
                 }
-                templateCollection = templateBlockRegistry.get(id);
 
             } else if (templateMap != null) {
                 // return the complete template block from within command block
@@ -358,7 +359,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             } else if (templateValueRegistry.containsKey(globalId)) {
                 templateCollection = templateValueRegistry.get(globalId);
 
-            } else if (templateMap.containsKey(id)) {
+            } else if (templateMap != null && templateMap.containsKey(id)) {
                 // return the complete template block from within command block
                 templateCollection = new ArrayList<EBusCommandValue>();
                 templateCollection.add(templateMap.get(id));
@@ -442,7 +443,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         ev.setMapping(template.getMapping());
         ev.setFormat(template.getFormat());
-
+        
         ev.setParent(commandMethod);
 
         result.add(ev);
@@ -453,7 +454,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         // allow placeholders in template-block mode
         if (StringUtils.isNotEmpty(template.getLabel())) {
-            if (clone.getLabel().contains("%s")) {
+            if (StringUtils.isNotEmpty(clone.getLabel()) && clone.getLabel().contains("%s")) {
                 clone.setLabel(String.format(clone.getLabel(), template.getLabel()));
             } else {
                 clone.setLabel(template.getLabel());

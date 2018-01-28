@@ -107,6 +107,9 @@ public class EBusTelegramWriter implements IEBusParserListener {
         return writer;
     }
 
+    /**
+     * Close the CSV file
+     */
     public void close() {
         try {
             if (writerResolved != null) {
@@ -144,7 +147,7 @@ public class EBusTelegramWriter implements IEBusParserListener {
         writer.write('"' + EBusUtils.toHexDumpString(command).toString() + '"');
         writer.write(";");
 
-        byte[] rest = Arrays.copyOfRange(receivedData, 5, receivedData.length);
+        byte[] rest = Arrays.copyOfRange(receivedData, 4, receivedData.length);
         writer.write('"' + EBusUtils.toHexDumpString(rest).toString() + '"');
         writer.write(";");
 

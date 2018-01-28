@@ -62,4 +62,11 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
             emu.getInputStream().read(x);
         }
     }
+
+	@Override
+	public boolean close() throws IOException {
+		emu.close();
+		return super.close();
+	}
+
 }

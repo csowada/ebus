@@ -79,7 +79,8 @@ public abstract class EBusControllerBase extends Thread {
      * Called if a valid eBus telegram was received. Send to event
      * listeners via thread pool to prevent blocking.
      *
-     * @param telegram
+     * @param receivedData
+     * @param sendQueueId
      */
     protected void fireOnEBusTelegramReceived(final byte[] receivedData, final Integer sendQueueId) {
 
@@ -156,8 +157,8 @@ public abstract class EBusControllerBase extends Thread {
     }
 
     public void dispose() {
-    	listeners.clear();
-    	shutdownThreadPool();
+        listeners.clear();
+        shutdownThreadPool();
     }
-    
+
 }

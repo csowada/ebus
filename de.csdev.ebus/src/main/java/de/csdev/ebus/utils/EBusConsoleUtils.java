@@ -38,265 +38,281 @@ import de.csdev.ebus.service.metrics.EBusMetricsService;
  */
 public class EBusConsoleUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
+
+    /**
+     * Returns metrics information
+     *
+     * @param service
+     * @return
+     */
+    public static String getMetricsInformation(EBusMetricsService service) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(String.format("%-25s | %-10s\n", "Successful received", service.getReceived()));
+        sb.append(String.format("%-25s | %-10s\n", "Failed received", service.getFailed()));
+        sb.append(String.format("%-25s | %-10s\n", "Successful/Failed ratio", service.getFailureRatio()));
+        sb.append("\n");
+
+        sb.append(String.format("%-25s | %-10s\n", "Resolved telegrams", service.getResolved()));
+        sb.append(String.format("%-25s | %-10s\n", "Unresolved telegrams", service.getUnresolved()));
+        sb.append(String.format("%-25s | %-10s\n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
 
-	public static String getMetricsInformation(EBusMetricsService service) {
-		StringBuilder sb = new StringBuilder();
+        return sb.toString();
+    }
 
-		sb.append(String.format("%-25s | %-10s\n", "Successful received", service.getReceived()));
-		sb.append(String.format("%-25s | %-10s\n", "Failed received", service.getFailed()));
-		sb.append(String.format("%-25s | %-10s\n", "Successful/Failed ratio", service.getFailureRatio()));
-		sb.append("\n");
+    /**
+     * Returns device table information
+     *
+     * @return
+     */
+    public static String getDeviceTableInformation(Collection<IEBusCommandCollection> collections,
+            EBusDeviceTable deviceTable) {
 
-		sb.append(String.format("%-25s | %-10s\n", "Resolved telegrams", service.getResolved()));
-		sb.append(String.format("%-25s | %-10s\n", "Unresolved telegrams", service.getUnresolved()));
-		sb.append(String.format("%-25s | %-10s\n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
+        StringBuilder sb = new StringBuilder();
 
-		return sb.toString();
-	}
+        Map<String, String> mapping = new HashMap<String, String>();
 
-	/**
-	 * @return
-	 */
-	public static String getDeviceTableInformation(Collection<IEBusCommandCollection> collections,
-			EBusDeviceTable deviceTable) {
+        for (IEBusCommandCollection collection : collections) {
+            for (String identification : collection.getIdentification()) {
+                mapping.put(identification, collection.getId());
+            }
+        }
 
-		StringBuilder sb = new StringBuilder();
+        EBusDevice ownDevice = deviceTable.getOwnDevice();
 
-		Map<String, String> mapping = new HashMap<String, String>();
+        sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s\n", "MA", "SA",
+                "Identifier", "Device", "Manufacture", "ID", "Firmware", "Hardware", "Last Activity"));
 
-		for (IEBusCommandCollection collection : collections) {
-			for (String identification : collection.getIdentification()) {
-				mapping.put(identification, collection.getId());
-			}
-		}
+        sb.append(String.format("%-2s-+-%-2s-+-%-14s-+-%-14s-+-%-20s-+-%-2s-+-%-10s-+-%-10s-+-%-20s\n",
+                StringUtils.repeat("-", 2), StringUtils.repeat("-", 2), StringUtils.repeat("-", 14),
+                StringUtils.repeat("-", 14), StringUtils.repeat("-", 20), StringUtils.repeat("-", 2),
+                StringUtils.repeat("-", 10), StringUtils.repeat("-", 10), StringUtils.repeat("-", 20)));
 
-		EBusDevice ownDevice = deviceTable.getOwnDevice();
+        for (EBusDevice device : deviceTable.getDeviceTable()) {
 
-		sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s\n", "MA", "SA",
-				"Identifier", "Device", "Manufacture", "ID", "Firmware", "Hardware", "Last Activity"));
+            boolean isBridge = device.equals(ownDevice);
+            String masterAddress = EBusUtils.toHexDumpString(device.getMasterAddress());
+            String slaveAddress = EBusUtils.toHexDumpString(device.getSlaveAddress());
 
-		sb.append(String.format("%-2s-+-%-2s-+-%-14s-+-%-14s-+-%-20s-+-%-2s-+-%-10s-+-%-10s-+-%-20s\n",
-				StringUtils.repeat("-", 2), StringUtils.repeat("-", 2), StringUtils.repeat("-", 14),
-				StringUtils.repeat("-", 14), StringUtils.repeat("-", 20), StringUtils.repeat("-", 2),
-				StringUtils.repeat("-", 10), StringUtils.repeat("-", 10), StringUtils.repeat("-", 20)));
+            String activity = device.getLastActivity() == 0 ? "---" : new Date(device.getLastActivity()).toString();
+            String id = EBusUtils.toHexDumpString(device.getDeviceId()).toString();
+            String deviceName = isBridge ? "<interface>" : mapping.getOrDefault(id, "---");
+            String manufacture = isBridge ? "eBUS Library" : device.getManufacturerName();
 
-		for (EBusDevice device : deviceTable.getDeviceTable()) {
+            sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s\n",
+                    masterAddress, slaveAddress, id, deviceName, manufacture,
+                    EBusUtils.toHexDumpString(device.getManufacturer()), device.getSoftwareVersion(),
+                    device.getHardwareVersion(), activity));
 
-			boolean isBridge = device.equals(ownDevice);
-			String masterAddress = EBusUtils.toHexDumpString(device.getMasterAddress());
-			String slaveAddress = EBusUtils.toHexDumpString(device.getSlaveAddress());
+        }
 
-			String activity = device.getLastActivity() == 0 ? "---" : new Date(device.getLastActivity()).toString();
-			String id = EBusUtils.toHexDumpString(device.getDeviceId()).toString();
-			String deviceName = isBridge ? "<interface>" : mapping.getOrDefault(id, "---");
-			String manufacture = isBridge ? "eBUS Library" : device.getManufacturerName();
+        sb.append(StringUtils.repeat("-", 118) + "\n");
+        sb.append("MA = Master Address / SA = Slave Address / ID = Manufacture ID\n");
 
-			sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s\n",
-					masterAddress, slaveAddress, id, deviceName, manufacture,
-					EBusUtils.toHexDumpString(device.getManufacturer()), device.getSoftwareVersion(),
-					device.getHardwareVersion(), activity));
+        return sb.toString();
+    }
 
-		}
+    /**
+     * Returns telegram analyze data
+     *
+     * @param registry
+     * @param data
+     * @return
+     */
+    public static String analyzeTelegram(EBusCommandRegistry registry, byte[] data) {
 
-		sb.append(StringUtils.repeat("-", 118) + "\n");
-		sb.append("MA = Master Address / SA = Slave Address / ID = Manufacture ID\n");
+        StringBuilder sb = new StringBuilder();
+        try {
+            byte[] edata = null;
 
-		return sb.toString();
-	}
+            sb.append("\n");
 
-	public static String analyzeTelegram(EBusCommandRegistry registry, byte[] data) {
+            try {
+                edata = EBusCommandUtils.checkRawTelegram(data);
+            } catch (EBusDataException e) {
 
-		StringBuilder sb = new StringBuilder();
-		try {
-			byte[] edata = null;
+                String msg = String.format("** Error on checking telegram: %s **", e.getMessage());
+                int len = msg.length();
 
-			sb.append("\n");
+                sb.append("\n");
+                sb.append(StringUtils.repeat("*", len) + "\n");
+                sb.append(msg + "\n");
 
-			try {
-				edata = EBusCommandUtils.checkRawTelegram(data);
-			} catch (EBusDataException e) {
+                msg = "**     !!! Warning: All following results are wrong and only displayed for information purpose !!!";
+                msg += StringUtils.repeat(" ", len - msg.length() - 2) + "**";
 
-				String msg = String.format("** Error on checking telegram: %s **", e.getMessage());
-				int len = msg.length();
+                sb.append(msg + "\n");
+                sb.append(StringUtils.repeat("*", len) + "\n");
+                sb.append("\n");
 
-				sb.append("\n");
-				sb.append(StringUtils.repeat("*", len) + "\n");
-				sb.append(msg + "\n");
+                return sb.toString();
+            }
 
-				msg = "**     !!! Warning: All following results are wrong and only displayed for information purpose !!!";
-				msg += StringUtils.repeat(" ", len - msg.length() - 2) + "**";
+            sb.append("\n");
+            sb.append("Check and unescape telegram\n");
+            sb.append("***************************\n");
+            sb.append("\n");
 
-				sb.append(msg + "\n");
-				sb.append(StringUtils.repeat("*", len) + "\n");
-				sb.append("\n");
+            sb.append(String.format("Original data : %s\n", EBusUtils.toHexDumpString(data)));
+            sb.append(String.format("Unescaped data: %s\n", EBusUtils.toHexDumpString(edata)));
 
-				return sb.toString();
-			}
+            byte[] command = Arrays.copyOfRange(edata, 2, 4);
 
-			sb.append("\n");
-			sb.append("Check and unescape telegram\n");
-			sb.append("***************************\n");
-			sb.append("\n");
+            boolean isMasterMaster = EBusUtils.isMasterAddress(edata[1]);
+            boolean isBroadcast = edata[1] == EBusConsts.BROADCAST_ADDRESS;
+            boolean isMasterSlave = !isMasterMaster && !isBroadcast;
 
-			sb.append(String.format("Original data : %s\n", EBusUtils.toHexDumpString(data)));
-			sb.append(String.format("Unescaped data: %s\n", EBusUtils.toHexDumpString(edata)));
+            int masterDataLenPos = 4;
+            int masterDataLen = edata[masterDataLenPos];
+            byte[] masterData = Arrays.copyOfRange(edata, 5, 5 + masterDataLen);
 
-			byte[] command = Arrays.copyOfRange(edata, 2, 4);
+            int masterCrcPos = 5 + masterDataLen;
+            int slaveACKPos = masterCrcPos + 1;
 
-			boolean isMasterMaster = EBusUtils.isMasterAddress(edata[1]);
-			boolean isBroadcast = edata[1] == EBusConsts.BROADCAST_ADDRESS;
-			boolean isMasterSlave = !isMasterMaster && !isBroadcast;
+            String dataString = EBusUtils.toHexDumpString(edata).toString();
+            int dataLen = dataString.length();
 
-			int masterDataLenPos = 4;
-			int masterDataLen = edata[masterDataLenPos];
-			byte[] masterData = Arrays.copyOfRange(edata, 5, 5 + masterDataLen);
+            sb.append("\n");
+            sb.append("Analyse the telegram\n");
+            sb.append("********************\n");
 
-			int masterCrcPos = 5 + masterDataLen;
-			int slaveACKPos = masterCrcPos + 1;
+            sb.append("\n");
+            sb.append(dataString + "\n");
 
-			String dataString = EBusUtils.toHexDumpString(edata).toString();
-			int dataLen = dataString.length();
+            final String FORMAT = "%-20s | %-20s | %s";
 
-			sb.append("\n");
-			sb.append("Analyse the telegram\n");
-			sb.append("********************\n");
+            sb.append(createTelegramResoverRow(0, 1, dataLen,
+                    String.format(FORMAT, "Source address", "Type: " + addressType(edata[0]), hex(edata[0]))));
 
-			sb.append("\n");
-			sb.append(dataString + "\n");
+            sb.append(createTelegramResoverRow(1, 1, dataLen,
+                    String.format(FORMAT, "Destination address", "Type: " + addressType(edata[1]), hex(edata[1]))));
 
-			final String FORMAT = "%-20s | %-20s | %s";
+            sb.append(createTelegramResoverRow(2, 2, dataLen, String.format(FORMAT, "Command", "", hex(command))));
 
-			sb.append(createTelegramResoverRow(0, 1, dataLen,
-					String.format(FORMAT, "Source address", "Type: " + addressType(edata[0]), hex(edata[0]))));
+            sb.append(createTelegramResoverRow(4, 1, dataLen,
+                    String.format(FORMAT, "Master Data Length", "Length: " + edata[4], hex(edata[4]))));
 
-			sb.append(createTelegramResoverRow(1, 1, dataLen,
-					String.format(FORMAT, "Destination address", "Type: " + addressType(edata[1]), hex(edata[1]))));
+            sb.append(createTelegramResoverRow(5, masterDataLen, dataLen,
+                    String.format(FORMAT, "Master Data", "", hex(masterData))));
 
-			sb.append(createTelegramResoverRow(2, 2, dataLen, String.format(FORMAT, "Command", "", hex(command))));
+            sb.append(createTelegramResoverRow(masterCrcPos, 1, dataLen,
+                    String.format(FORMAT, "Master CRC", "", hex(edata[masterCrcPos]))));
 
-			sb.append(createTelegramResoverRow(4, 1, dataLen,
-					String.format(FORMAT, "Master Data Length", "Length: " + edata[4], hex(edata[4]))));
+            if (isMasterMaster) {
+                sb.append(createTelegramResoverRow(slaveACKPos, 1, dataLen, hex(edata[slaveACKPos]) + " Slave ACK"));
+                // SYN
 
-			sb.append(createTelegramResoverRow(5, masterDataLen, dataLen,
-					String.format(FORMAT, "Master Data", "", hex(masterData))));
+            } else if (isBroadcast) {
+                // SYN
 
-			sb.append(createTelegramResoverRow(masterCrcPos, 1, dataLen,
-					String.format(FORMAT, "Master CRC", "", hex(edata[masterCrcPos]))));
+            } else if (isMasterSlave) {
 
-			if (isMasterMaster) {
-				sb.append(createTelegramResoverRow(slaveACKPos, 1, dataLen, hex(edata[slaveACKPos]) + " Slave ACK"));
-				// SYN
+                int slaveDataLenPos = slaveACKPos + 1;
+                int slaveDataLen = edata[slaveDataLenPos];
 
-			} else if (isBroadcast) {
-				// SYN
+                int slaveDataPos = slaveDataLenPos + 1;
+                int slaveCRCPos = slaveDataPos + slaveDataLen;
 
-			} else if (isMasterSlave) {
+                int masterACKPos = slaveCRCPos + 1;
 
-				int slaveDataLenPos = slaveACKPos + 1;
-				int slaveDataLen = edata[slaveDataLenPos];
+                byte[] slaveData = Arrays.copyOfRange(edata, slaveDataPos, slaveDataPos + slaveDataLen);
 
-				int slaveDataPos = slaveDataLenPos + 1;
-				int slaveCRCPos = slaveDataPos + slaveDataLen;
+                sb.append(createTelegramResoverRow(slaveACKPos, 1, dataLen,
+                        String.format(FORMAT, "Slave ACK", "", hex(edata[slaveACKPos]))));
 
-				int masterACKPos = slaveCRCPos + 1;
+                sb.append(createTelegramResoverRow(slaveDataLenPos, 1, dataLen, String.format(FORMAT,
+                        "Slave Data Length", "Length: " + edata[slaveDataLenPos], hex(edata[slaveDataLenPos]))));
 
-				byte[] slaveData = Arrays.copyOfRange(edata, slaveDataPos, slaveDataPos + slaveDataLen);
+                sb.append(createTelegramResoverRow(slaveDataPos, slaveDataLen, dataLen,
+                        String.format(FORMAT, "Slave Data", "", hex(slaveData))));
 
-				sb.append(createTelegramResoverRow(slaveACKPos, 1, dataLen,
-						String.format(FORMAT, "Slave ACK", "", hex(edata[slaveACKPos]))));
+                sb.append(createTelegramResoverRow(slaveCRCPos, 1, dataLen,
+                        String.format(FORMAT, "Slave CRC", "", hex(edata[slaveCRCPos]))));
 
-				sb.append(createTelegramResoverRow(slaveDataLenPos, 1, dataLen, String.format(FORMAT, "Slave Data Length",
-						"Length: " + edata[slaveDataLenPos], hex(edata[slaveDataLenPos]))));
+                sb.append(createTelegramResoverRow(masterACKPos, 1, dataLen,
+                        String.format(FORMAT, "Master ACK", "", hex(edata[masterACKPos]))));
 
-				sb.append(createTelegramResoverRow(slaveDataPos, slaveDataLen, dataLen,
-						String.format(FORMAT, "Slave Data", "", hex(slaveData))));
+            }
 
-				sb.append(createTelegramResoverRow(slaveCRCPos, 1, dataLen,
-						String.format(FORMAT, "Slave CRC", "", hex(edata[slaveCRCPos]))));
+            List<IEBusCommandMethod> methods = registry.find(edata);
 
-				sb.append(createTelegramResoverRow(masterACKPos, 1, dataLen,
-						String.format(FORMAT, "Master ACK", "", hex(edata[masterACKPos]))));
+            sb.append("\n");
+            sb.append("Resolve the telegram\n");
+            sb.append("********************\n");
+            sb.append("\n");
+            sb.append(String.format("Found %s command method(s) for this telegram.\n", methods.size()));
+            sb.append("\n");
 
-			}
+            for (IEBusCommandMethod method : methods) {
+                try {
+                    Map<String, Object> result = EBusCommandUtils.decodeTelegram(method, data);
 
-			List<IEBusCommandMethod> methods = registry.find(edata);
+                    sb.append(String.format("Values from command '%s' with method '%s' from collection '%s'\n",
+                            method.getParent().getId(), method.getMethod(),
+                            method.getParent().getParentCollection().getId()));
 
-			sb.append("\n");
-			sb.append("Resolve the telegram\n");
-			sb.append("********************\n");
-			sb.append("\n");
-			sb.append(String.format("Found %s command method(s) for this telegram.\n", methods.size()));
-			sb.append("\n");
+                    for (Entry<String, Object> entry : result.entrySet()) {
+                        Object value = entry.getValue();
 
-			for (IEBusCommandMethod method : methods) {
-				try {
-					Map<String, Object> result = EBusCommandUtils.decodeTelegram(method, data);
+                        if (value instanceof byte[]) {
+                            value = EBusUtils.toHexDumpString((byte[]) value);
+                        }
 
-					sb.append(String.format("Values from command '%s' with method '%s' from collection '%s'\n",
-							method.getParent().getId(), method.getMethod(),
-							method.getParent().getParentCollection().getId()));
+                        sb.append(String.format("  %-20s = %s\n", entry.getKey(),
+                                value != null ? value.toString() : "NULL"));
+                    }
 
-					for (Entry<String, Object> entry : result.entrySet()) {
-						Object value = entry.getValue();
+                } catch (EBusTypeException e) {
+                    logger.error("error!", e);
+                }
+            }
+            sb.append("\n");
+        } catch (Exception e) {
+            logger.error("error!", e);
+        }
 
-						if (value instanceof byte[]) {
-							value = EBusUtils.toHexDumpString((byte[]) value);
-						}
+        return sb.toString();
 
-						sb.append(String.format("  %-20s = %s\n", entry.getKey(), value.toString()));
-					}
+    }
 
-				} catch (EBusTypeException e) {
-					logger.error("error!", e);
-				}
-			}
-			sb.append("\n");
-		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
-		}
+    private static String addressType(byte b) {
 
-		return sb.toString();
+        if (EBusUtils.isMasterAddress(b)) {
+            return "Master";
+        } else if (b == EBusConsts.BROADCAST_ADDRESS) {
+            return "Broadcast";
+        }
 
-	}
+        return "Slave";
+    }
 
-	private static String addressType(byte b) {
+    private static String hex(byte[] b) {
+        return EBusUtils.toHexDumpString(b).toString();
 
-		if (EBusUtils.isMasterAddress(b)) {
-			return "Master";
-		} else if (b == EBusConsts.BROADCAST_ADDRESS) {
-			return "Broadcast";
-		}
+    }
 
-		return "Slave";
-	}
+    private static String hex(byte b) {
+        return EBusUtils.toHexDumpString(b);
+    }
 
-	private static String hex(byte[] b) {
-		return EBusUtils.toHexDumpString(b).toString();
+    private static String createTelegramResoverRow(int pos, int length, int textStart, String text) {
 
-	}
+        StringBuilder sb = new StringBuilder();
+        String repeat = StringUtils.repeat("^^ ", length);
 
-	private static String hex(byte b) {
-		return EBusUtils.toHexDumpString(b);
-	}
+        if (repeat.length() > 0) {
+            repeat = repeat.substring(0, repeat.length() - 1);
+        }
 
-	private static String createTelegramResoverRow(int pos, int length, int textStart, String text) {
+        sb.append(StringUtils.repeat(" ", pos * 3));
+        sb.append(repeat);
 
-		StringBuilder sb = new StringBuilder();
-		String repeat = StringUtils.repeat("^^ ", length);
+        sb.append(StringUtils.repeat("-", textStart - sb.length()));
+        sb.append(" ");
+        sb.append(text);
+        sb.append("\n");
 
-		if (repeat.length() > 0) {
-			repeat = repeat.substring(0, repeat.length() - 1);
-		}
-
-		sb.append(StringUtils.repeat(" ", pos * 3));
-		sb.append(repeat);
-
-		sb.append(StringUtils.repeat("-", textStart - sb.length()));
-		sb.append(" ");
-		sb.append(text);
-		sb.append("\n");
-
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }

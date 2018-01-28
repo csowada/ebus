@@ -90,7 +90,7 @@ public class EBusCommandRegistry {
     /**
      * Loads a configuration file
      *
-     * @param inputStream
+     * @param url
      */
     public void loadCommandCollection(URL url) {
 
@@ -264,7 +264,7 @@ public class EBusCommandRegistry {
     }
 
     public void clear() {
-    	reader.clear();
+        reader.clear();
         collections.clear();
     }
 

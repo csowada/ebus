@@ -36,6 +36,11 @@ public class EBusCommandUtils {
 
     private final static Logger logger = LoggerFactory.getLogger(EBusCommandUtils.class);
 
+    /**
+     * @param data
+     * @return
+     * @throws EBusDataException
+     */
     public static byte[] checkRawTelegram(byte[] data) throws EBusDataException {
         EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
@@ -129,7 +134,6 @@ public class EBusCommandUtils {
      * @param target
      * @param command
      * @param masterData
-     * @param slaveData
      * @return
      * @throws EBusTypeException
      */

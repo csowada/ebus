@@ -79,6 +79,10 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
         IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
         Calendar calendar = new GregorianCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         BigDecimal day = null;
         BigDecimal month = null;
@@ -99,12 +103,12 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
             month = bcdType.decode(new byte[] { data[1] });
             year = bcdType.decode(new byte[] { data[3] });
 
-        } else if (StringUtils.equals(variant, HEX)) {
+        } else if (StringUtils.equals(variant, HEX_SHORT)) {
             day = charType.decode(new byte[] { data[0] });
             month = charType.decode(new byte[] { data[1] });
             year = charType.decode(new byte[] { data[2] });
 
-        } else if (StringUtils.equals(variant, HEX_SHORT)) {
+        } else if (StringUtils.equals(variant, HEX)) {
             day = charType.decode(new byte[] { data[0] });
             month = charType.decode(new byte[] { data[1] });
             year = charType.decode(new byte[] { data[3] });

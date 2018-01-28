@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.core.EBusConsts;
+
 /**
  * Emulates a virtual connection like a serial connection an replays data from a text file.
  *
@@ -55,7 +57,7 @@ public class Emulator {
 
             @Override
             public void run() {
-                write((byte) 0xAA);
+                write(EBusConsts.SYN);
             }
 
         }, 40 * factor, TimeUnit.MILLISECONDS);
@@ -81,15 +83,25 @@ public class Emulator {
         }
     }
 
+    /**
+     * Returns the input stream of the emulator
+     *
+     * @return
+     */
     public InputStream getInputStream() {
         return in;
     }
 
+    /**
+     * Writes a byte to the emulator
+     * 
+     * @param b
+     */
     public void write(final byte b) {
 
         pipeThreadExecutor.submit(new Runnable() {
 
-        	@Override
+            @Override
             public void run() {
                 try {
                     synchronized (out) {
@@ -100,14 +112,16 @@ public class Emulator {
                         out.flush();
 
                         // delay for 2400baud
-                        Thread.sleep(4 * factor);
+                        try {
+							Thread.sleep(4 * factor);
+						} catch (InterruptedException e) {
+							//noop, ignore this
+						}
 
                         startAutoSync();
                     }
 
                 } catch (IOException e) {
-                    logger.trace("error!", e);
-                } catch (InterruptedException e) {
                     logger.trace("error!", e);
                 }
             }
@@ -134,7 +148,15 @@ public class Emulator {
         });
     }
 
+    /**
+     * Closes the emulator
+     */
     public void close() {
+    	
+    	if(autoSyncFuture != null) {
+    		autoSyncFuture.cancel(false);    		
+    	}
+    	
         this.playThreadExecutor.shutdownNow();
         this.pipeThreadExecutor.shutdownNow();
 

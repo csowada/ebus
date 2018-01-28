@@ -1,8 +1,5 @@
 package de.csdev.ebus.cfg;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,22 +15,7 @@ public class EBusConsoleTest {
     @Before
     public void xx() {
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
-        
-        
-        try {
-			commandRegistry.loadCommandCollection(new URL("file:///C:/tmp/custom.json"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        // EBusClientConfiguration clientConfiguration = new EBusClientConfiguration();
-        // clientConfiguration.loadInternalConfigurations();
 
-        // commandRegistry = new EBusCommandRegistry();
-        // for (IEBusCommandCollection collection : clientConfiguration.getCollections()) {
-        // commandRegistry.addCommandCollection(collection);
-        // }
     }
 
     @Test
@@ -50,10 +32,5 @@ public class EBusConsoleTest {
 
         data = EBusUtils.toByteArray("FF 50 B5 09 03 0D 15 00 26 00 02 28 00 51 00");
         System.out.print(EBusConsoleUtils.analyzeTelegram(commandRegistry, data));
-        
-        
-        // List<IEBusCommandMethod> find = commandRegistry.find(data);
-        // System.out.print(xxx);
-
     }
 }

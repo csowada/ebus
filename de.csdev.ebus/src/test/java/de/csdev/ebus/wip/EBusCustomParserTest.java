@@ -1,4 +1,4 @@
-package de.csdev.ebus.cfg;
+package de.csdev.ebus.wip;
 
 import static org.junit.Assert.fail;
 

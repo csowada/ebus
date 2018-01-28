@@ -23,6 +23,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 
 import de.csdev.ebus.cfg.std.dto.EBusValueDTO;
@@ -64,7 +65,25 @@ public class EBusValueJsonDeserializer implements JsonDeserializer<List<EBusValu
 
             for (Entry<String, JsonElement> entry : jObject.entrySet()) {
                 if (!fields.contains(entry.getKey())) {
-                    valueDTO.setProperty(entry.getKey(), entry.getValue().getAsString());
+                	
+                	if(entry.getValue().isJsonPrimitive()) {
+                		JsonPrimitive primitive = (JsonPrimitive) entry.getValue();
+                		
+                		if(primitive.isNumber()) {
+                			valueDTO.setProperty(entry.getKey(), primitive.getAsBigDecimal());
+                			
+                		} else if(primitive.isBoolean()) {
+                			valueDTO.setProperty(entry.getKey(), primitive.getAsBoolean());
+                			
+                		} else if(primitive.isString()) {
+                			valueDTO.setProperty(entry.getKey(), primitive.getAsString());
+                		}
+                		
+                	} else {
+                		valueDTO.setProperty(entry.getKey(), entry.getValue().getAsString());
+                		
+                	}
+
                 }
             }
 

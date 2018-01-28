@@ -31,7 +31,7 @@ public interface IEBusConfigurationReader {
     /**
      * Loads the configuration from an InputStream and returns a command collection
      *
-     * @param inputStream
+     * @param url
      * @return
      * @throws EBusConfigurationReaderException
      * @throws IOException
@@ -51,7 +51,7 @@ public interface IEBusConfigurationReader {
      * @param ebusTypes
      */
     public void setEBusTypes(EBusTypeRegistry ebusTypes);
-    
+
     /**
      * Clears all internal states
      */

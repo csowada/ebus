@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadFactory;
 /**
  * Simple thread factory which allows to use given prefix for created threads.
  *
- * @author Łukasz Dywicki <luke@code-house.org>
+ * @author Łukasz Dywicki luke@code-house.org
  */
 public class EBusWorkerThreadFactory implements ThreadFactory {
 
@@ -24,6 +24,7 @@ public class EBusWorkerThreadFactory implements ThreadFactory {
         this.prefix = prefix;
     }
 
+    @Override
     public Thread newThread(Runnable runnable) {
         return new Thread(runnable, prefix + "-" + counter++);
     }

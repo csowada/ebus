@@ -1,0 +1,46 @@
+{
+    "id":           "et",
+    "label":        "Vaillant (vendor B5) templates",
+    "description":  "Templates for Vaillant devices",
+
+    
+    "templates": [
+		{"name":"dummy", "template": [{"name": "_unknown", "type": "bytes", "length": 4}]},
+		{"name":"dummy1", "template": [{"name": "_unknown1", "type": "bytes", "length": 1}]}
+	],
+	
+	"commands": [
+			{
+            "label":    "Zone1 heating timer Monday",
+            "id":       "test.nextest-block",
+            "command":  "FC FC",
+			"set": {
+                "master": [								
+					{"type": "template-block", "id":"b5.slot1-3"}				
+				]                
+            }
+        },
+        
+        {
+            "label":    "Zone1 heating timer Monday",
+            "id":       "test.tth",
+            "command":  "FC FC",
+			"set": {
+                "master": [								
+					{"type": "template", "name": "tth", "id":"vaillant.templ.tth"}				
+				]                
+            }
+        },
+        
+        {
+            "label":    "Zone1 heating timer Monday",
+            "id":       "test.to",
+            "command":  "FC FC",
+			"set": {
+                "master": [								
+					{"type": "template-block", "id":"vaillant.to"}				
+				]                
+            }
+        }
+	]
+}

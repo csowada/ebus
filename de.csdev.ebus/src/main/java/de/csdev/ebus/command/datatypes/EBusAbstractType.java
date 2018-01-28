@@ -20,6 +20,8 @@ import org.apache.commons.lang.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.utils.EBusUtils;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -229,11 +231,14 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     protected void setInstanceProperty(EBusAbstractType<T> instance, String property, Object value) {
 
         if (property.equals("replaceValue")) {
-            try {
-                setReplaceValue(value);
-            } catch (EBusTypeException e) {
-                logger.error("error!", e);
-            }
+        	if(value instanceof String) {
+                try {
+                	instance.setReplaceValue(EBusUtils.toByteArray((String)value));
+                } catch (EBusTypeException e) {
+                    logger.error("error!", e);
+                }
+        	}
+
             return;
         }
 
@@ -261,16 +266,6 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      */
     public void setReplaceValue(byte[] replaceValue) throws EBusTypeException {
         this.replaceValue = applyByteOrder(replaceValue);
-    }
-
-    /**
-     * Set the replace value
-     *
-     * @param replaceValue
-     * @throws EBusTypeException
-     */
-    public void setReplaceValue(Object replaceValue) throws EBusTypeException {
-        this.replaceValue = encodeInt(replaceValue);
     }
 
     /*

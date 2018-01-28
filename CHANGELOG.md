@@ -1,3 +1,22 @@
+## Alpha 0.0.15 (2017-12-04)
+
+Features:
+
+  - add support for global templates in json configuration files
+  - clean-up source code
+  - enhance documentation
+
+Bugfixes:
+
+  - smaller bug fixes
+
+Configurations:
+
+  - add device Vaillant VC206
+  - change Vaillant VRC430/470 label  `Outside temperature` 
+    to to `Controller Datetime`
+  - add Vaillant BAI `datetime`, `setopdata`and `getopdata`
+
 ## Alpha 0.0.14 (2017-11-20)
 
 Features:

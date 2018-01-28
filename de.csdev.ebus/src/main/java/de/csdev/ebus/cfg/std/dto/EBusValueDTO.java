@@ -37,7 +37,7 @@ public class EBusValueDTO {
     private BigDecimal max;
     private BigDecimal min;
     private String name;
-    private BigDecimal replaceValue;
+    private String replaceValue;
     private BigDecimal step;
     private String type;
 
@@ -122,7 +122,7 @@ public class EBusValueDTO {
         return name;
     }
 
-    public BigDecimal getReplaceValue() {
+    public String getReplaceValue() {
         return replaceValue;
     }
 
@@ -170,7 +170,7 @@ public class EBusValueDTO {
         this.name = name;
     }
 
-    public void setReplaceValue(BigDecimal replaceValue) {
+    public void setReplaceValue(String replaceValue) {
         this.replaceValue = replaceValue;
     }
 

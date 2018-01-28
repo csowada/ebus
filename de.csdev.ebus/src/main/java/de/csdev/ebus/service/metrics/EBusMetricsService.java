@@ -125,8 +125,8 @@ public class EBusMetricsService implements IEBusParserListener, IEBusConnectorEv
 
     public BigDecimal getUnresolvedRatio() {
         BigDecimal all = unresolved.add(resolved);
-        if (!resolved.equals(BigDecimal.ZERO) && !all.equals(BigDecimal.ZERO)) {
-            return resolved.setScale(3, RoundingMode.HALF_UP).divide(all, RoundingMode.HALF_UP).multiply(HUNDRED)
+        if (!unresolved.equals(BigDecimal.ZERO) && !all.equals(BigDecimal.ZERO)) {
+            return unresolved.setScale(3, RoundingMode.HALF_UP).divide(all, RoundingMode.HALF_UP).multiply(HUNDRED)
                     .setScale(1, RoundingMode.HALF_UP);
         } else {
             return BigDecimal.ZERO;

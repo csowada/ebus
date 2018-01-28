@@ -54,7 +54,7 @@ public class EBusClient {
     /**
      * Creates a new eBUS client with given configuration
      *
-     * @param configuration
+     * @param commandRegistry
      */
     public EBusClient(EBusCommandRegistry commandRegistry) {
 
