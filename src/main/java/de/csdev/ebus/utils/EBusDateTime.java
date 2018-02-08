@@ -31,7 +31,7 @@ public class EBusDateTime {
 
     /**
      * Returns a calendar object, take notice of the any date flags.
-     * 
+     *
      * @return
      */
     public Calendar getCalendar() {
@@ -77,6 +77,44 @@ public class EBusDateTime {
         }
 
         return format.format(calendar.getTime());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (anyDate ? 1231 : 1237);
+        result = prime * result + (anyTime ? 1231 : 1237);
+        result = prime * result + ((calendar == null) ? 0 : calendar.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        EBusDateTime other = (EBusDateTime) obj;
+        if (anyDate != other.anyDate) {
+            return false;
+        }
+        if (anyTime != other.anyTime) {
+            return false;
+        }
+        if (calendar == null) {
+            if (other.calendar != null) {
+                return false;
+            }
+        } else if (!calendar.equals(other.calendar)) {
+            return false;
+        }
+        return true;
     }
 
 }

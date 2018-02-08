@@ -1,16 +1,34 @@
-sudo: false
 language: java
+env:
+  global:
+    - secure: "I5I+rgtj/2qnyveo70tIJf3BwE9lkVTjBNoIf86CDcldwvnpC27FjWKBjjfnAncLIr2xFMgJEN7KuZDvs6M15DiV9KTdnGBwLfsE6yjNEpS9qEgnvZBJXM5eKsIOHgMkT95KnlFNl3DquAY2L0l+cARcUfi1n1cH/fVgW8whZLVApkeov8PCjzLk/CgSKZL2RAYZxWdt1XE42KpkmsNjAnVODp610RxqEPoAgDAIvT+xURUiDsC1l3yY/6Jo0vtln3omEOm8UZ6J0dajLAcdBaq5KQPRely0rF5ddk8Ht+nG75rhb2AAOdM3Ezh+ooEE4NAafxjC/+YoSFiP1T19hRF6hZ6xxnjj7pus4XZrZQGCVzao49Qw0vQQPKA2f4GbdXP5gPcEYK1cfXT5Dcd4bWqD3QjpPT9JhskcuERU9YVtRCOt2tDVjoaWKm9G6yNBoptPkWE8D83DgyWg5w8tqxLtsTfzgk5J43BeMRKiy1Y3R4+D4yb6VtO+VGSglUnBQvznaD+kCjgPgKkYC5x6/MgmrIZDDkNiPSiPzZT5H7LwMFTc1TfOJ80NQx2/Dhkd4veNDyTlV6fr+b7V0gf1+LQUzd2PrvGyOLmdal2M8zP/0/FQ/oDAXWRHofl+p/FDSafKDl0ug1GkECRhn/iqd7M6gl7QU3bbFmADsMyRDXY="
+    - # ^^ OSSRH_JIRA_USERNAME
+    - secure: "IFDryzBh8kRKbmQlXZt4SwNdcGb7UXcnDSFktG1FYCQAm7/boTzuTL7nXyXBrhVIKW7MeBx/oEUNLlgLgtemNeZeN3YYdfyevcypDdpdmDIt2dwvlo5w95voZSAlrSYSXVsIm8uwzrQpdTfjJpaFJyOR6nX3LFnNB5UT28shA+iP1rjkcWM2YeJvvRXQnasAEvCFIcmSavxvW3Tndg5hVBjSwKuMQL8bWYpb1WaWrSBbC3Ckj6cQFDNbh8lj4L4zqWHlV7no7Ft2dwQhAJkQS1rD3W2/h/EtCA2yBv0NBRekL4TIzOCW/QI8uG6TWuCWFEkqsUBsWrgADs253TMvgAk93ChuIYgSiXOOXeD8vKaDATIjPR054FZfJRYe+48d2tIqIC4iqkVUxNhEl2L136Dh60JLs3p4DFTze0RO13ay7op+/gRwly9z8IdX+XnhPeIocofSizKPk1Aa+LlIwmAuoRqBfu5tbb0VktPrrYT2/3Y2D0J+sirnk62ZqOHpzTCTQuhfmc2FAMDkgDYt7nyfiWVGKdCEb8YAZXm0CdGUfb8BMzQlRLaVS83pqelOKIVqXdKtX+x3vT2SpT5nujf2GetXACWx5/ten59RUx9FZAl180ie/0rRw5ezzFLyXrSuwiIwef1hGRKNnJXdKjaZrGFGZgNbd/Hdp01ky8A="
+    - # ^^ OSSRH_JIRA_PASSWORD
+    - secure: "ZYwuhmulMCE2xHl6Jb5CxuA2PUvX/M6Ixq3bn1QjTAMOHusSXsltOgLnNiwjqY7XNy/GhFfW0Tk8I4E8h7nhJL13POy8OxlFgC39XV1Lw7Ve3wCqbV1jIRVdlxiVh7THsE37lO2wQ/wgiPpSFz+WGUhbJ/cmyZBPDkNVNXkkg4m+VFzx4F7KeKa9U1+HCaivBIl2Vl4DsI55mqd7ecjB33VtJgJYdB6EbEyhjAEWnBDRb0E8Wq/w9FUVd4HIUmHGMYzmralYTJzUp2xsAbpHoJHqCcyQ5cmMPRvT4qIlunAH1SzdvzJbCODtHxq9M9Ha7jBEZDF6l5LIV8ikd9YG9QgYduSQPWT89XtF81EHXASZSYfhaadXU6mnMfM35oSQS1M4fpsuy4dtjsar8SW89+dMe/xaekwWuQvnQZdyiJHzEKUlENxOtCf9EL4zY3QCcdXGbHZ1gYOPk54gccN+8rDZR76I6AvAXafhvP/XPaJdFkbFdla+c+BEtVlaeJ60E6+F0dUc3vSN20ziLM9ilrFsmCl7aLPV3sqarp3h7GNTkSjUnBsh6aZ5CZt+tbULiRRQbfRDRLdAXNYDmh4NYRndXS3Lvssca5Xnx5qjKtqpSD0eZQoT5gr1Bocac0Ri8cbI6BWgqAso9qbjeZPbB0P9yx7UUFTFrqUpb3AT85A="
+    - # ^^ GPG_PASSPHRASE
+    - secure: "lhQS3eaQDEvQ7Y6ddXenXkvGL5K+bOnJkcPZlDVx1HpgRlsarE9TLg2g1nYRe7T+aClHOFAj8pU1sRcG29UTCtwmZCKyPXgVTPih6hoA1oEVns+wrtkKU/OWIJjI4oRcJKKk59D8g3FqvEQyKdFRGi/ofFE0iuHh2v0L3ZpDHgzrWHLoYcOGfXOiSZ5iBXZL5hr3RTWktqhjIFgibkCy3Pee9c8g9voZTa8YWpDdS4s5m/2VOP/krjF1GkIZfMIVPu4bepLd+mLExlkQnuSswXMH46GZEe3GuZNknuqy00SdRc3EEQLeWXivlyG06dHl56+BdjsKWfiXpjSudMJdVmnWK0VSdZ27W5PeAwdEEIgfCa2TBaSOxLNLOLqvJpsMWqYgISeDssyNa1D2TZC3GnqzNuTYtJ3JkmLolfT/1llU/PePwrYg6SLK3c9P7Ln/Vv2bj+69CIhtME0wpiRPY1VNCueboisZMqoZZJCzI+uVtgBleklcREoH5Rl0wta5LnSOiZHiPk67Zo0fkFap//FeR70aPIjaITFs7wQ9iwAd9kpffsvQXiLqzgh/0a87b5Q2qzRBFqBjmw+B57eaqumFkg+QCVNIy+hlQk6XJzcpNHlFrPT3EYy+6pHOoqyh6h3m8Wric5xO1GzIJWt4zlCgJu/f0TbxWe+KsYRKMvA="
+    - # ^^ GPG_KEY_NAME
+
+before_script:
+  - chmod +x ./cd/before-deploy.sh
+  - chmod +x ./cd/deploy.sh
+  
+install: mvn install -P !build-extras -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+script: mvn test -P !build-extras -B
+
 cache:
   directories:
-  - "$HOME/.cache"
-deploy:
-  provider: script
-  script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
-  skip_cleanup: true
+    - ~/.m2/repository
+
+after_success:
+  - ./cd/before-deploy.sh
+  - ./cd/deploy.sh
 
 notifications:
   email:
     recipients:
-    - git@cs-dev.de
+    - opensource@cs-dev.de
     on_success: change
     on_failure: always

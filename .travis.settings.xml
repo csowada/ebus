@@ -8,10 +8,20 @@
 			<username>csowada</username>
 			<password>${env.BINTRAY_TOKEN}</password>
 		</server>
+		<server>
+			<id>snapshots</id>
+			<username>csowada</username>
+			<password>${env.JFROG_TOKEN}</password>
+		</server>
 	</servers>
 
 	<profiles>
 		<profile>
+			<id>bintray</id>
+		    <properties>
+				<gpg.passphrase>${env.PASSPHRASE}</gpg.passphrase>
+			</properties>
+			
 			<repositories>
 				<repository>
 					<snapshots>
@@ -21,7 +31,16 @@
 					<name>bintray</name>
 					<url>https://dl.bintray.com/csowada/mvn</url>
 				</repository>
+				
+				        <repository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>libs-snapshot</name>
+          <url>https://oss.jfrog.org/artifactory/libs-snapshot</url>
+        </repository>
+				
 			</repositories>
+			
 			<pluginRepositories>
 				<pluginRepository>
 					<snapshots>
@@ -31,8 +50,15 @@
 					<name>bintray-plugins</name>
 					<url>https://dl.bintray.com/csowada/mvn</url>
 				</pluginRepository>
+				
+				        <pluginRepository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>plugins-release</name>
+          <url>https://oss.jfrog.org/artifactory/plugins-release</url>
+        </pluginRepository>
+				
 			</pluginRepositories>
-			<id>bintray</id>
 		</profile>
 	</profiles>
 	<activeProfiles>
