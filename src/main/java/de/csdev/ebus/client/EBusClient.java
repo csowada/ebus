@@ -173,7 +173,9 @@ public class EBusClient {
      * Disposes the eBUS client with all depended services
      */
     public void dispose() {
-        controller.interrupt();
+        if (controller != null) {
+            controller.interrupt();
+        }
 
         if (commandRegistry != null) {
             commandRegistry = null;

@@ -94,7 +94,7 @@ public class Emulator {
 
     /**
      * Writes a byte to the emulator
-     * 
+     *
      * @param b
      */
     public void write(final byte b) {
@@ -113,10 +113,10 @@ public class Emulator {
 
                         // delay for 2400baud
                         try {
-							Thread.sleep(4 * factor);
-						} catch (InterruptedException e) {
-							//noop, ignore this
-						}
+                            Thread.sleep(4 * factor);
+                        } catch (InterruptedException e) {
+                            // noop, ignore this
+                        }
 
                         startAutoSync();
                     }
@@ -152,19 +152,24 @@ public class Emulator {
      * Closes the emulator
      */
     public void close() {
-    	
-    	if(autoSyncFuture != null) {
-    		autoSyncFuture.cancel(false);    		
-    	}
-    	
+
+        if (autoSyncFuture != null) {
+            autoSyncFuture.cancel(false);
+        }
+
         this.playThreadExecutor.shutdownNow();
         this.pipeThreadExecutor.shutdownNow();
 
         try {
             this.playThreadExecutor.awaitTermination(3, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.trace("error!", e);
+        }
+
+        try {
             this.pipeThreadExecutor.awaitTermination(3, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.error("error!", e);
+            logger.trace("error!", e);
         }
 
     }
