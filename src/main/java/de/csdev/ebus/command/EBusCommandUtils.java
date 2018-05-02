@@ -331,12 +331,12 @@ public class EBusCommandUtils {
                 }
 
                 if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
-                    logger.debug("Value {} with {} is smaller then allowed {}", ev.getName(), multiply, nev.getMax());
+                    logger.debug("Value {} with {} is smaller then allowed {}", new Object[] {ev.getName(), multiply, nev.getMax()});
                     decode = null;
                 }
 
                 if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
-                    logger.debug("Value {} with {} is larger then allowed {}", ev.getName(), multiply, nev.getMax());
+                    logger.debug("Value {} with {} is larger then allowed {}", new Object[] {ev.getName(), multiply, nev.getMax()});
                     decode = null;
                 }
             }

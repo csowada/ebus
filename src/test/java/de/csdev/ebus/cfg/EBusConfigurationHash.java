@@ -59,13 +59,13 @@ public class EBusConfigurationHash {
             for (IEBusCommandMethod method1 : command1.getCommandMethods()) {
                 IEBusCommandMethod method2 = command2.getCommandMethod(method1.getMethod());
 
-                logger.debug("Check command {}, H1:{}, H2:{}", method2.getMethod(), method2.hashCode(),
-                        method2.hashCode());
+                logger.debug("Check command {}, H1:{}, H2:{}", new Object[] {method2.getMethod(), method2.hashCode(),
+                        method2.hashCode()});
                 Assert.assertEquals(method2.hashCode(), method2.hashCode());
 
             }
 
-            logger.debug("Check command {}, H1:{}, H2:{}", command1.getId(), command1.hashCode(), command2.hashCode());
+            logger.debug("Check command {}, H1:{}, H2:{}", new Object[] {command1.getId(), command1.hashCode(), command2.hashCode()});
             // Assert.assertEquals(command1.hashCode(), command2.hashCode());
         }
 
