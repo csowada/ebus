@@ -57,5 +57,27 @@ public class BitTest {
         assertTrue((Boolean) typeB5.decode(b));
         assertFalse((Boolean) typeB6.decode(b));
         assertTrue((Boolean) typeB7.decode(b));
+        
+        b = new byte[] { (byte) 0x00 };
+
+        assertFalse((Boolean) typeB0.decode(b));
+        assertFalse((Boolean) typeB1.decode(b));
+        assertFalse((Boolean) typeB2.decode(b));
+        assertFalse((Boolean) typeB3.decode(b));
+        assertFalse((Boolean) typeB4.decode(b));
+        assertFalse((Boolean) typeB5.decode(b));
+        assertFalse((Boolean) typeB6.decode(b));
+        assertFalse((Boolean) typeB7.decode(b));
+        
+        b = new byte[] { (byte) 0xFF };
+
+        assertTrue((Boolean) typeB0.decode(b));
+        assertTrue((Boolean) typeB1.decode(b));
+        assertTrue((Boolean) typeB2.decode(b));
+        assertTrue((Boolean) typeB3.decode(b));
+        assertTrue((Boolean) typeB4.decode(b));
+        assertTrue((Boolean) typeB5.decode(b));
+        assertTrue((Boolean) typeB6.decode(b));
+        assertTrue((Boolean) typeB7.decode(b));
     }
 }

@@ -26,9 +26,14 @@ public class EBusTypeBit extends EBusAbstractType<Boolean> {
     private Integer pos = null;
 
     public EBusTypeBit() {
-        replaceValue = new byte[] { (byte) 0x00 };
-    }
 
+    }
+    
+    @Override
+    public byte[] getReplaceValue() {
+    	return null;
+    }
+    
     @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
