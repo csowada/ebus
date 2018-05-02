@@ -86,6 +86,10 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     @Override
     public T decode(byte[] data) throws EBusTypeException {
 
+        if (data == null) {
+            throw new EBusTypeException("Input parameter byte-array is NULL!");
+        }
+    	
         if (data.length != getTypeLength()) {
             throw new EBusTypeException("Input parameter byte-array has size {0}, expected {1} for eBUS type {2}",
                     data.length, getTypeLength(), this.getClass().getSimpleName());
