@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
+import de.csdev.ebus.command.datatypes.std.EBusTypeBit;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -28,79 +29,84 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class ReplaceValueTest {
 
-    private final Logger logger = LoggerFactory.getLogger(ReplaceValueTest.class);
+	private final Logger logger = LoggerFactory.getLogger(ReplaceValueTest.class);
 
-    EBusTypeRegistry types;
-    private byte[] encode;
+	EBusTypeRegistry types;
+	private byte[] encode;
 
-    @Before
-    public void before() {
-        types = new EBusTypeRegistry();
-    }
+	@Before
+	public void before() {
+		types = new EBusTypeRegistry();
+	}
 
-    @Test
-    public void test_CheckReplaceValues() {
+	@Test
+	public void test_CheckReplaceValues() {
 
-        for (String typeName : types.getTypesNames()) {
+		for (String typeName : types.getTypesNames()) {
 
-            IEBusType<Object> type = types.getType(typeName);
-            byte[] encodedData = null;
-            String error = null;
+			if (!typeName.equals(EBusTypeBit.TYPE_BIT)) {
 
-            try {
-                encodedData = type.encode(null);
-            } catch (RuntimeException e) {
-                error = "Exception: " + e.getMessage();
-            } catch (EBusTypeException e) {
-                error = "Exception: " + e.getMessage();
-            }
+				IEBusType<Object> type = types.getType(typeName);
+				byte[] encodedData = null;
+				String error = null;
 
-            if (error != null) {
-                logger.warn(String.format("%-10s | %s", typeName, error));
-                fail(String.format("Data type '%s' returns with error %s", typeName, error));
+				try {
+					encodedData = type.encode(null);
+				} catch (RuntimeException e) {
+					error = "Exception: " + e.getMessage();
+				} catch (EBusTypeException e) {
+					error = "Exception: " + e.getMessage();
+				}
 
-            } else if (encodedData.length > 0) {
-                logger.info(String.format("%-10s | %s", typeName, EBusUtils.toHexDumpString(encodedData)));
+				if (error != null) {
+					logger.warn(String.format("%-10s | %s", typeName, error));
+					fail(String.format("Data type '%s' returns with error %s", typeName, error));
 
-            } else {
-                fail(String.format("Encoded data invalid for data type '%s' !", typeName));
-            }
+				} else if (encodedData == null) {
 
-            try {
-                Object decode = type.decode(encodedData);
-                assertNull("Datatype " + typeName + ": ", decode);
+				} else if (encodedData.length > 0) {
+					logger.info(String.format("%-10s | %s", typeName, EBusUtils.toHexDumpString(encodedData)));
 
-            } catch (EBusTypeException e) {
-                logger.error("error!", e);
-            }
+				} else {
+					fail(String.format("Encoded data invalid for data type '%s' !", typeName));
+				}
 
-        }
-    }
+				try {
+					Object decode = type.decode(encodedData);
+					assertNull("Datatype " + typeName + ": ", decode);
 
-    @Test
-    public void x() throws EBusTypeException {
+				} catch (EBusTypeException e) {
+					logger.error("error!", e);
+				}
 
-        for (String typeName : types.getTypesNames()) {
+			}
+		}
+	}
 
-            IEBusType<Object> type = types.getType(typeName);
+	@Test
+	public void x() throws EBusTypeException {
 
-            byte[] bs = new byte[type.getTypeLength()];
-            logger.info(type.toString());
+		for (String typeName : types.getTypesNames()) {
 
-            try {
-                Object decode = type.decode(bs);
-                encode = type.encode(decode);
+			IEBusType<Object> type = types.getType(typeName);
 
-                if (Arrays.equals(bs, encode)) {
-                    logger.info(String.format("%-10s | %s", typeName, "OK"));
-                } else {
-                    logger.warn(String.format("%-10s | %s - %s", typeName, EBusUtils.toHexDumpString(encode), decode));
-                }
+			byte[] bs = new byte[type.getTypeLength()];
+			logger.info(type.toString());
 
-            } catch (Exception e) {
-                logger.warn(String.format("%-10s | %s", typeName, e.getMessage()));
-            }
-        }
-    }
+			try {
+				Object decode = type.decode(bs);
+				encode = type.encode(decode);
+
+				if (Arrays.equals(bs, encode)) {
+					logger.info(String.format("%-10s | %s", typeName, "OK"));
+				} else {
+					logger.warn(String.format("%-10s | %s - %s", typeName, EBusUtils.toHexDumpString(encode), decode));
+				}
+
+			} catch (Exception e) {
+				logger.warn(String.format("%-10s | %s", typeName, e.getMessage()));
+			}
+		}
+	}
 
 }
