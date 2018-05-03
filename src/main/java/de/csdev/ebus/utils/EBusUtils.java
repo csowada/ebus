@@ -10,8 +10,6 @@ package de.csdev.ebus.utils;
 
 import java.nio.ByteBuffer;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.commons.lang.StringUtils;
 
 import de.csdev.ebus.core.EBusConsts;
@@ -254,7 +252,16 @@ public class EBusUtils {
         if (StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
-        return DatatypeConverter.parseHexBinary(hexDumpString.replaceAll(" ", ""));
+        
+	    String[] elements = hexDumpString.split(" ");
+	    byte[] result = new byte[elements.length];
+	    
+	    int pos = 0;
+	    for(String val: elements) {
+	    	result[pos++] =  Integer.valueOf(val, 16).byteValue();
+	    }
+	    
+	    return result;
     }
 
     /**
