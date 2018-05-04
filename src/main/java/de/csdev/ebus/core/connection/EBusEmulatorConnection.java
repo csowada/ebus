@@ -25,12 +25,19 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
 
     private Emulator emu;
 
+    private boolean autoSync = true;
+
     public EBusEmulatorConnection() {
-        emu = new Emulator();
+
+    }
+
+    public EBusEmulatorConnection(boolean autoSync) {
+        this.autoSync = autoSync;
     }
 
     @Override
     public boolean open() throws IOException {
+        emu = new Emulator(1, autoSync);
         this.inputStream = emu.getInputStream();
         return true;
     }
@@ -58,15 +65,15 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
     @Override
     public void reset() throws IOException {
         if (emu.getInputStream().available() > 0) {
-            byte[] x = new byte[emu.getInputStream().available()];
-            emu.getInputStream().read(x);
+            byte[] data = new byte[emu.getInputStream().available()];
+            emu.getInputStream().read(data);
         }
     }
 
-	@Override
-	public boolean close() throws IOException {
-		emu.close();
-		return super.close();
-	}
+    @Override
+    public boolean close() throws IOException {
+        emu.close();
+        return super.close();
+    }
 
 }
