@@ -27,8 +27,6 @@ public class EBusController extends EBusControllerBase {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusController.class);
 
-    private IEBusConnection connection;
-
     /** serial receive buffer */
     private EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
@@ -38,7 +36,7 @@ public class EBusController extends EBusControllerBase {
     private int reConnectCounter = 0;
 
     public EBusController(IEBusConnection connection) {
-        this.connection = connection;
+        super(connection);
     }
 
     public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
@@ -103,25 +101,25 @@ public class EBusController extends EBusControllerBase {
 
     }
 
-    private boolean reconnect() throws IOException, InterruptedException {
+    private void reconnect() throws IOException, InterruptedException {
         logger.info("Try to reconnect to eBUS adapter ...");
 
         if (reConnectCounter > 10) {
-            return false;
-        }
+            reConnectCounter = -1;
+            this.interrupt();
+        } else {
 
-        reConnectCounter++;
+            reConnectCounter++;
 
-        if (!connection.isOpen()) {
+            logger.warn("Retry to connect to eBUS adapter in {} seconds ...", 5 * reConnectCounter);
+            Thread.sleep(5000 * reConnectCounter);
+
+            connection.close();
             if (connection.open()) {
-                reConnectCounter = 0;
-            } else {
-                logger.warn("Retry to connect to eBUS adapter in {} seconds ...", 5 * reConnectCounter);
-                Thread.sleep(5000 * reConnectCounter);
+                resetWatchdogTimer();
             }
         }
 
-        return true;
     }
 
     /**
@@ -162,16 +160,14 @@ public class EBusController extends EBusControllerBase {
             // interrupt();
         }
 
+        resetWatchdogTimer();
+
         // loop until interrupt or reconnector count is -1 (to many retries)
-        while (!isInterrupted() || reConnectCounter == -1) {
+        while (!(isInterrupted() || reConnectCounter == -1)) {
             try {
 
                 if (!connection.isOpen()) {
-                    if (!reconnect()) {
-
-                        // end thread !!
-                        interrupt();
-                    }
+                    reconnect();
 
                 } else {
 
@@ -183,11 +179,14 @@ public class EBusController extends EBusControllerBase {
                         Thread.sleep(500);
 
                     } else {
-
                         for (int i = 0; i < read; i++) {
                             onEBusDataReceived(buffer[i]);
 
                         }
+
+                        // reset with received data
+                        resetWatchdogTimer();
+                        reConnectCounter = 0;
 
                     }
                 }
@@ -377,14 +376,14 @@ public class EBusController extends EBusControllerBase {
 
         }
     }
-    
+
     @Override
     public void dispose() {
 
         logger.debug("eBUS connection thread is shuting down ...");
 
         super.dispose();
-        
+
         // *******************************
         // ** end of thread **
         // *******************************

@@ -8,14 +8,19 @@
  */
 package de.csdev.ebus.core;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.csdev.ebus.core.connection.IEBusConnection;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -30,6 +35,16 @@ public abstract class EBusControllerBase extends Thread {
 
     /** The thread pool to execute events without blocking */
     private ExecutorService threadPool;
+
+    private ScheduledExecutorService threadPoolWDT;
+
+    private ScheduledFuture<?> watchdogTimer;
+
+    protected IEBusConnection connection;
+
+    public EBusControllerBase(IEBusConnection connection) {
+        this.connection = connection;
+    }
 
     /**
      * Add an eBUS listener to receive valid eBus telegrams
@@ -138,7 +153,10 @@ public abstract class EBusControllerBase extends Thread {
      */
     protected void initThreadPool() {
         // create new thread pool to send received telegrams
-        threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-receiver"));
+        threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-receiver", true));
+
+        // create watch dog thread pool
+        threadPoolWDT = Executors.newSingleThreadScheduledExecutor(new EBusWorkerThreadFactory("ebus-wdt", false));
     }
 
     /**
@@ -154,11 +172,52 @@ public abstract class EBusControllerBase extends Thread {
             } catch (InterruptedException e) {
             }
         }
+
+        if (threadPoolWDT != null && !threadPoolWDT.isShutdown()) {
+            threadPoolWDT.shutdownNow();
+            try {
+                // wait up to 10sec. for the thread pool
+                threadPoolWDT.awaitTermination(10, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+            }
+        }
     }
 
     public void dispose() {
         listeners.clear();
+
+        if (watchdogTimer != null) {
+            watchdogTimer.cancel(true);
+            watchdogTimer = null;
+        }
+
         shutdownThreadPool();
+    }
+
+    protected void resetWatchdogTimer() {
+
+        logger.info("wdt runn ...");
+
+        Runnable r = new Runnable() {
+
+            @Override
+            public void run() {
+                EBusControllerBase.logger.warn("eBUS Watchdog Timer!");
+
+                try {
+                    EBusControllerBase.this.connection.close();
+                } catch (IOException e) {
+                    logger.error("error!", e);
+                }
+            }
+
+        };
+
+        if (watchdogTimer != null && !watchdogTimer.isCancelled()) {
+            watchdogTimer.cancel(true);
+        }
+
+        watchdogTimer = threadPoolWDT.schedule(r, 120, TimeUnit.SECONDS);
     }
 
 }
