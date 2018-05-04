@@ -18,10 +18,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusConsts;
+import de.csdev.ebus.core.EBusWorkerThreadFactory;
 
 /**
  * Emulates a virtual connection like a serial connection an replays data from a text file.
@@ -64,16 +66,18 @@ public class Emulator {
     }
 
     public Emulator() {
-        this(1);
+        this(1, true);
     }
 
-    public Emulator(int factor) {
+    public Emulator(int factor, boolean autoSync) {
 
         this.factor = factor;
-        pipeThreadExecutor = Executors.newSingleThreadExecutor();
-        playThreadExecutor = Executors.newScheduledThreadPool(1);
+        pipeThreadExecutor = Executors.newSingleThreadExecutor(new EBusWorkerThreadFactory("ebus-emu-pipe", false));
+        playThreadExecutor = Executors.newScheduledThreadPool(1, new EBusWorkerThreadFactory("ebus-emu-play", false));
 
-        startAutoSync();
+        if (autoSync) {
+            startAutoSync();
+        }
 
         try {
             in = new PipedInputStream();
@@ -172,5 +176,7 @@ public class Emulator {
             logger.trace("error!", e);
         }
 
+        IOUtils.closeQuietly(in);
+        IOUtils.closeQuietly(out);
     }
 }
