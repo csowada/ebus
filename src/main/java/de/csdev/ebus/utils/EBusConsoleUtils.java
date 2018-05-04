@@ -8,6 +8,7 @@
  */
 package de.csdev.ebus.utils;
 
+//import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -25,6 +26,14 @@ import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.command.datatypes.IEBusType;
+import de.csdev.ebus.command.datatypes.std.EBusTypeBCD;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData1c;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData2b;
+import de.csdev.ebus.command.datatypes.std.EBusTypeData2c;
+import de.csdev.ebus.command.datatypes.std.EBusTypeInteger;
+import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.service.device.EBusDevice;
@@ -39,6 +48,48 @@ import de.csdev.ebus.service.metrics.EBusMetricsService;
 public class EBusConsoleUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
+
+    public static String bruteforceData(byte[] data) {
+
+        EBusTypeRegistry typeRegistry = new EBusTypeRegistry();
+
+        IEBusType<Object> typeD1C = typeRegistry.getType(EBusTypeData1c.TYPE_DATA1C);
+        IEBusType<Object> typeBCD = typeRegistry.getType(EBusTypeBCD.TYPE_BCD);
+        IEBusType<Object> typeWord = typeRegistry.getType(EBusTypeWord.TYPE_WORD);
+        IEBusType<Object> typeInt = typeRegistry.getType(EBusTypeInteger.TYPE_INTEGER);
+        IEBusType<Object> typeD2B = typeRegistry.getType(EBusTypeData2b.TYPE_DATA2B);
+        IEBusType<Object> typeD2C = typeRegistry.getType(EBusTypeData2c.TYPE_DATA2C);
+
+        String format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s%-13s", "Pos", "WORD", "Int", "UInt8",
+                "DATA2B", "DATA2C", "DATA1c", "BCD");
+        logger.info("    " + format);
+        logger.info(
+                "    -----------------------------------------------------------------------------------------------");
+
+        // Check all possible positions with known data types
+        for (int i = 0; i < data.length; i++) {
+
+            try {
+                Object word = i == data.length - 1 ? "---" : typeWord.decode(new byte[] { data[i + 1], data[i] });
+                Object integer = i == data.length - 1 ? "---" : typeInt.decode(new byte[] { data[i + 1], data[i] });
+                Object data2b = i == data.length - 1 ? "---" : typeD2B.decode(new byte[] { data[i + 1], data[i] });
+                Object data2c = i == data.length - 1 ? "---" : typeD2C.decode(new byte[] { data[i + 1], data[i] });
+
+                Object data1c = typeD1C.decode(new byte[] { data[i] }).toString();
+                Object bcd = typeBCD.decode(new byte[] { data[i] });
+                int uint = data[i] & 0xFF;
+
+                format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s%-13s", i + 6, word, integer, uint, data2b,
+                        data2c, data1c, bcd);
+                logger.info("    " + format);
+
+            } catch (EBusTypeException e) {
+                logger.error("error!", e);
+            }
+        }
+
+        return "";
+    }
 
     /**
      * Returns metrics information
