@@ -42,6 +42,8 @@ public abstract class EBusControllerBase extends Thread {
 
     protected IEBusConnection connection;
 
+    private int watchdogTimerTimeout = 300; // 5min
+
     public EBusControllerBase(IEBusConnection connection) {
         this.connection = connection;
     }
@@ -70,7 +72,7 @@ public abstract class EBusControllerBase extends Thread {
      */
     protected void fireOnConnectionException(final Exception e) {
 
-        if (threadPool == null) {
+        if (threadPool == null || threadPool.isTerminated()) {
             logger.warn("ThreadPool not ready!");
             return;
         }
@@ -99,7 +101,7 @@ public abstract class EBusControllerBase extends Thread {
      */
     protected void fireOnEBusTelegramReceived(final byte[] receivedData, final Integer sendQueueId) {
 
-        if (threadPool == null) {
+        if (threadPool == null || threadPool.isTerminated()) {
             logger.warn("ThreadPool not ready!  Can't fire onTelegramReceived events ...");
             return;
         }
@@ -129,7 +131,7 @@ public abstract class EBusControllerBase extends Thread {
      */
     protected void fireOnEBusDataException(final EBusDataException exception, final Integer sendQueueId) {
 
-        if (threadPool == null) {
+        if (threadPool == null || threadPool.isTerminated()) {
             logger.warn("ThreadPool not ready!");
             return;
         }
@@ -217,7 +219,11 @@ public abstract class EBusControllerBase extends Thread {
             watchdogTimer.cancel(true);
         }
 
-        watchdogTimer = threadPoolWDT.schedule(r, 120, TimeUnit.SECONDS);
+        watchdogTimer = threadPoolWDT.schedule(r, watchdogTimerTimeout, TimeUnit.SECONDS);
+    }
+
+    public void setWatchdogTimerTimeout(int seconds) {
+        watchdogTimerTimeout = seconds;
     }
 
 }
