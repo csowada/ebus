@@ -1,10 +1,41 @@
-## Alpha 0.9.17 (2018-01-30)
+## Alpha 0.9.18 (2018-??-??) WIP - SNAPSHOT
 
-tbd
+Features:
+
+  - add bruteforce analyzer to decode data with all data types (internal only)
+  - add watchdog timer to all eBus connections, default is 5mins at the moment
+
+Bugfixes:
+
+  - fix java 6 compatibility
+  - fix Replace Value for `bit` data type
+  - fix NPE for data type decode
+  - fix some smaller issues
+
+## Alpha 0.9.17 (2018-??-??)
+
+Never released, migrated internal development branch to github
 
 ## Alpha 0.9.16 (2018-01-30)
 
-tbd
+Features:
+
+  - large internal update, see git commits for details
+  - move all configuration file to an extra bundle, easier to update
+  - add new data type `float`
+  - Add variant `minute_short` for 8bit minute values
+  - Enhance unit tests
+  
+Bugfixes:
+
+  - Fix template block for local and global id
+  - Swap, `hex` and `hex_short` in decodeInt()
+  - fix data type `minutes_short`
+  - fix missing master length in csv file
+  
+Configurations:
+
+  - All configurations are moved! See ebus-configuration bundle.
 
 ## Alpha 0.0.15 (2017-12-04)
 
