@@ -198,7 +198,7 @@ public abstract class EBusControllerBase extends Thread {
 
     protected void resetWatchdogTimer() {
 
-        logger.info("wdt runn ...");
+        // logger.info("wdt runn ...");
 
         Runnable r = new Runnable() {
 
@@ -219,7 +219,10 @@ public abstract class EBusControllerBase extends Thread {
             watchdogTimer.cancel(true);
         }
 
-        watchdogTimer = threadPoolWDT.schedule(r, watchdogTimerTimeout, TimeUnit.SECONDS);
+        if (!threadPoolWDT.isShutdown()) {
+            watchdogTimer = threadPoolWDT.schedule(r, watchdogTimerTimeout, TimeUnit.SECONDS);
+        }
+
     }
 
     public void setWatchdogTimerTimeout(int seconds) {
