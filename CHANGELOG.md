@@ -10,6 +10,7 @@ Bugfixes:
   - fix java 6 compatibility
   - fix Replace Value for `bit` data type
   - fix NPE for data type decode
+  - fix NPE because of already closed thread pool
   - fix some smaller issues
 
 ## Alpha 0.9.17 (2018-??-??)
