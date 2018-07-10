@@ -21,6 +21,7 @@ import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusController;
+import de.csdev.ebus.core.EBusControllerException;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.service.device.EBusDeviceTable;
 import de.csdev.ebus.service.device.EBusDeviceTableService;
@@ -74,7 +75,9 @@ public class EBusClient {
      * @see de.csdev.ebus.service.device.EBusDeviceTable#addEBusDeviceTableListener(IEBusDeviceTableListener)
      */
     public void addEBusDeviceTableListener(IEBusDeviceTableListener listener) {
-        getDeviceTable().addEBusDeviceTableListener(listener);
+        if (deviceTable != null) {
+            deviceTable.addEBusDeviceTableListener(listener);
+        }
     }
 
     /**
@@ -84,7 +87,9 @@ public class EBusClient {
      * @see de.csdev.ebus.core.EBusControllerBase#addEBusEventListener(IEBusConnectorEventListener)
      */
     public void addEBusEventListener(IEBusConnectorEventListener listener) {
-        getController().addEBusEventListener(listener);
+        if (controller != null) {
+            controller.addEBusEventListener(listener);
+        }
     }
 
     /**
@@ -94,7 +99,9 @@ public class EBusClient {
      * @see de.csdev.ebus.client.EBusClient#addEBusParserListener(IEBusParserListener)
      */
     public void addEBusParserListener(IEBusParserListener listener) {
-        getResolverService().addEBusParserListener(listener);
+        if (resolverService != null) {
+            resolverService.addEBusParserListener(listener);
+        }
     }
 
     /**
@@ -102,10 +109,14 @@ public class EBusClient {
      *
      * @param buffer
      * @return
+     * @throws EBusControllerException
      * @see de.csdev.ebus.core.EBusController#addToSendQueue(byte[])
      */
-    public Integer addToSendQueue(byte[] buffer) {
-        return getController().addToSendQueue(buffer);
+    public Integer addToSendQueue(byte[] buffer) throws EBusControllerException {
+        if (controller != null) {
+            return controller.addToSendQueue(buffer);
+        }
+        return null;
     }
 
     /**
@@ -114,10 +125,14 @@ public class EBusClient {
      * @param buffer
      * @param maxAttemps
      * @return
+     * @throws EBusControllerException
      * @see de.csdev.ebus.core.EBusController#addToSendQueue(byte[], int)
      */
-    public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
-        return getController().addToSendQueue(buffer, maxAttemps);
+    public Integer addToSendQueue(byte[] buffer, int maxAttemps) throws EBusControllerException {
+        if (controller != null) {
+            return controller.addToSendQueue(buffer, maxAttemps);
+        }
+        return null;
     }
 
     /**
@@ -153,6 +168,10 @@ public class EBusClient {
      */
     public void connect(EBusController controller, byte masterAddress) {
 
+        if (controller == null) {
+            throw new IllegalArgumentException("Parameter controller can't be null!");
+        }
+
         this.controller = controller;
 
         this.controller.addEBusEventListener(resolverService);
@@ -175,6 +194,7 @@ public class EBusClient {
     public void dispose() {
         if (controller != null) {
             controller.interrupt();
+            controller = null;
         }
 
         if (commandRegistry != null) {
@@ -198,11 +218,6 @@ public class EBusClient {
 
         if (metricsService != null) {
             metricsService = null;
-        }
-
-        if (controller != null) {
-            controller.dispose();
-            controller = null;
         }
     }
 

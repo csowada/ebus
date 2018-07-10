@@ -13,6 +13,7 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusController;
+import de.csdev.ebus.core.EBusControllerException;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusStateMachineTest;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
@@ -32,7 +33,8 @@ public class ClientTest2 {
     }
 
     // @Test
-    public void testNoSlaveResponse() throws EBusTypeException, IOException, InterruptedException {
+    public void testNoSlaveResponse()
+            throws EBusTypeException, IOException, InterruptedException, EBusControllerException {
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
 

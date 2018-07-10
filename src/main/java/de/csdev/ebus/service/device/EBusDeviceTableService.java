@@ -21,6 +21,7 @@ import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusController;
+import de.csdev.ebus.core.EBusControllerException;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
@@ -89,6 +90,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             scanQueueId = controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
         } catch (EBusTypeException e) {
             logger.error("error!", e);
+        } catch (EBusControllerException e) {
+            logger.error("error!", e);
         }
     }
 
@@ -144,6 +147,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             return true;
 
         } catch (EBusTypeException e) {
+            logger.error("error!", e);
+        } catch (EBusControllerException e) {
             logger.error("error!", e);
         }
 
@@ -205,6 +210,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
         } catch (EBusTypeException e) {
             logger.error("error!", e);
+        } catch (EBusControllerException e) {
+            logger.error("error!", e);
         }
     }
 
@@ -232,6 +239,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
             controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
         } catch (EBusTypeException e) {
+            logger.error("error!", e);
+        } catch (EBusControllerException e) {
             logger.error("error!", e);
         }
     }

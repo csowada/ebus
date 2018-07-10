@@ -12,7 +12,7 @@ import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 public class EBusControllerTest {
 
     @Test
-    public void testWatchdogTimeout() throws InterruptedException, IOException {
+    public void testWatchdogTimeout() throws InterruptedException, IOException, EBusControllerException {
 
         EBusEmulatorConnection connection = new EBusEmulatorConnection(false);
         EBusController controller = new EBusController(connection);
@@ -24,10 +24,10 @@ public class EBusControllerTest {
         threadExecutor.execute(controller);
 
         Thread.sleep(500);
-
+        controller.start();
         Assert.assertTrue(controller.getConnection().isOpen());
 
-        Thread.sleep(1000);
+        Thread.sleep(1500);
 
         Assert.assertFalse(controller.getConnection().isOpen());
     }

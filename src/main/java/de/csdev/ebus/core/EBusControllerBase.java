@@ -185,7 +185,11 @@ public abstract class EBusControllerBase extends Thread {
         }
     }
 
-    public void dispose() {
+    public boolean isRunning() {
+        return !isInterrupted() && isAlive();
+    }
+
+    protected void dispose() {
         listeners.clear();
 
         if (watchdogTimer != null) {

@@ -9,7 +9,6 @@
 package de.csdev.ebus.core;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.nio.BufferOverflowException;
 
 import org.slf4j.Logger;
@@ -39,22 +38,33 @@ public class EBusController extends EBusControllerBase {
         super(connection);
     }
 
-    public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
+    public Integer addToSendQueue(byte[] buffer, int maxAttemps) throws EBusControllerException {
+        if (!isRunning()) {
+            throw new EBusControllerException();
+        }
         return queue.addToSendQueue(buffer, maxAttemps);
     }
 
     /**
      * @param buffer
      * @return
+     * @throws EBusControllerException
      */
-    public Integer addToSendQueue(byte[] buffer) {
+    public Integer addToSendQueue(byte[] buffer) throws EBusControllerException {
+        if (!isRunning()) {
+            throw new EBusControllerException();
+        }
         return queue.addToSendQueue(buffer);
     }
 
     /**
      * @return
+     * @throws EBusControllerException
      */
-    public IEBusConnection getConnection() {
+    public IEBusConnection getConnection() throws EBusControllerException {
+        if (!isRunning()) {
+            throw new EBusControllerException();
+        }
         return connection;
     }
 
@@ -64,6 +74,11 @@ public class EBusController extends EBusControllerBase {
      * @throws IOException
      */
     private void onEBusDataReceived(byte data) throws IOException {
+
+        if (!isRunning()) {
+            logger.trace("Skip event, thread was interrupted ...");
+            return;
+        }
 
         try {
             machine.update(data);
@@ -101,22 +116,34 @@ public class EBusController extends EBusControllerBase {
 
     }
 
-    private void reconnect() throws IOException, InterruptedException {
+    private void reconnect() throws IOException {
+
+        if (!isRunning()) {
+            logger.trace("Skip reconnect, thread was interrupted ...");
+            return;
+        }
+
         logger.info("Try to reconnect to eBUS adapter ...");
 
         if (reConnectCounter > 10) {
             reConnectCounter = -1;
             this.interrupt();
+
         } else {
 
             reConnectCounter++;
 
             logger.warn("Retry to connect to eBUS adapter in {} seconds ...", 5 * reConnectCounter);
-            Thread.sleep(5000 * reConnectCounter);
+            try {
+                Thread.sleep(5000 * reConnectCounter);
 
-            connection.close();
-            if (connection.open()) {
-                resetWatchdogTimer();
+                connection.close();
+                if (connection.open()) {
+                    resetWatchdogTimer();
+                }
+
+            } catch (InterruptedException e) {
+                // noop, accept interruptions
             }
         }
 
@@ -130,7 +157,8 @@ public class EBusController extends EBusControllerBase {
      * @throws IOException
      */
     private boolean resend() throws IOException {
-        if (!queue.getCurrent().secondTry) {
+
+        if (isRunning() && !queue.getCurrent().secondTry) {
             queue.getCurrent().secondTry = true;
             return true;
 
@@ -157,7 +185,6 @@ public class EBusController extends EBusControllerBase {
         } catch (IOException e) {
             fireOnConnectionException(e);
             logger.error("error!", e);
-            // interrupt();
         }
 
         resetWatchdogTimer();
@@ -190,21 +217,17 @@ public class EBusController extends EBusControllerBase {
 
                     }
                 }
-            } catch (InterruptedIOException e) {
-                Thread.currentThread().interrupt();
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
 
             } catch (IOException e) {
-                fireOnConnectionException(e);
                 logger.error("An IO exception has occured! Try to reconnect eBUS connector ...", e);
+                fireOnConnectionException(e);
 
                 try {
                     reconnect();
                 } catch (IOException e1) {
-                    logger.error(e.toString(), e1);
-                } catch (InterruptedException e1) {
                     logger.error(e.toString(), e1);
                 }
 
@@ -217,7 +240,7 @@ public class EBusController extends EBusControllerBase {
                 logger.error(e.toString(), e);
                 machine.reset();
             }
-        }
+        } // while loop
 
         dispose();
     }
@@ -229,6 +252,12 @@ public class EBusController extends EBusControllerBase {
      * @throws IOException
      */
     private void send(boolean secondTry) throws IOException {
+
+        if (!isRunning()) {
+            // this controller is disposed
+            logger.trace("Skip send, thread was interrupted ...");
+            return;
+        }
 
         QueueEntry sendEntry = queue.getCurrent();
 
@@ -378,7 +407,7 @@ public class EBusController extends EBusControllerBase {
     }
 
     @Override
-    public void dispose() {
+    protected void dispose() {
 
         logger.debug("eBUS connection thread is shuting down ...");
 
