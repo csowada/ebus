@@ -27,7 +27,7 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusValueDTO {
 
-    private final Logger logger = LoggerFactory.getLogger(EBusValueDTO.class);
+    private final transient Logger logger = LoggerFactory.getLogger(EBusValueDTO.class);
 
     private List<EBusValueDTO> children;
     private BigDecimal factor;
