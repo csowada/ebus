@@ -7,7 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.gson,
  com.google.gson.annotations,
  com.google.gson.reflect,
- gnu.io,
+ gnu.io;resolution:=optional,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.lang.reflect,

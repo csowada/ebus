@@ -1,6 +1,5 @@
-<project 
-	xmlns="http://maven.apache.org/POM/4.0.0" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -50,10 +49,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
+		<license.year>2018</license.year>
 	</properties>
 
 	<build>
 		<plugins>
+		
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -68,6 +69,7 @@
 					</instructions>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -79,6 +81,49 @@
 					<autoReleaseAfterClose>false</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<basedir>${basedir}</basedir>
+					<header>src/etc/header.txt</header>
+					<quiet>false</quiet>
+					<failIfMissing>true</failIfMissing>
+					<strictCheck>true</strictCheck>
+					<aggregate>true</aggregate>
+					<mapping>
+						<xml>xml-header-style</xml>
+					</mapping>
+					<headerDefinitions>
+						<headerDefinition>src/etc/xml-header-style.xml</headerDefinition>
+					</headerDefinitions>
+					<includes>
+						<include>**/de/csdev/**/*.java</include>
+						<include>**/feature.xml</include>
+						<include>**/OSGI-INF/*.xml</include>
+					</includes>
+					<excludes>
+						<exclude>target/**</exclude>
+						<exclude>**/pom.xml</exclude>
+						<exclude>_*.java</exclude>
+					</excludes>
+					<useDefaultExcludes>true</useDefaultExcludes>
+                    <properties>
+                        <year>${license.year}</year>
+                    </properties>
+					<encoding>UTF-8</encoding>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
