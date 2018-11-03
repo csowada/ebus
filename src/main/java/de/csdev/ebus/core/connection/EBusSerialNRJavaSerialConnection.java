@@ -27,7 +27,7 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection implements SerialPortEventListener {
+public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusSerialNRJavaSerialConnection.class);
 
@@ -43,7 +43,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.connection.IEBusConnection#open()
      */
     @Override
@@ -63,7 +63,17 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
                 serialPort.enableReceiveTimeout(10000);
 
                 // use event to let readByte wait until data is available, optimize cpu usage
-                serialPort.addEventListener(this);
+                serialPort.addEventListener(new SerialPortEventListener() {
+                    @Override
+                    public void serialEvent(SerialPortEvent event) {
+                        if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+                            synchronized (inputStream) {
+                                inputStream.notifyAll();
+                            }
+                        }
+                    }
+                });
+
                 serialPort.notifyOnDataAvailable(true);
 
                 outputStream = serialPort.getOutputStream();
@@ -92,20 +102,6 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
     /*
      * (non-Javadoc)
      *
-     * @see gnu.io.SerialPortEventListener#serialEvent(gnu.io.SerialPortEvent)
-     */
-    @Override
-    public void serialEvent(SerialPortEvent event) {
-        if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-            synchronized (inputStream) {
-                inputStream.notifyAll();
-            }
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see de.csdev.ebus.core.connection.AbstractEBusConnection#close()
      */
     @Override
@@ -143,7 +139,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection imp
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.connection.AbstractEBusConnection#readByte(boolean)
      */
     @Override
