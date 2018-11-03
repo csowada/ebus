@@ -58,8 +58,9 @@ public class EBusCommandMethodDTO {
 
     @Override
     public String toString() {
-        return "EBusCommandMethodDTO [command=" + command + ", master=" + master + ", slave=" + slave + ", type=" + type
-                + "]";
+        return "EBusCommandMethodDTO [" + (command != null ? "command=" + command + ", " : "")
+                + (master != null ? "master=" + master + ", " : "") + (slave != null ? "slave=" + slave + ", " : "")
+                + (type != null ? "type=" + type : "") + "]";
     }
 
 }

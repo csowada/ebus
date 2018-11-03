@@ -27,160 +27,27 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusValueDTO {
 
-    private final transient Logger logger = LoggerFactory.getLogger(EBusValueDTO.class);
+    @SerializedName("default")
+    private String _default;
 
     private List<EBusValueDTO> children;
+    private BigDecimal divider;
     private BigDecimal factor;
+    private String format;
     private String label;
     private Integer length;
+    private final transient Logger logger = LoggerFactory.getLogger(EBusValueDTO.class);
     private Map<String, String> mapping;
     private BigDecimal max;
     private BigDecimal min;
     private String name;
+    private Integer pos;
+
+    private Map<String, Object> properties;
     private String replaceValue;
+    private boolean reverseByteOrder = false;
     private BigDecimal step;
     private String type;
-
-    @SerializedName("default")
-    private String _default;
-    private Integer pos;
-    private String format;
-    private boolean reverseByteOrder = false;
-    private Map<String, Object> properties;
-
-    public void setProperty(String key, Object value) {
-        properties = CollectionUtils.newMapIfNull(properties);
-        properties.put(key, value);
-    }
-
-    public Object getProperty(String key) {
-        return CollectionUtils.get(properties, key);
-    }
-
-    public Map<String, Object> getProperties() {
-        properties = CollectionUtils.newMapIfNull(properties);
-        return CollectionUtils.unmodifiableNotNullMap(properties);
-    }
-
-    public boolean isReverseByteOrder() {
-        return reverseByteOrder;
-    }
-
-    public void setReverseByteOrder(boolean reverseByteOrder) {
-        this.reverseByteOrder = reverseByteOrder;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public Integer getPos() {
-        return pos;
-    }
-
-    public void setPos(Integer pos) {
-        this.pos = pos;
-    }
-
-    public List<EBusValueDTO> getChildren() {
-        return children;
-    }
-
-    public String getDefault() {
-        return _default;
-    }
-
-    public BigDecimal getFactor() {
-        return factor;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public Integer getLength() {
-        return length;
-    }
-
-    public Map<String, String> getMapping() {
-        return mapping;
-    }
-
-    public BigDecimal getMax() {
-        return max;
-    }
-
-    public BigDecimal getMin() {
-        return min;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getReplaceValue() {
-        return replaceValue;
-    }
-
-    public BigDecimal getStep() {
-        return step;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setChildren(List<EBusValueDTO> children) {
-        this.children = children;
-    }
-
-    public void setDefault(String _default) {
-        this._default = _default;
-    }
-
-    public void setFactor(BigDecimal factor) {
-        this.factor = factor;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
-    }
-
-    public void setMapping(Map<String, String> mapping) {
-        this.mapping = mapping;
-    }
-
-    public void setMax(BigDecimal max) {
-        this.max = max;
-    }
-
-    public void setMin(BigDecimal min) {
-        this.min = min;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setReplaceValue(String replaceValue) {
-        this.replaceValue = replaceValue;
-    }
-
-    public void setStep(BigDecimal step) {
-        this.step = step;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public Map<String, Object> getAsMap() {
 
@@ -209,12 +76,161 @@ public class EBusValueDTO {
         return map;
     }
 
+    public List<EBusValueDTO> getChildren() {
+        return children;
+    }
+
+    public String getDefault() {
+        return _default;
+    }
+
+    public BigDecimal getDivider() {
+        return divider;
+    }
+
+    public BigDecimal getFactor() {
+        return factor;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public Map<String, String> getMapping() {
+        return mapping;
+    }
+
+    public BigDecimal getMax() {
+        return max;
+    }
+
+    public BigDecimal getMin() {
+        return min;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getPos() {
+        return pos;
+    }
+
+    public Map<String, Object> getProperties() {
+        properties = CollectionUtils.newMapIfNull(properties);
+        return CollectionUtils.unmodifiableNotNullMap(properties);
+    }
+
+    public Object getProperty(String key) {
+        return CollectionUtils.get(properties, key);
+    }
+
+    public String getReplaceValue() {
+        return replaceValue;
+    }
+
+    public BigDecimal getStep() {
+        return step;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public boolean isReverseByteOrder() {
+        return reverseByteOrder;
+    }
+
+    public void setChildren(List<EBusValueDTO> children) {
+        this.children = children;
+    }
+
+    public void setDefault(String _default) {
+        this._default = _default;
+    }
+
+    public void setDivider(BigDecimal divider) {
+        this.divider = divider;
+    }
+
+    public void setFactor(BigDecimal factor) {
+        this.factor = factor;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public void setMapping(Map<String, String> mapping) {
+        this.mapping = mapping;
+    }
+
+    public void setMax(BigDecimal max) {
+        this.max = max;
+    }
+
+    public void setMin(BigDecimal min) {
+        this.min = min;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPos(Integer pos) {
+        this.pos = pos;
+    }
+
+    public void setProperty(String key, Object value) {
+        properties = CollectionUtils.newMapIfNull(properties);
+        properties.put(key, value);
+    }
+
+    public void setReplaceValue(String replaceValue) {
+        this.replaceValue = replaceValue;
+    }
+
+    public void setReverseByteOrder(boolean reverseByteOrder) {
+        this.reverseByteOrder = reverseByteOrder;
+    }
+
+    public void setStep(BigDecimal step) {
+        this.step = step;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
-        return "EBusValueDTO [children=" + children + ", factor=" + factor + ", label=" + label + ", length=" + length
-                + ", mapping=" + mapping + ", max=" + max + ", min=" + min + ", name=" + name + ", replaceValue="
-                + replaceValue + ", step=" + step + ", type=" + type + ", _default=" + _default + ", pos=" + pos
-                + ", format=" + format + "]";
+        return "EBusValueDTO [" + (children != null ? "children=" + children + ", " : "")
+                + (factor != null ? "factor=" + factor + ", " : "")
+                + (divider != null ? "divider=" + divider + ", " : "") + (label != null ? "label=" + label + ", " : "")
+                + (length != null ? "length=" + length + ", " : "")
+                + (mapping != null ? "mapping=" + mapping + ", " : "") + (max != null ? "max=" + max + ", " : "")
+                + (min != null ? "min=" + min + ", " : "") + (name != null ? "name=" + name + ", " : "")
+                + (replaceValue != null ? "replaceValue=" + replaceValue + ", " : "")
+                + (step != null ? "step=" + step + ", " : "") + (type != null ? "type=" + type + ", " : "")
+                + (_default != null ? "_default=" + _default + ", " : "") + (pos != null ? "pos=" + pos + ", " : "")
+                + (format != null ? "format=" + format + ", " : "") + "reverseByteOrder=" + reverseByteOrder + ", "
+                + (properties != null ? "properties=" + properties : "") + "]";
     }
 
 }

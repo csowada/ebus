@@ -111,9 +111,12 @@ public class EBusCommandDTO {
 
     @Override
     public String toString() {
-        return "EBusCommandDTO [broadcast=" + broadcast + ", command=" + command + ", label=" + label + ", device="
-                + device + ", dst=" + dst + ", get=" + get + ", id=" + id + ", set=" + set + ", template=" + template
-                + ", src=" + src + "]";
+        return "EBusCommandDTO [" + (broadcast != null ? "broadcast=" + broadcast + ", " : "")
+                + (command != null ? "command=" + command + ", " : "") + (label != null ? "label=" + label + ", " : "")
+                + (device != null ? "device=" + device + ", " : "") + (dst != null ? "dst=" + dst + ", " : "")
+                + (get != null ? "get=" + get + ", " : "") + (id != null ? "id=" + id + ", " : "")
+                + (set != null ? "set=" + set + ", " : "") + (template != null ? "template=" + template + ", " : "")
+                + (src != null ? "src=" + src : "") + "]";
     }
 
 }

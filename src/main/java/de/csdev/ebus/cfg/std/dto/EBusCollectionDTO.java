@@ -20,17 +20,17 @@ import de.csdev.ebus.utils.CollectionUtils;
 public class EBusCollectionDTO {
 
     private List<String> authors;
-    
+
     private List<EBusCommandDTO> commands;
-    
+
     private String description;
-    
+
     private String id;
-    
+
     private List<String> identification;
-    
+
     private String label;
-    
+
     private Map<String, Object> properties;
 
     private List<EBusCommandTemplatesDTO> templates;
@@ -41,11 +41,11 @@ public class EBusCollectionDTO {
         return authors;
     }
 
-	public List<EBusCommandDTO> getCommands() {
+    public List<EBusCommandDTO> getCommands() {
         return commands;
     }
 
-	public String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -70,8 +70,8 @@ public class EBusCollectionDTO {
     }
 
     public List<EBusCommandTemplatesDTO> getTemplates() {
-		return templates;
-	}
+        return templates;
+    }
 
     public String getVendor() {
         return vendor;
@@ -111,8 +111,8 @@ public class EBusCollectionDTO {
     }
 
     public void setTemplates(List<EBusCommandTemplatesDTO> templates) {
-		this.templates = templates;
-	}
+        this.templates = templates;
+    }
 
     public void setVendor(String vendor) {
         this.vendor = vendor;
@@ -120,9 +120,15 @@ public class EBusCollectionDTO {
 
     @Override
     public String toString() {
-        return "EBusCollectionDTO [authors=" + authors + ", commands=" + commands + ", description=" + description
-                + ", id=" + id + ", identification=" + identification + ", label=" + label + ", vendor=" + vendor
-                + ", properties=" + properties + "]";
+        return "EBusCollectionDTO [" + (authors != null ? "authors=" + authors + ", " : "")
+                + (commands != null ? "commands=" + commands + ", " : "")
+                + (description != null ? "description=" + description + ", " : "")
+                + (id != null ? "id=" + id + ", " : "")
+                + (identification != null ? "identification=" + identification + ", " : "")
+                + (label != null ? "label=" + label + ", " : "")
+                + (properties != null ? "properties=" + properties + ", " : "")
+                + (templates != null ? "templates=" + templates + ", " : "")
+                + (vendor != null ? "vendor=" + vendor : "") + "]";
     }
 
 }

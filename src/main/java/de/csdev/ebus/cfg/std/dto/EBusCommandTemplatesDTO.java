@@ -16,19 +16,29 @@ import java.util.List;
  */
 public class EBusCommandTemplatesDTO {
 
-	private String name;
-	private List<EBusValueDTO> template;
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public List<EBusValueDTO> getTemplate() {
-		return template;
-	}
-	public void setTemplate(List<EBusValueDTO> template) {
-		this.template = template;
-	}
+    private String name;
+    private List<EBusValueDTO> template;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<EBusValueDTO> getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(List<EBusValueDTO> template) {
+        this.template = template;
+    }
+
+    @Override
+    public String toString() {
+        return "EBusCommandTemplatesDTO [" + (name != null ? "name=" + name + ", " : "")
+                + (template != null ? "template=" + template : "") + "]";
+    }
+
 }
