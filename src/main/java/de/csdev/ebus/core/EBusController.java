@@ -34,6 +34,8 @@ public class EBusController extends EBusControllerBase {
     /** counts the re-connection tries */
     private int reConnectCounter = 0;
 
+    private long sendRoundTrip = -1;
+
     public EBusController(IEBusConnection connection) {
         super(connection);
     }
@@ -43,6 +45,10 @@ public class EBusController extends EBusControllerBase {
             throw new EBusControllerException();
         }
         return queue.addToSendQueue(buffer, maxAttemps);
+    }
+
+    public long getLastSendReceiveRoundtripTime() {
+        return sendRoundTrip;
     }
 
     /**
@@ -292,13 +298,23 @@ public class EBusController extends EBusControllerBase {
             connection.reset();
 
             // send command
-            // for (int i = 0; i < dataOutputBuffers.length; i++) {
             byte b = dataOutputBuffers[0];
 
-            logger.trace("Send {}", EBusUtils.toHexDumpString(b));
+            if (logger.isTraceEnabled()) {
+                logger.trace("Send {}", EBusUtils.toHexDumpString(b));
+            }
+
+            // store nao time to messure send receive roundtrip time
+            long startTime = System.nanoTime();
+
             connection.writeByte(b);
 
             readByte = (byte) (connection.readByte(true) & 0xFF);
+
+            // clacule send receive roundtrip time in ns
+            sendRoundTrip = System.nanoTime() - startTime;
+
+            // update the state machine
             sendMachine.update(readByte);
 
             if (b != readByte) {

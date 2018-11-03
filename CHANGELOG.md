@@ -1,9 +1,24 @@
-## Alpha 0.9.18 (2018-??-??) WIP - SNAPSHOT
+## Alpha 0.9.19 (2018-11-03)
+
+Features:
+
+  - add JSerialComm as additional serial driver
+  - add send/receive roundtrip time to controller
+  - Update DTO objects
+  - add divider property to DTO
+  - change java level to 1.8
+  
+Bugfixes:
+
+  - fix "indirectly referenced" issue on extern bundles
+
+## Alpha 0.9.18 (2018-06-10)
 
 Features:
 
   - add bruteforce analyzer to decode data with all data types (internal only)
   - add watchdog timer to all eBus connections, default is 5mins at the moment
+  - add new controller exception to harden thread handling
 
 Bugfixes:
 

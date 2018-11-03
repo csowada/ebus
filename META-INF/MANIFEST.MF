@@ -3,7 +3,7 @@ Automatic-Module-Name: de.csdev.ebus
 Bundle-ManifestVersion: 2
 Bundle-Name: eBUS 4 Java
 Bundle-SymbolicName: de.csdev.ebus;singleton:=true
-Bundle-Version: 0.9.18.qualifier
+Bundle-Version: 0.9.19.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.gson,
  com.google.gson.annotations,
