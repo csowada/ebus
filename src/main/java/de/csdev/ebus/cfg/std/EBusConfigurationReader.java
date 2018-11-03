@@ -111,11 +111,23 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(dis), EBusCollectionDTO.class);
 
+        EBusCommandCollection commandCollection = (EBusCommandCollection) loadConfigurationCollection(collection);
+
+        // add md5 hash
+        commandCollection.setSourceHash(md.digest());
+
+        return commandCollection;
+    }
+
+    public IEBusCommandCollection loadConfigurationCollection(EBusCollectionDTO collection)
+            throws EBusConfigurationReaderException {
+        // EBusCollectionDTO collection = gson.fromJson(new InputStreamReader(dis), EBusCollectionDTO.class);
+
         EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
                 collection.getDescription(), collection.getProperties());
 
         // add md5 hash
-        commandCollection.setSourceHash(md.digest());
+        // commandCollection.setSourceHash(md.digest());
         commandCollection.setIdentification(collection.getIdentification());
 
         // parse the template block
@@ -443,7 +455,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         ev.setMapping(template.getMapping());
         ev.setFormat(template.getFormat());
-        
+
         ev.setParent(commandMethod);
 
         result.add(ev);
@@ -503,7 +515,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                         }
 
                     } catch (EBusConfigurationReaderException e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getMessage() + " (Url: " + fileUrl + ")");
                     } catch (IOException e) {
                         logger.error("error!", e);
                     }
@@ -528,4 +540,11 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         templateValueRegistry.clear();
     }
 
+    public Map<String, Collection<EBusCommandValue>> getTemplateValueRegistry() {
+        return templateValueRegistry;
+    }
+
+    public Map<String, Collection<EBusCommandValue>> getTemplateBlockRegistry() {
+        return templateBlockRegistry;
+    }
 }

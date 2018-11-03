@@ -252,16 +252,56 @@ public class EBusUtils {
         if (StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
-        
-	    String[] elements = hexDumpString.split(" ");
-	    byte[] result = new byte[elements.length];
-	    
-	    int pos = 0;
-	    for(String val: elements) {
-	    	result[pos++] =  Integer.valueOf(val, 16).byteValue();
-	    }
-	    
-	    return result;
+
+        String[] elements = hexDumpString.split(" ");
+        byte[] result = new byte[elements.length];
+
+        int pos = 0;
+        for (String val : elements) {
+            result[pos++] = Integer.valueOf(val, 16).byteValue();
+        }
+
+        return result;
+    }
+
+    /**
+     * Converts a hex string to byte array
+     *
+     * @param hexDumpString
+     * @return
+     */
+    static public byte[] toByteArray2(String hexDumpString) {
+        if (StringUtils.isEmpty(hexDumpString)) {
+            return new byte[0];
+        }
+
+        // String hexDumpString = "A0B";
+
+        if (hexDumpString.length() % 2 != 0) {
+            hexDumpString = "0" + hexDumpString;
+        }
+
+        // String[] elements = hexDumpString.split(" ");
+        byte[] result = new byte[hexDumpString.length() / 2];
+
+        int pos = 0;
+        for (int i = 0; i < hexDumpString.length(); i = i + 2) {
+            String val = hexDumpString.substring(i, i + 2);
+            result[pos++] = Integer.valueOf(val, 16).byteValue();
+        }
+
+        return result;
+    }
+
+    static public String mergeHexDumpStrings(String... args) {
+        String merge = "";
+        for (String string : args) {
+            if (StringUtils.isNotEmpty(string)) {
+                merge += string.length() % 2 == 0 ? string : "0" + string;
+            }
+        }
+
+        return toHexDumpString(toByteArray2(merge)).toString();
     }
 
     /**
