@@ -46,6 +46,7 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
         serialPort = SerialPort.getCommPort(port);
         serialPort.setComPortParameters(2400, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
         serialPort.openPort(1000, 1, 1);
+        serialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
 
         outputStream = serialPort.getOutputStream();
         inputStream = serialPort.getInputStream();
@@ -89,32 +90,5 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
         }
 
         return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.csdev.ebus.core.connection.AbstractEBusConnection#readByte(boolean)
-     */
-    @Override
-    public int readByte(boolean lowLatency) throws IOException {
-        if (lowLatency) {
-            return inputStream.read();
-        } else {
-            if (inputStream.available() > 0) {
-                return inputStream.read();
-
-            } else {
-                synchronized (inputStream) {
-                    try {
-                        inputStream.wait(3000);
-                        return inputStream.read();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                    return -1;
-                }
-            }
-        }
     }
 }
