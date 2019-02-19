@@ -44,7 +44,7 @@ public class EBusTCPConnection extends AbstractEBusConnection {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.connection.IEBusConnection#open()
      */
     @Override
@@ -58,7 +58,7 @@ public class EBusTCPConnection extends AbstractEBusConnection {
             socket.setTrafficClass((byte) 0x10);
 
             // Useful? We try it
-            // socket.setReceiveBufferSize(1);
+            socket.setReceiveBufferSize(1);
             socket.setSendBufferSize(1);
 
             inputStream = socket.getInputStream();
@@ -74,7 +74,7 @@ public class EBusTCPConnection extends AbstractEBusConnection {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.connection.AbstractEBusConnection#close()
      */
     @Override
