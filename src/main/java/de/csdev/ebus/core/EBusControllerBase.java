@@ -40,21 +40,13 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     private ScheduledFuture<?> watchdogTimer;
 
-    // protected IEBusConnection connection;
-
     private int watchdogTimerTimeout = 300; // 5min
-
-    public EBusControllerBase() {
-
-    }
 
     protected EBusQueue queue = new EBusQueue();
 
-    // public EBusControllerBase(IEBusConnection connection) {
-    // super(connection);
-    // }
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[], int)
      */
     @Override
@@ -65,7 +57,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         return queue.addToSendQueue(buffer, maxAttemps);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[])
      */
     @Override
@@ -76,7 +70,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         return queue.addToSendQueue(buffer);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.csdev.ebus.core.IEBusController#addEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
     @Override
@@ -84,7 +80,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         listeners.add(listener);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.csdev.ebus.core.IEBusController#removeEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
     @Override
@@ -210,7 +208,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.csdev.ebus.core.IEBusController#isRunning()
      */
     @Override
@@ -263,7 +263,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.csdev.ebus.core.IEBusController#setWatchdogTimerTimeout(int)
      */
     @Override

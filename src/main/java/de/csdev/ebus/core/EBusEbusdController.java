@@ -10,8 +10,11 @@ package de.csdev.ebus.core;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,79 +41,141 @@ public class EBusEbusdController extends EBusControllerBase {
 
     private BufferedReader reader;
 
+    /** counts the re-connection tries */
+    private int reConnectCounter = 0;
+
     public EBusEbusdController(String hostname, int port, int port2) {
         this.hostname = hostname;
         this.port = port;
         this.port2 = port2;
     }
 
-    // private class EBusSender extends Thread {
-    // @Override
-    // public void run() {
-    //
-    // }
-    // }
-
     @Override
     public void run() {
 
-        resetWatchdogTimer();
+        try {
 
-        // loop until interrupt or reconnector count is -1 (to many retries)
-        while (!(isInterrupted())) {
+            initThreadPool();
+            resetWatchdogTimer();
 
-            try {
-                while (!isInterrupted()) {
+            // loop until interrupt or reconnector count is -1 (to many retries)
+            while (!(isInterrupted() || reConnectCounter == -1)) {
 
-                    // queue.checkSendStatus();
-                    //
-                    // if(queue.getCurrent() != null) {
-                    // queue.getCurrent().buffer
-                    // }
+                try {
+                    while (!isInterrupted()) {
 
-                    String readLine = reader.readLine();
+                        if (!socket.isConnected()) {
+                            reconnect();
+                        }
 
-                    if (readLine.contains("[bus notice]")) {
-                        // System.out.println(readLine);
+                        // queue.checkSendStatus();
+                        //
+                        // if(queue.getCurrent() != null) {
+                        // queue.getCurrent().buffer
+                        // }
 
-                        if (readLine.contains("[bus notice] <")) {
-                            String data = readLine.split("<")[1];
-                            System.out.println(data);
+                        String readLine = reader.readLine();
 
-                            if (data.length() > 5) {
-                                byte[] receivedData = EBusUtils.toByteArray2(data);
-                                this.fireOnEBusTelegramReceived(receivedData, null);
-                                //
-                                //
-                                // List<IEBusCommandMethod> find = commandRegistry.find(byteArray2);
-                                // System.out.println(find);
+                        if (readLine.contains("[bus notice]")) {
+                            // System.out.println(readLine);
+
+                            if (readLine.contains("[bus notice] <")) {
+                                String data = readLine.split("<")[1];
+                                System.out.println(data);
+
+                                if (data.length() > 5) {
+                                    byte[] receivedData = EBusUtils.toByteArray2(data);
+
+                                    // reset with received data
+                                    resetWatchdogTimer();
+                                    reConnectCounter = 0;
+
+                                    this.fireOnEBusTelegramReceived(receivedData, null);
+                                }
+
                             }
 
                         }
-
                     }
+
+                } catch (IOException e) {
+                    logger.error("error!", e);
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } // while loop
+            } // while loop
+        } catch (Exception e) {
+            logger.error("error!", e);
+        }
 
         dispose();
     }
 
-    // @Override
-    // protected void initThreadPool() {
-    // super.initThreadPool();
-    //
-    // // create new thread pool to send received telegrams
-    // threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-sender", true));
-    // }
+    @Override
+    protected void initThreadPool() {
+        super.initThreadPool();
+
+        // create new thread pool to send received telegrams
+        // threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-sender", true));
+    }
+
+    private void reconnect() throws IOException {
+
+        if (!isRunning()) {
+            logger.trace("Skip reconnect, thread was interrupted ...");
+            return;
+        }
+
+        logger.info("Try to reconnect to ebusd daemon ...");
+
+        if (reConnectCounter > 10) {
+            reConnectCounter = -1;
+            this.interrupt();
+
+        } else {
+
+            reConnectCounter++;
+
+            logger.warn("Retry to connect to ebusd daemon in {} seconds ...", 5 * reConnectCounter);
+            try {
+                Thread.sleep(5000 * reConnectCounter);
+
+                disconnect();
+
+                if (connect()) {
+                    resetWatchdogTimer();
+                }
+
+            } catch (InterruptedException e) {
+                // noop, accept interruptions
+            }
+        }
+
+    }
+
+    private void disconnect() {
+        IOUtils.closeQuietly(reader);
+        reader = null;
+        IOUtils.closeQuietly(socket);
+        socket = null;
+    }
+
+    private boolean connect() throws UnknownHostException, IOException {
+        socket = new Socket(hostname, port2);
+        socket.setSoTimeout(20000);
+        socket.setKeepAlive(true);
+
+        if (socket.isConnected()) {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            return true;
+        }
+
+        return false;
+    }
 
     @Override
     protected void fireWatchDogTimer() {
         logger.warn("eBUS Watchdog Timer!");
+        disconnect();
         //
         // try {
         // this.connection.close();
@@ -125,6 +190,8 @@ public class EBusEbusdController extends EBusControllerBase {
         logger.debug("eBUS connection thread is shuting down ...");
 
         super.dispose();
+
+        disconnect();
     }
 
     @Override
