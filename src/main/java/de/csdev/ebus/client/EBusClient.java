@@ -20,9 +20,9 @@ import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusControllerException;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
+import de.csdev.ebus.core.IEBusController;
 import de.csdev.ebus.service.device.EBusDeviceTable;
 import de.csdev.ebus.service.device.EBusDeviceTableService;
 import de.csdev.ebus.service.device.IEBusDeviceTableListener;
@@ -42,7 +42,7 @@ public class EBusClient {
 
     private EBusCommandRegistry commandRegistry;
 
-    private EBusController controller;
+    private IEBusController controller;
 
     private EBusDeviceTable deviceTable;
 
@@ -110,7 +110,7 @@ public class EBusClient {
      * @param buffer
      * @return
      * @throws EBusControllerException
-     * @see de.csdev.ebus.core.EBusController#addToSendQueue(byte[])
+     * @see de.csdev.ebus.core.EBusLowLevelController#addToSendQueue(byte[])
      */
     public Integer addToSendQueue(byte[] buffer) throws EBusControllerException {
         if (controller != null) {
@@ -126,7 +126,7 @@ public class EBusClient {
      * @param maxAttemps
      * @return
      * @throws EBusControllerException
-     * @see de.csdev.ebus.core.EBusController#addToSendQueue(byte[], int)
+     * @see de.csdev.ebus.core.EBusLowLevelController#addToSendQueue(byte[], int)
      */
     public Integer addToSendQueue(byte[] buffer, int maxAttemps) throws EBusControllerException {
         if (controller != null) {
@@ -166,7 +166,7 @@ public class EBusClient {
      * @param controller
      * @param masterAddress
      */
-    public void connect(EBusController controller, byte masterAddress) {
+    public void connect(IEBusController controller, byte masterAddress) {
 
         if (controller == null) {
             throw new IllegalArgumentException("Parameter controller can't be null!");
@@ -250,7 +250,7 @@ public class EBusClient {
      *
      * @return
      */
-    public EBusController getController() {
+    public IEBusController getController() {
         return controller;
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2018 by the respective copyright holders.
+ * Copyright (c) 2016-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,45 +22,23 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusController extends EBusControllerBase {
+public class EBusLowLevelController extends EBusControllerBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusController.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusLowLevelController.class);
 
-    /** serial receive buffer */
-    private EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
-
-    private EBusQueue queue = new EBusQueue();
+    protected IEBusConnection connection;
 
     /** counts the re-connection tries */
     private int reConnectCounter = 0;
 
     private long sendRoundTrip = -1;
 
-    public EBusController(IEBusConnection connection) {
-        super(connection);
-    }
-
-    public Integer addToSendQueue(byte[] buffer, int maxAttemps) throws EBusControllerException {
-        if (!isRunning()) {
-            throw new EBusControllerException();
-        }
-        return queue.addToSendQueue(buffer, maxAttemps);
+    public EBusLowLevelController(IEBusConnection connection) {
+        super();
     }
 
     public long getLastSendReceiveRoundtripTime() {
         return sendRoundTrip;
-    }
-
-    /**
-     * @param buffer
-     * @return
-     * @throws EBusControllerException
-     */
-    public Integer addToSendQueue(byte[] buffer) throws EBusControllerException {
-        if (!isRunning()) {
-            throw new EBusControllerException();
-        }
-        return queue.addToSendQueue(buffer);
     }
 
     /**
@@ -442,8 +420,17 @@ public class EBusController extends EBusControllerBase {
         } catch (IOException e) {
             logger.error(e.toString(), e);
         }
-
-        queue = null;
-        machine = null;
     }
+
+    @Override
+    protected void fireWatchDogTimer() {
+        logger.warn("eBUS Watchdog Timer!");
+
+        try {
+            connection.close();
+        } catch (IOException e) {
+            logger.error("error!", e);
+        }
+    }
+
 }

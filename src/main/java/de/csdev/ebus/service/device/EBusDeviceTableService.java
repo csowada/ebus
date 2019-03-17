@@ -20,9 +20,9 @@ import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusConsts;
-import de.csdev.ebus.core.EBusController;
 import de.csdev.ebus.core.EBusControllerException;
 import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.core.IEBusController;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -35,7 +35,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
     private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
 
-    private EBusController controller;
+    private IEBusController controller;
 
     private Integer scanQueueId = -1;
 
@@ -49,7 +49,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
     private boolean scanRunning = false;
 
-    public EBusDeviceTableService(EBusController controller, EBusCommandRegistry configurationProvider,
+    public EBusDeviceTableService(IEBusController controller, EBusCommandRegistry configurationProvider,
             EBusDeviceTable deviceTable) {
 
         this.controller = controller;

@@ -8,7 +8,6 @@
  */
 package de.csdev.ebus.core;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -20,15 +19,16 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.csdev.ebus.core.connection.IEBusConnection;
-
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public abstract class EBusControllerBase extends Thread {
+public abstract class EBusControllerBase extends Thread implements IEBusController {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusControllerBase.class);
+
+    /** serial receive buffer */
+    protected EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
     /** the list for listeners */
     private final List<IEBusConnectorEventListener> listeners = new CopyOnWriteArrayList<IEBusConnectorEventListener>();
@@ -40,29 +40,54 @@ public abstract class EBusControllerBase extends Thread {
 
     private ScheduledFuture<?> watchdogTimer;
 
-    protected IEBusConnection connection;
+    // protected IEBusConnection connection;
 
     private int watchdogTimerTimeout = 300; // 5min
 
-    public EBusControllerBase(IEBusConnection connection) {
-        this.connection = connection;
+    public EBusControllerBase() {
+
     }
 
-    /**
-     * Add an eBUS listener to receive valid eBus telegrams
-     *
-     * @param listener
+    protected EBusQueue queue = new EBusQueue();
+
+    // public EBusControllerBase(IEBusConnection connection) {
+    // super(connection);
+    // }
+
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[], int)
      */
+    @Override
+    public Integer addToSendQueue(byte[] buffer, int maxAttemps) throws EBusControllerException {
+        if (!isRunning()) {
+            throw new EBusControllerException();
+        }
+        return queue.addToSendQueue(buffer, maxAttemps);
+    }
+
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[])
+     */
+    @Override
+    public Integer addToSendQueue(byte[] buffer) throws EBusControllerException {
+        if (!isRunning()) {
+            throw new EBusControllerException();
+        }
+        return queue.addToSendQueue(buffer);
+    }
+
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.core.IEBusController#addEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
+     */
+    @Override
     public void addEBusEventListener(IEBusConnectorEventListener listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Remove an eBUS listener
-     *
-     * @param listener
-     * @return
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.core.IEBusController#removeEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
+    @Override
     public boolean removeEBusEventListener(IEBusConnectorEventListener listener) {
         return listeners.remove(listener);
     }
@@ -185,11 +210,16 @@ public abstract class EBusControllerBase extends Thread {
         }
     }
 
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.core.IEBusController#isRunning()
+     */
+    @Override
     public boolean isRunning() {
         return !isInterrupted() && isAlive();
     }
 
     protected void dispose() {
+
         listeners.clear();
 
         if (watchdogTimer != null) {
@@ -198,6 +228,9 @@ public abstract class EBusControllerBase extends Thread {
         }
 
         shutdownThreadPool();
+
+        queue = null;
+        machine = null;
     }
 
     protected void resetWatchdogTimer() {
@@ -208,13 +241,14 @@ public abstract class EBusControllerBase extends Thread {
 
             @Override
             public void run() {
-                EBusControllerBase.logger.warn("eBUS Watchdog Timer!");
-
-                try {
-                    EBusControllerBase.this.connection.close();
-                } catch (IOException e) {
-                    logger.error("error!", e);
-                }
+                EBusControllerBase.this.fireWatchDogTimer();
+                // EBusControllerBase.logger.warn("eBUS Watchdog Timer!");
+                //
+                // try {
+                // EBusControllerBase.this.connection.close();
+                // } catch (IOException e) {
+                // logger.error("error!", e);
+                // }
             }
 
         };
@@ -229,8 +263,22 @@ public abstract class EBusControllerBase extends Thread {
 
     }
 
+    /* (non-Javadoc)
+     * @see de.csdev.ebus.core.IEBusController#setWatchdogTimerTimeout(int)
+     */
+    @Override
     public void setWatchdogTimerTimeout(int seconds) {
         watchdogTimerTimeout = seconds;
+    }
+
+    protected void fireWatchDogTimer() {
+        // EBusControllerBase.logger.warn("eBUS Watchdog Timer!");
+        //
+        // try {
+        // EBusControllerBase.this.connection.close();
+        // } catch (IOException e) {
+        // logger.error("error!", e);
+        // }
     }
 
 }

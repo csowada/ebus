@@ -23,7 +23,7 @@ public class EBusControllerTest {
     public void testWatchdogTimeout() throws InterruptedException, IOException, EBusControllerException {
 
         EBusEmulatorConnection connection = new EBusEmulatorConnection(false);
-        EBusController controller = new EBusController(connection);
+        EBusLowLevelController controller = new EBusLowLevelController(connection);
 
         controller.setWatchdogTimerTimeout(1);
 
