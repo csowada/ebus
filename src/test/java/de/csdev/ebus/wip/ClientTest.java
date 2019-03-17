@@ -23,7 +23,7 @@ import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.EBusController;
+import de.csdev.ebus.core.EBusLowLevelController;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusStateMachineTest;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
@@ -49,7 +49,7 @@ public class ClientTest {
 
         EBusClient client = new EBusClient(commandRegistry);
 
-        EBusController controller = new EBusController(emulator);
+        EBusLowLevelController controller = new EBusLowLevelController(emulator);
 
         client.connect(controller, (byte) 0xFF);
 
