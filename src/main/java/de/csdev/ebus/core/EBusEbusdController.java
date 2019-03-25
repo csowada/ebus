@@ -11,10 +11,14 @@ package de.csdev.ebus.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,17 +41,19 @@ public class EBusEbusdController extends EBusControllerBase {
     /** The tcp port */
     private int port;
 
-    private int port2;
-
     private BufferedReader reader;
+
+    private Writer writer;
 
     /** counts the re-connection tries */
     private int reConnectCounter = 0;
 
-    public EBusEbusdController(String hostname, int port, int port2) {
+    /** is already in direct mode ? */
+    private boolean directMode = false;
+
+    public EBusEbusdController(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
-        this.port2 = port2;
     }
 
     @Override
@@ -64,37 +70,88 @@ public class EBusEbusdController extends EBusControllerBase {
                 try {
                     while (!isInterrupted()) {
 
-                        if (!socket.isConnected()) {
+                        if (socket == null || !socket.isConnected()) {
                             reconnect();
                         }
 
-                        // queue.checkSendStatus();
-                        //
-                        // if(queue.getCurrent() != null) {
-                        // queue.getCurrent().buffer
-                        // }
-
                         String readLine = reader.readLine();
+                        logger.info(" -> " + readLine);
 
-                        if (readLine.contains("[bus notice]")) {
-                            // System.out.println(readLine);
+                        if (readLine == null) {
+                            logger.error("End of stream has been reached!");
+                            reconnect();
 
-                            if (readLine.contains("[bus notice] <")) {
-                                String data = readLine.split("<")[1];
-                                System.out.println(data);
+                        } else if (StringUtils.startsWith(readLine, "ERR:")) {
+                            logger.error(readLine);
+                            reconnect();
 
-                                if (data.length() > 5) {
-                                    byte[] receivedData = EBusUtils.toByteArray2(data);
+                        } else if (StringUtils.equals(readLine, "direct mode started")) {
+                            logger.info("ebusd direct mode enabled!");
+                            directMode = true;
 
-                                    // reset with received data
-                                    resetWatchdogTimer();
-                                    reConnectCounter = 0;
+                        } else if (!directMode) {
+                            logger.info("Switch ebusd to direct mode ...");
+                            // switch to direct mode
+                            writer.write("direct\n");
 
-                                    this.fireOnEBusTelegramReceived(receivedData, null);
+                        } else {
+
+                            ByteBuffer b = ByteBuffer.allocate(100);
+
+                            if (readLine.contains(" ")) {
+
+                                // ByteBuffer b = ByteBuffer.allocate(100);
+                                String[] split = readLine.split(" ");
+
+                                byte[] data = EBusUtils.toByteArray2(split[0]);
+
+                                b.put(data);
+
+                                // master crc
+                                b.put(EBusUtils.crc8(data, data.length));
+
+                                // slave ack
+                                b.put(EBusConsts.ACK_OK);
+
+                                data = EBusUtils.toByteArray2(split[1]);
+                                b.put(data);
+
+                                // slave crc
+                                b.put(EBusUtils.crc8(data, data.length));
+
+                                // master ack
+                                b.put(EBusConsts.ACK_OK);
+
+                                // syn
+                                b.put(EBusConsts.SYN);
+
+                            } else if (readLine.contains(":")) {
+                                // Send response
+
+                            } else {
+                                // BC and MM
+
+                                byte[] data = EBusUtils.toByteArray2(readLine);
+
+                                b.put(data);
+
+                                // master crc
+                                b.put(EBusUtils.crc8(data, data.length));
+
+                                // add ack for master-master telegrams
+                                if (EBusUtils.isMasterAddress(data[1])) {
+                                    b.put(EBusConsts.ACK_OK);
                                 }
 
+                                // syn
+                                b.put(EBusConsts.SYN);
                             }
 
+                            // reset with received data
+                            resetWatchdogTimer();
+                            reConnectCounter = 0;
+
+                            this.fireOnEBusTelegramReceived(EBusUtils.toByteArray(b), null);
                         }
                     }
 
@@ -137,9 +194,11 @@ public class EBusEbusdController extends EBusControllerBase {
 
             logger.warn("Retry to connect to ebusd daemon in {} seconds ...", 5 * reConnectCounter);
             try {
-                Thread.sleep(5000 * reConnectCounter);
+                if (socket != null) {
+                    Thread.sleep(5000 * reConnectCounter);
 
-                disconnect();
+                    disconnect();
+                }
 
                 if (connect()) {
                     resetWatchdogTimer();
@@ -160,12 +219,25 @@ public class EBusEbusdController extends EBusControllerBase {
     }
 
     private boolean connect() throws UnknownHostException, IOException {
-        socket = new Socket(hostname, port2);
+        socket = new Socket(hostname, port);
         socket.setSoTimeout(20000);
         socket.setKeepAlive(true);
 
         if (socket.isConnected()) {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new OutputStreamWriter(socket.getOutputStream());
+            logger.info("Connected ?! ...");
+
+            // switch to direct mode
+            writer.write("direct\n");
+            writer.flush();
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // noop
+            }
+
             return true;
         }
 
