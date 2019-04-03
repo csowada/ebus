@@ -16,12 +16,14 @@ import java.io.Writer;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.core.EBusQueue.QueueEntry;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -51,9 +53,53 @@ public class EBusEbusdController extends EBusControllerBase {
     /** is already in direct mode ? */
     private boolean directMode = false;
 
+    private EBusSenderThread senderThread = null;
+
     public EBusEbusdController(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
+    }
+
+    public static String buildEbusdSendString(byte[] buffer) {
+        final byte[] bs = Arrays.copyOfRange(buffer, 1, buffer.length - 1);
+
+        final StringBuilder sb = new StringBuilder();
+        sb.append(" ");
+        sb.append("-s ");
+        sb.append(EBusUtils.toHexDumpString(buffer[0]));
+        sb.append(" ");
+        sb.append(EBusUtils.toHexDumpString(bs).toString().replace(" ", ""));
+
+        return sb.toString();
+    }
+
+    public class EBusSenderThread extends Thread {
+
+        @Override
+        public void run() {
+            while (!isInterrupted()) {
+
+                try {
+                    EBusEbusdController.this.queue.checkSendStatus();
+
+                    QueueEntry queueEntry = EBusEbusdController.this.queue.getCurrent();
+
+                    if (queueEntry != null) {
+
+                        writer.write(buildEbusdSendString(queueEntry.buffer) + "\n");
+                        writer.flush();
+
+                        // remove this entry from queue
+                        EBusEbusdController.this.queue.resetSendQueue();
+                    }
+
+                } catch (EBusDataException | IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        }
     }
 
     @Override
@@ -96,62 +142,56 @@ public class EBusEbusdController extends EBusControllerBase {
 
                         } else {
 
-                            ByteBuffer b = ByteBuffer.allocate(100);
+                            ByteBuffer b = null;
 
-                            if (readLine.contains(" ")) {
+                            if (readLine.startsWith("-s")) {
+                                String tmp = readLine.substring(3, 5);
+                                readLine = tmp + readLine.substring(6);
 
-                                // ByteBuffer b = ByteBuffer.allocate(100);
-                                String[] split = readLine.split(" ");
+                                logger.warn(readLine);
 
-                                byte[] data = EBusUtils.toByteArray2(split[0]);
-
-                                b.put(data);
-
-                                // master crc
-                                b.put(EBusUtils.crc8(data, data.length));
-
-                                // slave ack
-                                b.put(EBusConsts.ACK_OK);
-
-                                data = EBusUtils.toByteArray2(split[1]);
-                                b.put(data);
-
-                                // slave crc
-                                b.put(EBusUtils.crc8(data, data.length));
-
-                                // master ack
-                                b.put(EBusConsts.ACK_OK);
-
-                                // syn
-                                b.put(EBusConsts.SYN);
+                            }
+                            if (readLine.startsWith(" ")) {
+                                logger.warn("ignore: " + readLine);
 
                             } else if (readLine.contains(":")) {
                                 // Send response
 
-                            } else {
-                                // BC and MM
+                                String[] split = readLine.split(":");
 
-                                byte[] data = EBusUtils.toByteArray2(readLine);
+                                if (split[1].startsWith("done")) {
+                                    // Master Master or Broadcast
+                                    b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), null);
 
-                                b.put(data);
+                                } else if (split[1].startsWith("ERR")) {
+                                    // -s FF X8502203CC1A27:ERR: invalid numeric argument\n
 
-                                // master crc
-                                b.put(EBusUtils.crc8(data, data.length));
-
-                                // add ack for master-master telegrams
-                                if (EBusUtils.isMasterAddress(data[1])) {
-                                    b.put(EBusConsts.ACK_OK);
+                                } else {
+                                    // // Master Slave
+                                    b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]),
+                                            EBusUtils.toByteArray2(split[1]));
                                 }
 
-                                // syn
-                                b.put(EBusConsts.SYN);
+                            } else if (readLine.contains(" ")) {
+
+                                String[] split = readLine.split(" ");
+
+                                b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]),
+                                        EBusUtils.toByteArray2(split[1]));
+                            } else {
+                                // BC and MM
+                                byte[] data = EBusUtils.toByteArray2(readLine);
+                                b = convertEBusdDataToFullTelegram(data, null);
                             }
 
                             // reset with received data
                             resetWatchdogTimer();
                             reConnectCounter = 0;
 
-                            this.fireOnEBusTelegramReceived(EBusUtils.toByteArray(b), null);
+                            if (b != null) {
+                                this.fireOnEBusTelegramReceived(EBusUtils.toByteArray(b), null);
+                            }
+
                         }
                     }
 
@@ -167,12 +207,48 @@ public class EBusEbusdController extends EBusControllerBase {
         dispose();
     }
 
+    public ByteBuffer convertEBusdDataToFullTelegram(byte[] masterData, byte[] slaveData) {
+
+        ByteBuffer b = ByteBuffer.allocate(100);
+
+        // add master len + data
+        b.put(masterData);
+
+        // master crc
+        b.put(EBusUtils.crc8(masterData, masterData.length));
+
+        if (masterData[1] != EBusConsts.BROADCAST_ADDRESS) {
+            // slave ack
+            b.put(EBusConsts.ACK_OK);
+        }
+
+        if (slaveData != null && slaveData.length > 0) {
+
+            // add slave len + data
+            b.put(slaveData);
+
+            // slave crc
+            b.put(EBusUtils.crc8(slaveData, slaveData.length));
+
+            // master ack
+            b.put(EBusConsts.ACK_OK);
+        }
+
+        // syn
+        b.put(EBusConsts.SYN);
+
+        return b;
+    }
+
     @Override
     protected void initThreadPool() {
         super.initThreadPool();
 
         // create new thread pool to send received telegrams
         // threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-sender", true));
+
+        senderThread = new EBusSenderThread();
+        senderThread.start();
     }
 
     private void reconnect() throws IOException {
@@ -262,6 +338,10 @@ public class EBusEbusdController extends EBusControllerBase {
         logger.debug("eBUS connection thread is shuting down ...");
 
         super.dispose();
+
+        if (senderThread != null) {
+            senderThread.interrupt();
+        }
 
         disconnect();
     }
