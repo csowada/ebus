@@ -61,6 +61,10 @@ public class EBusQueue {
         }
     }
 
+    public boolean isEmpty() {
+        return outputQueue.isEmpty();
+    }
+
     public void checkSendStatus() throws EBusDataException {
 
         if (lockCounter > 0) {

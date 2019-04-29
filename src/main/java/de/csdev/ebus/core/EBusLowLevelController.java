@@ -89,7 +89,7 @@ public class EBusLowLevelController extends EBusControllerBase {
                 fireOnEBusDataException(e, e.getSendId());
             }
 
-            // check of a complete and valid telegram is available
+            // check if a complete and valid telegram is available
             if (machine.isTelegramAvailable()) {
 
                 byte[] telegramData = machine.getTelegramData();

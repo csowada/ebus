@@ -77,6 +77,7 @@ public class EBusEbusdController extends EBusControllerBase {
 
         @Override
         public void run() {
+
             while (!isInterrupted()) {
 
                 try {
@@ -93,12 +94,15 @@ public class EBusEbusdController extends EBusControllerBase {
                         EBusEbusdController.this.queue.resetSendQueue();
                     }
 
-                } catch (EBusDataException | IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                    Thread.sleep(100);
 
+                } catch (EBusDataException | IOException | InterruptedException e) {
+                    logger.error("error!", e);
+                }
             }
+
+            // remove reference
+            EBusEbusdController.this.senderThread = null;
         }
     }
 
@@ -106,6 +110,7 @@ public class EBusEbusdController extends EBusControllerBase {
     public void run() {
 
         try {
+            logger.info("Start ebusd controller thread!");
 
             initThreadPool();
             resetWatchdogTimer();
@@ -324,12 +329,6 @@ public class EBusEbusdController extends EBusControllerBase {
     protected void fireWatchDogTimer() {
         logger.warn("eBUS Watchdog Timer!");
         disconnect();
-        //
-        // try {
-        // this.connection.close();
-        // } catch (IOException e) {
-        // logger.error("error!", e);
-        // }
     }
 
     @Override
