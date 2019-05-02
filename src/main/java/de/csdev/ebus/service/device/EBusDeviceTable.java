@@ -87,7 +87,7 @@ public class EBusDeviceTable {
         }
 
         if (vendors == null) {
-            logger.warn("Ups");
+            logger.warn("Unable to load manufactures.json!");
             return null;
         }
 
@@ -105,7 +105,7 @@ public class EBusDeviceTable {
             address = EBusUtils.getSlaveAddress(address);
         }
 
-        if (address == getOwnDevice().getSlaveAddress()) {
+        if (address == ownAddress) {
             // ignore own address
             return;
         }
