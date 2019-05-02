@@ -110,7 +110,7 @@ public class EBusEbusdController extends EBusControllerBase {
     public void run() {
 
         try {
-            logger.info("Start ebusd controller thread!");
+            logger.debug("Start ebusd controller thread!");
 
             initThreadPool();
             resetWatchdogTimer();
@@ -249,9 +249,6 @@ public class EBusEbusdController extends EBusControllerBase {
     protected void initThreadPool() {
         super.initThreadPool();
 
-        // create new thread pool to send received telegrams
-        // threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-sender", true));
-
         senderThread = new EBusSenderThread();
         senderThread.start();
     }
@@ -307,7 +304,6 @@ public class EBusEbusdController extends EBusControllerBase {
         if (socket.isConnected()) {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new OutputStreamWriter(socket.getOutputStream());
-            logger.info("Connected ?! ...");
 
             // switch to direct mode
             writer.write("direct\n");
