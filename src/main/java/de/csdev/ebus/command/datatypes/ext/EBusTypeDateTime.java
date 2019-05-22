@@ -21,6 +21,7 @@ import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.utils.EBusDateTime;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -73,6 +74,14 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
         EBusDateTime time = (EBusDateTime) timeType.decode(timeData);
         EBusDateTime date = (EBusDateTime) dateType.decode(dateData);
+
+        if (time == null || date == null) {
+            logger.warn("DateTime Debug: data", EBusUtils.toHexDumpString(data));
+            logger.warn("DateTime Debug: variantTime", variantTime);
+            logger.warn("DateTime Debug: variantDate", variantDate);
+
+            throw new EBusTypeException("The decoded datetime part of datetime is null!");
+        }
 
         Calendar calendar = date.getCalendar();
 
