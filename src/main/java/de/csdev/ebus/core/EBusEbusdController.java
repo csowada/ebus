@@ -53,7 +53,7 @@ public class EBusEbusdController extends EBusControllerBase {
     /** is already in direct mode ? */
     private boolean directMode = false;
 
-    private EBusSenderThread senderThread = null;
+    private Thread senderThread = null;
 
     public EBusEbusdController(String hostname, int port) {
         this.hostname = hostname;
@@ -78,32 +78,128 @@ public class EBusEbusdController extends EBusControllerBase {
         @Override
         public void run() {
 
-            while (!isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted()) {
 
                 try {
-                    EBusEbusdController.this.queue.checkSendStatus();
 
-                    QueueEntry queueEntry = EBusEbusdController.this.queue.getCurrent();
+                    EBusQueue queue = EBusEbusdController.this.queue;
 
-                    if (queueEntry != null) {
+                    if (queue != null) {
+                        queue.checkSendStatus();
 
-                        writer.write(buildEbusdSendString(queueEntry.buffer) + "\n");
-                        writer.flush();
+                        QueueEntry queueEntry = queue.getCurrent();
 
-                        // remove this entry from queue
-                        EBusEbusdController.this.queue.resetSendQueue();
+                        if (queueEntry != null) {
+
+                            writer.write(buildEbusdSendString(queueEntry.buffer) + "\n");
+                            writer.flush();
+
+                            // remove this entry from queue
+                            queue.resetSendQueue();
+                        }
                     }
 
                     Thread.sleep(100);
 
-                } catch (EBusDataException | IOException | InterruptedException e) {
+                } catch (EBusDataException | IOException e) {
                     logger.error("error!", e);
+                } catch (InterruptedException e) {
+                    // re-enable the interrupt to stop the while loop
+                    Thread.currentThread().interrupt();
                 }
             }
 
             // remove reference
             EBusEbusdController.this.senderThread = null;
         }
+    }
+
+    private ByteBuffer parseLine(String readLine) throws IOException {
+
+        ByteBuffer b = null;
+
+        logger.trace(" -> " + readLine);
+
+        if (readLine == null) {
+            logger.error("End of stream has been reached!");
+            reconnect();
+
+        } else if (StringUtils.startsWith(readLine, "ERR:")) {
+            logger.error(readLine);
+            reconnect();
+
+        } else if (StringUtils.equals(readLine, "direct mode started")) {
+            logger.info("ebusd direct mode enabled!");
+
+            // start sender thread
+            startSenderThread();
+
+            directMode = true;
+
+        } else if (!directMode) {
+            logger.info("Switch ebusd to direct mode ...");
+            // switch to direct mode
+            writer.write("direct\n");
+
+        } else {
+
+            if (readLine.startsWith("-s")) {
+                String tmp = readLine.substring(3, 5);
+                readLine = tmp + readLine.substring(6);
+
+                logger.trace(readLine);
+
+            }
+            if (readLine.startsWith(" ")) {
+                logger.warn("ignore: " + readLine);
+
+            } else if (readLine.contains(":")) {
+                // Send response
+
+                String[] split = readLine.split(":");
+
+                if (split[1].startsWith("done")) {
+                    // Master Master or Broadcast
+                    b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), null);
+
+                } else if (split[1].startsWith("ERR")) {
+                    // -s FF X8502203CC1A27:ERR: invalid numeric argument\n
+
+                } else {
+                    // // Master Slave
+                    b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]),
+                            EBusUtils.toByteArray2(split[1]));
+                }
+
+            } else if (readLine.contains(" ")) {
+
+                String[] split = readLine.split(" ");
+
+                b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), EBusUtils.toByteArray2(split[1]));
+            } else {
+                // BC and MM
+                byte[] data = EBusUtils.toByteArray2(readLine);
+                b = convertEBusdDataToFullTelegram(data, null);
+            }
+        }
+
+        return b;
+    }
+
+    private void stopSenderThread() {
+        if (senderThread != null) {
+            logger.warn("Stop sender thread!");
+            senderThread.interrupt();
+            senderThread = null;
+        }
+    }
+
+    private void startSenderThread() {
+
+        stopSenderThread();
+
+        senderThread = new EBusWorkerThreadFactory("ebus-sender", false).newThread(new EBusSenderThread());
+        senderThread.start();
     }
 
     @Override
@@ -126,90 +222,40 @@ public class EBusEbusdController extends EBusControllerBase {
                         }
 
                         String readLine = reader.readLine();
-                        logger.info(" -> " + readLine);
 
-                        if (readLine == null) {
-                            logger.error("End of stream has been reached!");
-                            reconnect();
+                        ByteBuffer b = parseLine(readLine);
 
-                        } else if (StringUtils.startsWith(readLine, "ERR:")) {
-                            logger.error(readLine);
-                            reconnect();
+                        // reset with received data
+                        resetWatchdogTimer();
+                        reConnectCounter = 0;
 
-                        } else if (StringUtils.equals(readLine, "direct mode started")) {
-                            logger.info("ebusd direct mode enabled!");
-                            directMode = true;
-
-                        } else if (!directMode) {
-                            logger.info("Switch ebusd to direct mode ...");
-                            // switch to direct mode
-                            writer.write("direct\n");
-
-                        } else {
-
-                            ByteBuffer b = null;
-
-                            if (readLine.startsWith("-s")) {
-                                String tmp = readLine.substring(3, 5);
-                                readLine = tmp + readLine.substring(6);
-
-                                logger.warn(readLine);
-
-                            }
-                            if (readLine.startsWith(" ")) {
-                                logger.warn("ignore: " + readLine);
-
-                            } else if (readLine.contains(":")) {
-                                // Send response
-
-                                String[] split = readLine.split(":");
-
-                                if (split[1].startsWith("done")) {
-                                    // Master Master or Broadcast
-                                    b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), null);
-
-                                } else if (split[1].startsWith("ERR")) {
-                                    // -s FF X8502203CC1A27:ERR: invalid numeric argument\n
-
-                                } else {
-                                    // // Master Slave
-                                    b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]),
-                                            EBusUtils.toByteArray2(split[1]));
-                                }
-
-                            } else if (readLine.contains(" ")) {
-
-                                String[] split = readLine.split(" ");
-
-                                b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]),
-                                        EBusUtils.toByteArray2(split[1]));
-                            } else {
-                                // BC and MM
-                                byte[] data = EBusUtils.toByteArray2(readLine);
-                                b = convertEBusdDataToFullTelegram(data, null);
-                            }
-
-                            // reset with received data
-                            resetWatchdogTimer();
-                            reConnectCounter = 0;
-
-                            if (b != null) {
-                                this.fireOnEBusTelegramReceived(EBusUtils.toByteArray(b), null);
-                            }
-
+                        if (b != null) {
+                            this.fireOnEBusTelegramReceived(EBusUtils.toByteArray(b), null);
                         }
+
                     }
 
                 } catch (IOException e) {
                     logger.error("error!", e);
+                    fireOnConnectionException(e);
+
+                    try {
+                        reconnect();
+                    } catch (IOException e1) {
+                        logger.error(e.toString(), e1);
+                    }
+
                 }
 
             } // while loop
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             logger.error("error!", e);
         }
 
         dispose();
+
     }
 
     public ByteBuffer convertEBusdDataToFullTelegram(byte[] masterData, byte[] slaveData) {
@@ -245,14 +291,6 @@ public class EBusEbusdController extends EBusControllerBase {
         return b;
     }
 
-    @Override
-    protected void initThreadPool() {
-        super.initThreadPool();
-
-        senderThread = new EBusSenderThread();
-        senderThread.start();
-    }
-
     private void reconnect() throws IOException {
 
         if (!isRunning()) {
@@ -272,11 +310,9 @@ public class EBusEbusdController extends EBusControllerBase {
 
             logger.warn("Retry to connect to ebusd daemon in {} seconds ...", 5 * reConnectCounter);
             try {
-                if (socket != null) {
-                    Thread.sleep(5000 * reConnectCounter);
 
-                    disconnect();
-                }
+                Thread.sleep(5000 * reConnectCounter);
+                disconnect();
 
                 if (connect()) {
                     resetWatchdogTimer();
@@ -290,10 +326,19 @@ public class EBusEbusdController extends EBusControllerBase {
     }
 
     private void disconnect() {
+
+        stopSenderThread();
+
         IOUtils.closeQuietly(reader);
         reader = null;
+
+        IOUtils.closeQuietly(writer);
+        writer = null;
+
         IOUtils.closeQuietly(socket);
         socket = null;
+
+        directMode = false;
     }
 
     private boolean connect() throws UnknownHostException, IOException {
@@ -330,13 +375,9 @@ public class EBusEbusdController extends EBusControllerBase {
     @Override
     protected void dispose() {
 
-        logger.debug("eBUS connection thread is shuting down ...");
+        logger.debug("eBUS connection thread is shutting down ...");
 
         super.dispose();
-
-        if (senderThread != null) {
-            senderThread.interrupt();
-        }
 
         disconnect();
     }
