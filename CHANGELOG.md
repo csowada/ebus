@@ -1,3 +1,14 @@
+## Alpha 0.9.20 (2019-05-22)
+
+Features:
+
+  - add ebusd connector
+  
+Bugfixes:
+
+  - fix NPE
+  - synchronize log writers
+  
 ## Alpha 0.9.19 (2018-11-03)
 
 Features:
