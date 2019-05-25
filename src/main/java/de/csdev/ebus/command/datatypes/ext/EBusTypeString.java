@@ -55,19 +55,6 @@ public class EBusTypeString extends EBusAbstractType<String> {
         return length;
     }
 
-    // @Override
-    // public IEBusType<String> getInstance(Map<String, Object> properties) {
-    //
-    // if (properties.containsKey("length")) {
-    // EBusTypeString type = new EBusTypeString();
-    // type.types = this.types;
-    // type.length = (Integer) properties.get("length");
-    // return type;
-    // }
-    //
-    // return this;
-    // }
-
     @Override
     public String toString() {
         return "EBusTypeString [length=" + length + "]";

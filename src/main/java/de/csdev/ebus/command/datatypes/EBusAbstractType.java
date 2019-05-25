@@ -89,7 +89,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         if (data == null) {
             throw new EBusTypeException("Input parameter byte-array is NULL!");
         }
-    	
+
         if (data.length != getTypeLength()) {
             throw new EBusTypeException("Input parameter byte-array has size {0}, expected {1} for eBUS type {2}",
                     data.length, getTypeLength(), this.getClass().getSimpleName());
@@ -125,7 +125,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     @Override
     public byte[] encode(Object data) throws EBusTypeException {
 
-        // return the replacec value
+        // return the replace value
         if (data == null) {
             return applyByteOrder(getReplaceValue());
         }
@@ -235,13 +235,13 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     protected void setInstanceProperty(EBusAbstractType<T> instance, String property, Object value) {
 
         if (property.equals("replaceValue")) {
-        	if(value instanceof String) {
+            if (value instanceof String) {
                 try {
-                	instance.setReplaceValue(EBusUtils.toByteArray((String)value));
+                    instance.setReplaceValue(EBusUtils.toByteArray((String) value));
                 } catch (EBusTypeException e) {
                     logger.error("error!", e);
                 }
-        	}
+            }
 
             return;
         }

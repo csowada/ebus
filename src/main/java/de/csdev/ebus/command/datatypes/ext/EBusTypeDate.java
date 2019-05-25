@@ -165,6 +165,10 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
             calendar = (Calendar) data;
         }
 
+        if (calendar == null) {
+            return applyByteOrder(getReplaceValue());
+        }
+
         // set date to midnight
         calendar = (Calendar) calendar.clone();
         calendar.set(Calendar.HOUR_OF_DAY, 0);

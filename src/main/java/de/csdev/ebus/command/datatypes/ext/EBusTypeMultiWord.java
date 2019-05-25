@@ -53,7 +53,7 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
         for (int i = 0; i <= x; i++) {
 
             System.arraycopy(data, i * 2, dataNew, 0, dataNew.length);
-            // dataNew = applyByteOrder(dataNew);
+
             BigDecimal value = types.decode(EBusTypeWord.TYPE_WORD, dataNew);
 
             BigDecimal factor = this.multiplier.pow(i);
@@ -81,33 +81,13 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
             BigDecimal[] divideAndRemainder = value.divideAndRemainder(factor);
 
             byte[] encode = types.encode(EBusTypeWord.TYPE_WORD, divideAndRemainder[0]);
-            // encode = applyByteOrder(encode);
+
             value = divideAndRemainder[1];
             System.arraycopy(encode, 0, result, i * 2, 2);
         }
 
         return result;
     }
-
-    // @Override
-    // public IEBusType<BigDecimal> getInstance(Map<String, Object> properties) {
-    //
-    // if (properties.containsKey(IEBusType.LENGTH)) {
-    // EBusTypeMultiWord type = new EBusTypeMultiWord();
-    // type.types = this.types;
-    //
-    // type.length = (Integer) properties.get(IEBusType.LENGTH);
-    //
-    // if (properties.containsKey(BLOCK_MULTIPLIER)) {
-    // type.multiplier = NumberUtils.toBigDecimal(properties.get(BLOCK_MULTIPLIER));
-    // // type.factor = (Integer) properties.get(IEBusType.FACTOR);
-    // }
-    //
-    // return type;
-    // }
-    //
-    // return this;
-    // }
 
     @Override
     public String toString() {

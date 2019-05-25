@@ -25,10 +25,6 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
     private static String[] supportedTypes = new String[] { TYPE_VERSION };
 
-    // public EBusTypeVersion() {
-    // replaceValue = new byte[] { (byte) 0xFF, (byte) 0xFF };
-    // }
-
     @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
@@ -41,10 +37,6 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
     @Override
     public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
-
-        // if (data[0] == 0 && data[1] == 0) {
-        // return null;
-        // }
 
         byte[] verData = new byte[] { data[0] };
         byte[] revData = new byte[] { data[1] };
@@ -66,7 +58,7 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
         BigDecimal value = NumberUtils.toBigDecimal(data);
 
         if (value == null) {
-            return new byte[getTypeLength()];
+            return applyByteOrder(getReplaceValue());
         }
 
         BigDecimal[] values = value.divideAndRemainder(BigDecimal.ONE);

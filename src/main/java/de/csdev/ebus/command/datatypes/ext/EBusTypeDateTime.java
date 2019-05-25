@@ -76,11 +76,12 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         EBusDateTime date = (EBusDateTime) dateType.decode(dateData);
 
         if (time == null || date == null) {
-            logger.warn("DateTime Debug: data", EBusUtils.toHexDumpString(data));
-            logger.warn("DateTime Debug: variantTime", variantTime);
-            logger.warn("DateTime Debug: variantDate", variantDate);
+            logger.warn("DateTime Debug: data {}", EBusUtils.toHexDumpString(data));
+            logger.warn("DateTime Debug: variantTime {}", variantTime);
+            logger.warn("DateTime Debug: variantDate {}", variantDate);
 
-            throw new EBusTypeException("The decoded datetime part of datetime is null!");
+            logger.warn("The decoded date and/or time part of datetime is null!");
+            return null;
         }
 
         Calendar calendar = date.getCalendar();
@@ -106,6 +107,10 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
         } else if (data instanceof Calendar) {
             calendar = (Calendar) data;
+        }
+
+        if (calendar == null) {
+            return applyByteOrder(getReplaceValue());
         }
 
         byte[] timeData = timeType.encode(calendar);

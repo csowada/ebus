@@ -157,6 +157,10 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
             calendar = (Calendar) data;
         }
 
+        if (calendar == null) {
+            return applyByteOrder(getReplaceValue());
+        }
+
         // set date to 01.01.1970
         calendar = (Calendar) calendar.clone();
         calendar.set(1970, 0, 1);
