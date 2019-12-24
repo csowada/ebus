@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.command.IEBusCommandMethod.Type;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.IEBusComplexType;
 import de.csdev.ebus.command.datatypes.IEBusType;
@@ -254,6 +255,7 @@ public class EBusCommandUtils {
         // replace the placeholders with the complex values
         if (!complexTypes.isEmpty()) {
             int orgPos = buf.position();
+            buf.limit(buf.position());
             for (Entry<Integer, IEBusComplexType<?>> entry : complexTypes.entrySet()) {
                 // jump to position
                 buf.position(entry.getKey());
@@ -303,8 +305,28 @@ public class EBusCommandUtils {
             throw new IllegalArgumentException("Parameter target is null!");
         }
 
+        Byte targetChecked = target;
+        if (commandMethod.getType().equals(Type.BROADCAST)) {
+            targetChecked = EBusConsts.BROADCAST_ADDRESS;
+            logger.warn("Replace target address {0} with valid broadcast address FE !");
+
+        } else if (commandMethod.getType().equals(Type.MASTER_MASTER)) {
+            if (!EBusUtils.isMasterAddress(target)) {
+                targetChecked = EBusUtils.getMasterAddress(target);
+                logger.warn("Replace slave target address {0} with valid master address {1}!",
+                        EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+            }
+
+        } else if (commandMethod.getType().equals(Type.MASTER_SLAVE)) {
+            if (EBusUtils.isMasterAddress(target)) {
+                targetChecked = EBusUtils.getSlaveAddress(target);
+                logger.warn("Replace master target address {0} with valid slave address {1}!",
+                        EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+            }
+        }
+
         byte[] data = EBusUtils.toByteArray(composeMasterData(commandMethod, values));
-        ByteBuffer byteBuffer = buildPartMasterTelegram(source, target, commandMethod.getCommand(), data);
+        ByteBuffer byteBuffer = buildPartMasterTelegram(source, targetChecked, commandMethod.getCommand(), data);
 
         return byteBuffer;
     }
@@ -331,12 +353,14 @@ public class EBusCommandUtils {
                 }
 
                 if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
-                    logger.debug("Value {} with {} is smaller then allowed {}", new Object[] {ev.getName(), multiply, nev.getMax()});
+                    logger.debug("Value {} with {} is smaller then allowed {}",
+                            new Object[] { ev.getName(), multiply, nev.getMax() });
                     decode = null;
                 }
 
                 if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
-                    logger.debug("Value {} with {} is larger then allowed {}", new Object[] {ev.getName(), multiply, nev.getMax()});
+                    logger.debug("Value {} with {} is larger then allowed {}",
+                            new Object[] { ev.getName(), multiply, nev.getMax() });
                     decode = null;
                 }
             }
