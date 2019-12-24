@@ -8,9 +8,12 @@
  */
 package de.csdev.ebus.command.datatypes.ext;
 
+import java.nio.ByteBuffer;
+
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.IEBusComplexType;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -19,6 +22,10 @@ import de.csdev.ebus.command.datatypes.IEBusComplexType;
 public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComplexType<Byte> {
 
     public static String TYPE_KW_CRC = "kw-crc";
+
+    public static String POS = "pos";
+
+    public static int pos = 0;
 
     private static String[] supportedTypes = new String[] { TYPE_KW_CRC };
 
@@ -53,6 +60,28 @@ public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComple
 
     @Override
     public byte[] encodeComplex(Object data) throws EBusTypeException {
+
+        byte[] bytesData = null;
+
+        if (data instanceof ByteBuffer) {
+            bytesData = EBusUtils.toByteArray((ByteBuffer) data);
+        } else if (data instanceof byte[]) {
+            bytesData = (byte[]) data;
+        }
+
+        if (bytesData != null) {
+            byte b = 0;
+
+            for (int i = pos + 1; i < bytesData.length; i++) {
+                // exclude crc pos
+                if (i != pos) {
+                    b = EBusUtils.crc8(bytesData[i], b, (byte) 0x5C);
+                }
+            }
+
+            return new byte[] { b };
+        }
+
         return new byte[] { (byte) 0xCC };
     }
 
