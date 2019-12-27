@@ -133,6 +133,10 @@ public class EBusReceiveStateMachine {
             return true;
         }
 
+        if (state.equals(State.ACK1) && EBusUtils.isMasterAddress(bb.get(1))) {
+            return true;
+        }
+
         if (state.equals(State.ACK2)) {
             return true;
         }

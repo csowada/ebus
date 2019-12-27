@@ -402,6 +402,25 @@ public class EBusStateMachineTest {
         logger.info("Errors {}", errors);
     }
 
+    @Test
+    public void testMasterMaster() {
+
+        try {
+            runMachine(EBusUtils.toByteArray("AA 00 30 50 23 09 A0 74 27 01 00 5D 01 00 00 65 00"));
+
+            assertTrue(machine.isReceivingTelegram());
+            assertFalse(machine.isSync());
+            assertFalse(machine.isTelegramAvailable());
+            assertFalse(machine.isWaitingForMasterACK());
+            assertTrue(machine.isWaitingForMasterSYN());
+            assertFalse(machine.isWaitingForSlaveAnswer());
+
+        } catch (EBusDataException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void runMachine(byte[] byteArray) throws EBusDataException {
         for (byte b : byteArray) {
             machine.update(b);

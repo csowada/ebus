@@ -352,7 +352,7 @@ public class EBusLowLevelController extends EBusControllerBase {
                 logger.trace("Waiting for slave answer ...");
 
                 // read input data until the telegram is complete or fails
-                while (!sendMachine.isWaitingForMasterACK()) {
+                while (!sendMachine.isWaitingForMasterACK() && !sendMachine.isWaitingForMasterSYN()) {
                     read = connection.readByte(true);
                     if (read != -1) {
 
