@@ -240,7 +240,7 @@ public class EBusCommandRegistry {
         try {
 
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, sourceAddress, targetAddress,
-                    null);
+                    null, true);
 
             ByteBuffer mask = command.getMasterTelegramMask();
 

@@ -274,16 +274,22 @@ public class EBusCommandUtils {
         return buf;
     }
 
+    public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
+            Map<String, Object> values) throws EBusTypeException {
+        return buildMasterTelegram(commandMethod, source, target, values, false);
+    }
+
     /**
      * @param commandMethod
      * @param source
      * @param target
      * @param values
+     * @param skipAddressChecks
      * @return
      * @throws EBusTypeException
      */
     public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
-            Map<String, Object> values) throws EBusTypeException {
+            Map<String, Object> values, boolean skipAddressChecks) throws EBusTypeException {
 
         if (source == null && commandMethod.getSourceAddress() != null) {
             source = commandMethod.getSourceAddress();
@@ -306,22 +312,27 @@ public class EBusCommandUtils {
         }
 
         Byte targetChecked = target;
-        if (commandMethod.getType().equals(Type.BROADCAST)) {
-            targetChecked = EBusConsts.BROADCAST_ADDRESS;
-            logger.warn("Replace target address {0} with valid broadcast address FE !");
 
-        } else if (commandMethod.getType().equals(Type.MASTER_MASTER)) {
-            if (!EBusUtils.isMasterAddress(target)) {
-                targetChecked = EBusUtils.getMasterAddress(target);
-                logger.warn("Replace slave target address {0} with valid master address {1}!",
-                        EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
-            }
+        if (!skipAddressChecks) {
 
-        } else if (commandMethod.getType().equals(Type.MASTER_SLAVE)) {
-            if (EBusUtils.isMasterAddress(target)) {
-                targetChecked = EBusUtils.getSlaveAddress(target);
-                logger.warn("Replace master target address {0} with valid slave address {1}!",
-                        EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+            if (commandMethod.getType().equals(Type.BROADCAST)) {
+                targetChecked = EBusConsts.BROADCAST_ADDRESS;
+                logger.warn("Replace target address {} with valid broadcast address FE !",
+                        EBusUtils.toHexDumpString(target));
+
+            } else if (commandMethod.getType().equals(Type.MASTER_MASTER)) {
+                if (!EBusUtils.isMasterAddress(target)) {
+                    targetChecked = EBusUtils.getMasterAddress(target);
+                    logger.warn("Replace slave target address {} with valid master address {}!",
+                            EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+                }
+
+            } else if (commandMethod.getType().equals(Type.MASTER_SLAVE)) {
+                if (EBusUtils.isMasterAddress(target)) {
+                    targetChecked = EBusUtils.getSlaveAddress(target);
+                    logger.warn("Replace master target address {} with valid slave address {}!",
+                            EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+                }
             }
         }
 
