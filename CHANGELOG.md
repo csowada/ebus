@@ -1,3 +1,24 @@
+## 1.0.0 (2019-12-28)
+
+Just a new label for the Alpha 0.9.22 release
+  
+## Alpha 0.9.22 (2019-12.28)
+
+Bugfixes:
+
+  - fix critical Master-Master send issue
+  - change error handling for "End of stream reached"
+  - replace and warn wrong addresses for buildMasterTelegram
+  - enhance Wolf/Kromschröder CRC calculation for type "kw-crc"
+ 
+## Alpha 0.9.21 (2019-05-22)
+
+Project Enhancements:
+
+   - fix project setup
+   - remove useless MANIFEST.MF file
+   - update all file headers to year 2019
+
 ## Alpha 0.9.20 (2019-05-22)
 
 Features:
