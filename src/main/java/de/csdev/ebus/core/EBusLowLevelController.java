@@ -189,7 +189,7 @@ public class EBusLowLevelController extends EBusControllerBase {
 
                     if (read == -1) {
                         logger.debug("eBUS read timeout occured, no data on bus ...");
-                        Thread.sleep(500);
+                        throw new IOException("End of eBUS stream reached!");
 
                     } else {
                         for (int i = 0; i < read; i++) {
@@ -203,9 +203,6 @@ public class EBusLowLevelController extends EBusControllerBase {
 
                     }
                 }
-
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
 
             } catch (IOException e) {
                 logger.error("An IO exception has occured! Try to reconnect eBUS connector ...", e);
