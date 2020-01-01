@@ -97,6 +97,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      */
     protected void fireOnConnectionException(final Exception e) {
 
+        if (!isRunning()) {
+            return;
+        }
+
         if (threadPool == null || threadPool.isTerminated()) {
             logger.warn("ThreadPool not ready!");
             return;
@@ -125,6 +129,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @param sendQueueId
      */
     protected void fireOnEBusTelegramReceived(final byte[] receivedData, final Integer sendQueueId) {
+
+        if (!isRunning()) {
+            return;
+        }
 
         if (threadPool == null || threadPool.isTerminated()) {
             logger.warn("ThreadPool not ready!  Can't fire onTelegramReceived events ...");
@@ -156,6 +164,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      */
     protected void fireOnEBusDataException(final EBusDataException exception, final Integer sendQueueId) {
 
+        if (!isRunning()) {
+            return;
+        }
+
         if (threadPool == null || threadPool.isTerminated()) {
             logger.warn("ThreadPool not ready!");
             return;
@@ -179,6 +191,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @param status
      */
     protected void fireOnEBusConnectionStatusChange(ConnectionStatus status) {
+
+        if (!isRunning()) {
+            return;
+        }
 
         if (threadPool == null || threadPool.isTerminated()) {
             logger.warn("ThreadPool not ready!");
