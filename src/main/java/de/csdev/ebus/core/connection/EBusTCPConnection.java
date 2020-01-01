@@ -9,7 +9,9 @@
 package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +66,14 @@ public class EBusTCPConnection extends AbstractEBusConnection {
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
 
+        } catch (ConnectException e) {
+            logger.warn("Connection error: Connection refused {}:{}", hostname, port);
+
+        } catch (UnknownHostException e) {
+            logger.warn("Connection error: Unknown host {}:{}", hostname, port);
+
         } catch (Exception e) {
-            logger.warn(e.getMessage());
+            logger.warn(e.getMessage(), e);
             return false;
         }
 
