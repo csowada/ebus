@@ -95,6 +95,8 @@ public class EBusParserService extends EBusConnectorEventListener {
                 fireOnTelegramResolved(commandChannel, map, receivedData, sendQueueId);
             } catch (EBusTypeException e) {
                 fireOnTelegramFailed(commandChannel, receivedData, sendQueueId, e.getMessage());
+                logger.error("Parsing error details >> Data: {} - {} {}", EBusUtils.toHexDumpString(receivedData),
+                        commandChannel.getParent(), commandChannel.getType());
                 logger.error("error!", e);
             }
         }
