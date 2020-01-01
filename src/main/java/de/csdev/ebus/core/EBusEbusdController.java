@@ -11,6 +11,7 @@ package de.csdev.ebus.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
@@ -116,7 +117,7 @@ public class EBusEbusdController extends EBusControllerBase {
         }
     }
 
-    private ByteBuffer parseLine(String readLine) throws IOException {
+    private ByteBuffer parseLine(String readLine) throws IOException, InterruptedException {
 
         ByteBuffer b = null;
 
@@ -239,6 +240,14 @@ public class EBusEbusdController extends EBusControllerBase {
 
                     }
 
+                } catch (InterruptedIOException e) {
+                    // re-enable the interrupt to stop the while loop
+                    Thread.currentThread().interrupt();
+
+                } catch (InterruptedException e) {
+                    // re-enable the interrupt to stop the while loop
+                    Thread.currentThread().interrupt();
+
                 } catch (IOException e) {
                     logger.error("error!", e);
                     fireOnConnectionException(e);
@@ -252,9 +261,7 @@ public class EBusEbusdController extends EBusControllerBase {
                 }
 
             } // while loop
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             logger.error("error!", e);
         }
 
@@ -295,7 +302,7 @@ public class EBusEbusdController extends EBusControllerBase {
         return b;
     }
 
-    private void reconnect() throws IOException {
+    private void reconnect() throws IOException, InterruptedException {
 
         if (!isRunning()) {
             logger.trace("Skip reconnect, thread was interrupted ...");
@@ -316,17 +323,12 @@ public class EBusEbusdController extends EBusControllerBase {
             reConnectCounter++;
 
             logger.warn("Retry to connect to ebusd daemon in {} seconds ...", 5 * reConnectCounter);
-            try {
 
-                Thread.sleep(5000 * reConnectCounter);
-                disconnect();
+            Thread.sleep(5000 * reConnectCounter);
+            disconnect();
 
-                if (connect()) {
-                    resetWatchdogTimer();
-                }
-
-            } catch (InterruptedException e) {
-                // noop, accept interruptions
+            if (connect()) {
+                resetWatchdogTimer();
             }
         }
 
