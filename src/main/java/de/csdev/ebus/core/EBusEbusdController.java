@@ -55,6 +55,8 @@ public class EBusEbusdController extends EBusControllerBase {
 
     private Thread senderThread = null;
 
+    // private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
+
     public EBusEbusdController(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
@@ -135,6 +137,8 @@ public class EBusEbusdController extends EBusControllerBase {
             startSenderThread();
 
             directMode = true;
+
+            setConnectionStatus(ConnectionStatus.CONNECTED);
 
         } else if (!directMode) {
             logger.info("Switch ebusd to direct mode ...");
@@ -300,6 +304,9 @@ public class EBusEbusdController extends EBusControllerBase {
 
         logger.info("Try to reconnect to ebusd daemon ...");
 
+        // set connection status to connecting
+        setConnectionStatus(ConnectionStatus.CONNECTING);
+
         if (reConnectCounter > 10) {
             reConnectCounter = -1;
             this.interrupt();
@@ -339,6 +346,9 @@ public class EBusEbusdController extends EBusControllerBase {
         socket = null;
 
         directMode = false;
+
+        // set connection status to disconnected
+        setConnectionStatus(ConnectionStatus.DISCONNECTED);
     }
 
     private boolean connect() throws UnknownHostException, IOException {

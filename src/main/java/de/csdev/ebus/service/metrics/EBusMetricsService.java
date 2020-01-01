@@ -14,16 +14,16 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusDataException.EBusError;
-import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
-public class EBusMetricsService implements IEBusParserListener, IEBusConnectorEventListener {
+public class EBusMetricsService extends EBusConnectorEventListener implements IEBusParserListener {
 
     private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
 

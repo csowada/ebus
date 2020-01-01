@@ -45,4 +45,12 @@ public interface IEBusController {
     boolean isInterrupted();
 
     void interrupt();
+
+    enum ConnectionStatus {
+        DISCONNECTED,
+        CONNECTING,
+        CONNECTED
+    }
+
+    ConnectionStatus getConnectionStatus();
 }

@@ -23,10 +23,11 @@ import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.EBusLowLevelController;
 import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.core.EBusLowLevelController;
 import de.csdev.ebus.core.EBusStateMachineTest;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
+import de.csdev.ebus.core.IEBusController.ConnectionStatus;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
@@ -72,6 +73,12 @@ public class ClientTest {
             @Override
             public void onConnectionException(Exception e) {
                 logger.error("error!", e);
+                fail("No ConnectionException expected!");
+            }
+
+            @Override
+            public void onConnectionStatusChanged(ConnectionStatus status) {
+                // logger.error("error!", e);
                 fail("No ConnectionException expected!");
             }
         });

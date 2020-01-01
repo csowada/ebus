@@ -20,11 +20,12 @@ import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.core.EBusLowLevelController;
 import de.csdev.ebus.core.EBusControllerException;
 import de.csdev.ebus.core.EBusDataException;
+import de.csdev.ebus.core.EBusLowLevelController;
 import de.csdev.ebus.core.EBusStateMachineTest;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
+import de.csdev.ebus.core.IEBusController.ConnectionStatus;
 import de.csdev.ebus.core.connection.EBusTCPConnection;
 import de.csdev.ebus.core.connection.IEBusConnection;
 import de.csdev.ebus.utils.EBusUtils;
@@ -71,8 +72,13 @@ public class ClientTest3 {
 
             @Override
             public void onConnectionException(Exception e) {
-                // TODO Auto-generated method stub
                 logger.info("ClientTest.xxx().new EBusConnectorEventListener() {...}.onConnectionException()");
+            }
+
+            @Override
+            public void onConnectionStatusChanged(ConnectionStatus status) {
+                logger.info(
+                        "ClientTest3.testNoSlaveResponse().new IEBusConnectorEventListener() {...}.onConnectionStatusChanged()");
             }
         });
 

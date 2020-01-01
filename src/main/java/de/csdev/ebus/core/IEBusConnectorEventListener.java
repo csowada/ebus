@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.core;
 
+import de.csdev.ebus.core.IEBusController.ConnectionStatus;
+
 /**
  * This listener is called if the connector received a valid eBUS telegram.
  *
@@ -38,4 +40,11 @@ public interface IEBusConnectorEventListener {
      * @param e
      */
     public void onConnectionException(Exception e);
+
+    /**
+     * The connection status has changed
+     * 
+     * @param status ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED or ConnectionStatus.DISCONNECTED
+     */
+    public void onConnectionStatusChanged(ConnectionStatus status);
 }

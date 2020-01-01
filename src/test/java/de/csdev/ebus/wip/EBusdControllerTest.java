@@ -24,6 +24,7 @@ import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusEbusdController;
 import de.csdev.ebus.core.EBusStateMachineTest;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
+import de.csdev.ebus.core.IEBusController.ConnectionStatus;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class EBusdControllerTest {
@@ -71,6 +72,13 @@ public class EBusdControllerTest {
             public void onConnectionException(Exception e) {
                 // TODO Auto-generated method stub
                 logger.info("ClientTest.xxx().new EBusConnectorEventListener() {...}.onConnectionException()");
+            }
+
+            @Override
+            public void onConnectionStatusChanged(ConnectionStatus status) {
+                // TODO Auto-generated method stub
+                logger.info(
+                        "EBusdControllerTest.testNoSlaveResponse().new IEBusConnectorEventListener() {...}.onConnectionStatusChanged()");
             }
         });
 

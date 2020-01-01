@@ -44,9 +44,11 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     protected EBusQueue queue = new EBusQueue();
 
+    private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[], int)
      */
     @Override
@@ -59,7 +61,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[])
      */
     @Override
@@ -72,7 +74,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.IEBusController#addEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
     @Override
@@ -82,7 +84,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.IEBusController#removeEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
     @Override
@@ -174,6 +176,30 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     }
 
     /**
+     * @param status
+     */
+    protected void fireOnEBusConnectionStatusChange(ConnectionStatus status) {
+
+        if (threadPool == null || threadPool.isTerminated()) {
+            logger.warn("ThreadPool not ready!");
+            return;
+        }
+
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (IEBusConnectorEventListener listener : listeners) {
+                    try {
+                        listener.onConnectionStatusChanged(status);
+                    } catch (Exception e) {
+                        logger.error("Error while firing fireOnEBusConnectionStatusChange events!", e);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
      *
      */
     protected void initThreadPool() {
@@ -210,7 +236,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.IEBusController#isRunning()
      */
     @Override
@@ -265,7 +291,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see de.csdev.ebus.core.IEBusController#setWatchdogTimerTimeout(int)
      */
     @Override
@@ -283,4 +309,13 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         // }
     }
 
+    protected void setConnectionStatus(ConnectionStatus status) {
+        this.connectionStatus = status;
+        fireOnEBusConnectionStatusChange(status);
+    }
+
+    @Override
+    public ConnectionStatus getConnectionStatus() {
+        return this.connectionStatus;
+    }
 }

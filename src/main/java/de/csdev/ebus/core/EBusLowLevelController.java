@@ -111,6 +111,9 @@ public class EBusLowLevelController extends EBusControllerBase {
 
         logger.info("Try to reconnect to eBUS adapter ...");
 
+        // set connection status to connecting
+        setConnectionStatus(ConnectionStatus.CONNECTING);
+
         if (reConnectCounter > 10) {
             reConnectCounter = -1;
             this.interrupt();
@@ -166,6 +169,9 @@ public class EBusLowLevelController extends EBusControllerBase {
 
         try {
             if (!connection.isOpen()) {
+
+                setConnectionStatus(ConnectionStatus.CONNECTING);
+
                 connection.open();
             }
         } catch (IOException e) {
@@ -184,6 +190,9 @@ public class EBusLowLevelController extends EBusControllerBase {
 
                 } else {
 
+                    // the connection is now connected
+                    setConnectionStatus(ConnectionStatus.CONNECTED);
+
                     // read byte from connector
                     read = connection.readBytes(buffer);
 
@@ -200,7 +209,6 @@ public class EBusLowLevelController extends EBusControllerBase {
                         // reset with received data
                         resetWatchdogTimer();
                         reConnectCounter = 0;
-
                     }
                 }
 
@@ -419,6 +427,9 @@ public class EBusLowLevelController extends EBusControllerBase {
         } catch (IOException e) {
             logger.error(e.toString(), e);
         }
+
+        // set connection status to disconnected
+        setConnectionStatus(ConnectionStatus.DISCONNECTED);
     }
 
     @Override
@@ -431,5 +442,10 @@ public class EBusLowLevelController extends EBusControllerBase {
             logger.error("error!", e);
         }
     }
+
+    // @Override
+    // public ConnectionStatus getConnectionStatus() {
+    // return this.connectionStatus;
+    // }
 
 }

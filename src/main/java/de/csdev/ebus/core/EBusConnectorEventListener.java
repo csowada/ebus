@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.core;
 
+import de.csdev.ebus.core.IEBusController.ConnectionStatus;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -42,6 +44,11 @@ public class EBusConnectorEventListener implements IEBusConnectorEventListener {
      */
     @Override
     public void onConnectionException(Exception e) {
+        // noop
+    }
+
+    @Override
+    public void onConnectionStatusChanged(ConnectionStatus status) {
         // noop
     }
 }
