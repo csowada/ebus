@@ -24,6 +24,7 @@ import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeDateTime;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeTime;
 import de.csdev.ebus.utils.EBusDateTime;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -117,4 +118,22 @@ public class DateTimeTest {
         assertEquals(2017, calendar.getCalendar().get(Calendar.YEAR));
     }
 
+    @Test
+    public void test_DateTime_DateNull() throws EBusTypeException {
+
+        IEBusType<EBusDateTime> type = types.getType(EBusTypeDateTime.TYPE_DATETIME);
+
+        // decode
+        EBusDateTime calendar = type.decode(EBusUtils.toByteArray("37 10 06 FF FF FF FF"));
+
+        assertFalse(calendar.isAnyTime());
+        assertEquals(37, calendar.getCalendar().get(Calendar.SECOND));
+        assertEquals(10, calendar.getCalendar().get(Calendar.MINUTE));
+        assertEquals(6, calendar.getCalendar().get(Calendar.HOUR_OF_DAY));
+
+        assertTrue(calendar.isAnyDate());
+        assertEquals(1, calendar.getCalendar().get(Calendar.DAY_OF_MONTH));
+        assertEquals(1, calendar.getCalendar().get(Calendar.MONTH) + 1);
+        assertEquals(1970, calendar.getCalendar().get(Calendar.YEAR));
+    }
 }

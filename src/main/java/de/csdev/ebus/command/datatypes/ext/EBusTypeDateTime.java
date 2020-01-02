@@ -10,6 +10,7 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +22,6 @@ import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.utils.EBusDateTime;
-import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -64,6 +64,9 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         byte[] timeData = null;
         byte[] dateData = null;
 
+        boolean anyDate = false;
+        boolean anyTime = false;
+
         if (timeFirst) {
             timeData = Arrays.copyOf(data, timeType.getTypeLength());
             dateData = Arrays.copyOfRange(data, timeData.length, timeData.length + dateType.getTypeLength());
@@ -75,22 +78,32 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         EBusDateTime time = (EBusDateTime) timeType.decode(timeData);
         EBusDateTime date = (EBusDateTime) dateType.decode(dateData);
 
-        if (time == null || date == null) {
-            logger.warn("DateTime Debug: data {}", EBusUtils.toHexDumpString(data));
-            logger.warn("DateTime Debug: variantTime {}", variantTime);
-            logger.warn("DateTime Debug: variantDate {}", variantDate);
-
-            logger.warn("The decoded date and/or time part of datetime is null!");
-            return null;
+        if (time == null) {
+            logger.trace("The decoded time part of datetime is null!");
         }
 
-        Calendar calendar = date.getCalendar();
+        if (date == null) {
+            logger.trace("The decoded date part of datetime is null!");
+        }
 
-        calendar.set(Calendar.HOUR_OF_DAY, time.getCalendar().get(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, time.getCalendar().get(Calendar.MINUTE));
-        calendar.set(Calendar.SECOND, time.getCalendar().get(Calendar.SECOND));
+        Calendar calendar = null;
 
-        return new EBusDateTime(calendar, false, false);
+        if (date == null) {
+            anyDate = true;
+            calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
+        } else {
+            calendar = date.getCalendar();
+        }
+
+        if (time == null) {
+            anyTime = true;
+        } else {
+            calendar.set(Calendar.HOUR_OF_DAY, time.getCalendar().get(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, time.getCalendar().get(Calendar.MINUTE));
+            calendar.set(Calendar.SECOND, time.getCalendar().get(Calendar.SECOND));
+        }
+
+        return new EBusDateTime(calendar, anyDate, anyTime);
     }
 
     @Override
