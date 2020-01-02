@@ -23,6 +23,7 @@ import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusControllerException;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.IEBusController;
+import de.csdev.ebus.core.IEBusController.ConnectionStatus;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -76,6 +77,11 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             return;
         }
 
+        if (controller.getConnectionStatus() != ConnectionStatus.CONNECTED) {
+            logger.info("Skip eBUS scan due to connection issues ...");
+            return;
+        }
+
         logger.info("Start eBUS scan  ...");
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
@@ -96,6 +102,11 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     }
 
     public void startDeviceScan() {
+
+        if (controller.getConnectionStatus() != ConnectionStatus.CONNECTED) {
+            logger.info("Skip eBUS device scan due to connection issues ...");
+            return;
+        }
 
         if (scanRunning) {
             logger.warn("eBUS scan is already running! Skip start ...");
@@ -219,6 +230,11 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
      * @param slaveAddress
      */
     public void sendIdentificationRequest(byte slaveAddress) {
+
+        if (controller.getConnectionStatus() != ConnectionStatus.CONNECTED) {
+            logger.info("Skip eBUS identification due to connection issues ...");
+            return;
+        }
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
