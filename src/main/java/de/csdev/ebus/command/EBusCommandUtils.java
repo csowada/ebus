@@ -316,10 +316,11 @@ public class EBusCommandUtils {
         if (!skipAddressChecks) {
 
             if (commandMethod.getType().equals(Type.BROADCAST)) {
-                targetChecked = EBusConsts.BROADCAST_ADDRESS;
-                logger.warn("Replace target address {} with valid broadcast address FE !",
-                        EBusUtils.toHexDumpString(target));
-
+                if (target != EBusConsts.BROADCAST_ADDRESS) {
+                    targetChecked = EBusConsts.BROADCAST_ADDRESS;
+                    logger.warn("Replace target address {} with valid broadcast address FE !",
+                            EBusUtils.toHexDumpString(target));
+                }
             } else if (commandMethod.getType().equals(Type.MASTER_MASTER)) {
                 if (!EBusUtils.isMasterAddress(target)) {
                     targetChecked = EBusUtils.getMasterAddress(target);
