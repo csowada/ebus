@@ -179,9 +179,6 @@ public class EBusLowLevelController extends EBusControllerBase {
         resetWatchdogTimer();
 
         // loop until interrupt or reconnector count is -1 (to many retries)
-
-        // while (!Thread.currentThread().isInterrupted() || reConnectCounter != -1) {
-
         while (!(this.isInterrupted() || reConnectCounter == -1)) {
             try {
 
@@ -419,6 +416,9 @@ public class EBusLowLevelController extends EBusControllerBase {
 
         logger.info("eBUS connection thread is shuting down ...");
 
+        // set connection status to disconnected
+        setConnectionStatus(ConnectionStatus.DISCONNECTED);
+
         super.dispose();
 
         // *******************************
@@ -435,8 +435,6 @@ public class EBusLowLevelController extends EBusControllerBase {
             logger.error(e.toString(), e);
         }
 
-        // set connection status to disconnected
-        setConnectionStatus(ConnectionStatus.DISCONNECTED);
     }
 
     @Override

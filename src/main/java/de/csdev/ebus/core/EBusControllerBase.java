@@ -233,18 +233,26 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         // shutdown threadpool
         if (threadPool != null && !threadPool.isShutdown()) {
             threadPool.shutdownNow();
-            try {
-                // wait up to 10sec. for the thread pool
-                threadPool.awaitTermination(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-            }
         }
 
         if (threadPoolWDT != null && !threadPoolWDT.isShutdown()) {
             threadPoolWDT.shutdownNow();
+        }
+
+        if (threadPool != null) {
+            try {
+                // wait up to 10sec. for the thread pool
+                threadPool.awaitTermination(10, TimeUnit.SECONDS);
+                threadPool = null;
+            } catch (InterruptedException e) {
+            }
+        }
+
+        if (threadPoolWDT != null) {
             try {
                 // wait up to 10sec. for the thread pool
                 threadPoolWDT.awaitTermination(10, TimeUnit.SECONDS);
+                threadPoolWDT = null;
             } catch (InterruptedException e) {
             }
         }
@@ -276,23 +284,11 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     }
 
     protected void resetWatchdogTimer() {
-
-        // logger.info("wdt runn ...");
-
         Runnable r = new Runnable() {
-
             @Override
             public void run() {
                 EBusControllerBase.this.fireWatchDogTimer();
-                // EBusControllerBase.logger.warn("eBUS Watchdog Timer!");
-                //
-                // try {
-                // EBusControllerBase.this.connection.close();
-                // } catch (IOException e) {
-                // logger.error("error!", e);
-                // }
             }
-
         };
 
         if (watchdogTimer != null && !watchdogTimer.isCancelled()) {
@@ -315,15 +311,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         watchdogTimerTimeout = seconds;
     }
 
-    protected void fireWatchDogTimer() {
-        // EBusControllerBase.logger.warn("eBUS Watchdog Timer!");
-        //
-        // try {
-        // EBusControllerBase.this.connection.close();
-        // } catch (IOException e) {
-        // logger.error("error!", e);
-        // }
-    }
+    protected abstract void fireWatchDogTimer();
 
     protected void setConnectionStatus(ConnectionStatus status) {
         this.connectionStatus = status;
