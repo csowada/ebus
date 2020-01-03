@@ -1,3 +1,20 @@
+## 1.0.1 (2020-01-03)
+
+Features:
+
+  - add more details on connection errors
+  - add more details on parser errors
+  - add connection status incl. listeners to controllers
+
+Bugfixes:
+
+  - fix thread interrupt handling
+  - allow null values for date and/or time for "datetime" type
+  - fix wrong replace broadcast message on building a telegram
+  - block table services if connection is not established
+  - add slave length to command match function to only process expected slave answer
+
+
 ## 1.0.0 (2019-12-28)
 
 Just a new label for the Alpha 0.9.22 release
