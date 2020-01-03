@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
+import de.csdev.ebus.command.IEBusCommandMethod.Type;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 
@@ -253,6 +254,20 @@ public class EBusCommandRegistry {
                     }
                 }
                 if (i == mask.limit() - 1) {
+
+                    // add additional check for master-slave telegrams
+                    if (command.getType() == Type.MASTER_SLAVE) {
+
+                        int computedSlaveLen = EBusCommandUtils.getSlaveDataLength(command);
+                        int slaveLenPos = masterTelegram.limit() + 1;
+                        int slaveLen = data.get(slaveLenPos);
+
+                        if (slaveLen != computedSlaveLen) {
+                            return false;
+                        }
+
+                    }
+
                     return true;
                 }
             }

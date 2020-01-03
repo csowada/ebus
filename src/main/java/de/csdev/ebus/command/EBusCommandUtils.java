@@ -503,4 +503,20 @@ public class EBusCommandUtils {
         return buf;
     }
 
+    /**
+     *
+     * @param command
+     * @return
+     */
+    public static int getSlaveDataLength(IEBusCommandMethod command) {
+        if (command.getType() == Type.MASTER_SLAVE) {
+            int len = 0;
+            for (IEBusValue value : command.getSlaveTypes()) {
+                len += value.getType().getTypeLength();
+            }
+            return len;
+        }
+
+        return -1;
+    }
 }
