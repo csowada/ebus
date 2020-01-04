@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.utils.CollectionUtils;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -200,6 +201,11 @@ public class EBusCommandValue implements IEBusValue {
 
     @Override
     public String toString() {
+
+        // byte hex string for byte[]
+        Object defaultValueMod = (defaultValue instanceof byte[]) ? EBusUtils.toHexDumpString((byte[]) defaultValue)
+                : defaultValue;
+
         return "EBusCommandValue [" + (name != null ? "name=" + name + ", " : "")
                 + (label != null ? "label=" + label + ", " : "") + (type != null ? "type=" + type + ", " : "")
                 + (min != null ? "min=" + min + ", " : "") + (max != null ? "max=" + max + ", " : "")
@@ -207,7 +213,7 @@ public class EBusCommandValue implements IEBusValue {
                 + (mapping != null ? "mapping=" + mapping + ", " : "")
                 + (properties != null ? "properties=" + properties + ", " : "")
                 + (step != null ? "step=" + step + ", " : "") + (format != null ? "format=" + format + ", " : "")
-                + (defaultValue != null ? "defaultValue=" + defaultValue : "") + "]";
+                + (defaultValueMod != null ? "defaultValue=" + defaultValueMod : "") + "]";
     }
 
 }
