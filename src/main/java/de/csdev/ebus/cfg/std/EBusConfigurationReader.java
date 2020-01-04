@@ -303,7 +303,11 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             collectionId = commandMethod.getParent().getParentCollection().getId();
         }
 
-        if (typeStr.equals("template-block")) {
+        if (StringUtils.isEmpty(typeStr)) {
+            throw new EBusConfigurationReaderException("Property 'type' is missing for command ! {0}",
+                    commandMethod.getParent());
+
+        } else if (typeStr.equals("template-block")) {
 
             Collection<EBusCommandValue> templateCollection = null;
 
