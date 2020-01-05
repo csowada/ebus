@@ -27,6 +27,9 @@ public class EBusLowLevelController extends EBusControllerBase {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusLowLevelController.class);
 
+    private static final boolean DIRECT_MODE = true; // Boolean.getBoolean((System.getProperty("ebus.direct.mode",
+                                                     // "false")));
+
     protected IEBusConnection connection;
 
     /** counts the re-connection tries */
@@ -85,7 +88,7 @@ public class EBusLowLevelController extends EBusControllerBase {
 
             // afterwards check for next sending slot
             try {
-                queue.checkSendStatus();
+                queue.checkSendStatus(false);
             } catch (EBusDataException e) {
                 fireOnEBusDataException(e, e.getSendId());
             }
@@ -342,6 +345,12 @@ public class EBusLowLevelController extends EBusControllerBase {
 
                 logger.trace("Send {}", EBusUtils.toHexDumpString(b0));
                 connection.writeByte(b0);
+
+                // read every byte immediately
+                if (DIRECT_MODE) {
+                    byte b1 = (byte) (connection.readByte(true) & 0xFF);
+                    sendMachine.update(b1);
+                }
             }
 
             // start of transfer successful
@@ -350,10 +359,12 @@ public class EBusLowLevelController extends EBusControllerBase {
             queue.setLastSendCollisionDetected(false);
             queue.setBlockNextSend(false);
 
-            // read all send bytes from input buffer
-            for (int i = 0; i < dataOutputBuffers.length - 1; i++) {
-                byte b0 = (byte) (connection.readByte(true) & 0xFF);
-                sendMachine.update(b0);
+            // read all send bytes from input buffer, if DIRECT_MODE is disabled
+            if (!DIRECT_MODE) {
+                for (int i = 0; i < dataOutputBuffers.length - 1; i++) {
+                    byte b0 = (byte) (connection.readByte(true) & 0xFF);
+                    sendMachine.update(b0);
+                }
             }
 
             // read slave data if this is a master/slave telegram
