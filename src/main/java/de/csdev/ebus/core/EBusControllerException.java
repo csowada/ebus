@@ -21,4 +21,20 @@ public class EBusControllerException extends Exception {
      */
     private static final long serialVersionUID = 1L;
 
+    public EBusControllerException() {
+        super();
+    }
+
+    public EBusControllerException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public EBusControllerException(String message) {
+        super(message);
+    }
+
+    public EBusControllerException(Throwable cause) {
+        super(cause);
+    }
+
 }
