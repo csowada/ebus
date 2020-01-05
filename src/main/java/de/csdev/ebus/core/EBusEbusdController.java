@@ -88,19 +88,25 @@ public class EBusEbusdController extends EBusControllerBase {
                     EBusQueue queue = EBusEbusdController.this.queue;
 
                     if (queue != null) {
-                        queue.checkSendStatus();
 
                         QueueEntry queueEntry = queue.getCurrent();
 
                         if (queueEntry != null) {
+
+                            // count as send attempt
+                            queueEntry.sendAttempts++;
 
                             writer.write(buildEbusdSendString(queueEntry.buffer) + "\n");
                             writer.flush();
 
                             // remove this entry from queue
                             queue.resetSendQueue();
+
                         }
                     }
+
+                    // prepare next entry
+                    queue.checkSendStatus(true);
 
                     Thread.sleep(100);
 

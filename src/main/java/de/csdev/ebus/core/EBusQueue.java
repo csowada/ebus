@@ -65,22 +65,24 @@ public class EBusQueue {
         return outputQueue.isEmpty();
     }
 
-    public void checkSendStatus() throws EBusDataException {
+    public void checkSendStatus(boolean skipLockCounter) throws EBusDataException {
 
-        if (lockCounter > 0) {
-            lockCounter--;
+        if (!skipLockCounter) {
+            if (lockCounter > 0) {
+                lockCounter--;
+            }
+
+            // counter not zero, it's not allowed to send yet
+            if (lockCounter > 0) {
+                logger.trace("No access to eBUS because the lock counter ...");
+                return;
+            }
         }
 
         // blocked for this send slot because a collision
         if (blockNextSend) {
             logger.trace("Sender was blocked for this SYN ...");
             blockNextSend = false;
-            return;
-        }
-
-        // counter not zero, it's not allowed to send yet
-        if (lockCounter > 0) {
-            logger.trace("No access to eBUS because the lock counter ...");
             return;
         }
 
