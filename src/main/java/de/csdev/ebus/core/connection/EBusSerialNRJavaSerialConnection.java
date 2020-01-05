@@ -58,9 +58,9 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
                 serialPort.setSerialPortParams(2400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE);
 
-                // set timeout 10 sec.
-                serialPort.disableReceiveThreshold();
-                serialPort.enableReceiveTimeout(10000);
+                serialPort.setLowLatency();
+                serialPort.setOutputBufferSize(1);
+                serialPort.setInputBufferSize(1);
 
                 // use event to let readByte wait until data is available, optimize cpu usage
                 serialPort.addEventListener(new SerialPortEventListener() {
