@@ -53,8 +53,8 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      */
     @Override
     public Integer addToSendQueue(byte[] buffer, int maxAttemps) throws EBusControllerException {
-        if (!isRunning()) {
-            throw new EBusControllerException();
+        if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
+            throw new EBusControllerException("Controller not connected, unable to add telegrams to send queue!");
         }
         return queue.addToSendQueue(buffer, maxAttemps);
     }
@@ -66,8 +66,8 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      */
     @Override
     public Integer addToSendQueue(byte[] buffer) throws EBusControllerException {
-        if (!isRunning()) {
-            throw new EBusControllerException();
+        if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
+            throw new EBusControllerException("Controller not connected, unable to add telegrams to send queue!");
         }
         return queue.addToSendQueue(buffer);
     }
