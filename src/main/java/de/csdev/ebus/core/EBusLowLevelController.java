@@ -175,8 +175,8 @@ public class EBusLowLevelController extends EBusControllerBase {
                 connection.open();
             }
         } catch (IOException e) {
-            fireOnConnectionException(e);
             logger.error("error!", e);
+            fireOnConnectionException(e);
         }
 
         resetWatchdogTimer();

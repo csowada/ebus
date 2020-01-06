@@ -58,7 +58,13 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
                 serialPort.setSerialPortParams(2400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE);
 
-                serialPort.setLowLatency();
+                // serialPort.disableReceiveThreshold();
+                // serialPort.enableReceiveTimeout(10000);
+
+                // not working with Linux (ArchLinux on ARM7), simply stops here
+                // serialPort.setLowLatency();
+
+                // set buffers to 1 for low latency
                 serialPort.setOutputBufferSize(1);
                 serialPort.setInputBufferSize(1);
 
