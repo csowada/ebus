@@ -263,6 +263,8 @@ public class EBusCommandRegistry {
                         int slaveLen = data.get(slaveLenPos);
 
                         if (slaveLen != computedSlaveLen) {
+                            logger.trace("Skip matching command due to invalid response data length ... [{}]",
+                                    command.getParent());
                             return false;
                         }
 
