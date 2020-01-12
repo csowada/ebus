@@ -73,16 +73,16 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     public void inquiryDeviceExistence() {
 
         if (scanQueueId != -1) {
-            logger.warn("Inquiry is still in progress ...");
+            logger.debug("Inquiry is still in progress ...");
             return;
         }
 
         if (controller.getConnectionStatus() != ConnectionStatus.CONNECTED) {
-            logger.info("Skip eBUS scan due to connection issues ...");
+            logger.debug("Skip eBUS scan due to connection issues ...");
             return;
         }
 
-        logger.info("Start eBUS scan  ...");
+        logger.debug("Start eBUS scan  ...");
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
@@ -104,17 +104,17 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     public void startDeviceScan() {
 
         if (controller.getConnectionStatus() != ConnectionStatus.CONNECTED) {
-            logger.info("Skip eBUS device scan due to connection issues ...");
+            logger.debug("Skip eBUS device scan due to connection issues ...");
             return;
         }
 
         if (scanRunning) {
-            logger.warn("eBUS scan is already running! Skip start ...");
+            logger.debug("eBUS scan is already running! Skip start ...");
             return;
         }
 
         if (scanQueueId != -1) {
-            logger.warn("Inquiry is still in progress ...");
+            logger.debug("Inquiry is still in progress ...");
             return;
         }
 
@@ -127,7 +127,6 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     }
 
     public void stopDeviceScan() {
-        // scanEnabled = false;
         scanRunning = false;
     }
 
@@ -143,7 +142,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             scanSlaveAddress = addr;
         }
 
-        logger.info("Scan address {} ...", EBusUtils.toHexDumpString(scanSlaveAddress));
+        logger.debug("Scan address {} ...", EBusUtils.toHexDumpString(scanSlaveAddress));
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
@@ -165,25 +164,6 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
         return false;
     }
-
-    // private void scanDevice(byte slaveAddress) {
-    //
-    // logger.info("Scann address {} ...", EBusUtils.toHexDumpString(slaveAddress));
-    //
-    // byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
-    //
-    // IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
-    // EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
-    //
-    // try {
-    // ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
-    //
-    // scanQueueId = controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
-    // } catch (EBusTypeException e) {
-    // logger.error("error!", e);
-    // }
-    //
-    // }
 
     private Byte nextSlaveAddress(byte slaveAddress) {
 
@@ -232,7 +212,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     public void sendIdentificationRequest(byte slaveAddress) {
 
         if (controller.getConnectionStatus() != ConnectionStatus.CONNECTED) {
-            logger.info("Skip eBUS identification due to connection issues ...");
+            logger.debug("Skip eBUS identification due to connection issues ...");
             return;
         }
 
@@ -281,7 +261,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
             } else {
                 // inquiry
-                logger.warn("Scan broadcast has been send out!");
+                logger.debug("Scan broadcast has been send out!");
 
             }
 
@@ -305,7 +285,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
                 }
 
             } else {
-                logger.warn("Scan broadcast failed!");
+                logger.debug("Scan broadcast failed!");
             }
 
             scanQueueId = -1;
@@ -346,7 +326,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     public void onEBusDeviceUpdate(IEBusDeviceTableListener.TYPE type, IEBusDevice device) {
 
         if (!type.equals(TYPE.UPDATE_ACTIVITY)) {
-            logger.info("DATA TABLE UPDATE {}", device);
+            logger.debug("DATA TABLE UPDATE {}", device);
         }
 
         // identify new devices
