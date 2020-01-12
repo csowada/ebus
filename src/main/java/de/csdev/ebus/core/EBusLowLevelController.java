@@ -27,9 +27,6 @@ public class EBusLowLevelController extends EBusControllerBase {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusLowLevelController.class);
 
-    private static final boolean DIRECT_MODE = true; // Boolean.getBoolean((System.getProperty("ebus.direct.mode",
-                                                     // "false")));
-
     protected IEBusConnection connection;
 
     /** counts the re-connection tries */
@@ -303,13 +300,18 @@ public class EBusLowLevelController extends EBusControllerBase {
 
             readByte = (byte) (connection.readByte(true) & 0xFF);
 
-            // clacule send receive roundtrip time in ns
+            // calculate send receive roundtrip time in ns
             sendRoundTrip = System.nanoTime() - startTime;
 
             // update the state machine
             sendMachine.update(readByte);
 
-            if (b != readByte) {
+            if (readByte == -1) {
+                logger.warn("End of stream reached for first byte. Stop sending attempt ...");
+                queue.setBlockNextSend(true);
+                return;
+
+            } else if (b != readByte) {
 
                 // written and read byte not identical, that's
                 // a collision
@@ -343,14 +345,29 @@ public class EBusLowLevelController extends EBusControllerBase {
             for (int i = 1; i < dataOutputBuffers.length; i++) {
                 byte b0 = dataOutputBuffers[i];
 
-                logger.trace("Send {}", EBusUtils.toHexDumpString(b0));
                 connection.writeByte(b0);
 
                 // read every byte immediately
-                if (DIRECT_MODE) {
-                    byte b1 = (byte) (connection.readByte(true) & 0xFF);
-                    sendMachine.update(b1);
+                byte b1 = (byte) (connection.readByte(true) & 0xFF);
+
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Send 0x{} -> Received 0x{}", EBusUtils.toHexDumpString(b0),
+                            EBusUtils.toHexDumpString(b1));
                 }
+
+                if (b1 == -1) {
+                    logger.warn("End of stream reached. Stop sending attempt ...");
+                    queue.setBlockNextSend(true);
+                    return;
+
+                } else if (b0 != b1) {
+                    logger.warn("Received byte 0x{} is not equal to send byte 0x{}! Stop send attempt ...",
+                            EBusUtils.toHexDumpString(b1), EBusUtils.toHexDumpString(b0));
+                    queue.setBlockNextSend(true);
+                    return;
+                }
+
+                sendMachine.update(b1);
             }
 
             // start of transfer successful
@@ -358,14 +375,6 @@ public class EBusLowLevelController extends EBusControllerBase {
             // reset global variables
             queue.setLastSendCollisionDetected(false);
             queue.setBlockNextSend(false);
-
-            // read all send bytes from input buffer, if DIRECT_MODE is disabled
-            if (!DIRECT_MODE) {
-                for (int i = 0; i < dataOutputBuffers.length - 1; i++) {
-                    byte b0 = (byte) (connection.readByte(true) & 0xFF);
-                    sendMachine.update(b0);
-                }
-            }
 
             // read slave data if this is a master/slave telegram
             if (sendMachine.isWaitingForSlaveAnswer()) {
@@ -409,9 +418,6 @@ public class EBusLowLevelController extends EBusControllerBase {
             queue.resetSendQueue();
 
         } catch (EBusDataException e) {
-
-            // logger.error(e.getLocalizedMessage());
-
             this.fireOnEBusDataException(e, sendEntry.id);
 
             if (e.getErrorCode().equals(EBusDataException.EBusError.SLAVE_ACK_FAIL)) {
@@ -458,5 +464,4 @@ public class EBusLowLevelController extends EBusControllerBase {
             logger.error("error!", e);
         }
     }
-
 }
