@@ -1,3 +1,17 @@
+## 1.0.2 (2020-01-12)
+
+Features:
+
+  - check every send byte for LowLevelController
+  - enhance error and parsing logging
+  - enhance queue for ebusd controller
+  - adjust NRJavaSerial driver for low latency
+
+Bugfixes:
+
+  - block send queue while controller is not connected
+  - reduce Device Table Service log messages
+  
 ## 1.0.1 (2020-01-03)
 
 Features:
