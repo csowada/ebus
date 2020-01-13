@@ -254,6 +254,11 @@ public class EBusLowLevelController extends EBusControllerBase {
             return;
         }
 
+        if (!connection.isReceiveBufferEmpty()) {
+            logger.trace("Receive buffer still not empty, skip ...");
+            return;
+        }
+
         QueueEntry sendEntry = queue.getCurrent();
 
         if (sendEntry == null) {
@@ -297,8 +302,8 @@ public class EBusLowLevelController extends EBusControllerBase {
             long startTime = System.nanoTime();
 
             connection.writeByte(b);
-
-            readByte = (byte) (connection.readByte(true) & 0xFF);
+            read = connection.readByte(true);
+            readByte = (byte) (read & 0xFF);
 
             // calculate send receive roundtrip time in ns
             sendRoundTrip = System.nanoTime() - startTime;
@@ -306,7 +311,7 @@ public class EBusLowLevelController extends EBusControllerBase {
             // update the state machine
             sendMachine.update(readByte);
 
-            if (readByte == -1) {
+            if (read == -1) {
                 logger.warn("End of stream reached for first byte. Stop sending attempt ...");
                 queue.setBlockNextSend(true);
                 return;
@@ -342,20 +347,29 @@ public class EBusLowLevelController extends EBusControllerBase {
             }
 
             // send rest of the buffer
+            // time critical - no time to read !!!
             for (int i = 1; i < dataOutputBuffers.length; i++) {
+                connection.writeByte(dataOutputBuffers[i]);
+            }
+
+            // master data transfer successful
+
+            // reset global variables
+            queue.setLastSendCollisionDetected(false);
+            queue.setBlockNextSend(false);
+
+            // nor read the written data from buffer
+            for (int i = 1; i < dataOutputBuffers.length; i++) {
+                read = connection.readByte(true);
                 byte b0 = dataOutputBuffers[i];
-
-                connection.writeByte(b0);
-
-                // read every byte immediately
-                byte b1 = (byte) (connection.readByte(true) & 0xFF);
+                byte b1 = (byte) (read & 0xFF);
 
                 if (logger.isTraceEnabled()) {
                     logger.trace("Send 0x{} -> Received 0x{}", EBusUtils.toHexDumpString(b0),
                             EBusUtils.toHexDumpString(b1));
                 }
 
-                if (b1 == -1) {
+                if (read == -1) {
                     logger.warn("End of stream reached. Stop sending attempt ...");
                     queue.setBlockNextSend(true);
                     return;
@@ -370,12 +384,6 @@ public class EBusLowLevelController extends EBusControllerBase {
                 sendMachine.update(b1);
             }
 
-            // start of transfer successful
-
-            // reset global variables
-            queue.setLastSendCollisionDetected(false);
-            queue.setBlockNextSend(false);
-
             // read slave data if this is a master/slave telegram
             if (sendMachine.isWaitingForSlaveAnswer()) {
                 logger.trace("Waiting for slave answer ...");
@@ -384,7 +392,6 @@ public class EBusLowLevelController extends EBusControllerBase {
                 while (!sendMachine.isWaitingForMasterACK() && !sendMachine.isWaitingForMasterSYN()) {
                     read = connection.readByte(true);
                     if (read != -1) {
-
                         byte ack = (byte) (read & 0xFF);
                         sendMachine.update(ack);
                     }
