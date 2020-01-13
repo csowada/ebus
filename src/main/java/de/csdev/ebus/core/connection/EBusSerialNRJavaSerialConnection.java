@@ -58,10 +58,13 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
                 serialPort.setSerialPortParams(2400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE);
 
-                serialPort.disableReceiveFraming();
-                serialPort.disableReceiveTimeout();
+                // serialPort.disableReceiveFraming();
+                // serialPort.enableReceiveThreshold(1);
+                // serialPort.disableReceiveTimeout();
+                // serialPort.enableReceiveTimeout(0);
+
                 serialPort.enableReceiveThreshold(1);
-                serialPort.enableReceiveTimeout(10000);
+                serialPort.disableReceiveTimeout();
 
                 // serialPort.disableReceiveThreshold();
                 // serialPort.enableReceiveTimeout(10000);
@@ -72,6 +75,14 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
                 // set buffers to 1 for low latency
                 serialPort.setOutputBufferSize(1);
                 serialPort.setInputBufferSize(50);
+
+                outputStream = serialPort.getOutputStream();
+                inputStream = serialPort.getInputStream();
+
+                outputStream.flush();
+                if (inputStream.markSupported()) {
+                    inputStream.reset();
+                }
 
                 // use event to let readByte wait until data is available, optimize cpu usage
                 serialPort.addEventListener(new SerialPortEventListener() {
@@ -86,9 +97,6 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
                 });
 
                 serialPort.notifyOnDataAvailable(true);
-
-                outputStream = serialPort.getOutputStream();
-                inputStream = serialPort.getInputStream();
 
                 return true;
             }
@@ -128,12 +136,26 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
             public void run() {
 
                 IOUtils.closeQuietly(inputStream);
-                IOUtils.closeQuietly(outputStream);
+
+                if (outputStream != null) {
+                    try {
+                        outputStream.flush();
+                    } catch (IOException e) {
+                    }
+                    IOUtils.closeQuietly(outputStream);
+                }
 
                 if (serialPort != null) {
+
+                    serialPort.notifyOnDataAvailable(false);
+                    serialPort.removeEventListener();
+
                     serialPort.close();
                     serialPort = null;
                 }
+
+                inputStream = null;
+                outputStream = null;
             }
         }, "eBUS serial shutdown thread");
 
@@ -156,6 +178,14 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
     @Override
     public int readByte(boolean lowLatency) throws IOException {
         if (lowLatency) {
+
+            // while (true) {
+            // int read = inputStream.read();
+            // if (read != -1) {
+            // return read;
+            // }
+            // }
+
             return inputStream.read();
         } else {
             if (inputStream.available() > 0) {
