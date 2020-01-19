@@ -50,6 +50,7 @@ import de.csdev.ebus.command.IEBusCommandMethod.Method;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -216,6 +217,11 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         if (commandElement.getTemplate() != null) {
             for (EBusValueDTO template : commandElement.getTemplate()) {
                 for (EBusCommandValue templateCfg : parseValueConfiguration(template, null, null)) {
+                    if (StringUtils.isEmpty(templateCfg.getName())) {
+                        logger.warn("Template block value without a name {}.{}", commandCollection.getId(),
+                                commandElement.getId());
+                    }
+
                     templateMap.put(templateCfg.getName(), templateCfg);
                 }
             }
@@ -282,6 +288,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                     commandMethod.setType(IEBusCommandMethod.Type.MASTER_MASTER);
 
                 } else if (method == Method.BROADCAST) {
+                    commandMethod.setDestinationAddress(EBusConsts.BROADCAST_ADDRESS);
                     commandMethod.setType(IEBusCommandMethod.Type.BROADCAST);
 
                 } else {
