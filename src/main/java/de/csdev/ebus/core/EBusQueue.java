@@ -42,7 +42,18 @@ public class EBusQueue {
     private int lockCounter = 0;
 
     /** next send try is blocked */
-    private boolean blockNextSend;
+    private boolean blockNextSend = false;
+
+    /** complete block sending */
+    private boolean blockSend = false;
+
+    public boolean isBlockSend() {
+        return blockSend;
+    }
+
+    public void setBlockSend(boolean blockSend) {
+        this.blockSend = blockSend;
+    }
 
     private Random random = new Random();
 
@@ -162,6 +173,7 @@ public class EBusQueue {
         // reset global variables
         lastSendCollisionDetected = false;
         blockNextSend = false;
+        blockSend = false;
 
         // remove entry from sending queue
         sendEntry = null;
