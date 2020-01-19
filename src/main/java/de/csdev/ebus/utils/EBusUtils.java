@@ -197,6 +197,16 @@ public class EBusUtils {
     }
 
     /**
+     * Check if the address is a valid slave address.
+     * 
+     * @param address
+     * @return
+     */
+    public static boolean isSlaveAddress(byte address) {
+        return address == EBusConsts.BROADCAST_ADDRESS ? false : !isMasterAddress(address);
+    }
+
+    /**
      * Check if the address is in general valid
      *
      * @param address

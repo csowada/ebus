@@ -38,6 +38,26 @@ public class EBusCommandUtils {
     private final static Logger logger = LoggerFactory.getLogger(EBusCommandUtils.class);
 
     /**
+     * Returns a full unique id to a method
+     *
+     * @param commandMethod
+     * @return
+     */
+    public static String getFullId(IEBusCommandMethod commandMethod) {
+        return getFullId(commandMethod.getParent()) + ":" + commandMethod.getMethod();
+    }
+
+    /**
+     * Returns a full unique id to a command
+     * 
+     * @param command
+     * @return
+     */
+    public static String getFullId(IEBusCommand command) {
+        return command.getParentCollection().getId() + "." + command.getId();
+    }
+
+    /**
      * @param data
      * @return
      * @throws EBusDataException

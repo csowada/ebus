@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
 import de.csdev.ebus.command.IEBusCommandMethod.Type;
-import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -258,13 +258,25 @@ public class EBusCommandRegistry {
                     // add additional check for master-slave telegrams
                     if (command.getType() == Type.MASTER_SLAVE) {
 
+                        if (!EBusUtils.isSlaveAddress(data.get(1))) {
+                            logger.warn(
+                                    "Data for matching command configuration \"{}\" is not a master-slave telegram as expected!",
+                                    EBusCommandUtils.getFullId(command));
+                            logger.warn("DATA: {}", EBusUtils.toHexDumpString(data));
+                            return false;
+                        }
+
                         int computedSlaveLen = EBusCommandUtils.getSlaveDataLength(command);
                         int slaveLenPos = masterTelegram.limit() + 1;
                         int slaveLen = data.get(slaveLenPos);
 
                         if (slaveLen != computedSlaveLen) {
-                            logger.trace("Skip matching command due to invalid response data length ... [{}]",
-                                    command.getParent());
+                            if (logger.isTraceEnabled()) {
+                                logger.trace("Skip matching command due to invalid response data length ... [{}]",
+                                        EBusCommandUtils.getFullId(command));
+                                logger.trace("DATA: {}", EBusUtils.toHexDumpString(data));
+                            }
+
                             return false;
                         }
 
@@ -273,7 +285,11 @@ public class EBusCommandRegistry {
                     return true;
                 }
             }
-        } catch (EBusTypeException e) {
+            // } catch (EBusTypeException e) {
+            // logger.error("error!", e);
+        } catch (Exception e) {
+            logger.error("DATA: {}", EBusUtils.toHexDumpString(data));
+            logger.error("CMD : {}", command.getParent().getParentCollection().getId(), command.getParent().getId());
             logger.error("error!", e);
         }
 
