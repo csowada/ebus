@@ -511,8 +511,12 @@ public class EBusCommandUtils {
     public static int getSlaveDataLength(IEBusCommandMethod command) {
         if (command.getType() == Type.MASTER_SLAVE) {
             int len = 0;
-            for (IEBusValue value : command.getSlaveTypes()) {
-                len += value.getType().getTypeLength();
+            if (command.getSlaveTypes() != null) {
+                for (IEBusValue value : command.getSlaveTypes()) {
+                    if (value.getType() != null) {
+                        len += value.getType().getTypeLength();
+                    }
+                }
             }
             return len;
         }
