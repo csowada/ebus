@@ -46,6 +46,7 @@ import de.csdev.ebus.command.EBusCommandNestedValue;
 import de.csdev.ebus.command.EBusCommandValue;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.IEBusCommandMethod.Method;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
@@ -274,6 +275,17 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                             commandMethod.addSlaveValue(ev);
                         }
                     }
+                }
+
+                // default type is always master-slave if not explicit set or a broadcast
+                if (StringUtils.equals(commandMethodElement.getType(), "master-master")) {
+                    commandMethod.setType(IEBusCommandMethod.Type.MASTER_MASTER);
+
+                } else if (method == Method.BROADCAST) {
+                    commandMethod.setType(IEBusCommandMethod.Type.BROADCAST);
+
+                } else {
+                    commandMethod.setType(IEBusCommandMethod.Type.MASTER_SLAVE);
                 }
 
             }

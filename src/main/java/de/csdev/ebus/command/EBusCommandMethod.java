@@ -36,6 +36,8 @@ public class EBusCommandMethod implements IEBusCommandMethod {
 
     private ByteBuffer telegramMask;
 
+    private Type type;
+
     public EBusCommandMethod(EBusCommand parent, IEBusCommandMethod.Method method) {
         this.parent = parent;
         this.method = method;
@@ -53,7 +55,9 @@ public class EBusCommandMethod implements IEBusCommandMethod {
             masterTypes = new ArrayList<IEBusValue>();
         }
 
-        masterTypes.add(value);
+        if (value != null) {
+            masterTypes.add(value);
+        }
 
         return this;
     }
@@ -68,7 +72,10 @@ public class EBusCommandMethod implements IEBusCommandMethod {
             slaveTypes = new ArrayList<IEBusValue>();
         }
 
-        slaveTypes.add(value);
+        if (value != null) {
+            slaveTypes.add(value);
+        }
+
         return this;
     }
 
@@ -161,15 +168,15 @@ public class EBusCommandMethod implements IEBusCommandMethod {
     @Override
     public Type getType() {
 
+        if (type != null) {
+            return type;
+        }
+
         if (method.equals(Method.BROADCAST)) {
             return Type.BROADCAST;
         }
 
-        if (slaveTypes != null && !slaveTypes.isEmpty()) {
-            return Type.MASTER_SLAVE;
-        }
-
-        return Type.MASTER_MASTER;
+        return Type.MASTER_SLAVE;
     }
 
     public EBusCommandMethod setCommand(byte[] command) {
@@ -193,6 +200,10 @@ public class EBusCommandMethod implements IEBusCommandMethod {
         this.sourceAddress = sourceAddress;
     }
 
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
 
@@ -213,6 +224,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
         sb.append("slaveTypes=" + slaveTypes + ", ");
 
         sb.append("method=" + method);
+        sb.append("type=" + type);
         sb.append("]");
 
         return sb.toString();
