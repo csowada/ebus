@@ -268,16 +268,21 @@ public class EBusCommandRegistry {
 
                         int computedSlaveLen = EBusCommandUtils.getSlaveDataLength(command);
                         int slaveLenPos = masterTelegram.limit() + 1;
-                        int slaveLen = data.get(slaveLenPos);
 
-                        if (slaveLen != computedSlaveLen) {
-                            if (logger.isTraceEnabled()) {
-                                logger.trace("Skip matching command due to invalid response data length ... [{}]",
-                                        EBusCommandUtils.getFullId(command));
-                                logger.trace("DATA: {}", EBusUtils.toHexDumpString(data));
+                        // only check if the slave part is included in the data bytes
+                        if (slaveLenPos <= data.limit()) {
+
+                            int slaveLen = data.get(slaveLenPos);
+
+                            if (slaveLen != computedSlaveLen) {
+                                if (logger.isTraceEnabled()) {
+                                    logger.trace("Skip matching command due to invalid response data length ... [{}]",
+                                            EBusCommandUtils.getFullId(command));
+                                    logger.trace("DATA: {}", EBusUtils.toHexDumpString(data));
+                                }
+
+                                return false;
                             }
-
-                            return false;
                         }
 
                     }
