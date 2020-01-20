@@ -76,10 +76,10 @@ Key       | Required | Description
 label     | x        | A label for this command
 id        | x        | A unique identifier within this file
 command   |          | The two byte hex string for the eBUS command
-template  |          | 
-get       |          | 
-set       |          | 
-broadcast |          | 
+template  |          | A template block can be used in all ``get``, ``set`` and broadcast sections
+get       |          | Receive a command from a slave
+set       |          | Send a command to a slave/master
+broadcast |          | A broadcast telegram
 
 
 ### Method block
@@ -92,6 +92,7 @@ broadcast |          |
 
 "get": {
     "command": "FF FF",
+    "type":    "master-master",
     "master": [<value>, <value>, ...],
     "slave": [<value>, <value>, ...]
 },
@@ -110,6 +111,7 @@ broadcast |          | The command configuration for the broadcast method
 master    |          | The value list for master data, see value block below
 slave     |          | The value list for slave data, see value block below
 command   |          | The value list for slave data, see value block below
+type      |          | If the telegram is ``master-master`` telegram, set this value
 
 
 ### Value block
