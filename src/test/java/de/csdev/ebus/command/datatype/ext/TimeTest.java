@@ -287,17 +287,17 @@ public class TimeTest {
         assertEquals(calendar, decode.getCalendar());
     }
 
-    public void test_TimeMinutes8BitX() throws EBusTypeException {
-
-        IEBusType<EBusDateTime> type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT,
-                EBusTypeTime.MINUTES_SHORT, EBusTypeTime.MINUTE_MULTIPLIER, 15, "replaceValue",
-                new byte[] { (byte) 0x90 });
-
-        EBusDateTime decode = type.decode(new byte[] { (byte) 0x90 });
-
-        System.out.println("TimeTest.test_TimeMinutes8BitX()" + decode.getCalendar().getTime());
-
-    }
+    // public void test_TimeMinutes8BitX() throws EBusTypeException {
+    //
+    // IEBusType<EBusDateTime> type = types.getType(EBusTypeTime.TYPE_TIME, IEBusType.VARIANT,
+    // EBusTypeTime.MINUTES_SHORT, EBusTypeTime.MINUTE_MULTIPLIER, 15, "replaceValue",
+    // new byte[] { (byte) 0x90 });
+    //
+    // EBusDateTime decode = type.decode(new byte[] { (byte) 0x90 });
+    //
+    // System.out.println("TimeTest.test_TimeMinutes8BitX()" + decode.getCalendar().getTime());
+    //
+    // }
 
     @Test
     public void test_TimeMinutes8Bit() throws EBusTypeException {

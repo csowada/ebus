@@ -23,7 +23,9 @@ import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.IEBusCommandMethod.Type;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -45,10 +47,14 @@ public class BuildTelegramTest {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
 
                     try {
-                        ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0xFF,
-                                (byte) 0xFF, null);
+                        byte targetAddress = commandChannel.getType() == Type.MASTER_MASTER ? (byte) 0xFF
+                                : commandChannel.getType() == Type.BROADCAST ? EBusConsts.BROADCAST_ADDRESS
+                                        : (byte) 0x04;
 
-                        logger.info(String.format("%-9s| %-40s| %-8s| %s", commandChannel.getMethod(), command.getId(),
+                        ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0xFF,
+                                targetAddress, null);
+
+                        logger.debug(String.format("%-9s| %-40s| %-8s| %s", commandChannel.getMethod(), command.getId(),
                                 collection.getId(), EBusUtils.toHexDumpString(masterTelegram)));
 
                     } catch (EBusTypeException e) {
@@ -73,7 +79,7 @@ public class BuildTelegramTest {
 
                     ByteBuffer mask = commandChannel.getMasterTelegramMask();
 
-                    logger.info(String.format("%-9s| %-40s| %-8s| %s", commandChannel.getMethod(), command.getId(),
+                    logger.debug(String.format("%-9s| %-40s| %-8s| %s", commandChannel.getMethod(), command.getId(),
                             collection.getId(), EBusUtils.toHexDumpString(mask)));
 
                 }

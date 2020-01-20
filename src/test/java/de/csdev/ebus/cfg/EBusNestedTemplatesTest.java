@@ -63,7 +63,7 @@ public class EBusNestedTemplatesTest {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0xFF, null);
             assertNotNull("Unable to compose byte buffer for command", buffer);
 
-            logger.info(EBusUtils.toHexDumpString(buffer).toString());
+            logger.debug(EBusUtils.toHexDumpString(buffer).toString());
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);
@@ -92,7 +92,7 @@ public class EBusNestedTemplatesTest {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0xFF, values);
             assertNotNull("Unable to compose byte buffer for command", buffer);
 
-            logger.info(EBusUtils.toHexDumpString(buffer).toString());
+            logger.debug(EBusUtils.toHexDumpString(buffer).toString());
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);
@@ -121,7 +121,7 @@ public class EBusNestedTemplatesTest {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0xFF, values);
             assertNotNull("Unable to compose byte buffer for command", buffer);
 
-            logger.info(EBusUtils.toHexDumpString(buffer).toString());
+            logger.debug(EBusUtils.toHexDumpString(buffer).toString());
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);

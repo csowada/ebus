@@ -15,6 +15,7 @@
             "id":       "test.nextest-block",
             "command":  "FC FC",
 			"set": {
+			    "type": "master-master",
                 "master": [								
 					{"type": "template-block", "id":"b5.slot1-3"}				
 				]                
@@ -26,6 +27,7 @@
             "id":       "test.tth",
             "command":  "FC FC",
 			"set": {
+			    "type": "master-master",
                 "master": [								
 					{"type": "template", "name": "tth", "id":"vaillant.templ.tth"}				
 				]                
@@ -37,6 +39,7 @@
             "id":       "test.to",
             "command":  "FC FC",
 			"set": {
+			    "type": "master-master",
                 "master": [								
 					{"type": "template-block", "id":"vaillant.to"}				
 				]                

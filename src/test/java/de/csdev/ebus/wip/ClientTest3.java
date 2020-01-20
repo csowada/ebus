@@ -10,8 +10,6 @@ package de.csdev.ebus.wip;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +34,13 @@ public class ClientTest3 {
 
     private IEBusConnection connection;
 
-    @Before
+    // @Before
     public void before() throws IOException, EBusConfigurationReaderException {
         connection = new EBusTCPConnection("openhab", 8881);
         // connection = new EBusUDPConnection("localhost", 8881);
     }
 
-    @Test
+    // @Test
     public void testNoSlaveResponse()
             throws EBusTypeException, IOException, InterruptedException, EBusControllerException {
 

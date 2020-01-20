@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +43,7 @@ public class EBusWolfSM1TelegramTest2XXX {
         client.getDeviceTable().setOwnAddress((byte) 0xFF);
     }
 
-    @Test
+    // @Test
     public void testSolarCommands2() {
 
         IEBusCommand command = client.getConfigurationProvider().getCommandById("vrc430", "controller.date");

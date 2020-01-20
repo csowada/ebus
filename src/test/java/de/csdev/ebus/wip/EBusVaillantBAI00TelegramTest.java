@@ -11,7 +11,6 @@ package de.csdev.ebus.wip;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,7 @@ public class EBusVaillantBAI00TelegramTest {
     EBusTypeRegistry types;
     EBusCommandRegistry commandRegistry;
 
-    @Before
+    // @Before
     public void before() throws IOException, EBusConfigurationReaderException {
 
         types = new EBusTypeRegistry();

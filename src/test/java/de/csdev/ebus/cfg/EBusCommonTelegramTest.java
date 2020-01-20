@@ -49,7 +49,7 @@ public class EBusCommonTelegramTest {
         assertNotNull("Command common.identification not found!", commandMethod);
 
         try {
-            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0xFF, null);
+            ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(commandMethod, (byte) 0x00, (byte) 0x04, null);
             assertNotNull("Unable to compose byte buffer for command", buffer);
 
         } catch (EBusTypeException e) {
