@@ -1,3 +1,19 @@
+## 1.0.3 (2020-01-20)
+
+Features:
+
+  - enhance ebusd controller with version check
+  - update all unit tests
+  - improve NRJavaSerial connector
+  - add a warning if the received data doesn't match to the found config method.
+
+Bugfixes:
+
+  - fix ``FF`` byte issue on sending
+  - add a warning if a template-block element has no name (more a bug workaround!)
+  - revert default telegram type to ``master-slave`` if not specified
+  - harden slave length function, expect no slave data
+  
 ## 1.0.2 (2020-01-12)
 
 Features:
