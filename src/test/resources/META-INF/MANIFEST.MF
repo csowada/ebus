@@ -1,0 +1,70 @@
+Manifest-Version: 1.0
+Bundle-Description: eBUS core library - This library handles the commu
+ nication with heating engineering via the BUS specification. This pro
+ tocol is used by many heating manufacturers in Europe.
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Build-Branch: master
+Bundle-SymbolicName: de.cs-dev.ebus.ebus-core
+Build-Commit: f120405
+Build-Timestamp: 20200121192308
+Build-Number: 198
+Built-By: Christian
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1579634594658
+Bundle-DocURL: http://www.cs-dev.de
+Bundle-Vendor: Christian Sowada
+Import-Package: com.fazecast.jSerialComm;version="2.5";resolution:=opt
+ ional,com.google.gson;version="2.5",com.google.gson.annotations;versi
+ on="2.5",com.google.gson.reflect;version="2.5",de.csdev.ebus.cfg,de.c
+ sdev.ebus.cfg.std,de.csdev.ebus.cfg.std.dto,de.csdev.ebus.client,de.c
+ sdev.ebus.command,de.csdev.ebus.command.datatypes,de.csdev.ebus.comma
+ nd.datatypes.ext,de.csdev.ebus.command.datatypes.std,de.csdev.ebus.co
+ re,de.csdev.ebus.core.connection,de.csdev.ebus.service.device,de.csde
+ v.ebus.service.metrics,de.csdev.ebus.service.parser,de.csdev.ebus.uti
+ ls,gnu.io;version="3.12";resolution:=optional,org.apache.commons.io;v
+ ersion="2.2",org.apache.commons.lang;version="2.6",org.apache.commons
+ .lang.math;version="2.6",org.apache.commons.lang.reflect;version="2.6
+ ",org.slf4j;version="1.7";resolution:=optional
+Tool: Bnd-0.0.238
+Export-Package: de.csdev.ebus.command;uses:="de.csdev.ebus.cfg,org.slf
+ 4j,de.csdev.ebus.utils,de.csdev.ebus.core,de.csdev.ebus.command.datat
+ ypes.ext,de.csdev.ebus.command.datatypes,org.apache.commons.lang",de.
+ csdev.ebus.cfg;uses:="de.csdev.ebus.command,de.csdev.ebus.command.dat
+ atypes",de.csdev.ebus.utils;uses:="de.csdev.ebus.command,org.slf4j,de
+ .csdev.ebus.core,de.csdev.ebus.command.datatypes.std,de.csdev.ebus.se
+ rvice.parser,org.apache.commons.io,de.csdev.ebus.service.metrics,de.c
+ sdev.ebus.service.device,de.csdev.ebus.command.datatypes,org.apache.c
+ ommons.lang",de.csdev.ebus.core;uses:="de.csdev.ebus.command,org.slf4
+ j,de.csdev.ebus.utils,org.apache.commons.io,org.apache.commons.lang.m
+ ath,de.csdev.ebus.core.connection,org.apache.commons.lang",de.csdev.e
+ bus.command.datatypes.std;uses:="org.slf4j,de.csdev.ebus.utils,de.csd
+ ev.ebus.command.datatypes,org.apache.commons.lang",de.csdev.ebus.serv
+ ice.parser;uses:="de.csdev.ebus.command,org.slf4j,de.csdev.ebus.utils
+ ,de.csdev.ebus.core,de.csdev.ebus.command.datatypes",de.csdev.ebus.cf
+ g.std.dto;uses:="org.slf4j,de.csdev.ebus.utils,com.google.gson.annota
+ tions",de.csdev.ebus.core.connection;uses:="gnu.io,org.slf4j,de.csdev
+ .ebus.utils,org.apache.commons.io,com.fazecast.jSerialComm",de.csdev.
+ ebus.command.datatypes.ext;uses:="org.slf4j,de.csdev.ebus.utils,de.cs
+ dev.ebus.command.datatypes.std,de.csdev.ebus.command.datatypes,org.ap
+ ache.commons.lang",de.csdev.ebus.service.metrics;uses:="de.csdev.ebus
+ .command,de.csdev.ebus.core,de.csdev.ebus.service.parser",de.csdev.eb
+ us.service.device;uses:="de.csdev.ebus.command,org.slf4j,de.csdev.ebu
+ s.utils,de.csdev.ebus.core,de.csdev.ebus.service.parser,de.csdev.ebus
+ .command.datatypes,org.apache.commons.lang,com.google.gson,com.google
+ .gson.reflect",de.csdev.ebus.client;uses:="de.csdev.ebus.command,de.c
+ sdev.ebus.service.metrics,org.slf4j,de.csdev.ebus.service.device,de.c
+ sdev.ebus.core,de.csdev.ebus.service.parser,de.csdev.ebus.command.dat
+ atypes",de.csdev.ebus.command.datatypes;uses:="org.slf4j,de.csdev.ebu
+ s.utils,org.apache.commons.lang.reflect,de.csdev.ebus.command.datatyp
+ es.std,org.apache.commons.lang,de.csdev.ebus.command.datatypes.ext",d
+ e.csdev.ebus.cfg.std;uses:="de.csdev.ebus.command,de.csdev.ebus.cfg,o
+ rg.slf4j,de.csdev.ebus.utils,de.csdev.ebus.core,de.csdev.ebus.cfg.std
+ .dto,de.csdev.ebus.command.datatypes.ext,de.csdev.ebus.command.dataty
+ pes,org.apache.commons.lang,com.google.gson,com.google.gson.annotatio
+ ns,com.google.gson.reflect"
+Bundle-Version: 1.0.3
+Bundle-Name: eBUS core library
+Private-Package: commands
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_181
+
