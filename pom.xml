@@ -7,9 +7,18 @@
 	<description>eBUS core library - This library handles the communication with heating engineering via the BUS specification. This protocol is used by many heating manufacturers in Europe.</description>
 	<groupId>de.cs-dev.ebus</groupId>
 	<artifactId>ebus-core</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.4-SNAPSHOT</version>
 	<url>https://github.com/csowada/ebus</url>
 	<packaging>bundle</packaging>
+
+    <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <license.year>2020</license.year>
+        <bundle.version>1.0.4.${maven.build.timestamp}</bundle.version>
+    </properties>
 
 	<organization>
 		<name>Christian Sowada</name>
@@ -44,16 +53,31 @@
 		<tag>HEAD</tag>
 	</scm>
 
-	<properties>
-		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<license.year>2020</license.year>
-	</properties>
-
 	<build>
 		<plugins>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Get the scm revision once for all modules -->
+					<getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+					<!-- Don't fail on modified local resources -->
+					<doCheck>false</doCheck>
+					<!-- Don't update SCM -->
+					<doUpdate>false</doUpdate>
+					<!-- Use short version of git revision -->
+					<shortRevisionLength>7</shortRevisionLength>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -64,10 +88,15 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
-						<Bundle-Version>${project.version}</Bundle-Version>
+						<Bundle-Version>${bundle.version}</Bundle-Version>
 						<Export-Package>de.csdev.ebus.*</Export-Package>
 						<opt>resolution:=optional</opt>
-                        <Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt], *</Import-Package>
+						<Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt], *</Import-Package>
+						
+						<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
+						<Build-Commit>${buildNumber}</Build-Commit>
+						<Build-Branch>${scmBranch}</Build-Branch>
+						<Build-Number>${env.BUILD_NUMBER}</Build-Number>
 					</instructions>
 				</configuration>
 			</plugin>
