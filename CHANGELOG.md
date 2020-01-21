@@ -1,3 +1,13 @@
+## 1.0.4 (2020-01-21)
+
+Features:
+
+   - Add Version class to identify build version, commit etc.
+
+Bugfixes:
+
+   - Use timestamps for Bundle-Version
+
 ## 1.0.3 (2020-01-20)
 
 Features:
