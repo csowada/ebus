@@ -43,6 +43,7 @@ import de.csdev.ebus.command.EBusCommand;
 import de.csdev.ebus.command.EBusCommandCollection;
 import de.csdev.ebus.command.EBusCommandMethod;
 import de.csdev.ebus.command.EBusCommandNestedValue;
+import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.EBusCommandValue;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
@@ -295,6 +296,11 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                     commandMethod.setType(IEBusCommandMethod.Type.MASTER_SLAVE);
                 }
 
+                if(commandMethod.getType() == IEBusCommandMethod.Type.MASTER_SLAVE) {
+                	if(commandMethod.getSlaveTypes() == null) {
+                		logger.debug("Warning: Master-Slave command \"{}\" has no slave configuration defined!", EBusCommandUtils.getFullId(commandMethod));
+                	}
+                }
             }
         }
 

@@ -25,6 +25,7 @@ import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
 import de.csdev.ebus.command.IEBusCommandMethod.Type;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -238,6 +239,15 @@ public class EBusCommandRegistry {
         Byte targetAddress = (Byte) ObjectUtils.defaultIfNull(command.getDestinationAddress(),
                 Byte.valueOf((byte) 0x00));
 
+        // fast check - is this the right telegram type?
+        if (data.get(1) == EBusConsts.BROADCAST_ADDRESS && command.getType() != Type.BROADCAST) {
+            return false;
+        } else if (EBusUtils.isMasterAddress(data.get(1)) && command.getType() != Type.MASTER_MASTER) {
+            return false;
+        } else if (EBusUtils.isSlaveAddress(data.get(1)) && command.getType() != Type.MASTER_SLAVE) {
+            return false;
+        }
+
         try {
 
             ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(command, sourceAddress, targetAddress,
@@ -258,30 +268,42 @@ public class EBusCommandRegistry {
                     // add additional check for master-slave telegrams
                     if (command.getType() == Type.MASTER_SLAVE) {
 
+                        // is a broadcast or master-master telegram
                         if (!EBusUtils.isSlaveAddress(data.get(1))) {
+
                             logger.warn(
                                     "Data for matching command configuration \"{}\" is not a master-slave telegram as expected!",
                                     EBusCommandUtils.getFullId(command));
                             logger.warn("DATA: {}", EBusUtils.toHexDumpString(data));
                             return false;
-                        }
 
-                        int computedSlaveLen = EBusCommandUtils.getSlaveDataLength(command);
-                        int slaveLenPos = masterTelegram.limit() + 1;
+                            // slave data is not defined in the configuration, not good!
+                            // but we accept it for now. maybe we change it later on.
+                        } else if (command.getSlaveTypes() == null) {
+                            logger.debug(
+                                    "Warning: Master-Slave command \"{}\" has no slave configuration defined! Skip advanced match checks ...",
+                                    EBusCommandUtils.getFullId(command));
 
-                        // only check if the slave part is included in the data bytes
-                        if (slaveLenPos <= data.limit()) {
+                        } else {
 
-                            int slaveLen = data.get(slaveLenPos);
+                            int computedSlaveLen = EBusCommandUtils.getSlaveDataLength(command);
+                            int slaveLenPos = masterTelegram.limit() + 1;
 
-                            if (slaveLen != computedSlaveLen) {
-                                if (logger.isTraceEnabled()) {
-                                    logger.trace("Skip matching command due to invalid response data length ... [{}]",
-                                            EBusCommandUtils.getFullId(command));
-                                    logger.trace("DATA: {}", EBusUtils.toHexDumpString(data));
+                            // only check if the slave part is included in the data bytes
+                            if (slaveLenPos <= data.limit()) {
+
+                                int slaveLen = data.get(slaveLenPos);
+
+                                if (slaveLen != computedSlaveLen) {
+                                    if (logger.isTraceEnabled()) {
+                                        logger.trace(
+                                                "Skip matching command due to invalid response data length ... [{}]",
+                                                EBusCommandUtils.getFullId(command));
+                                        logger.trace("DATA: {}", EBusUtils.toHexDumpString(data));
+                                    }
+
+                                    return false;
                                 }
-
-                                return false;
                             }
                         }
 
@@ -290,8 +312,6 @@ public class EBusCommandRegistry {
                     return true;
                 }
             }
-            // } catch (EBusTypeException e) {
-            // logger.error("error!", e);
         } catch (Exception e) {
             logger.error("DATA: {}", EBusUtils.toHexDumpString(data));
             logger.error("CMD : {}", command.getParent().getParentCollection().getId(), command.getParent().getId());
