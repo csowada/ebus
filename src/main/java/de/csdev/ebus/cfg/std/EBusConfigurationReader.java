@@ -219,7 +219,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             for (EBusValueDTO template : commandElement.getTemplate()) {
                 for (EBusCommandValue templateCfg : parseValueConfiguration(template, null, null)) {
                     if (StringUtils.isEmpty(templateCfg.getName())) {
-                        logger.warn("Template block value without a name {}.{}", commandCollection.getId(),
+                        logger.debug("Template block value without a name {}.{}", commandCollection.getId(),
                                 commandElement.getId());
                     }
 
@@ -296,10 +296,11 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                     commandMethod.setType(IEBusCommandMethod.Type.MASTER_SLAVE);
                 }
 
-                if(commandMethod.getType() == IEBusCommandMethod.Type.MASTER_SLAVE) {
-                	if(commandMethod.getSlaveTypes() == null) {
-                		logger.debug("Warning: Master-Slave command \"{}\" has no slave configuration defined!", EBusCommandUtils.getFullId(commandMethod));
-                	}
+                if (commandMethod.getType() == IEBusCommandMethod.Type.MASTER_SLAVE) {
+                    if (commandMethod.getSlaveTypes() == null) {
+                        logger.debug("Warning: Master-Slave command \"{}\" has no slave configuration defined!",
+                                EBusCommandUtils.getFullId(commandMethod));
+                    }
                 }
             }
         }
