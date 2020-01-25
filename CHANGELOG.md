@@ -1,3 +1,14 @@
+## 1.0.5 (2020-01-25)
+
+Features:
+
+   - Enhance telegram matcher in Command registry
+   - Add (debug) warning if master-slave command configuration is without slave part
+   
+Bugfixes:
+
+   - Fix matcher in Command registry
+
 ## 1.0.4 (2020-01-21)
 
 Features:
