@@ -45,6 +45,23 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
     }
 
     @Override
+    protected EBusCommandNestedValue createInstance() {
+        return new EBusCommandNestedValue();
+    }
+
+    @Override
+    public EBusCommandValue clone() {
+        EBusCommandNestedValue clone = (EBusCommandNestedValue) super.clone();
+
+        // deep clone list
+        for (IEBusValue value : list) {
+            clone.add(value.clone());
+        }
+
+        return clone;
+    }
+
+    @Override
     public String toString() {
         return "EBusCommandNestedValue [list=" + list + "]";
     }

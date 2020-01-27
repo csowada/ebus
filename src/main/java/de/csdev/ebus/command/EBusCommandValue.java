@@ -54,10 +54,14 @@ public class EBusCommandValue implements IEBusValue {
 
     private IEBusType<?> type;
 
+    protected EBusCommandValue createInstance() {
+        return new EBusCommandValue();
+    }
+
     @Override
     public EBusCommandValue clone() {
 
-        EBusCommandValue clone = new EBusCommandValue();
+        EBusCommandValue clone = createInstance();
         clone.defaultValue = this.defaultValue;
         clone.factor = this.factor;
         clone.format = this.format;
