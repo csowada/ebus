@@ -1,0 +1,50 @@
+{
+    "id":           "std",
+    "vendor":       "eBUS Group",
+    "label":        "eBUS Standard",
+    "description":  "eBUS Group Standard commands",
+
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+
+    "commands":
+    [
+        {
+            "label":    "Operational Data of Burner Control unit to Room Control Unit - Block 1",
+            "id":       "auto_stroker.op_data_bc2tc_b1",
+            "command":  "05 03",
+            
+            "template": [
+                {"name":"block_number", "type": "static", "default": "01"},
+                {"name":"status_auto_stroker", "type": "byte", "label": "Status indication"},
+                {"name":"states", "type": "byte", "children": [
+                    {"name":"state_air_pressure", "type": "bit", "label": "Air pressure monitor"},
+                    {"name":"state_gas_pressure", "type": "bit", "label": "Gas pressure monitor"},
+                    {"name":"state_water_flow", "type": "bit", "label": "Water flow"},
+                    {"name":"state_flame", "type": "bit", "label": "Flame"},
+                    {"name":"state_valve1", "type": "bit", "label": "Valve1"},
+                    {"name":"state_valve2", "type": "bit", "label": "Valve2"},
+                    {"name":"state_pump", "type": "bit", "label": "State heating pump"},
+                    {"name":"state_alarm", "type": "bit", "label": "Alarm"}
+                ]},
+                {"name":"performance_burner", "type": "uchar", "label": "Setting degree between min. and max. boiler performance","min":0.0, "max":100.0,  "format":"%d%%"},
+                {"name":"temp_boiler", "type": "data1c", "label": "Boiler temperature", "min":0, "max":100, "format":"%.1f°C"},
+                {"name":"temp_return", "type": "uchar", "label": "Return temperature", "min":0, "max":100, "format":"%d°C"},
+                {"name":"temp_dhw", "type": "uchar", "label": "DHW temperature", "min":0, "max":100, "format":"%d°C"},
+                {"name":"temp_outside", "type": "char", "label": "Outside temperature", "min":-30, "max":50, "format":"%d°C"}
+            ],
+            
+            "broadcast": {
+                "master": [
+                    {"type": "template-block"}
+                ]
+            },
+
+            "get": {
+                "type":     "master-master",
+                "master": [
+                    {"type": "template-block"}
+                ]
+            }
+        }
+    ]
+}

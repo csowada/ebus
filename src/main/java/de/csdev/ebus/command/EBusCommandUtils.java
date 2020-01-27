@@ -49,7 +49,7 @@ public class EBusCommandUtils {
 
     /**
      * Returns a full unique id to a command
-     * 
+     *
      * @param command
      * @return
      */
@@ -243,8 +243,29 @@ public class EBusCommandUtils {
                 IEBusType<?> type = entry.getType();
                 byte[] b = null;
 
-                // use the value from the values map if set
-                if (values != null && values.containsKey(entry.getName())) {
+                // compute byte value from 8 bits
+                if (entry instanceof IEBusNestedValue) {
+                    IEBusNestedValue nestedValue = (IEBusNestedValue) entry;
+                    List<IEBusValue> list = nestedValue.getChildren();
+                    int n = 0;
+
+                    for (int i = 0; i < list.size(); i++) {
+                        IEBusValue childValue = list.get(i);
+                        if (values != null && values.containsKey(childValue.getName())) {
+                            Boolean object = (Boolean) values.get(childValue.getName());
+
+                            if (object.booleanValue()) {
+                                // set bit
+                                n = n | (1 << i);
+                            }
+
+                        }
+                    }
+
+                    b = new byte[] { (byte) n };
+
+                } else if (values != null && values.containsKey(entry.getName())) {
+                    // use the value from the values map if set
                     b = type.encode(values.get(entry.getName()));
 
                 } else {
