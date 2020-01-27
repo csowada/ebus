@@ -16,7 +16,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +38,10 @@ public class EBusNestedTemplatesTest {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusNestedTemplatesTest.class);
 
-    EBusCommandRegistry commandRegistry;
+    static EBusCommandRegistry commandRegistry;
 
-    @Before
-    public void before() throws IOException, EBusConfigurationReaderException {
+    @BeforeClass
+    public static void before() throws IOException, EBusConfigurationReaderException {
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
         commandRegistry.loadCommandCollection(
                 EBusNestedTemplatesTest.class.getResource("/nested-templates/FirstTemplate.json"));
@@ -52,7 +52,7 @@ public class EBusNestedTemplatesTest {
     }
 
     @Test
-    public void testIdentification() {
+    public void test1() {
 
         IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById("et", "test.nextest-block",
                 IEBusCommandMethod.Method.SET);
@@ -72,7 +72,7 @@ public class EBusNestedTemplatesTest {
     }
 
     @Test
-    public void testX() throws EBusTypeException {
+    public void test2() throws EBusTypeException {
 
         IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById("et", "test.tth",
                 IEBusCommandMethod.Method.SET);
@@ -101,7 +101,7 @@ public class EBusNestedTemplatesTest {
     }
 
     @Test
-    public void testY() throws EBusTypeException {
+    public void test3() throws EBusTypeException {
 
         IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById("et", "test.to",
                 IEBusCommandMethod.Method.SET);
