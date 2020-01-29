@@ -359,14 +359,21 @@ public class EBusCommandUtils {
             if (commandMethod.getType().equals(Type.BROADCAST)) {
                 if (target != EBusConsts.BROADCAST_ADDRESS) {
                     targetChecked = EBusConsts.BROADCAST_ADDRESS;
-                    logger.warn("Replace target address {} with valid broadcast address FE !",
+                    logger.warn("Replace target address {} with valid broadcast address 0xFE !",
                             EBusUtils.toHexDumpString(target));
                 }
             } else if (commandMethod.getType().equals(Type.MASTER_MASTER)) {
                 if (!EBusUtils.isMasterAddress(target)) {
                     targetChecked = EBusUtils.getMasterAddress(target);
-                    logger.warn("Replace slave target address {} with valid master address {}!",
-                            EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+
+                    if (targetChecked == null) {
+                        throw new IllegalArgumentException(String.format(
+                                "Cannot replace the slave address 0x%s with a master address because it is a slave address without a master address.",
+                                EBusUtils.toHexDumpString(target)));
+                    } else {
+                        logger.warn("Replace slave target address {} with valid master address {}!",
+                                EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+                    }
                 }
 
             } else if (commandMethod.getType().equals(Type.MASTER_SLAVE)) {

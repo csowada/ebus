@@ -147,6 +147,10 @@ public class EBusUtils {
      */
     static public Byte getMasterAddress(byte slaveAddress) {
 
+        if (slaveAddress == EBusConsts.ESCAPE || slaveAddress == EBusConsts.SYN) {
+            return null;
+        }
+
         if (!isMasterAddress(slaveAddress)) {
             byte masterAddress = (byte) (slaveAddress == (byte) 0x04 ? (byte) 0xFF : slaveAddress - 5);
             if (isMasterAddress(masterAddress)) {
@@ -179,6 +183,10 @@ public class EBusUtils {
      */
     public static boolean isMasterAddress(byte address) {
 
+        if (!isValidAddress(address)) {
+            return false;
+        }
+
         byte addr = (byte) ((byte) (address >>> 4) & (byte) 0x0F);
         byte prio = (byte) (address & (byte) 0x0F);
 
@@ -198,12 +206,12 @@ public class EBusUtils {
 
     /**
      * Check if the address is a valid slave address.
-     * 
+     *
      * @param address
      * @return
      */
     public static boolean isSlaveAddress(byte address) {
-        return address == EBusConsts.BROADCAST_ADDRESS ? false : !isMasterAddress(address);
+        return isValidAddress(address) && !isMasterAddress(address);
     }
 
     /**
