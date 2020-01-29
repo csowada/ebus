@@ -1,13 +1,21 @@
-## 1.0.5 (2020-01-25)
+## 1.0.5 (2020-01-29)
 
 Features:
 
    - Enhance telegram matcher in Command registry
    - Add (debug) warning if master-slave command configuration is without slave part
+   - Throw an exception on ``master-master`` commands with slave addresses that have no master address pair
    
 Bugfixes:
 
    - Fix matcher in Command registry
+   - Fix several nested template bugs
+     - Fix  internal clone() of nested templates
+     - Set type and default value for nested types
+     - Use list for ``template-block`` to also copy values without ``name``
+     - Rename template to valueDto, better variable name
+     - Add nested values to ``composeMasterData`` incl. test case
+     - Fix parent method for nested values
 
 ## 1.0.4 (2020-01-21)
 
