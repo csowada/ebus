@@ -57,6 +57,9 @@ public class EBusEbusdController extends EBusControllerBase {
 
     private Thread senderThread = null;
 
+    /** current send id (per thread iteration) */
+    private Integer currentSendId = null;
+
     public EBusEbusdController(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
@@ -122,7 +125,7 @@ public class EBusEbusdController extends EBusControllerBase {
         }
     }
 
-    private ByteBuffer parseLine(String readLine) throws IOException, InterruptedException {
+    private ByteBuffer parseLine(String readLine) throws IOException, InterruptedException, EBusDataException {
 
         ByteBuffer b = null;
 
@@ -167,21 +170,13 @@ public class EBusEbusdController extends EBusControllerBase {
                 logger.error("error!", e);
             }
 
-            // } else if (!directMode) {
-            // logger.info("Switch ebusd to direct mode ...");
-            //
-            // // switch to direct mode
-            // logger.trace("-->>|direct|");
-            //
-            // // send a response to ebusd
-            // writer.write("direct\n");
-            // writer.flush();
-
         } else if (directMode) {
 
             if (readLine.startsWith("-s")) {
 
                 String tmp = readLine.substring(3, 5) + readLine.substring(6);
+
+                currentSendId = queue.getCurrent().id;
 
                 // remove this entry from queue
                 queue.resetSendQueue();
@@ -194,7 +189,7 @@ public class EBusEbusdController extends EBusControllerBase {
                         b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), null);
 
                     } else if (split[1].startsWith("ERR")) {
-                        logger.info("Ebusd send error: \"{}\" for data [{}]", StringUtils.trim(split[2]), split[0]);
+                        throw new EBusDataException(StringUtils.trim(split[2]));
 
                     } else {
                         // // Master Slave
@@ -261,6 +256,9 @@ public class EBusEbusdController extends EBusControllerBase {
 
                         String readLine = reader.readLine();
 
+                        // reset send id before parsing
+                        currentSendId = null;
+
                         ByteBuffer b = parseLine(readLine);
 
                         // reset with received data
@@ -268,14 +266,19 @@ public class EBusEbusdController extends EBusControllerBase {
                         reConnectCounter = 0;
 
                         if (b != null) {
-                            this.fireOnEBusTelegramReceived(EBusUtils.toByteArray(b), null);
+                            this.fireOnEBusTelegramReceived(EBusUtils.toByteArray(b), currentSendId);
                         }
 
                     }
 
+                } catch (EBusDataException e) {
+                    this.fireOnEBusDataException(e, currentSendId);
+
                 } catch (InterruptedIOException e) {
                     // re-enable the interrupt to stop the while loop
-                    Thread.currentThread().interrupt();
+                    // Thread.currentThread().interrupt();
+
+                    // disable the interrupt, can be a simple java.net.SocketTimeoutException: Read timed out
 
                 } catch (InterruptedException e) {
                     // re-enable the interrupt to stop the while loop
