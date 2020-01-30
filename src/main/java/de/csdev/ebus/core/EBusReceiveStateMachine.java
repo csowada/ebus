@@ -59,6 +59,22 @@ public class EBusReceiveStateMachine {
     }
 
     /**
+     * Processes a complete telegram
+     *
+     * @param data
+     * @throws EBusDataException
+     */
+    public void updateBytes(byte[] data) throws EBusDataException {
+
+        // init state machine
+        this.update(EBusConsts.SYN);
+
+        for (byte b : data) {
+            this.update(b);
+        }
+    }
+
+    /**
      * Returns the current state
      *
      * @return
@@ -68,7 +84,25 @@ public class EBusReceiveStateMachine {
     }
 
     /**
-     * Rturns a copy of the current received telegram
+     * Returns the currrent calculated crc value
+     *
+     * @return
+     */
+    public byte getCurrentCrc() {
+        return crc;
+    }
+
+    /**
+     * Returns the remaining data bytes
+     *
+     * @return
+     */
+    public int getRemainDataLength() {
+        return len;
+    }
+
+    /**
+     * Returns a copy of the current received telegram
      *
      * @return
      */

@@ -8,13 +8,17 @@
  */
 package de.csdev.ebus.cfg;
 
-import org.junit.Before;
+import static org.junit.Assert.*;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.EBusCommandUtils;
+import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.utils.EBusConsoleUtils;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -22,11 +26,66 @@ public class EBusConsoleTest {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleTest.class);
 
-    private EBusCommandRegistry commandRegistry;
+    private static EBusCommandRegistry commandRegistry;
 
-    @Before
-    public void before() {
+    @BeforeClass
+    public static void before() {
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
+
+    }
+
+    @Test
+    public void testPrepareSendWithCrc() throws EBusDataException {
+
+        // prepared byte array should be unchanged
+        byte[] dataSource1 = EBusUtils.toByteArray("00 08 B5 09 03 0D 02 00 03");
+        byte[] dataTarget1 = EBusCommandUtils.prepareSendTelegram(dataSource1);
+
+        assertArrayEquals(dataSource1, dataTarget1);
+    }
+
+    @Test
+    public void testPrepareSendWithoutCrc() throws EBusDataException {
+
+        // prepared byte array should be unchanged
+        byte[] dataSource1 = EBusUtils.toByteArray("00 08 B5 09 03 0D 02 00 03");
+
+        // prepared byte array should be changed - add crc
+        byte[] dataSource2 = EBusUtils.toByteArray("00 08 B5 09 03 0D 02 00");
+        byte[] dataTarget2 = EBusCommandUtils.prepareSendTelegram(dataSource2);
+
+        assertArrayEquals(dataSource1, dataTarget2);
+    }
+
+    @Test
+    public void testPrepareSendWithWrongCrc() throws EBusDataException {
+
+        try {
+            // prepared byte array should be changed - add crc
+            byte[] dataSource3 = EBusUtils.toByteArray("00 08 B5 09 03 0D 02 00 B1");
+            EBusCommandUtils.prepareSendTelegram(dataSource3);
+
+            fail();
+
+        } catch (EBusDataException e) {
+            // okay, CRC is wrong
+        }
+
+    }
+
+    @Test
+    public void testPrepareSendInvalidData() throws EBusDataException {
+
+        try {
+            // prepared byte array should be changed - add crc
+            byte[] dataSource3 = EBusUtils.toByteArray("00 08 B5 09 03 0D");
+            EBusCommandUtils.prepareSendTelegram(dataSource3);
+
+            fail();
+
+        } catch (EBusDataException e) {
+            // okay,telegram is incomplete
+        }
 
     }
 

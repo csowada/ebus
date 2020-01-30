@@ -27,6 +27,7 @@ import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusReceiveStateMachine;
+import de.csdev.ebus.core.EBusReceiveStateMachine.State;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -58,6 +59,33 @@ public class EBusCommandUtils {
     }
 
     /**
+     *
+     * @param data
+     * @return
+     * @throws EBusDataException
+     */
+    public static byte[] prepareSendTelegram(byte[] data) throws EBusDataException {
+
+        EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+        machine.updateBytes(data);
+
+        if (machine.getState() == State.CRC1) {
+            return data;
+
+        } else if (machine.getState() == State.DATA1 && machine.getRemainDataLength() == 0) {
+
+            // append crc
+            byte[] dataExt = new byte[data.length + 1];
+            System.arraycopy(data, 0, dataExt, 0, data.length);
+            dataExt[dataExt.length - 1] = machine.getCurrentCrc();
+
+            return dataExt;
+        }
+
+        throw new EBusDataException("Invalid telegram!");
+    }
+
+    /**
      * @param data
      * @return
      * @throws EBusDataException
@@ -65,12 +93,7 @@ public class EBusCommandUtils {
     public static byte[] checkRawTelegram(byte[] data) throws EBusDataException {
         EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
-        // init machine
-        machine.update(EBusConsts.SYN);
-
-        for (byte b : data) {
-            machine.update(b);
-        }
+        machine.updateBytes(data);
 
         return machine.getTelegramData();
     }
