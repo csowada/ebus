@@ -1,3 +1,14 @@
+## 1.0.6 (2020-02-09)
+
+Features:
+
+   - Add a send preparation function incl. auto attach crc if missing
+   - Enhance fireOn... events, including some sendId fixes
+   
+Bugfixes:
+
+   - Disable ``InterruptedIOException`` to prevent ebusd connector from closing after a short time
+
 ## 1.0.5 (2020-01-29)
 
 Features:
