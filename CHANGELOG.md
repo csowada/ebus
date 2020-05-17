@@ -1,3 +1,14 @@
+## 1.0.7 (2020-05-17)
+
+Features:
+
+   - Limit the ThreadPoolExecutor to max. 30 threads
+
+Bugfixes:
+
+   - Add sender thread restart to main loop
+   - Fix a NullPoint Exception
+   
 ## 1.0.6 (2020-02-09)
 
 Features:
