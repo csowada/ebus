@@ -175,11 +175,15 @@ public class EBusEbusdController extends EBusControllerBase {
             if (readLine.startsWith("-s")) {
 
                 String tmp = readLine.substring(3, 5) + readLine.substring(6);
+                QueueEntry queueEntry = queue.getCurrent();
 
-                currentSendId = queue.getCurrent().id;
+                // maybe the command is direct from ebusd and the binding
+                if (queueEntry != null) {
+                    currentSendId = queueEntry.id;
 
-                // remove this entry from queue
-                queue.resetSendQueue();
+                    // remove this entry from queue
+                    queue.resetSendQueue();
+                }
 
                 if (readLine.contains(":")) {
                     String[] split = tmp.split(":");
@@ -254,6 +258,11 @@ public class EBusEbusdController extends EBusControllerBase {
                             reconnect();
                         }
 
+                        if (senderThread == null || !senderThread.isAlive()) {
+                            // should not happened, but maybe it can help
+                            startSenderThread();
+                        }
+
                         String readLine = reader.readLine();
 
                         // reset send id before parsing
@@ -275,9 +284,6 @@ public class EBusEbusdController extends EBusControllerBase {
                     this.fireOnEBusDataException(e, currentSendId);
 
                 } catch (InterruptedIOException e) {
-                    // re-enable the interrupt to stop the while loop
-                    // Thread.currentThread().interrupt();
-
                     // disable the interrupt, can be a simple java.net.SocketTimeoutException: Read timed out
 
                 } catch (InterruptedException e) {
