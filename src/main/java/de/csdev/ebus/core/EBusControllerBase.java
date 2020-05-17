@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -220,7 +222,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      */
     protected void initThreadPool() {
         // create new thread pool to send received telegrams
-        threadPool = Executors.newCachedThreadPool(new EBusWorkerThreadFactory("ebus-receiver", true));
+        // limit the number of threads to 30
+        threadPool = new ThreadPoolExecutor(0, 30, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+                new EBusWorkerThreadFactory("ebus-receiver", true));
 
         // create watch dog thread pool
         threadPoolWDT = Executors.newSingleThreadScheduledExecutor(new EBusWorkerThreadFactory("ebus-wdt", false));
