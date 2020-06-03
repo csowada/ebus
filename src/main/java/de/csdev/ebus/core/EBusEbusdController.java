@@ -129,92 +129,100 @@ public class EBusEbusdController extends EBusControllerBase {
 
         ByteBuffer b = null;
 
-        logger.trace("<<--|" + readLine + "|");
+        try {
 
-        if (readLine == null) {
-            logger.error("End of stream has been reached!");
-            reconnect();
+            logger.trace("<<--|" + readLine + "|");
 
-        } else if (StringUtils.startsWith(readLine, "ERR:")) {
-            logger.error(readLine);
-            reconnect();
+            if (readLine == null) {
+                logger.error("End of stream has been reached!");
+                reconnect();
 
-        } else if (StringUtils.equals(readLine, "direct mode started")) {
-            logger.info("ebusd direct mode enabled!");
+            } else if (StringUtils.startsWith(readLine, "ERR:")) {
+                logger.error(readLine);
+                reconnect();
 
-            // start sender thread
-            startSenderThread();
+            } else if (StringUtils.equals(readLine, "direct mode started")) {
+                logger.info("ebusd direct mode enabled!");
 
-            directMode = true;
+                // start sender thread
+                startSenderThread();
 
-            setConnectionStatus(ConnectionStatus.CONNECTED);
+                directMode = true;
 
-        } else if (readLine.startsWith("version:")) {
-            try {
-                String[] split = readLine.split(":");
-                String value = StringUtils.trim(split[1]);
+                setConnectionStatus(ConnectionStatus.CONNECTED);
 
-                logger.info("Use ebusd version: {}", value);
+            } else if (readLine.startsWith("version:")) {
+                try {
+                    String[] split = readLine.split(":");
+                    String value = StringUtils.trim(split[1]);
 
-                String version = StringUtils.trim(value.split(" ")[1]);
-                String[] versionParts = version.split("\\.");
-                if (NumberUtils.isDigits(versionParts[0]) && NumberUtils.isDigits(versionParts[1])) {
-                    int versio = (NumberUtils.createInteger(versionParts[0]) * 1000)
-                            + NumberUtils.createInteger(versionParts[1]);
-                    if (versio < 3004) {
-                        logger.warn("Your ebusd version is not supported. Please use a version >= 3.4 !");
+                    logger.info("Use ebusd version: {}", value);
+
+                    String version = StringUtils.trim(value.split(" ")[1]);
+                    String[] versionParts = version.split("\\.");
+                    if (NumberUtils.isDigits(versionParts[0]) && NumberUtils.isDigits(versionParts[1])) {
+                        int versio = (NumberUtils.createInteger(versionParts[0]) * 1000)
+                                + NumberUtils.createInteger(versionParts[1]);
+                        if (versio < 3004) {
+                            logger.warn("Your ebusd version is not supported. Please use a version >= 3.4 !");
+                        }
                     }
-                }
-            } catch (Exception e) {
-                // do not stop because of version check
-                logger.error("error!", e);
-            }
-
-        } else if (directMode) {
-
-            if (readLine.startsWith("-s")) {
-
-                String tmp = readLine.substring(3, 5) + readLine.substring(6);
-                QueueEntry queueEntry = queue.getCurrent();
-
-                // maybe the command is direct from ebusd and the binding
-                if (queueEntry != null) {
-                    currentSendId = queueEntry.id;
-
-                    // remove this entry from queue
-                    queue.resetSendQueue();
+                } catch (Exception e) {
+                    // do not stop because of version check
+                    logger.error("error!", e);
                 }
 
-                if (readLine.contains(":")) {
-                    String[] split = tmp.split(":");
+            } else if (directMode) {
 
-                    if (split[1].startsWith("done")) {
-                        // Master Master or Broadcast
-                        b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), null);
+                if (readLine.startsWith("-s")) {
 
-                    } else if (split[1].startsWith("ERR")) {
-                        throw new EBusDataException(StringUtils.trim(split[2]));
+                    String tmp = readLine.substring(3, 5) + readLine.substring(6);
+                    QueueEntry queueEntry = queue.getCurrent();
+
+                    // maybe the command is direct from ebusd and the binding
+                    if (queueEntry != null) {
+                        currentSendId = queueEntry.id;
+
+                        // remove this entry from queue
+                        queue.resetSendQueue();
+                    }
+
+                    if (readLine.contains(":")) {
+                        String[] split = tmp.split(":");
+
+                        if (split[1].startsWith("done")) {
+                            // Master Master or Broadcast
+                            b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), null);
+
+                        } else if (split[1].startsWith("ERR")) {
+                            throw new EBusDataException(StringUtils.trim(split[2]));
+
+                        } else {
+                            // // Master Slave
+                            b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]),
+                                    EBusUtils.toByteArray2(split[1]));
+                        }
 
                     } else {
-                        // // Master Slave
-                        b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]),
-                                EBusUtils.toByteArray2(split[1]));
+                        logger.debug("Unknown send response: {}", readLine);
                     }
 
+                } else if (readLine.contains(" ")) {
+                    // A master slave telegram
+                    String[] split = readLine.split(" ");
+                    b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]),
+                            EBusUtils.toByteArray2(split[1]));
+
                 } else {
-                    logger.debug("Unknown send response: {}", readLine);
+                    // A broadcast or master-master telegram
+                    byte[] data = EBusUtils.toByteArray2(readLine);
+                    b = convertEBusdDataToFullTelegram(data, null);
                 }
-
-            } else if (readLine.contains(" ")) {
-                // A master slave telegram
-                String[] split = readLine.split(" ");
-                b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), EBusUtils.toByteArray2(split[1]));
-
-            } else {
-                // A broadcast or master-master telegram
-                byte[] data = EBusUtils.toByteArray2(readLine);
-                b = convertEBusdDataToFullTelegram(data, null);
             }
+
+        } catch (NumberFormatException | NullPointerException e) {
+            logger.error("Error while parsing ebusd response: {}", readLine);
+            logger.error("Error Trace!", e);
         }
 
         return b;
