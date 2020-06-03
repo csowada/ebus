@@ -156,10 +156,14 @@ public class EBusQueue {
 
         } catch (IllegalStateException e) {
             logger.error("Send queue is full! The eBUS service will reset the queue to ensure proper operation.");
-
+            
+            // clear the queue, remove all waiting messages
             outputQueue.clear();
+            
+            // reset the current state to a defined state
             resetSendQueue();
 
+            // now add the entry as first entry in the emtpy queue
             outputQueue.add(entry);
         }
 
