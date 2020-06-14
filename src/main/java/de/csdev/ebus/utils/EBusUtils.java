@@ -266,7 +266,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte[] toByteArray(String hexDumpString) {
+    static public byte[] toByteArray(String hexDumpString) throws NumberFormatException {
         if (StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
@@ -288,7 +288,8 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte[] toByteArray2(String hexDumpString) {
+    static public byte[] toByteArray2(String hexDumpString) throws NumberFormatException {
+
         if (StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
