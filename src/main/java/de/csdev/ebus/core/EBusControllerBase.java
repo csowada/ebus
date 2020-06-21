@@ -198,6 +198,11 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
             return;
         }
 
+        // only run on a real status change
+        if (getConnectionStatus() == status) {
+            return;
+        }
+
         if (threadPool == null || threadPool.isTerminated()) {
             logger.warn("ThreadPool not ready!");
             return;
