@@ -11,13 +11,15 @@ package de.csdev.ebus.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNestedValue {
 
-    private List<IEBusValue> list;
+    private @NonNull List<IEBusValue> list = new ArrayList<IEBusValue>();
 
     @Override
     public void setParent(EBusCommandMethod parent) {
@@ -29,27 +31,16 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
     }
 
     public boolean add(IEBusValue value) {
-
-        if (list == null) {
-            list = new ArrayList<IEBusValue>();
-        }
-
         return list.add(value);
     }
 
     @Override
-    public List<IEBusValue> getChildren() {
-
-        if (list == null) {
-            list = new ArrayList<IEBusValue>();
-        }
-
+    public @NonNull List<IEBusValue> getChildren() {
         return list;
     }
 
     @Override
     public boolean hasChildren() {
-
         return list != null && !list.isEmpty();
     }
 
@@ -59,7 +50,7 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
     }
 
     @Override
-    public EBusCommandValue clone() {
+    public @NonNull EBusCommandValue clone() {
         EBusCommandNestedValue clone = (EBusCommandNestedValue) super.clone();
 
         // deep clone list

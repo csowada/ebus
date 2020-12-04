@@ -41,16 +41,20 @@ public class EBusConfigurationTemplateTest {
         assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
 
         IEBusCommand commandById = registry.getCommandById("bai", "boiler.temp_outletx");
-        IEBusCommandMethod commandMethod = commandById.getCommandMethod(Method.GET);
+        assertNotNull(commandById);
 
-        @SuppressWarnings("unused")
+        IEBusCommandMethod commandMethod = commandById.getCommandMethod(Method.GET);
+        assertNotNull(commandMethod);
+
         Type type = commandMethod.getType();
+        assertNotNull(type);
         List<IEBusValue> slaveTypes = commandMethod.getSlaveTypes();
 
         // System.out.println(slaveTypes);
-
-        for (IEBusValue ieBusValue : slaveTypes) {
-            System.out.println(ieBusValue);
+        if (slaveTypes != null) {
+            for (IEBusValue ieBusValue : slaveTypes) {
+                System.out.println(ieBusValue);
+            }
         }
 
         System.out.println("EBusConfigurationTemplateTest.test_BuildMasterTelegram()");

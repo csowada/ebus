@@ -10,16 +10,18 @@ package de.csdev.ebus.cfg.std.dto;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusCommandTemplatesDTO {
 
-    private String name;
-    private List<EBusValueDTO> template;
+    private @Nullable String name;
+    private @Nullable List<EBusValueDTO> template;
 
-    public String getName() {
+    public @Nullable String getName() {
         return name;
     }
 
@@ -27,7 +29,7 @@ public class EBusCommandTemplatesDTO {
         this.name = name;
     }
 
-    public List<EBusValueDTO> getTemplate() {
+    public @Nullable List<EBusValueDTO> getTemplate() {
         return template;
     }
 

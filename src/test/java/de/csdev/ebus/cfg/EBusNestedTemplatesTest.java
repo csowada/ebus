@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
@@ -84,7 +85,10 @@ public class EBusNestedTemplatesTest {
 
         assertNotNull("Command et.test.tth not found!", commandMethod);
 
-        IEBusValue value = commandMethod.getMasterTypes().get(0);
+        List<IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        assertNotNull(masterTypes);
+
+        IEBusValue value = masterTypes.get(0);
         IEBusType<?> type = value.getType();
 
         @SuppressWarnings("unused")
@@ -117,7 +121,9 @@ public class EBusNestedTemplatesTest {
 
         assertNotNull("Command et.test.tth not found!", commandMethod);
 
-        IEBusValue value = commandMethod.getMasterTypes().get(0);
+        List<IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        assertNotNull(masterTypes);
+        IEBusValue value = masterTypes.get(0);
         IEBusType<?> type = value.getType();
 
         @SuppressWarnings("unused")

@@ -14,6 +14,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Checks;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.utils.CollectionUtils;
 
@@ -23,28 +28,34 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusCommandCollection implements IEBusCommandCollection {
 
-    private Map<String, IEBusCommand> commands = new HashMap<String, IEBusCommand>();
+    private @NonNull Map<String, IEBusCommand> commands = new HashMap<String, IEBusCommand>();
 
-    private String description;
+    private @NonNull String description;
 
-    private String id;
+    private @NonNull String id;
 
-    private List<String> identification = new ArrayList<String>();
+    private @NonNull List<String> identification = new ArrayList<String>();
 
-    private String label;
+    private @NonNull String label;
 
-    private Map<String, Object> properties;
+    private @NonNull Map<String, Object> properties;
 
     private byte[] sourceHash;
 
     public EBusCommandCollection(String id, String label, String description, Map<String, Object> properties) {
 
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(label);
+        Objects.requireNonNull(description);
+
         this.id = id;
         this.label = label;
         this.description = description;
 
+        this.properties = new HashMap<String, Object>();
+
         if (properties != null) {
-            this.properties = CollectionUtils.newMapIfNull(this.properties);
+            // this.properties = CollectionUtils.newMapIfNull(this.properties);
             this.properties.putAll(properties);
         }
 
@@ -66,8 +77,8 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      * @see de.csdev.ebus.command.IEBusCommandCollection#getCommands()
      */
     @Override
-    public Collection<IEBusCommand> getCommands() {
-        return Collections.unmodifiableCollection((commands.values()));
+    public @NonNull Collection<IEBusCommand> getCommands() {
+        return Checks.requireNonNull(Collections.unmodifiableCollection((commands.values())));
     }
 
     /*
@@ -86,8 +97,8 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      * @see de.csdev.ebus.command.IEBusCommandCollection#getId()
      */
     @Override
-    public String getId() {
-        return id;
+    public @NonNull String getId() {
+        return Checks.requireNonNull(id);
     }
 
     /*
@@ -96,10 +107,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      * @see de.csdev.ebus.command.IEBusCommandCollection#getIdentification()
      */
     @Override
-    public List<String> getIdentification() {
-        if (identification == null) {
-            identification = new ArrayList<String>();
-        }
+    public @NonNull List<String> getIdentification() {
         return identification;
     }
 
@@ -119,8 +127,8 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      * @see de.csdev.ebus.command.IEBusCommandCollection#getProperties()
      */
     @Override
-    public Map<String, Object> getProperties() {
-        return CollectionUtils.unmodifiableNotNullMap(properties);
+    public @NonNull Map<String, Object> getProperties() {
+        return Checks.requireNonNull(CollectionUtils.unmodifiableNotNullMap(properties));
     }
 
     /*
@@ -133,11 +141,11 @@ public class EBusCommandCollection implements IEBusCommandCollection {
         return CollectionUtils.get(properties, key);
     }
 
-    public void setIdentification(List<String> identification) {
-        if (identification == null) {
-            this.identification = new ArrayList<String>();
+    public void setIdentification(@Nullable List<String> identification) {
+        if (identification != null && !identification.isEmpty()) {
+            this.identification.clear();
+            this.identification.addAll(identification);
         }
-        this.identification = identification;
     }
 
     public void setSourceHash(byte[] sourceHash) {

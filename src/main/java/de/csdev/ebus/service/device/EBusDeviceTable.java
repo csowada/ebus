@@ -17,9 +17,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,7 +177,7 @@ public class EBusDeviceTable {
         return Collections.unmodifiableCollection(deviceTable.values());
     }
 
-    private void fireOnDeviceUpdate(IEBusDeviceTableListener.TYPE type, EBusDevice device) {
+    private void fireOnDeviceUpdate(IEBusDeviceTableListener.@NonNull TYPE type, @NonNull EBusDevice device) {
         for (IEBusDeviceTableListener listener : listeners) {
             try {
                 listener.onEBusDeviceUpdate(type, device);
@@ -195,6 +197,7 @@ public class EBusDeviceTable {
      * @param listener
      */
     public void addEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+        Objects.requireNonNull(listener);
         listeners.add(listener);
     }
 
@@ -205,6 +208,7 @@ public class EBusDeviceTable {
      * @return
      */
     public boolean removeEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+        Objects.requireNonNull(listener);
         return listeners.remove(listener);
     }
 

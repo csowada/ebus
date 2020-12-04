@@ -8,6 +8,9 @@
  */
 package de.csdev.ebus.core;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.core.IEBusController.ConnectionStatus;
 
 /**
@@ -16,6 +19,7 @@ import de.csdev.ebus.core.IEBusController.ConnectionStatus;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusConnectorEventListener {
 
     /**
@@ -24,7 +28,7 @@ public interface IEBusConnectorEventListener {
      * @param receivedData
      * @param sendQueueId
      */
-    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId);
+    public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId);
 
     /**
      * A new valid telegram has been received.
@@ -32,7 +36,7 @@ public interface IEBusConnectorEventListener {
      * @param exception
      * @param sendQueueId
      */
-    public void onTelegramException(EBusDataException exception, Integer sendQueueId);
+    public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId);
 
     /**
      * A connection exception has occurred
@@ -43,7 +47,7 @@ public interface IEBusConnectorEventListener {
 
     /**
      * The connection status has changed
-     * 
+     *
      * @param status ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED or ConnectionStatus.DISCONNECTED
      */
     public void onConnectionStatusChanged(ConnectionStatus status);

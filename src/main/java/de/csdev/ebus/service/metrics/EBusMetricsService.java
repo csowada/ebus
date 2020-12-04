@@ -13,6 +13,9 @@ import java.math.RoundingMode;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusDataException;
@@ -39,6 +42,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
 
     private BigDecimal receivedAmount = BigDecimal.valueOf(0);
 
+    @SuppressWarnings("null")
     private Map<EBusError, BigDecimal> failedMap = new EnumMap<EBusDataException.EBusError, BigDecimal>(
             EBusError.class);
 
@@ -53,25 +57,26 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
     }
 
     @Override
-    public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
-            Integer sendQueueId) {
+    public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
+            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @Nullable Integer sendQueueId) {
         resolved = resolved.add(BigDecimal.ONE);
     }
 
     @Override
-    public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
-            String exceptionMessage) {
+    public void onTelegramResolveFailed(@Nullable IEBusCommandMethod commandChannel, byte @Nullable [] receivedData,
+            @Nullable Integer sendQueueId, @Nullable String exceptionMessage) {
         unresolved = unresolved.add(BigDecimal.ONE);
     }
 
     @Override
-    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+    public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
         received = received.add(BigDecimal.ONE);
         receivedAmount = receivedAmount.add(BigDecimal.valueOf(receivedData.length));
     }
 
     @Override
-    public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+    public void onTelegramException(@NonNull EBusDataException exception, @Nullable Integer sendQueueId) {
 
         BigDecimal val = failedMap.get(exception.getErrorCode());
         if (val == null) {
@@ -85,7 +90,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
     }
 
     @Override
-    public void onConnectionException(Exception e) {
+    public void onConnectionException(@NonNull Exception e) {
         connectionFailed = connectionFailed.add(BigDecimal.ONE);
     }
 

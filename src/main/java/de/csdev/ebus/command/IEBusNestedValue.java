@@ -10,9 +10,11 @@ package de.csdev.ebus.command;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * A marker of a value with child values
- * 
+ *
  * @author Christian Sowada - Initial contribution
  *
  */
@@ -30,6 +32,6 @@ public interface IEBusNestedValue {
      *
      * @return
      */
-    public List<IEBusValue> getChildren();
+    public @NonNull List<IEBusValue> getChildren();
 
 }

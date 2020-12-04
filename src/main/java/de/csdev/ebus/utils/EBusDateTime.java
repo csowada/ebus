@@ -22,6 +22,13 @@ public class EBusDateTime {
     private boolean anyDate = false;
     private boolean anyTime = false;
 
+    /**
+     * Constructor
+     *
+     * @param calendar
+     * @param anyDate Set date part to any date
+     * @param anyTime Set time part to any time
+     */
     public EBusDateTime(Calendar calendar, boolean anyDate, boolean anyTime) {
         this.calendar = calendar;
         this.anyDate = anyDate;

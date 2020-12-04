@@ -8,12 +8,16 @@
  */
 package de.csdev.ebus.core;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.core.IEBusController.ConnectionStatus;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusConnectorEventListener implements IEBusConnectorEventListener {
 
     /*
@@ -22,7 +26,7 @@ public class EBusConnectorEventListener implements IEBusConnectorEventListener {
      * @see de.csdev.ebus.core.IEBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
     @Override
-    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+    public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
         // noop
     }
 
@@ -33,7 +37,7 @@ public class EBusConnectorEventListener implements IEBusConnectorEventListener {
      * java.lang.Integer)
      */
     @Override
-    public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+    public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
         // noop
     }
 

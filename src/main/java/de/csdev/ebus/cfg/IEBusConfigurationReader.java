@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 
@@ -19,6 +22,7 @@ import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusConfigurationReader {
 
     /**
@@ -36,7 +40,7 @@ public interface IEBusConfigurationReader {
      * @throws EBusConfigurationReaderException
      * @throws IOException
      */
-    public IEBusCommandCollection loadConfigurationCollection(URL url)
+    public @Nullable IEBusCommandCollection loadConfigurationCollection(URL url)
             throws EBusConfigurationReaderException, IOException;
 
     /**

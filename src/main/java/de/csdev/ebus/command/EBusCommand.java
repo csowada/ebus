@@ -13,6 +13,11 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Checks;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.utils.CollectionUtils;
 
@@ -22,7 +27,8 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusCommand implements IEBusCommand {
 
-    private Map<IEBusCommandMethod.Method, IEBusCommandMethod> channels;
+    private @NonNull Map<IEBusCommandMethod.@NonNull Method, @Nullable IEBusCommandMethod> channels = new EnumMap<IEBusCommandMethod.@NonNull Method, @Nullable IEBusCommandMethod>(
+            IEBusCommandMethod.Method.class);
 
     private String configurationSource;
 
@@ -36,33 +42,25 @@ public class EBusCommand implements IEBusCommand {
 
     private Map<String, Object> properties;
 
-    public void addCommandChannel(IEBusCommandMethod channel) {
-        if (channels == null) {
-            channels = new EnumMap<IEBusCommandMethod.Method, IEBusCommandMethod>(IEBusCommandMethod.Method.class);
-        }
-        channels = CollectionUtils.newMapIfNull(channels);
+    public void addCommandChannel(@NonNull IEBusCommandMethod channel) {
+        Objects.requireNonNull(channel);
         channels.put(channel.getMethod(), channel);
     }
 
     @Override
-    public Collection<IEBusCommandMethod.Method> getCommandChannelMethods() {
-        if (channels != null) {
-            return Collections.unmodifiableCollection(channels.keySet());
-        }
-        return Collections.emptyList();
+    public @NonNull Collection<IEBusCommandMethod.Method> getCommandChannelMethods() {
+        return Checks.requireNonNull(Collections.unmodifiableCollection(channels.keySet()));
     }
 
     @Override
-    public IEBusCommandMethod getCommandMethod(IEBusCommandMethod.Method channel) {
+    public @Nullable IEBusCommandMethod getCommandMethod(IEBusCommandMethod.@NonNull Method channel) {
+        Objects.requireNonNull(channel);
         return CollectionUtils.get(channels, channel);
     }
 
     @Override
-    public Collection<IEBusCommandMethod> getCommandMethods() {
-        if (channels != null) {
-            return Collections.unmodifiableCollection(channels.values());
-        }
-        return Collections.emptyList();
+    public @NonNull Collection<IEBusCommandMethod> getCommandMethods() {
+        return Checks.requireNonNull(Collections.unmodifiableCollection(channels.values()));
     }
 
     /*
@@ -91,8 +89,8 @@ public class EBusCommand implements IEBusCommand {
      * @see de.csdev.ebus.command.IEBusCommand#getId()
      */
     @Override
-    public String getId() {
-        return id;
+    public @NonNull String getId() {
+        return Checks.requireNonNull(id);
     }
 
     /*
@@ -106,13 +104,13 @@ public class EBusCommand implements IEBusCommand {
     }
 
     @Override
-    public IEBusCommandCollection getParentCollection() {
-        return parentCollection;
+    public @NonNull IEBusCommandCollection getParentCollection() {
+        return Checks.requireNonNull(parentCollection);
     }
 
     @Override
-    public Map<String, Object> getProperties() {
-        return CollectionUtils.unmodifiableNotNullMap(properties);
+    public @NonNull Map<String, Object> getProperties() {
+        return Checks.requireNonNull(CollectionUtils.unmodifiableNotNullMap(properties));
     }
 
     public void setConfigurationSource(String configurationSource) {

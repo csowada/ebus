@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Checks;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -37,12 +39,12 @@ public class CollectionUtils {
      * @param map
      * @return
      */
-    public static <K, V> Map<K, V> unmodifiableNotNullMap(@Nullable Map<K, V> map) {
+    public static @NonNull <K, V> Map<K, V> unmodifiableNotNullMap(@Nullable Map<K, V> map) {
         if (map == null) {
-            return Collections.emptyMap();
+            return Checks.requireNonNull(Collections.emptyMap());
         }
 
-        return Collections.unmodifiableMap(map);
+        return Checks.requireNonNull(Collections.unmodifiableMap(map));
     }
 
     /**

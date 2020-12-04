@@ -11,6 +11,9 @@ package de.csdev.ebus.command;
 import java.util.Collection;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A command is the link to encode/decode an eBUS byte telegram.
  *
@@ -24,7 +27,7 @@ public interface IEBusCommand {
      *
      * @return
      */
-    public Collection<IEBusCommandMethod> getCommandMethods();
+    public @NonNull Collection<IEBusCommandMethod> getCommandMethods();
 
     /**
      * Returns the command method if available. Returns <code>null</code> if not availble.
@@ -32,54 +35,54 @@ public interface IEBusCommand {
      * @param method
      * @return
      */
-    public IEBusCommandMethod getCommandMethod(IEBusCommandMethod.Method method);
+    public @Nullable IEBusCommandMethod getCommandMethod(IEBusCommandMethod.@NonNull Method method);
 
     /**
      * Returns the available command method enums.
      *
      * @return
      */
-    public Collection<IEBusCommandMethod.Method> getCommandChannelMethods();
+    public @NonNull Collection<IEBusCommandMethod.Method> getCommandChannelMethods();
 
     /**
      * Returns device information from database
      *
      * @return
      */
-    public String getDevice();
+    public @Nullable String getDevice();
 
     /**
      * Returns the source (file) of this command
      *
      * @return
      */
-    public String getConfigurationSource();
+    public @Nullable String getConfigurationSource();
 
     /**
      * Get a short label to this command
      *
      * @return
      */
-    public String getLabel();
+    public @Nullable String getLabel();
 
     /**
      * Returns the id of this command
      *
      * @return
      */
-    public String getId();
+    public @NonNull String getId();
 
     /**
      * Returns a map of additional properties
      *
      * @return
      */
-    public Map<String, Object> getProperties();
+    public @NonNull Map<String, Object> getProperties();
 
     /**
      * Returns the parent collection
      *
      * @return
      */
-    public IEBusCommandCollection getParentCollection();
+    public @NonNull IEBusCommandCollection getParentCollection();
 }

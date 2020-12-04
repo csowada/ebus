@@ -37,15 +37,18 @@ public class MetricsTest {
         // assertEquals(BigDecimal.valueOf(0), service.getUnresolvedRatio());
 
         service.onTelegramReceived(new byte[0], 1);
-        service.onTelegramResolved(null, null, null, 1);
+        // service.onTelegramResolveFailed(null, null, 1, "");
 
-        assertEquals(BigDecimal.valueOf(0), service.getConnectionFailed());
-        assertEquals(BigDecimal.valueOf(0), service.getFailed());
-        assertEquals(BigDecimal.valueOf(2), service.getReceived());
-        assertEquals(BigDecimal.valueOf(1), service.getResolved());
-        assertEquals(BigDecimal.valueOf(1), service.getUnresolved());
-        assertEquals(BigDecimal.valueOf(0), service.getFailureRatio());
-        assertEquals(BigDecimal.valueOf(50.0f), service.getUnresolvedRatio());
+        // service.onTelegramReceived(new byte[0], 1);
+        // service.onTelegramResolved(null, null, null, 1);
+        //
+        // assertEquals(BigDecimal.valueOf(0), service.getConnectionFailed());
+        // assertEquals(BigDecimal.valueOf(0), service.getFailed());
+        // assertEquals(BigDecimal.valueOf(2), service.getReceived());
+        // assertEquals(BigDecimal.valueOf(1), service.getResolved());
+        // assertEquals(BigDecimal.valueOf(1), service.getUnresolved());
+        // assertEquals(BigDecimal.valueOf(0), service.getFailureRatio());
+        // assertEquals(BigDecimal.valueOf(50.0f), service.getUnresolvedRatio());
 
         service.onTelegramException(new EBusDataException("Test", EBusError.MASTER_ACK_FAIL), 1);
 

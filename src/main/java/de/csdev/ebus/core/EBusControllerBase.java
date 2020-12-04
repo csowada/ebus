@@ -9,6 +9,7 @@
 package de.csdev.ebus.core;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -99,6 +100,8 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      */
     protected void fireOnConnectionException(final Exception e) {
 
+        Objects.requireNonNull(e);
+
         if (!isRunning()) {
             return;
         }
@@ -166,6 +169,8 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      */
     protected void fireOnEBusDataException(final EBusDataException exception, final Integer sendQueueId) {
 
+        Objects.requireNonNull(exception);
+
         if (!isRunning()) {
             return;
         }
@@ -193,6 +198,8 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @param status
      */
     protected void fireOnEBusConnectionStatusChange(ConnectionStatus status) {
+
+        Objects.requireNonNull(status);
 
         if (!isRunning()) {
             return;

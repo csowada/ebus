@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +79,7 @@ public class EBusParserService extends EBusConnectorEventListener {
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
     @Override
-    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+    public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
 
         final List<IEBusCommandMethod> commandChannelList = commandRegistry.find(receivedData);
 
@@ -109,8 +111,8 @@ public class EBusParserService extends EBusConnectorEventListener {
      * @param receivedData
      * @param sendQueueId
      */
-    private void fireOnTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
-            byte[] receivedData, Integer sendQueueId) {
+    private void fireOnTelegramResolved(@NonNull IEBusCommandMethod commandChannel, @NonNull Map<String, Object> result,
+            byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
 
         for (IEBusParserListener listener : listeners) {
             try {
@@ -127,8 +129,8 @@ public class EBusParserService extends EBusConnectorEventListener {
      * @param receivedData
      * @param sendQueueId
      */
-    private void fireOnTelegramFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
-            String exceptionMessage) {
+    private void fireOnTelegramFailed(@Nullable IEBusCommandMethod commandChannel, byte @NonNull [] receivedData,
+            @Nullable Integer sendQueueId, @NonNull String exceptionMessage) {
 
         for (IEBusParserListener listener : listeners) {
             try {

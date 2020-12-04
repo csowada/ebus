@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.cfg;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 
 import org.junit.Assert;
@@ -55,11 +57,18 @@ public class EBusConfigurationHash {
         IEBusCommandCollection collection1 = reg1.getCommandCollection(EBusConsts.COLLECTION_STD);
         IEBusCommandCollection collection2 = reg2.getCommandCollection(EBusConsts.COLLECTION_STD);
 
+        assertNotNull(collection1);
+        assertNotNull(collection2);
+
         for (IEBusCommand command1 : collection1.getCommands()) {
             IEBusCommand command2 = collection2.getCommand(command1.getId());
 
+            assertNotNull(command2);
+
             for (IEBusCommandMethod method1 : command1.getCommandMethods()) {
                 IEBusCommandMethod method2 = command2.getCommandMethod(method1.getMethod());
+
+                assertNotNull(method2);
 
                 logger.debug("Check command {}, H1:{}, H2:{}",
                         new Object[] { method2.getMethod(), method2.hashCode(), method2.hashCode() });

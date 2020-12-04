@@ -11,6 +11,7 @@ package de.csdev.ebus.wip;
 import java.io.IOException;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,12 +57,12 @@ public class ClientTest2 {
         client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
 
             @Override
-            public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+            public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
                 logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramReceived()");
             }
 
             @Override
-            public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+            public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
                 logger.error(exception.getLocalizedMessage());
                 // TODO Auto-generated method stub
                 // logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramException()");
@@ -83,14 +84,14 @@ public class ClientTest2 {
 
             @Override
             public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
-                    byte[] receivedData, Integer sendQueueId) {
+                    byte[] receivedData, @Nullable Integer sendQueueId) {
                 logger.error("ClientTest.xxx().new EBusParserListener() {...}.onTelegramResolved()");
                 System.out.println(result);
             }
 
             @Override
-            public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData,
-                    Integer sendQueueId, String exceptionMessage) {
+            public void onTelegramResolveFailed(@Nullable IEBusCommandMethod commandChannel,
+                    byte @Nullable [] receivedData, @Nullable Integer sendQueueId, @Nullable String exceptionMessage) {
                 // noop
             }
         });

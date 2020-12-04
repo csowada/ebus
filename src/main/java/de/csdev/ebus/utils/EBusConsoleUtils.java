@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,13 @@ public class EBusConsoleUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
 
-    public static String bruteforceData(byte[] data) throws EBusTypeException {
+    /**
+     *
+     * @param data
+     * @return
+     * @throws EBusTypeException
+     */
+    public static String bruteforceData(byte @Nullable [] data) throws EBusTypeException {
 
         EBusTypeRegistry typeRegistry = new EBusTypeRegistry();
 
@@ -67,24 +74,26 @@ public class EBusConsoleUtils {
                 "    -----------------------------------------------------------------------------------------------");
 
         // Check all possible positions with known data types
-        for (int i = 0; i < data.length; i++) {
+        if (data != null) {
+            for (int i = 0; i < data.length; i++) {
 
-            try {
-                Object word = i == data.length - 1 ? "---" : typeWord.decode(new byte[] { data[i + 1], data[i] });
-                Object integer = i == data.length - 1 ? "---" : typeInt.decode(new byte[] { data[i + 1], data[i] });
-                Object data2b = i == data.length - 1 ? "---" : typeD2B.decode(new byte[] { data[i + 1], data[i] });
-                Object data2c = i == data.length - 1 ? "---" : typeD2C.decode(new byte[] { data[i + 1], data[i] });
+                try {
+                    Object word = i == data.length - 1 ? "---" : typeWord.decode(new byte[] { data[i + 1], data[i] });
+                    Object integer = i == data.length - 1 ? "---" : typeInt.decode(new byte[] { data[i + 1], data[i] });
+                    Object data2b = i == data.length - 1 ? "---" : typeD2B.decode(new byte[] { data[i + 1], data[i] });
+                    Object data2c = i == data.length - 1 ? "---" : typeD2C.decode(new byte[] { data[i + 1], data[i] });
 
-                Object data1c = typeD1C.decode(new byte[] { data[i] });
-                Object bcd = typeBCD.decode(new byte[] { data[i] });
-                int uint = data[i] & 0xFF;
+                    Object data1c = typeD1C.decode(new byte[] { data[i] });
+                    Object bcd = typeBCD.decode(new byte[] { data[i] });
+                    int uint = data[i] & 0xFF;
 
-                format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s%-13s", i + 6, word, integer, uint, data2b,
-                        data2c, data1c, bcd);
-                logger.info("    " + format);
+                    format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s%-13s", i + 6, word, integer, uint,
+                            data2b, data2c, data1c, bcd);
+                    logger.info("    " + format);
 
-            } catch (EBusTypeException e) {
-                logger.error("error!", e);
+                } catch (EBusTypeException e) {
+                    logger.error("error!", e);
+                }
             }
         }
 

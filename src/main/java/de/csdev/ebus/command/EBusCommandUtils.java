@@ -14,8 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,8 @@ public class EBusCommandUtils {
      * @param commandMethod
      * @return
      */
-    public static String getFullId(IEBusCommandMethod commandMethod) {
+    public static String getFullId(@NonNull IEBusCommandMethod commandMethod) {
+        Objects.requireNonNull(commandMethod);
         return getFullId(commandMethod.getParent()) + ":" + commandMethod.getMethod();
     }
 
@@ -55,6 +58,7 @@ public class EBusCommandUtils {
      * @return
      */
     public static String getFullId(IEBusCommand command) {
+        Objects.requireNonNull(command);
         return command.getParentCollection().getId() + "." + command.getId();
     }
 
@@ -260,8 +264,9 @@ public class EBusCommandUtils {
 
         Map<Integer, IEBusComplexType<?>> complexTypes = new HashMap<Integer, IEBusComplexType<?>>();
 
-        if (commandMethod.getMasterTypes() != null) {
-            for (IEBusValue entry : commandMethod.getMasterTypes()) {
+        List<IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        if (masterTypes != null) {
+            for (IEBusValue entry : masterTypes) {
 
                 IEBusType<?> type = entry.getType();
                 byte[] b = null;
@@ -553,8 +558,9 @@ public class EBusCommandUtils {
         buf.put(new byte[] { (byte) 0xFF, (byte) 0xFF }); // PB SB - Command
         buf.put((byte) 0xFF); // NN - Length
 
-        if (commandChannel.getMasterTypes() != null) {
-            for (IEBusValue entry : commandChannel.getMasterTypes()) {
+        List<IEBusValue> masterTypes = commandChannel.getMasterTypes();
+        if (masterTypes != null) {
+            for (IEBusValue entry : masterTypes) {
                 IEBusType<?> type = entry.getType();
 
                 if (entry.getName() == null && type instanceof EBusTypeBytes && entry.getDefaultValue() != null) {
@@ -587,8 +593,10 @@ public class EBusCommandUtils {
     public static int getSlaveDataLength(IEBusCommandMethod command) {
         if (command.getType() == Type.MASTER_SLAVE) {
             int len = 0;
-            if (command.getSlaveTypes() != null) {
-                for (IEBusValue value : command.getSlaveTypes()) {
+
+            List<IEBusValue> slaveTypes = command.getSlaveTypes();
+            if (slaveTypes != null) {
+                for (IEBusValue value : slaveTypes) {
                     if (value.getType() != null) {
                         len += value.getType().getTypeLength();
                     }

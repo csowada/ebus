@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +61,12 @@ public class ClientTest {
         client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
 
             @Override
-            public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+            public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
                 // noop
             }
 
             @Override
-            public void onTelegramException(EBusDataException e, Integer sendQueueId) {
+            public void onTelegramException(EBusDataException e, @Nullable Integer sendQueueId) {
                 logger.error("error!", e);
                 fail("No TelegramException expected!");
             }
@@ -87,7 +88,7 @@ public class ClientTest {
 
             @Override
             public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
-                    byte[] receivedData, Integer sendQueueId) {
+                    byte[] receivedData, @Nullable Integer sendQueueId) {
 
                 assertTrue(result.containsKey("pressure"));
                 assertEquals(new BigDecimal("1.52"), result.get("pressure"));
@@ -95,8 +96,8 @@ public class ClientTest {
             }
 
             @Override
-            public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData,
-                    Integer sendQueueId, String exceptionMessage) {
+            public void onTelegramResolveFailed(@Nullable IEBusCommandMethod commandChannel,
+                    byte @Nullable [] receivedData, @Nullable Integer sendQueueId, @Nullable String exceptionMessage) {
                 // noop
             }
         });

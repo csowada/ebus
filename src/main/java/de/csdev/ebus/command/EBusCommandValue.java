@@ -13,6 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jdt.annotation.Checks;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.utils.CollectionUtils;
 import de.csdev.ebus.utils.EBusUtils;
@@ -59,7 +63,7 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public EBusCommandValue clone() {
+    public @NonNull EBusCommandValue clone() {
 
         EBusCommandValue clone = createInstance();
         clone.defaultValue = this.defaultValue;
@@ -125,13 +129,13 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public String getName() {
+    public @Nullable String getName() {
         return name;
     }
 
     @Override
-    public IEBusCommandMethod getParent() {
-        return parent;
+    public @NonNull IEBusCommandMethod getParent() {
+        return Checks.requireNonNull(parent);
     }
 
     @Override
@@ -145,8 +149,8 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public IEBusType<?> getType() {
-        return type;
+    public @NonNull IEBusType<?> getType() {
+        return Checks.requireNonNull(type);
     }
 
     public void setDefaultValue(Object defaultValue) {

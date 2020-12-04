@@ -11,6 +11,8 @@ package de.csdev.ebus.cfg.std.dto;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.utils.CollectionUtils;
 
 /**
@@ -19,61 +21,61 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusCollectionDTO {
 
-    private List<String> authors;
+    private @Nullable List<String> authors;
 
-    private List<EBusCommandDTO> commands;
+    private @Nullable List<EBusCommandDTO> commands;
 
-    private String description;
+    private @Nullable String description;
 
-    private String id;
+    private @Nullable String id;
 
-    private List<String> identification;
+    private @Nullable List<String> identification;
 
-    private String label;
+    private @Nullable String label;
 
-    private Map<String, Object> properties;
+    private @Nullable Map<String, Object> properties;
 
-    private List<EBusCommandTemplatesDTO> templates;
+    private @Nullable List<EBusCommandTemplatesDTO> templates;
 
-    private String vendor;
+    private @Nullable String vendor;
 
-    public List<String> getAuthors() {
+    public @Nullable List<String> getAuthors() {
         return authors;
     }
 
-    public List<EBusCommandDTO> getCommands() {
+    public @Nullable List<EBusCommandDTO> getCommands() {
         return commands;
     }
 
-    public String getDescription() {
+    public @Nullable String getDescription() {
         return description;
     }
 
-    public String getId() {
+    public @Nullable String getId() {
         return id;
     }
 
-    public List<String> getIdentification() {
+    public @Nullable List<String> getIdentification() {
         return identification;
     }
 
-    public String getLabel() {
+    public @Nullable String getLabel() {
         return label;
     }
 
-    public Map<String, Object> getProperties() {
+    public @Nullable Map<String, Object> getProperties() {
         return CollectionUtils.unmodifiableNotNullMap(properties);
     }
 
-    public Object getProperty(String key) {
+    public @Nullable Object getProperty(String key) {
         return CollectionUtils.get(properties, key);
     }
 
-    public List<EBusCommandTemplatesDTO> getTemplates() {
+    public @Nullable List<EBusCommandTemplatesDTO> getTemplates() {
         return templates;
     }
 
-    public String getVendor() {
+    public @Nullable String getVendor() {
         return vendor;
     }
 
@@ -107,7 +109,9 @@ public class EBusCollectionDTO {
 
     public void setProperty(String key, Object value) {
         properties = CollectionUtils.newMapIfNull(properties);
-        properties.put(key, value);
+        if (properties != null) {
+            properties.put(key, value);
+        }
     }
 
     public void setTemplates(List<EBusCommandTemplatesDTO> templates) {

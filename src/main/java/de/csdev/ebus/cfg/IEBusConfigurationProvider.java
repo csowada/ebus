@@ -11,10 +11,14 @@ package de.csdev.ebus.cfg;
 import java.io.InputStream;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusConfigurationProvider {
 
     /**
@@ -30,14 +34,14 @@ public interface IEBusConfigurationProvider {
      * @param configurationId
      * @return
      */
-    public String getConfigurationLabel(String configurationId);
+    public @Nullable String getConfigurationLabel(String configurationId);
 
     /**
      * Returns the input stream for a configuration id or null if not existent.
-     * 
+     *
      * @param configurationId
      * @return
      */
-    public InputStream getConfigurationStream(String configurationId);
+    public @Nullable InputStream getConfigurationStream(String configurationId);
 
 }

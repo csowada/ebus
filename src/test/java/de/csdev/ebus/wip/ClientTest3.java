@@ -10,6 +10,7 @@ package de.csdev.ebus.wip;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,13 +56,13 @@ public class ClientTest3 {
         client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
 
             @Override
-            public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+            public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
                 // TODO Auto-generated method stub
                 logger.info("Received: " + EBusUtils.toHexDumpString(receivedData).toString());
             }
 
             @Override
-            public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+            public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
                 System.err.println(exception.getLocalizedMessage());
                 // logger.error(exception.getLocalizedMessage());
                 // TODO Auto-gen1erated method stub
