@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.wip;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -88,8 +90,12 @@ public class ConfigurationReaderTest {
             }
         }
 
-        Map<String, Object> encode = EBusCommandUtils.decodeTelegram(commandRegistry.getCommandMethodById("wolf-sm1",
-                "solar.solar_data", IEBusCommandMethod.Method.BROADCAST), StaticTestTelegrams.WOLF_SOLAR_B);
+        IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById("wolf-sm1", "solar.solar_data",
+                IEBusCommandMethod.Method.BROADCAST);
+
+        assertNotNull(commandMethod);
+
+        Map<String, Object> encode = EBusCommandUtils.decodeTelegram(commandMethod, StaticTestTelegrams.WOLF_SOLAR_B);
 
         for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
             System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "

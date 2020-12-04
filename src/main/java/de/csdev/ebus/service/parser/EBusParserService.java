@@ -10,6 +10,7 @@ package de.csdev.ebus.service.parser;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -33,15 +34,16 @@ public class EBusParserService extends EBusConnectorEventListener {
     private static final Logger logger = LoggerFactory.getLogger(EBusParserService.class);
 
     /** the list for listeners */
-    private final List<IEBusParserListener> listeners = new CopyOnWriteArrayList<IEBusParserListener>();
+    private final @NonNull List<IEBusParserListener> listeners = new CopyOnWriteArrayList<IEBusParserListener>();
 
     /** */
-    private EBusCommandRegistry commandRegistry;
+    private @NonNull EBusCommandRegistry commandRegistry;
 
     /**
      * @param configurationProvider
      */
-    public EBusParserService(EBusCommandRegistry configurationProvider) {
+    public EBusParserService(@NonNull EBusCommandRegistry configurationProvider) {
+        Objects.requireNonNull(configurationProvider);
         this.commandRegistry = configurationProvider;
     }
 
@@ -59,7 +61,8 @@ public class EBusParserService extends EBusConnectorEventListener {
      *
      * @param listener
      */
-    public void addEBusParserListener(IEBusParserListener listener) {
+    public void addEBusParserListener(@NonNull IEBusParserListener listener) {
+        Objects.requireNonNull(listener);
         listeners.add(listener);
     }
 
@@ -69,7 +72,8 @@ public class EBusParserService extends EBusConnectorEventListener {
      * @param listener
      * @return
      */
-    public boolean removeEBusParserListener(IEBusParserListener listener) {
+    public boolean removeEBusParserListener(@NonNull IEBusParserListener listener) {
+        Objects.requireNonNull(listener);
         return listeners.remove(listener);
     }
 
@@ -111,8 +115,9 @@ public class EBusParserService extends EBusConnectorEventListener {
      * @param receivedData
      * @param sendQueueId
      */
-    private void fireOnTelegramResolved(@NonNull IEBusCommandMethod commandChannel, @NonNull Map<String, Object> result,
-            byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
+    private void fireOnTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
+            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @Nullable Integer sendQueueId) {
 
         for (IEBusParserListener listener : listeners) {
             try {

@@ -8,12 +8,15 @@
  */
 package de.csdev.ebus;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class StaticTestTelegrams {
 
     /**
@@ -27,7 +30,7 @@ public class StaticTestTelegrams {
     public static byte[] WOLF_SOLAR_A = EBusUtils
             .toByteArray("71 FE 50 18 0E 00 00 D0 01 05 00 E2 03 0F 01 01 00 00 00 18");
 
-    public static byte[] WOLF_SOLAR_B = EBusUtils
+    public static final byte[] WOLF_SOLAR_B = EBusUtils
             .toByteArray("71 FE 50 17 10 08 91 05 01 CA 01 00 80 00 80 00 80 00 80 00 80 9B");
 
     /**

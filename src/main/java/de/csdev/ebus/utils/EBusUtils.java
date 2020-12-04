@@ -11,6 +11,8 @@ package de.csdev.ebus.utils;
 import java.nio.ByteBuffer;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.Checks;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.core.EBusConsts;
@@ -65,7 +67,7 @@ public class EBusUtils {
      * @param size The final byte array size
      * @return The new byte arrray or <code>null</code> if the source array is to large
      */
-    public static byte[] leftPadByteArray(byte @Nullable [] source, int size) {
+    public static byte @Nullable [] leftPadByteArray(byte @Nullable [] source, int size) {
         byte[] bs = new byte[size];
 
         if (source == null || size < source.length) {
@@ -280,7 +282,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte[] toByteArray(@Nullable String hexDumpString) throws NumberFormatException {
+    static public byte @NonNull [] toByteArray(@Nullable String hexDumpString) throws NumberFormatException {
         if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
@@ -302,7 +304,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte[] toByteArray2(@Nullable String hexDumpString) throws NumberFormatException {
+    static public byte @NonNull [] toByteArray2(@Nullable String hexDumpString) throws NumberFormatException {
 
         if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
@@ -326,7 +328,7 @@ public class EBusUtils {
         return result;
     }
 
-    static public String mergeHexDumpStrings(@Nullable String... args) {
+    static public @NonNull String mergeHexDumpStrings(@Nullable String... args) {
 
         if (args == null) {
             return "";
@@ -339,7 +341,8 @@ public class EBusUtils {
             }
         }
 
-        return toHexDumpString(toByteArray2(merge)).toString();
+        StringBuilder sb = toHexDumpString(toByteArray2(merge));
+        return Checks.requireNonNull(sb.toString());
     }
 
     /**
@@ -348,13 +351,13 @@ public class EBusUtils {
      * @param data The source
      * @return The hex string
      */
-    static public String toHexDumpString(@Nullable Byte data) {
+    static public @NonNull String toHexDumpString(@Nullable Byte data) {
 
         if (data == null) {
             return "";
         }
 
-        return String.format("%02X", (0xFF & data));
+        return Checks.requireNonEmpty(String.format("%02X", (0xFF & data)));
     }
 
     /**
@@ -363,7 +366,7 @@ public class EBusUtils {
      * @param data The source
      * @return The StringBuilder with hex dump
      */
-    static public StringBuilder toHexDumpString(byte @Nullable [] data) {
+    static public @NonNull StringBuilder toHexDumpString(byte @Nullable [] data) {
         StringBuilder sb = new StringBuilder();
         if (data != null && data.length > 0) {
             for (int i = 0; i < data.length; i++) {

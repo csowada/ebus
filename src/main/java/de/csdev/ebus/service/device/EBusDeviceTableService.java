@@ -92,6 +92,10 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_INQ_EXISTENCE, IEBusCommandMethod.Method.BROADCAST);
 
+        if (command == null) {
+            throw new IllegalStateException("Unable to load command COMMAND_INQ_EXISTENCE!");
+        }
+
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
                     EBusConsts.BROADCAST_ADDRESS, null);
@@ -154,6 +158,10 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
 
+        if (command == null) {
+            throw new IllegalStateException("Unable to load command COMMAND_IDENTIFICATION!");
+        }
+
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, scanSlaveAddress, null);
 
@@ -200,6 +208,10 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
         IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_SIGN_OF_LIFE, IEBusCommandMethod.Method.BROADCAST);
+
+        if (command == null) {
+            throw new IllegalStateException("Unable to load command COMMAND_SIGN_OF_LIFE!");
+        }
 
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
