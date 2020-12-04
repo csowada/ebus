@@ -8,10 +8,12 @@
  */
 package de.csdev.ebus.command.datatypes;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,16 +51,19 @@ public class EBusTypeRegistry {
     private Map<String, IEBusType<?>> types = null;
 
     /**
+     * @throws EBusTypeException
      *
      */
-    public EBusTypeRegistry() {
+    public EBusTypeRegistry() throws EBusTypeException {
         init();
     }
 
     /**
      * Loads all internal types
+     *
+     * @throws EBusTypeException
      */
-    protected void init() {
+    protected void init() throws EBusTypeException {
         types = new HashMap<String, IEBusType<?>>();
 
         // primary types
@@ -172,7 +177,8 @@ public class EBusTypeRegistry {
      * @return
      * @throws EBusTypeException
      */
-    public <T> T decode(String type, byte[] data) throws EBusTypeException {
+    public @Nullable <T> T decode(@Nullable String type, byte @Nullable [] data) throws EBusTypeException {
+
         @SuppressWarnings("unchecked")
         IEBusType<T> eBusType = (IEBusType<T>) types.get(type);
 
@@ -188,10 +194,17 @@ public class EBusTypeRegistry {
      * Add a new IEBusType to the registry
      *
      * @param clazz
+     * @throws EBusTypeException
      */
-    public void add(Class<?> clazz) {
+    public void add(Class<?> clazz) throws EBusTypeException {
         try {
-            IEBusType<?> newInstance = (IEBusType<?>) clazz.newInstance();
+            IEBusType<?> newInstance = (IEBusType<?>) clazz.getDeclaredConstructor().newInstance();
+
+            if (newInstance == null) {
+                throw new EBusTypeException(
+                        String.format("Unable to create a new instance for class %s", clazz.getName()));
+            }
+
             newInstance.setTypesParent(this);
 
             for (String typeName : newInstance.getSupportedTypes()) {
@@ -203,6 +216,14 @@ public class EBusTypeRegistry {
             logger.error("error!", e);
 
         } catch (IllegalAccessException e) {
+            logger.error("error!", e);
+        } catch (IllegalArgumentException e) {
+            logger.error("error!", e);
+        } catch (InvocationTargetException e) {
+            logger.error("error!", e);
+        } catch (NoSuchMethodException e) {
+            logger.error("error!", e);
+        } catch (SecurityException e) {
             logger.error("error!", e);
         }
     }

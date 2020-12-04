@@ -33,7 +33,7 @@ public class TimeTest {
     private EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 
@@ -63,6 +63,7 @@ public class TimeTest {
 
         // check decode
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30:59
@@ -74,6 +75,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30:59 - reversed byte order
@@ -85,6 +87,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
     }
 
@@ -102,6 +105,7 @@ public class TimeTest {
 
         // check decode
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30:59
@@ -113,6 +117,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30:59 - reversed byte order
@@ -124,6 +129,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
     }
 
@@ -141,6 +147,7 @@ public class TimeTest {
 
         // check decode
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30:59
@@ -152,6 +159,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30:59 - reversed byte order
@@ -163,6 +171,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
     }
 
@@ -180,6 +189,7 @@ public class TimeTest {
 
         // check decode
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30
@@ -191,6 +201,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30 - reversed byte order
@@ -202,6 +213,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
     }
 
@@ -219,6 +231,7 @@ public class TimeTest {
 
         // check decode
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30
@@ -230,6 +243,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30 - reversed byte order
@@ -241,6 +255,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
     }
 
@@ -260,6 +275,7 @@ public class TimeTest {
 
         // check decode
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30
@@ -271,6 +287,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30 - reversed byte order
@@ -284,6 +301,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
     }
 
@@ -314,6 +332,7 @@ public class TimeTest {
 
         // check decode
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
 
         // default 23:30
@@ -325,6 +344,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar.getTime(), decode.getCalendar().getTime());
 
         // default 23:30 - reversed byte order
@@ -336,6 +356,7 @@ public class TimeTest {
 
         // check decode
         decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar, decode.getCalendar());
     }
 

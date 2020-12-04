@@ -32,7 +32,7 @@ public class DateTest {
     private EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 
@@ -50,6 +50,7 @@ public class DateTest {
         assertArrayEquals(new byte[] { 0x24, 0x12, 0x07, 0x17 }, bytes);
 
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar.getTime(), decode.getCalendar().getTime());
     }
 
@@ -67,6 +68,7 @@ public class DateTest {
         assertArrayEquals(new byte[] { 0x24, 0x12, 0x17 }, bytes);
 
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar.getTime(), decode.getCalendar().getTime());
     }
 
@@ -84,6 +86,7 @@ public class DateTest {
         assertArrayEquals(new byte[] { 0x18, 0x0c, 0x07, 0x11 }, bytes);
 
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar.getTime(), decode.getCalendar().getTime());
     }
 
@@ -100,6 +103,7 @@ public class DateTest {
         assertArrayEquals(new byte[] { 0x18, 0x0c, 0x11 }, bytes);
 
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar.getTime(), decode.getCalendar().getTime());
     }
 
@@ -118,6 +122,7 @@ public class DateTest {
         assertArrayEquals(new byte[] { 0x09, 0x00 }, bytes);
 
         EBusDateTime decode = type.decode(bytes);
+        assertNotNull(decode);
         assertEquals(calendar.getTime(), decode.getCalendar().getTime());
 
         // days 06.06.2079

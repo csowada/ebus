@@ -42,7 +42,7 @@ public class DateTimeTest {
     EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 
@@ -71,6 +71,7 @@ public class DateTimeTest {
         // decode
         EBusDateTime calendar = type.decode(DATE_TIME_BYTES);
 
+        assertNotNull(calendar);
         assertEquals(59, calendar.getCalendar().get(Calendar.SECOND));
         assertEquals(30, calendar.getCalendar().get(Calendar.MINUTE));
         assertEquals(13, calendar.getCalendar().get(Calendar.HOUR_OF_DAY));
@@ -90,6 +91,7 @@ public class DateTimeTest {
         // decode
         EBusDateTime calendar = type.decode(DATE_TIME_BYTES_DATE_SHORT);
 
+        assertNotNull(calendar);
         assertEquals(59, calendar.getCalendar().get(Calendar.SECOND));
         assertEquals(30, calendar.getCalendar().get(Calendar.MINUTE));
         assertEquals(13, calendar.getCalendar().get(Calendar.HOUR_OF_DAY));
@@ -109,6 +111,7 @@ public class DateTimeTest {
         // decode
         EBusDateTime calendar = type.decode(DATE_TIME_BYTES_DATE_FIRST);
 
+        assertNotNull(calendar);
         assertEquals(59, calendar.getCalendar().get(Calendar.SECOND));
         assertEquals(30, calendar.getCalendar().get(Calendar.MINUTE));
         assertEquals(13, calendar.getCalendar().get(Calendar.HOUR_OF_DAY));
@@ -126,6 +129,7 @@ public class DateTimeTest {
         // decode
         EBusDateTime calendar = type.decode(EBusUtils.toByteArray("37 10 06 FF FF FF FF"));
 
+        assertNotNull(calendar);
         assertFalse(calendar.isAnyTime());
         assertEquals(37, calendar.getCalendar().get(Calendar.SECOND));
         assertEquals(10, calendar.getCalendar().get(Calendar.MINUTE));

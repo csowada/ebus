@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.client.EBusClient;
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommandMethod;
@@ -56,6 +57,9 @@ public class EBusWolfSM1TelegramTest2XXX {
                     logger.info("{} -> {}", method.getMethod(), EBusUtils.toHexDumpString(buildTelegram));
 
                 } catch (EBusTypeException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (EBusCommandException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }

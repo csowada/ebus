@@ -15,6 +15,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandCollection;
@@ -142,9 +143,10 @@ public class EBusClient {
      * @param destinationAddress The eBUS slave address
      * @return Returns the raw telegram or <code>null</code> if there is a problem.
      * @throws EBusTypeException
+     * @throws EBusCommandException
      */
     public ByteBuffer buildTelegram(IEBusCommandMethod commandMethod, Byte destinationAddress,
-            Map<String, Object> values) throws EBusTypeException {
+            Map<String, Object> values) throws EBusTypeException, EBusCommandException {
 
         if (destinationAddress == null) {
             logger.warn("No destination address defined!");

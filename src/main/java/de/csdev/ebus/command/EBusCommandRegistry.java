@@ -9,6 +9,7 @@
 package de.csdev.ebus.command;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
 import de.csdev.ebus.command.IEBusCommandMethod.Type;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
@@ -59,20 +61,30 @@ public class EBusCommandRegistry {
      */
     public EBusCommandRegistry(Class<? extends IEBusConfigurationReader> readerClass, boolean loadBuildInCommands) {
 
-        typeRegistry = new EBusTypeRegistry();
-
         try {
-            this.reader = readerClass.newInstance();
-            this.reader.setEBusTypes(typeRegistry);
+            this.typeRegistry = new EBusTypeRegistry();
+
+            this.reader = readerClass.getDeclaredConstructor().newInstance();
+            reader.setEBusTypes(this.typeRegistry);
+
+            if (loadBuildInCommands) {
+                loadBuildInCommandCollections();
+            }
 
         } catch (InstantiationException e) {
-            logger.error("error!", e);
+            throw new IllegalStateException(e);
         } catch (IllegalAccessException e) {
-            logger.error("error!", e);
-        }
-
-        if (loadBuildInCommands) {
-            loadBuildInCommandCollections();
+            throw new IllegalStateException(e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        } catch (SecurityException e) {
+            throw new IllegalStateException(e);
+        } catch (EBusTypeException e) {
+            throw new IllegalStateException(e);
         }
     }
 

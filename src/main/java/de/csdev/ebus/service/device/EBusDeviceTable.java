@@ -26,9 +26,10 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusConsts;
+import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
-import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -102,7 +103,14 @@ public class EBusDeviceTable {
         if (address == EBusConsts.BROADCAST_ADDRESS) {
             return;
         } else if (EBusUtils.isMasterAddress(address)) {
-            address = EBusUtils.getSlaveAddress(address);
+            Byte result = EBusUtils.getSlaveAddress(address);
+
+            if (result == null) {
+                throw new IllegalArgumentException(
+                        String.format("Given slave address %s is invalid!", EBusUtils.toHexDumpString(address)));
+            }
+
+            address = result;
         }
 
         if (address == ownAddress) {
@@ -129,23 +137,28 @@ public class EBusDeviceTable {
                 updatedDevice = true;
             }
 
-            BigDecimal obj2 = NumberUtils.toBigDecimal(data.get("hardware_version"));
-            if (obj2 != null && !ObjectUtils.equals(obj2, device.getHardwareVersion())) {
-                device.setHardwareVersion(obj2);
-                updatedDevice = true;
-            }
+            try {
+                BigDecimal obj2 = EBusTypeUtils.toBigDecimal(data.get("hardware_version"));
+                if (obj2 != null && !ObjectUtils.equals(obj2, device.getHardwareVersion())) {
+                    device.setHardwareVersion(obj2);
+                    updatedDevice = true;
+                }
 
-            obj2 = NumberUtils.toBigDecimal(data.get("software_version"));
-            if (obj2 != null && !ObjectUtils.equals(obj2, device.getSoftwareVersion())) {
-                device.setSoftwareVersion(obj2);
-                updatedDevice = true;
-            }
+                obj2 = EBusTypeUtils.toBigDecimal(data.get("software_version"));
+                if (obj2 != null && !ObjectUtils.equals(obj2, device.getSoftwareVersion())) {
+                    device.setSoftwareVersion(obj2);
+                    updatedDevice = true;
+                }
 
-            obj2 = NumberUtils.toBigDecimal(data.get("vendor"));
-            if (obj2 != null && !ObjectUtils.equals(obj2.byteValue(), device.getManufacturer())) {
-                int intValue = obj2.intValue();
-                device.setManufacturer((byte) intValue);
-                updatedDevice = true;
+                obj2 = EBusTypeUtils.toBigDecimal(data.get("vendor"));
+                if (obj2 != null && !ObjectUtils.equals(obj2.byteValue(), device.getManufacturer())) {
+                    int intValue = obj2.intValue();
+                    device.setManufacturer((byte) intValue);
+                    updatedDevice = true;
+                }
+            } catch (EBusTypeException e) {
+                logger.warn("Unable to update device table entry!", e);
+                return;
             }
         }
 

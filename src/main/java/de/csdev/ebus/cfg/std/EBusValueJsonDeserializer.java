@@ -50,7 +50,6 @@ public class EBusValueJsonDeserializer implements JsonDeserializer<List<EBusValu
         ArrayList<String> fields = new ArrayList<String>();
         for (Field field : EBusValueDTO.class.getDeclaredFields()) {
             SerializedName annotation = field.getAnnotation(SerializedName.class);
-
             if (annotation != null) {
                 fields.add(annotation.value());
 
@@ -65,24 +64,24 @@ public class EBusValueJsonDeserializer implements JsonDeserializer<List<EBusValu
 
             for (Entry<String, JsonElement> entry : jObject.entrySet()) {
                 if (!fields.contains(entry.getKey())) {
-                	
-                	if(entry.getValue().isJsonPrimitive()) {
-                		JsonPrimitive primitive = (JsonPrimitive) entry.getValue();
-                		
-                		if(primitive.isNumber()) {
-                			valueDTO.setProperty(entry.getKey(), primitive.getAsBigDecimal());
-                			
-                		} else if(primitive.isBoolean()) {
-                			valueDTO.setProperty(entry.getKey(), primitive.getAsBoolean());
-                			
-                		} else if(primitive.isString()) {
-                			valueDTO.setProperty(entry.getKey(), primitive.getAsString());
-                		}
-                		
-                	} else {
-                		valueDTO.setProperty(entry.getKey(), entry.getValue().getAsString());
-                		
-                	}
+
+                    if (entry.getValue().isJsonPrimitive()) {
+                        JsonPrimitive primitive = (JsonPrimitive) entry.getValue();
+
+                        if (primitive.isNumber()) {
+                            valueDTO.setProperty(entry.getKey(), primitive.getAsBigDecimal());
+
+                        } else if (primitive.isBoolean()) {
+                            valueDTO.setProperty(entry.getKey(), primitive.getAsBoolean());
+
+                        } else if (primitive.isString()) {
+                            valueDTO.setProperty(entry.getKey(), primitive.getAsString());
+                        }
+
+                    } else {
+                        valueDTO.setProperty(entry.getKey(), entry.getValue().getAsString());
+
+                    }
 
                 }
             }

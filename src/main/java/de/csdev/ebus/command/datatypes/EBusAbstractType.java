@@ -9,14 +9,17 @@
 package de.csdev.ebus.command.datatypes;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,13 +68,21 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
         try {
             @SuppressWarnings("unchecked")
-            EBusAbstractType<T> newInstance = this.getClass().newInstance();
+            EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
             newInstance.types = this.types;
             return newInstance;
 
         } catch (InstantiationException e) {
             logger.error("error!", e);
         } catch (IllegalAccessException e) {
+            logger.error("error!", e);
+        } catch (IllegalArgumentException e) {
+            logger.error("error!", e);
+        } catch (InvocationTargetException e) {
+            logger.error("error!", e);
+        } catch (NoSuchMethodException e) {
+            logger.error("error!", e);
+        } catch (SecurityException e) {
             logger.error("error!", e);
         }
 
@@ -84,11 +95,9 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @see de.csdev.ebus.command.datatypes.IEBusType#decode(byte[])
      */
     @Override
-    public T decode(byte[] data) throws EBusTypeException {
+    public @Nullable T decode(byte @Nullable [] data) throws EBusTypeException {
 
-        if (data == null) {
-            throw new EBusTypeException("Input parameter byte-array is NULL!");
-        }
+        Objects.requireNonNull(data);
 
         if (data.length != getTypeLength()) {
             throw new EBusTypeException("Input parameter byte-array has size {0}, expected {1} for eBUS type {2}",
@@ -113,7 +122,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @return
      * @throws EBusTypeException
      */
-    public T decodeInt(byte[] data) throws EBusTypeException {
+    public @Nullable T decodeInt(byte @Nullable [] data) throws EBusTypeException {
         throw new RuntimeException("Must be overwritten by superclass!");
     }
 
@@ -123,7 +132,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @see de.csdev.ebus.command.datatypes.IEBusType#encode(java.lang.Object)
      */
     @Override
-    public byte[] encode(Object data) throws EBusTypeException {
+    public byte[] encode(@Nullable Object data) throws EBusTypeException {
 
         // return the replace value
         if (data == null) {
@@ -150,7 +159,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @return
      * @throws EBusTypeException
      */
-    public byte[] encodeInt(Object data) throws EBusTypeException {
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
         throw new RuntimeException("Must be overwritten by superclass!");
     }
 
@@ -170,7 +179,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @see de.csdev.ebus.command.datatypes.IEBusType#getInstance(java.util.Map)
      */
     @Override
-    public IEBusType<T> getInstance(Map<String, Object> properties) {
+    public IEBusType<T> getInstance(@Nullable Map<String, Object> properties) {
 
         // use default instance if no properties are set
         if (properties == null || properties.isEmpty()) {
@@ -232,7 +241,11 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @param property
      * @param value
      */
-    protected void setInstanceProperty(EBusAbstractType<T> instance, String property, Object value) {
+    protected void setInstanceProperty(@Nullable EBusAbstractType<T> instance, @Nullable String property,
+            @Nullable Object value) {
+
+        Objects.requireNonNull(property);
+        Objects.requireNonNull(instance);
 
         if (property.equals("replaceValue")) {
             if (value instanceof String) {

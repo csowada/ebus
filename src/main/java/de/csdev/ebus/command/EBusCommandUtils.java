@@ -339,7 +339,7 @@ public class EBusCommandUtils {
     }
 
     public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
-            Map<String, Object> values) throws EBusTypeException {
+            Map<String, Object> values) throws EBusTypeException, EBusCommandException {
         return buildMasterTelegram(commandMethod, source, target, values, false);
     }
 
@@ -351,9 +351,10 @@ public class EBusCommandUtils {
      * @param skipAddressChecks
      * @return
      * @throws EBusTypeException
+     * @throws EBusCommandException
      */
     public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
-            Map<String, Object> values, boolean skipAddressChecks) throws EBusTypeException {
+            Map<String, Object> values, boolean skipAddressChecks) throws EBusTypeException, EBusCommandException {
 
         if (source == null && commandMethod.getSourceAddress() != null) {
             source = commandMethod.getSourceAddress();
@@ -406,6 +407,10 @@ public class EBusCommandUtils {
                             EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
                 }
             }
+        }
+
+        if (targetChecked == null) {
+            throw new EBusCommandException("Unable to calculate the correct trarget address!");
         }
 
         byte[] data = EBusUtils.toByteArray(composeMasterData(commandMethod, values));

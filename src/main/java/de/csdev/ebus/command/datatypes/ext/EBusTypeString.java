@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.command.datatypes.ext;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 
 /**
@@ -28,12 +30,12 @@ public class EBusTypeString extends EBusAbstractType<String> {
     }
 
     @Override
-    public String decodeInt(byte[] data) {
+    public String decodeInt(byte @Nullable [] data) {
         return new String(data);
     }
 
     @Override
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(@Nullable Object data) {
 
         // return a empty string with defined len
         if (data == null) {

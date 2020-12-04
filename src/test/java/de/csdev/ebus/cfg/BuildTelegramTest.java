@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.client.EBusClient;
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
@@ -58,6 +59,9 @@ public class BuildTelegramTest {
                                 collection.getId(), EBusUtils.toHexDumpString(masterTelegram)));
 
                     } catch (EBusTypeException e) {
+                        e.printStackTrace();
+                        fail();
+                    } catch (EBusCommandException e) {
                         e.printStackTrace();
                         fail();
                     }

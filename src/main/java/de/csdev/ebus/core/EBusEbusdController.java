@@ -104,10 +104,10 @@ public class EBusEbusdController extends EBusControllerBase {
                             // blocks the send thread until we received a valid response from ebusd
                             queue.setBlockSend(true);
                         }
-                    }
 
-                    // prepare next entry
-                    queue.checkSendStatus(true);
+                        // prepare next entry
+                        queue.checkSendStatus(true);
+                    }
 
                     Thread.sleep(100);
 

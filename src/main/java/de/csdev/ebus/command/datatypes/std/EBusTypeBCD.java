@@ -9,8 +9,13 @@
 package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -41,7 +46,9 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public BigDecimal decodeInt(byte[] data) {
+    public BigDecimal decodeInt(byte @Nullable [] data) {
+
+        Objects.requireNonNull(data);
 
         BigDecimal result = BigDecimal.valueOf(0);
 
@@ -60,12 +67,12 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         final BigDecimal hundred = BigDecimal.valueOf(100);
         byte[] result = new byte[getTypeLength()];
 
-        BigDecimal b = NumberUtils.toBigDecimal(data);
+        BigDecimal b = EBusTypeUtils.toBigDecimal(data);
 
         for (int i = 0; i < result.length; i++) {
 
@@ -75,6 +82,10 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
             b = divideAndRemainder[0];
 
             Byte bcd = NumberUtils.convertDec2Bcd(divideAndRemainder[1].byteValue());
+
+            if (bcd == null) {
+                throw new EBusTypeException("Unable to convert the byte value to BCD format!");
+            }
 
             // put the result into the byte array, revert order
             result[result.length - (i + 1)] = bcd;

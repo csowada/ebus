@@ -7,19 +7,19 @@
 	<description>eBUS core library - This library handles the communication with heating engineering via the BUS specification. This protocol is used by many heating manufacturers in Europe.</description>
 	<groupId>de.cs-dev.ebus</groupId>
 	<artifactId>ebus-core</artifactId>
-	<version>1.0.9</version>
+	<version>1.1.0</version>
 	<url>https://github.com/csowada/ebus</url>
 	<packaging>bundle</packaging>
 
-    <properties>
-        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.release>8</maven.compiler.release>
-        <license.year>2020</license.year>
-        <bundle.version>1.0.9.${maven.build.timestamp}</bundle.version>
-    </properties>
+	<properties>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.release>8</maven.compiler.release>
+		<license.year>2020</license.year>
+		<bundle.version>1.1.0.${maven.build.timestamp}</bundle.version>
+	</properties>
 
 	<organization>
 		<name>Christian Sowada</name>
@@ -93,7 +93,7 @@
 						<Export-Package>de.csdev.ebus.*</Export-Package>
 						<opt>resolution:=optional</opt>
 						<Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt], *</Import-Package>
-						
+
 						<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
 						<Build-Commit>${buildNumber}</Build-Commit>
 						<Build-Branch>${scmBranch}</Build-Branch>
@@ -281,6 +281,12 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.annotation</artifactId>
+			<version>2.2.600</version>
 		</dependency>
 
 	</dependencies>

@@ -12,10 +12,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.utils.NumberUtils;
+import de.csdev.ebus.utils.EBusTypeUtils;
 
 public abstract class AbstractEBusTypeNumber extends EBusAbstractType<BigDecimal> {
 
@@ -31,15 +32,16 @@ public abstract class AbstractEBusTypeNumber extends EBusAbstractType<BigDecimal
     }
 
     @Override
-    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
+    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
         byte[] clone = ArrayUtils.clone(data);
         ArrayUtils.reverse(clone);
         return new BigDecimal(new BigInteger(clone));
     }
 
     @Override
-    public byte[] encodeInt(Object data) throws EBusTypeException {
-        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+        BigDecimal b = EBusTypeUtils.toBigDecimal(data == null ? 0 : data);
+
         long l = b.longValue();
         int length = getTypeLength();
         byte[] result = new byte[length];

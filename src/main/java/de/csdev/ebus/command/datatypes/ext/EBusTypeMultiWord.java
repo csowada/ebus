@@ -10,11 +10,13 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.math.BigDecimal;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
+import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
-import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -42,7 +44,7 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
+    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         byte[] dataNew = new byte[2];
 
@@ -56,6 +58,10 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
 
             BigDecimal value = types.decode(EBusTypeWord.TYPE_WORD, dataNew);
 
+            if (value == null) {
+                throw new EBusTypeException("Unable to convert data to type WORD!");
+            }
+
             BigDecimal factor = this.multiplier.pow(i);
             valx = valx.add(value.multiply(factor));
         }
@@ -64,14 +70,10 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public byte[] encodeInt(Object data) throws EBusTypeException {
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
 
-        BigDecimal value = NumberUtils.toBigDecimal(data);
+        BigDecimal value = EBusTypeUtils.toBigDecimal(data);
         byte[] result = new byte[getTypeLength()];
-
-        if (value == null) {
-            return result;
-        }
 
         int length = this.length - 1;
 

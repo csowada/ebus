@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
@@ -77,12 +78,20 @@ public class EBusBitTypeTest {
 
         assertFalse(values.isEmpty());
 
-        ByteBuffer buildMasterTelegram = EBusCommandUtils.buildMasterTelegram(method, (byte) 0x03, (byte) 0xFE, values);
+        try {
+            ByteBuffer buildMasterTelegram = EBusCommandUtils.buildMasterTelegram(method, (byte) 0x03, (byte) 0xFE,
+                    values);
 
-        String hexDumpString = EBusUtils.toHexDumpString(buildMasterTelegram).toString();
+            String hexDumpString = EBusUtils.toHexDumpString(buildMasterTelegram).toString();
 
-        assertEquals(sourceTelegram, hexDumpString);
+            assertEquals(sourceTelegram, hexDumpString);
 
+        } catch (EBusTypeException e) {
+            e.printStackTrace();
+            fail();
+        } catch (EBusCommandException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
-
 }

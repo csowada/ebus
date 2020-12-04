@@ -20,6 +20,7 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusConsts;
 
@@ -31,7 +32,8 @@ public class EBusConfigurationHash {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConfigurationHash.class);
 
-    private EBusCommandRegistry initCommandRegistry() throws IOException, EBusConfigurationReaderException {
+    private EBusCommandRegistry initCommandRegistry()
+            throws IOException, EBusConfigurationReaderException, EBusTypeException {
 
         EBusTypeRegistry types = new EBusTypeRegistry();
 
@@ -45,7 +47,7 @@ public class EBusConfigurationHash {
     }
 
     @Test
-    public void testMethodHashs() throws IOException, EBusConfigurationReaderException {
+    public void testMethodHashs() throws IOException, EBusConfigurationReaderException, EBusTypeException {
 
         EBusCommandRegistry reg1 = initCommandRegistry();
         EBusCommandRegistry reg2 = initCommandRegistry();

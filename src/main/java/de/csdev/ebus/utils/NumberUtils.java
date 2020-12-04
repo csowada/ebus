@@ -10,6 +10,8 @@ package de.csdev.ebus.utils;
 
 import java.math.BigDecimal;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A utility class for numbers.
  *
@@ -24,7 +26,7 @@ public class NumberUtils {
      * @param obj Any kind of primitive datatype
      * @return A converted BigDecimal
      */
-    public static BigDecimal toBigDecimal(Object obj) {
+    public static @Nullable BigDecimal toBigDecimal(@Nullable Object obj) {
 
         if (obj instanceof Integer) {
             return BigDecimal.valueOf((Integer) obj);
@@ -55,7 +57,7 @@ public class NumberUtils {
      * @param data
      * @return
      */
-    public static Byte convertDec2Bcd(int data) {
+    public static @Nullable Byte convertDec2Bcd(int data) {
 
         if (data > 99) {
             return null;
@@ -68,7 +70,7 @@ public class NumberUtils {
      * @param bcd
      * @return
      */
-    public static Byte convertBcd2Dec(byte bcd) {
+    public static @Nullable Byte convertBcd2Dec(byte bcd) {
         byte high = (byte) (bcd >> 4 & 0x0F);
         byte low = (byte) (bcd & 0x0F);
 

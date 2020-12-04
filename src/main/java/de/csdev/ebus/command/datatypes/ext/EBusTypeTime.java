@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
@@ -73,7 +74,11 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public EBusDateTime decodeInt(byte[] data) throws EBusTypeException {
+    public EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
+
+        if (data == null) {
+            throw new IllegalArgumentException();
+        }
 
         Calendar calendar = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
 
@@ -118,6 +123,10 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
                 minutesSinceMidnight = type.decode(data);
             }
 
+            if (minutesSinceMidnight == null) {
+                throw new EBusTypeException("Unable to computed minutes since midnight!");
+
+            }
             minutesSinceMidnight = minutesSinceMidnight.multiply(minuteMultiplier);
 
             if (minutesSinceMidnight.intValue() > 1440) {
@@ -141,7 +150,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public byte[] encodeInt(Object data) throws EBusTypeException {
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);

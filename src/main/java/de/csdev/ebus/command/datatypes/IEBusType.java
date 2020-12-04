@@ -10,6 +10,8 @@ package de.csdev.ebus.command.datatypes;
 
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -17,8 +19,6 @@ import java.util.Map;
 public interface IEBusType<T> {
 
     public static final String LENGTH = "length";
-
-    // public static final String TYPE = "type";
 
     public static final String FACTOR = "factor";
 
@@ -33,7 +33,7 @@ public interface IEBusType<T> {
      * @return
      * @throws EBusTypeException
      */
-    public T decode(byte[] data) throws EBusTypeException;
+    public @Nullable T decode(byte @Nullable [] data) throws EBusTypeException;
 
     /**
      * Encodes the given object to a byte-array value
@@ -42,7 +42,7 @@ public interface IEBusType<T> {
      * @return
      * @throws EBusTypeException
      */
-    public byte[] encode(Object data) throws EBusTypeException;
+    public byte[] encode(@Nullable Object data) throws EBusTypeException;
 
     /**
      * Returns the support types of this type
@@ -72,6 +72,6 @@ public interface IEBusType<T> {
      * @param properties
      * @return
      */
-    public IEBusType<T> getInstance(Map<String, Object> properties);
+    public IEBusType<T> getInstance(@Nullable Map<String, Object> properties);
 
 }

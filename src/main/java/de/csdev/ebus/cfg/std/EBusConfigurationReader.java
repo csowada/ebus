@@ -334,7 +334,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         if (StringUtils.isEmpty(typeStr)) {
             throw new EBusConfigurationReaderException("Property 'type' is missing for command ! {0}",
-                    commandMethod.getParent());
+                    commandMethod != null ? commandMethod.getParent() : "<NULL>");
 
         } else if (typeStr.equals("template-block")) {
 
@@ -545,22 +545,24 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 @SuppressWarnings("unchecked")
                 List<Map<String, String>> files = (List<Map<String, String>>) mapping.get("files");
 
-                for (Map<String, String> file : files) {
-                    URL fileUrl = new URL(url, file.get("url"));
+                if (files != null && !files.isEmpty()) {
+                    for (Map<String, String> file : files) {
+                        URL fileUrl = new URL(url, file.get("url"));
 
-                    try {
-                        logger.debug("Load configuration from url {} ...", fileUrl);
-                        IEBusCommandCollection collection = loadConfigurationCollection(fileUrl);
-                        if (collection != null) {
-                            result.add(collection);
+                        try {
+                            logger.debug("Load configuration from url {} ...", fileUrl);
+                            IEBusCommandCollection collection = loadConfigurationCollection(fileUrl);
+                            if (collection != null) {
+                                result.add(collection);
+                            }
+
+                        } catch (EBusConfigurationReaderException e) {
+                            logger.error(e.getMessage() + " (Url: " + fileUrl + ")");
+                        } catch (IOException e) {
+                            logger.error("error!", e);
                         }
 
-                    } catch (EBusConfigurationReaderException e) {
-                        logger.error(e.getMessage() + " (Url: " + fileUrl + ")");
-                    } catch (IOException e) {
-                        logger.error("error!", e);
                     }
-
                 }
             }
 

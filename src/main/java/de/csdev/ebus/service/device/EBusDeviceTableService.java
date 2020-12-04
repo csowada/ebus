@@ -14,6 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
@@ -98,6 +99,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             logger.error("error!", e);
         } catch (EBusControllerException e) {
             logger.error("error!", e);
+        } catch (EBusCommandException e) {
+            logger.error("error!", e);
         }
     }
 
@@ -160,6 +163,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             logger.error("error!", e);
         } catch (EBusControllerException e) {
             logger.error("error!", e);
+        } catch (EBusCommandException e) {
+            logger.error("error!", e);
         }
 
         return false;
@@ -203,6 +208,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             logger.error("error!", e);
         } catch (EBusControllerException e) {
             logger.error("error!", e);
+        } catch (EBusCommandException e) {
+            logger.error("error!", e);
         }
     }
 
@@ -237,6 +244,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         } catch (EBusControllerException e) {
+            logger.error("error!", e);
+        } catch (EBusCommandException e) {
             logger.error("error!", e);
         }
     }

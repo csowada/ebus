@@ -49,7 +49,7 @@ public class EBusConsoleUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
 
-    public static String bruteforceData(byte[] data) {
+    public static String bruteforceData(byte[] data) throws EBusTypeException {
 
         EBusTypeRegistry typeRegistry = new EBusTypeRegistry();
 
@@ -75,7 +75,7 @@ public class EBusConsoleUtils {
                 Object data2b = i == data.length - 1 ? "---" : typeD2B.decode(new byte[] { data[i + 1], data[i] });
                 Object data2c = i == data.length - 1 ? "---" : typeD2C.decode(new byte[] { data[i + 1], data[i] });
 
-                Object data1c = typeD1C.decode(new byte[] { data[i] }).toString();
+                Object data1c = typeD1C.decode(new byte[] { data[i] });
                 Object bcd = typeBCD.decode(new byte[] { data[i] });
                 int uint = data[i] & 0xFF;
 

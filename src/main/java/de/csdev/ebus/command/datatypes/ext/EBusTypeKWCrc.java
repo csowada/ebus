@@ -10,6 +10,8 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.nio.ByteBuffer;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.IEBusComplexType;
@@ -44,12 +46,12 @@ public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComple
     }
 
     @Override
-    public Byte decodeInt(byte[] data) {
+    public Byte decodeInt(byte @Nullable [] data) {
         throw new RuntimeException("Not implemented by EBusTypeKWCrc!");
     }
 
     @Override
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(@Nullable Object data) {
         throw new RuntimeException("Not implemented by EBusTypeKWCrc!");
     }
 
