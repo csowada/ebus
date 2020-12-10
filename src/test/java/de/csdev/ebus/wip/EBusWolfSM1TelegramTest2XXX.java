@@ -45,6 +45,7 @@ public class EBusWolfSM1TelegramTest2XXX {
     }
 
     // @Test
+    @SuppressWarnings("null")
     public void testSolarCommands2() {
 
         IEBusCommand command = client.getConfigurationProvider().getCommandById("vrc430", "controller.date");

@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Checks;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -135,7 +135,7 @@ public class EBusCommandValue implements IEBusValue {
 
     @Override
     public @NonNull IEBusCommandMethod getParent() {
-        return Checks.requireNonNull(parent);
+        return Objects.requireNonNull(parent);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class EBusCommandValue implements IEBusValue {
 
     @Override
     public @NonNull IEBusType<?> getType() {
-        return Checks.requireNonNull(type);
+        return Objects.requireNonNull(type);
     }
 
     public void setDefaultValue(Object defaultValue) {

@@ -92,6 +92,9 @@ public class EBusConsoleTest {
     @Test
     public void testConsoleCommand() {
 
+        EBusCommandRegistry commandRegistry = EBusConsoleTest.commandRegistry;
+        assertNotNull(commandRegistry);
+
         byte[] data = EBusUtils.toByteArray("31 08 07 04 00 d1 00 0a b5 42 41 49 30 30 05 18 74 01 2f 00");
         logger.debug(EBusConsoleUtils.analyzeTelegram(commandRegistry, data));
 

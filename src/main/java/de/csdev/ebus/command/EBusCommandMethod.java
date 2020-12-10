@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Checks;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -95,7 +94,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      */
     @Override
     public byte @NonNull [] getCommand() {
-        return Checks.requireNonNull(command);
+        return Objects.requireNonNull(command);
     }
 
     /*
@@ -120,7 +119,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
             telegramMask = EBusCommandUtils.getMasterTelegramMask(this);
         }
 
-        return Checks.requireNonNull(telegramMask);
+        return Objects.requireNonNull(telegramMask);
 
     }
 

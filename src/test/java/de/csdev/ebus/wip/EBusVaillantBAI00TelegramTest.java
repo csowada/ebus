@@ -44,8 +44,7 @@ public class EBusVaillantBAI00TelegramTest {
             throw new RuntimeException("Unable to load json file ...");
         }
 
-        EBusConfigurationReader cfg = new EBusConfigurationReader();
-        cfg.setEBusTypes(types);
+        // EBusConfigurationReader cfg = new EBusConfigurationReader(types);
 
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
     }

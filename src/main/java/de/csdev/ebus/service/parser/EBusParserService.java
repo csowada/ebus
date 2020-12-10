@@ -82,6 +82,7 @@ public class EBusParserService extends EBusConnectorEventListener {
      *
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
+    @SuppressWarnings("null")
     @Override
     public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
 
@@ -95,18 +96,23 @@ public class EBusParserService extends EBusConnectorEventListener {
             return;
         }
 
-        for (IEBusCommandMethod commandChannel : commandChannelList) {
+        if (!commandChannelList.isEmpty()) {
+            for (IEBusCommandMethod commandChannel : commandChannelList) {
 
-            try {
-                Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, receivedData);
-                fireOnTelegramResolved(commandChannel, map, receivedData, sendQueueId);
-            } catch (EBusTypeException e) {
-                fireOnTelegramFailed(commandChannel, receivedData, sendQueueId, e.getMessage());
-                logger.error("Parsing error details >> Data: {} - {} {}", EBusUtils.toHexDumpString(receivedData),
-                        commandChannel.getParent(), commandChannel.getType());
-                logger.error("error!", e);
+                try {
+                    if (commandChannel != null) {
+                        Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, receivedData);
+                        fireOnTelegramResolved(commandChannel, map, receivedData, sendQueueId);
+                    }
+                } catch (EBusTypeException e) {
+                    fireOnTelegramFailed(commandChannel, receivedData, sendQueueId, e.getMessage());
+                    logger.error("Parsing error details >> Data: {} - {} {}", EBusUtils.toHexDumpString(receivedData),
+                            commandChannel.getParent(), commandChannel.getType());
+                    logger.error("error!", e);
+                }
             }
         }
+
     }
 
     /**

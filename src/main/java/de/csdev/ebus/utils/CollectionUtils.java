@@ -11,8 +11,8 @@ package de.csdev.ebus.utils;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Checks;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -41,10 +41,10 @@ public class CollectionUtils {
      */
     public static @NonNull <K, V> Map<K, V> unmodifiableNotNullMap(@Nullable Map<K, V> map) {
         if (map == null) {
-            return Checks.requireNonNull(Collections.emptyMap());
+            return Objects.requireNonNull(Collections.emptyMap());
         }
 
-        return Checks.requireNonNull(Collections.unmodifiableMap(map));
+        return Objects.requireNonNull(Collections.unmodifiableMap(map));
     }
 
     /**

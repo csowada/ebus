@@ -47,20 +47,22 @@ public class EBusdControllerTest {
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
 
-        EBusClient client = new EBusClient(commandRegistry);
-
         EBusEbusdController controller = new EBusEbusdController("openhab", 8888);
+
+        EBusClient client = new EBusClient(commandRegistry);
 
         client.connect(controller, (byte) 0xFF);
 
-        client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
+        controller.addEBusEventListener(new IEBusConnectorEventListener() {
 
+            @SuppressWarnings("null")
             @Override
             public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
                 // TODO Auto-generated method stub
                 logger.info("Received: " + EBusUtils.toHexDumpString(receivedData).toString());
             }
 
+            @SuppressWarnings("null")
             @Override
             public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
                 System.err.println(exception.getLocalizedMessage());
@@ -69,12 +71,14 @@ public class EBusdControllerTest {
                 // logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramException()");
             }
 
+            @SuppressWarnings("null")
             @Override
             public void onConnectionException(Exception e) {
                 // TODO Auto-generated method stub
                 logger.info("ClientTest.xxx().new EBusConnectorEventListener() {...}.onConnectionException()");
             }
 
+            @SuppressWarnings("null")
             @Override
             public void onConnectionStatusChanged(ConnectionStatus status) {
                 // TODO Auto-generated method stub
@@ -116,6 +120,6 @@ public class EBusdControllerTest {
         logger.info("Failed: {}", client.getMetricsService().getFailed());
         logger.info("Received: {}", client.getMetricsService().getReceived());
         logger.info("ReceivedAmount: {}", client.getMetricsService().getReceivedAmount());
-        logger.info("Round trip time: {}", client.getController().getLastSendReceiveRoundtripTime());
+        logger.info("Round trip time: {}", controller.getLastSendReceiveRoundtripTime());
     }
 }

@@ -8,8 +8,7 @@
  */
 package de.csdev.ebus.cfg;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.net.URL;
 
@@ -28,17 +27,18 @@ public class EBusConfigurationBundleTest {
     public void test_BuildMasterTelegram() {
 
         URL url = EBusCommandRegistry.class.getResource("/index-configuration.json");
+        assertNotNull(url);
 
         EBusCommandRegistry registry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        
-    	registry.loadCommandCollectionBundle(url);
-    	assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
 
-    	registry.clear();
-    	assertTrue("collection should be empty!", registry.getCommandCollections().isEmpty());
-    	
-    	registry.loadBuildInCommandCollections();
-    	assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
+        registry.loadCommandCollectionBundle(url);
+        assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
+
+        registry.clear();
+        assertTrue("collection should be empty!", registry.getCommandCollections().isEmpty());
+
+        registry.loadBuildInCommandCollections();
+        assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
 
     }
 

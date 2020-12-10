@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
-import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
@@ -41,9 +40,8 @@ public class BuildTelegramTest {
     public void test_BuildMasterTelegram() {
 
         EBusCommandRegistry registry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
-        EBusClient client = new EBusClient(registry);
 
-        for (IEBusCommandCollection collection : client.getCommandCollections()) {
+        for (IEBusCommandCollection collection : registry.getCommandCollections()) {
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
 
@@ -75,9 +73,8 @@ public class BuildTelegramTest {
     public void test_BuildMasterTelegramMask() {
 
         EBusCommandRegistry registry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
-        EBusClient client = new EBusClient(registry);
 
-        for (IEBusCommandCollection collection : client.getCommandCollections()) {
+        for (IEBusCommandCollection collection : registry.getCommandCollections()) {
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
 

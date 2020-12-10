@@ -1,0 +1,7 @@
+class java/math/BigDecimal
+add
+ (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+ (Ljava/math/BigDecimal;)L1java/math/BigDecimal;
+valueOf
+ (J)Ljava/math/BigDecimal;
+ (J)L1java/math/BigDecimal;

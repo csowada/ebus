@@ -11,6 +11,7 @@ package de.csdev.ebus.cfg;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -45,12 +46,21 @@ public class EBusNestedTemplatesTest {
     @BeforeClass
     public static void before() throws IOException, EBusConfigurationReaderException {
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(
-                EBusNestedTemplatesTest.class.getResource("/nested-templates/FirstTemplate.json"));
-        commandRegistry.loadCommandCollection(
-                EBusNestedTemplatesTest.class.getResource("/nested-templates/SecondTemplate.json"));
-        commandRegistry.loadCommandCollection(
-                EBusNestedTemplatesTest.class.getResource("/nested-templates/ThirdCommand.json"));
+
+        URL url = EBusNestedTemplatesTest.class.getResource("/nested-templates/FirstTemplate.json");
+        assertNotNull(url);
+
+        commandRegistry.loadCommandCollection(url);
+
+        url = EBusNestedTemplatesTest.class.getResource("/nested-templates/SecondTemplate.json");
+        assertNotNull(url);
+
+        commandRegistry.loadCommandCollection(url);
+
+        url = EBusNestedTemplatesTest.class.getResource("/nested-templates/ThirdCommand.json");
+        assertNotNull(url);
+
+        commandRegistry.loadCommandCollection(url);
     }
 
     @Test

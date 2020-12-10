@@ -11,6 +11,7 @@ package de.csdev.ebus.cfg;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,11 @@ public class EBusBitTypeTest {
     @BeforeClass
     public static void before() throws IOException, EBusConfigurationReaderException {
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(EBusBitTypeTest.class.getResource("/common-configuration.json"));
+
+        URL url = EBusBitTypeTest.class.getResource("/common-configuration.json");
+        assertNotNull(url);
+
+        commandRegistry.loadCommandCollection(url);
     }
 
     @Test

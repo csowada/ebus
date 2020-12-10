@@ -9,9 +9,9 @@
 package de.csdev.ebus.utils;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jdt.annotation.Checks;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -254,7 +254,7 @@ public class EBusUtils {
      * @param buffer
      * @return
      */
-    public static byte[] toByteArray(@Nullable ByteBuffer buffer) {
+    public static byte @NonNull [] toByteArray(@Nullable ByteBuffer buffer) {
 
         if (buffer == null) {
             return new byte[0];
@@ -342,7 +342,7 @@ public class EBusUtils {
         }
 
         StringBuilder sb = toHexDumpString(toByteArray2(merge));
-        return Checks.requireNonNull(sb.toString());
+        return Objects.requireNonNull(sb.toString());
     }
 
     /**
@@ -357,7 +357,7 @@ public class EBusUtils {
             return "";
         }
 
-        return Checks.requireNonEmpty(String.format("%02X", (0xFF & data)));
+        return Objects.requireNonNull(String.format("%02X", (0xFF & data)));
     }
 
     /**

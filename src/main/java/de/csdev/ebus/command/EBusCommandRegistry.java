@@ -156,7 +156,11 @@ public class EBusCommandRegistry {
      * @param data The complete unescaped eBUS telegram
      * @return Returns the a list of all matching configuration methods or an empty list
      */
-    public List<IEBusCommandMethod> find(byte[] data) {
+    @SuppressWarnings("null")
+    public @NonNull List<IEBusCommandMethod> find(byte @NonNull [] data) {
+
+        Objects.requireNonNull(data);
+
         ByteBuffer buffer = ByteBuffer.wrap(data);
         return find(buffer);
     }
@@ -167,7 +171,9 @@ public class EBusCommandRegistry {
      * @param data The complete unescaped eBUS telegram
      * @return Returns the a list of all matching configuration methods or an empty list
      */
-    public List<IEBusCommandMethod> find(ByteBuffer data) {
+    public @NonNull List<IEBusCommandMethod> find(@NonNull ByteBuffer data) {
+
+        Objects.requireNonNull(data);
 
         ArrayList<IEBusCommandMethod> result = new ArrayList<IEBusCommandMethod>();
 
@@ -176,7 +182,7 @@ public class EBusCommandRegistry {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
 
                     // check if telegram matches
-                    if (matchesCommand(commandChannel, data)) {
+                    if (commandChannel != null && matchesCommand(commandChannel, data)) {
                         result.add(commandChannel);
                     }
                 }
@@ -224,7 +230,8 @@ public class EBusCommandRegistry {
      *
      * @return
      */
-    public @NonNull List<IEBusCommandCollection> getCommandCollections() {
+    @SuppressWarnings("null")
+    public @NonNull List<@NonNull IEBusCommandCollection> getCommandCollections() {
         return Collections.unmodifiableList(new ArrayList<IEBusCommandCollection>(collections.values()));
     }
 

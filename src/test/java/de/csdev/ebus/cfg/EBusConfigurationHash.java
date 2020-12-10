@@ -23,7 +23,6 @@ import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusConsts;
 
 /**
@@ -36,11 +35,10 @@ public class EBusConfigurationHash {
 
     private EBusCommandRegistry initCommandRegistry()
             throws IOException, EBusConfigurationReaderException, EBusTypeException {
-
-        EBusTypeRegistry types = new EBusTypeRegistry();
-
-        EBusConfigurationReader cfg = new EBusConfigurationReader();
-        cfg.setEBusTypes(types);
+        //
+        // EBusTypeRegistry types = new EBusTypeRegistry();
+        //
+        // EBusConfigurationReader cfg = new EBusConfigurationReader(types);
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
         commandRegistry.loadBuildInCommandCollections();

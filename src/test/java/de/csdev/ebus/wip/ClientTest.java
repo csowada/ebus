@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import de.csdev.ebus.core.EBusStateMachineTest;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.IEBusController.ConnectionStatus;
 import de.csdev.ebus.core.connection.EBusEmulatorConnection;
+import de.csdev.ebus.service.device.EBusDeviceTableService;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -49,36 +51,38 @@ public class ClientTest {
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
 
-        EBusClient client = new EBusClient(commandRegistry);
-
         EBusLowLevelController controller = new EBusLowLevelController(emulator);
+        EBusClient client = new EBusClient(commandRegistry);
 
         client.connect(controller, (byte) 0xFF);
 
         // disable auto identification requests for the test!
-        client.getDeviceTableService().setDisableIdentificationRequests(true);
+        EBusDeviceTableService deviceTableService = client.getDeviceTableService();
+        assertNotNull(deviceTableService);
+        deviceTableService.setDisableIdentificationRequests(true);
 
-        client.getController().addEBusEventListener(new IEBusConnectorEventListener() {
+        controller.addEBusEventListener(new IEBusConnectorEventListener() {
 
+            @SuppressWarnings("null")
             @Override
             public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
                 // noop
             }
 
             @Override
-            public void onTelegramException(EBusDataException e, @Nullable Integer sendQueueId) {
+            public void onTelegramException(@NonNull EBusDataException e, @Nullable Integer sendQueueId) {
                 logger.error("error!", e);
                 fail("No TelegramException expected!");
             }
 
             @Override
-            public void onConnectionException(Exception e) {
+            public void onConnectionException(@NonNull Exception e) {
                 logger.error("error!", e);
                 fail("No ConnectionException expected!");
             }
 
             @Override
-            public void onConnectionStatusChanged(ConnectionStatus status) {
+            public void onConnectionStatusChanged(@NonNull ConnectionStatus status) {
                 // logger.error("error!", e);
                 fail("No ConnectionException expected!");
             }
@@ -86,8 +90,9 @@ public class ClientTest {
 
         client.getResolverService().addEBusParserListener(new IEBusParserListener() {
 
+            @SuppressWarnings("null")
             @Override
-            public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
+            public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel, Map<String, Object> result,
                     byte[] receivedData, @Nullable Integer sendQueueId) {
 
                 assertTrue(result.containsKey("pressure"));

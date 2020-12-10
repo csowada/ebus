@@ -47,7 +47,7 @@ public class EBusCommandUtils {
      * @param commandMethod
      * @return
      */
-    public static String getFullId(@NonNull IEBusCommandMethod commandMethod) {
+    public static @NonNull String getFullId(@NonNull IEBusCommandMethod commandMethod) {
         Objects.requireNonNull(commandMethod);
         return getFullId(commandMethod.getParent()) + ":" + commandMethod.getMethod();
     }
@@ -58,7 +58,7 @@ public class EBusCommandUtils {
      * @param command
      * @return
      */
-    public static String getFullId(@NonNull IEBusCommand command) {
+    public static @NonNull String getFullId(@NonNull IEBusCommand command) {
         Objects.requireNonNull(command);
         return command.getParentCollection().getId() + "." + command.getId();
     }
@@ -69,7 +69,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusDataException
      */
-    public static byte[] prepareSendTelegram(byte[] data) throws EBusDataException {
+    public static byte @NonNull [] prepareSendTelegram(byte @NonNull [] data) throws EBusDataException {
 
         EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
         machine.updateBytes(data);
@@ -95,7 +95,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusDataException
      */
-    public static byte[] checkRawTelegram(byte[] data) throws EBusDataException {
+    public static byte @NonNull [] checkRawTelegram(byte @NonNull [] data) throws EBusDataException {
         EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
         machine.updateBytes(data);
@@ -120,7 +120,8 @@ public class EBusCommandUtils {
      * @param b The byte to escape
      * @return A escaped byte if required or the parameter byte as array
      */
-    public static byte[] escapeSymbol(byte b) {
+    @SuppressWarnings("null")
+    public static byte @NonNull [] escapeSymbol(byte b) {
         if (b == EBusConsts.ESCAPE) {
             return EBusConsts.ESCAPE_REPLACEMENT;
         } else if (b == EBusConsts.SYN) {
@@ -220,7 +221,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static @NonNull ByteBuffer buildPartSlave(byte[] slaveData) throws EBusTypeException {
+    public static @NonNull ByteBuffer buildPartSlave(byte @NonNull [] slaveData) throws EBusTypeException {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 

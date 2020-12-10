@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Checks;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -49,7 +48,7 @@ public class EBusCommand implements IEBusCommand {
 
     @Override
     public @NonNull Collection<IEBusCommandMethod.Method> getCommandChannelMethods() {
-        return Checks.requireNonNull(Collections.unmodifiableCollection(channels.keySet()));
+        return Objects.requireNonNull(Collections.unmodifiableCollection(channels.keySet()));
     }
 
     @Override
@@ -60,7 +59,7 @@ public class EBusCommand implements IEBusCommand {
 
     @Override
     public @NonNull Collection<IEBusCommandMethod> getCommandMethods() {
-        return Checks.requireNonNull(Collections.unmodifiableCollection(channels.values()));
+        return Objects.requireNonNull(Collections.unmodifiableCollection(channels.values()));
     }
 
     /*
@@ -90,7 +89,7 @@ public class EBusCommand implements IEBusCommand {
      */
     @Override
     public @NonNull String getId() {
-        return Checks.requireNonNull(id);
+        return Objects.requireNonNull(id);
     }
 
     /*
@@ -105,12 +104,12 @@ public class EBusCommand implements IEBusCommand {
 
     @Override
     public @NonNull IEBusCommandCollection getParentCollection() {
-        return Checks.requireNonNull(parentCollection);
+        return Objects.requireNonNull(parentCollection);
     }
 
     @Override
     public @NonNull Map<String, Object> getProperties() {
-        return Checks.requireNonNull(CollectionUtils.unmodifiableNotNullMap(properties));
+        return Objects.requireNonNull(CollectionUtils.unmodifiableNotNullMap(properties));
     }
 
     public void setConfigurationSource(String configurationSource) {

@@ -14,6 +14,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.IEBusCommandMethod;
@@ -26,6 +27,7 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusMetricsService extends EBusConnectorEventListener implements IEBusParserListener {
 
     private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
@@ -42,7 +44,6 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
 
     private BigDecimal receivedAmount = BigDecimal.valueOf(0);
 
-    @SuppressWarnings("null")
     private Map<EBusError, BigDecimal> failedMap = new EnumMap<EBusDataException.EBusError, BigDecimal>(
             EBusError.class);
 

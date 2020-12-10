@@ -36,9 +36,11 @@ import de.csdev.ebus.utils.EBusUtils;
 public class ConfigurationReaderTest {
 
     // @Test
+    @SuppressWarnings("null")
     public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 
         URL url = EBusConfigurationReader.class.getResource("/commands/wolf-sm1-configuration.json");
+        assertNotNull(url);
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
         commandRegistry.loadCommandCollection(url);

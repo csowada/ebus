@@ -8,7 +8,7 @@
  */
 package de.csdev.ebus.wip;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
-import de.csdev.ebus.client.EBusClient;
 import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
@@ -36,16 +35,16 @@ public class EBusCustomParserTest {
     private final Logger logger = LoggerFactory.getLogger(EBusCustomParserTest.class);
 
     // @Test
+    @SuppressWarnings("null")
     public void test_BuildMasterTelegram() {
 
         URL url = EBusConfigurationReader.class.getResource("/custom.json");
+        assertNotNull(url);
 
         EBusCommandRegistry registry = new EBusCommandRegistry(EBusConfigurationReader.class);
         registry.loadCommandCollection(url);
 
-        EBusClient client = new EBusClient(registry);
-
-        for (IEBusCommandCollection collection : client.getCommandCollections()) {
+        for (IEBusCommandCollection collection : registry.getCommandCollections()) {
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
 

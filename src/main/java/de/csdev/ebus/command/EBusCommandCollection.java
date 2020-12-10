@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Checks;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -78,7 +77,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      */
     @Override
     public @NonNull Collection<IEBusCommand> getCommands() {
-        return Checks.requireNonNull(Collections.unmodifiableCollection((commands.values())));
+        return Objects.requireNonNull(Collections.unmodifiableCollection((commands.values())));
     }
 
     /*
@@ -98,7 +97,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      */
     @Override
     public @NonNull String getId() {
-        return Checks.requireNonNull(id);
+        return Objects.requireNonNull(id);
     }
 
     /*
@@ -128,7 +127,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      */
     @Override
     public @NonNull Map<String, Object> getProperties() {
-        return Checks.requireNonNull(CollectionUtils.unmodifiableNotNullMap(properties));
+        return Objects.requireNonNull(CollectionUtils.unmodifiableNotNullMap(properties));
     }
 
     /*
