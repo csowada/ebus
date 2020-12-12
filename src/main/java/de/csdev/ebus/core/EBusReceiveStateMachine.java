@@ -10,6 +10,7 @@ package de.csdev.ebus.core;
 
 import java.nio.ByteBuffer;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class EBusReceiveStateMachine {
      * @param data
      * @throws EBusDataException
      */
-    public void updateBytes(byte[] data) throws EBusDataException {
+    public void updateBytes(byte @NonNull [] data) throws EBusDataException {
 
         // init state machine
         this.update(EBusConsts.SYN);
@@ -106,7 +107,7 @@ public class EBusReceiveStateMachine {
      *
      * @return
      */
-    public byte[] getTelegramData() {
+    public byte @NonNull [] getTelegramData() {
         return EBusUtils.toByteArray(bb);
     }
 

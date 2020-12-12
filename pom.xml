@@ -7,18 +7,19 @@
 	<description>eBUS core library - This library handles the communication with heating engineering via the BUS specification. This protocol is used by many heating manufacturers in Europe.</description>
 	<groupId>de.cs-dev.ebus</groupId>
 	<artifactId>ebus-core</artifactId>
-	<version>1.0.8-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<url>https://github.com/csowada/ebus</url>
 	<packaging>bundle</packaging>
 
-    <properties>
-        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <license.year>2020</license.year>
-        <bundle.version>1.0.8.${maven.build.timestamp}</bundle.version>
-    </properties>
+	<properties>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.release>8</maven.compiler.release>
+		<license.year>2020</license.year>
+		<bundle.version>1.1.0.${maven.build.timestamp}</bundle.version>
+	</properties>
 
 	<organization>
 		<name>Christian Sowada</name>
@@ -91,8 +92,8 @@
 						<Bundle-Version>${bundle.version}</Bundle-Version>
 						<Export-Package>de.csdev.ebus.*</Export-Package>
 						<opt>resolution:=optional</opt>
-						<Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt], *</Import-Package>
-						
+						<Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt], org.eclipse.jdt.annotation;$[opt], *</Import-Package>
+
 						<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
 						<Build-Commit>${buildNumber}</Build-Commit>
 						<Build-Branch>${scmBranch}</Build-Branch>
@@ -248,24 +249,28 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.2</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.neuronrobotics</groupId>
 			<artifactId>nrjavaserial</artifactId>
 			<version>3.12.1</version>
+			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 
@@ -273,6 +278,7 @@
 			<groupId>com.fazecast</groupId>
 			<artifactId>jSerialComm</artifactId>
 			<version>2.5.3</version>
+			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 
@@ -280,6 +286,14 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.annotation</artifactId>
+			<version>2.2.600</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>

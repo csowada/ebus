@@ -12,6 +12,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A command is the link to encode/decode an eBUS byte telegram.
  *
@@ -25,35 +28,35 @@ public interface IEBusCommandCollection {
      *
      * @return
      */
-    public List<String> getIdentification();
+    public @NonNull List<String> getIdentification();
 
     /**
      * Returns the long description
      *
      * @return
      */
-    public String getDescription();
+    public @Nullable String getDescription();
 
     /**
      * Returns the id of this collection
      *
      * @return
      */
-    public String getId();
+    public @NonNull String getId();
 
     /**
      * Returns the label of this collection
      *
      * @return
      */
-    public String getLabel();
+    public @Nullable String getLabel();
 
     /**
      * Returns the list of all commands
      *
      * @return
      */
-    public Collection<IEBusCommand> getCommands();
+    public @NonNull Collection<IEBusCommand> getCommands();
 
     /**
      * Returns the requested command or null
@@ -61,14 +64,14 @@ public interface IEBusCommandCollection {
      * @param id
      * @return
      */
-    public IEBusCommand getCommand(String id);
+    public @Nullable IEBusCommand getCommand(String id);
 
     /**
      * Returns a map of all properties
      *
      * @return
      */
-    public Map<String, Object> getProperties();
+    public @NonNull Map<String, Object> getProperties();
 
     /**
      * Returns a property value or <code>null</code>
@@ -76,11 +79,11 @@ public interface IEBusCommandCollection {
      * @param key
      * @return
      */
-    public Object getProperty(String key);
+    public @Nullable Object getProperty(String key);
 
     /**
      * Returns usually a MD5 hash of the source configuration file
-     * 
+     *
      * @return
      */
     public byte[] getSourceHash();

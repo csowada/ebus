@@ -9,8 +9,11 @@
 package de.csdev.ebus.utils;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.core.EBusConsts;
 
@@ -64,10 +67,10 @@ public class EBusUtils {
      * @param size The final byte array size
      * @return The new byte arrray or <code>null</code> if the source array is to large
      */
-    public static byte[] leftPadByteArray(byte[] source, int size) {
+    public static byte @Nullable [] leftPadByteArray(byte @Nullable [] source, int size) {
         byte[] bs = new byte[size];
 
-        if (size < source.length) {
+        if (source == null || size < source.length) {
             return null;
         }
 
@@ -116,8 +119,13 @@ public class EBusUtils {
      * @param len
      * @return
      */
-    public static byte crc8(byte[] data, int len) {
+    public static byte crc8(byte @Nullable [] data, int len) {
         byte uc_crc = 0;
+
+        if (data == null) {
+            return uc_crc;
+        }
+
         for (int i = 0; i < len; i++) {
             byte b = data[i];
             uc_crc = crc8_tab(b, uc_crc);
@@ -145,7 +153,7 @@ public class EBusUtils {
      * @param slaveAddress
      * @return
      */
-    static public Byte getMasterAddress(byte slaveAddress) {
+    static public @Nullable Byte getMasterAddress(byte slaveAddress) {
 
         if (slaveAddress == EBusConsts.ESCAPE || slaveAddress == EBusConsts.SYN) {
             return null;
@@ -167,7 +175,7 @@ public class EBusUtils {
      * @param masterAddress The master address
      * @return The slave address or null if the master address is invalid
      */
-    static public Byte getSlaveAddress(byte masterAddress) {
+    static public @Nullable Byte getSlaveAddress(byte masterAddress) {
         if (isMasterAddress(masterAddress)) {
             return (byte) (masterAddress == (byte) 0xFF ? (byte) 0x04 : masterAddress + 5);
         }
@@ -233,7 +241,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public Byte toByte(String hexDumpString) {
+    static public @Nullable Byte toByte(String hexDumpString) {
         if (StringUtils.isEmpty(hexDumpString)) {
             return null;
         }
@@ -246,7 +254,11 @@ public class EBusUtils {
      * @param buffer
      * @return
      */
-    public static byte[] toByteArray(ByteBuffer buffer) {
+    public static byte @NonNull [] toByteArray(@Nullable ByteBuffer buffer) {
+
+        if (buffer == null) {
+            return new byte[0];
+        }
 
         int size = 0;
         if (buffer.position() == 0) {
@@ -256,7 +268,11 @@ public class EBusUtils {
         }
 
         byte[] data = new byte[size];
-        ((ByteBuffer) buffer.duplicate().clear()).get(data);
+
+        ByteBuffer duplicate = buffer.duplicate();
+        duplicate.clear();
+
+        duplicate.get(data);
         return data;
     }
 
@@ -266,8 +282,8 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte[] toByteArray(String hexDumpString) throws NumberFormatException {
-        if (StringUtils.isEmpty(hexDumpString)) {
+    static public byte @NonNull [] toByteArray(@Nullable String hexDumpString) throws NumberFormatException {
+        if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
 
@@ -288,19 +304,16 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte[] toByteArray2(String hexDumpString) throws NumberFormatException {
+    static public byte @NonNull [] toByteArray2(@Nullable String hexDumpString) throws NumberFormatException {
 
-        if (StringUtils.isEmpty(hexDumpString)) {
+        if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
-
-        // String hexDumpString = "A0B";
 
         if (hexDumpString.length() % 2 != 0) {
             hexDumpString = "0" + hexDumpString;
         }
 
-        // String[] elements = hexDumpString.split(" ");
         byte[] result = new byte[hexDumpString.length() / 2];
 
         int pos = 0;
@@ -312,15 +325,21 @@ public class EBusUtils {
         return result;
     }
 
-    static public String mergeHexDumpStrings(String... args) {
+    static public @NonNull String mergeHexDumpStrings(@Nullable String... args) {
+
+        if (args == null) {
+            return "";
+        }
+
         String merge = "";
         for (String string : args) {
-            if (StringUtils.isNotEmpty(string)) {
+            if (string != null && StringUtils.isNotEmpty(string)) {
                 merge += string.length() % 2 == 0 ? string : "0" + string;
             }
         }
 
-        return toHexDumpString(toByteArray2(merge)).toString();
+        StringBuilder sb = toHexDumpString(toByteArray2(merge));
+        return Objects.requireNonNull(sb.toString());
     }
 
     /**
@@ -329,13 +348,14 @@ public class EBusUtils {
      * @param data The source
      * @return The hex string
      */
-    static public String toHexDumpString(Byte data) {
+    static public @NonNull String toHexDumpString(@Nullable Byte data) {
 
         if (data == null) {
             return "";
         }
 
-        return String.format("%02X", (0xFF & data));
+        String format = String.format("%02X", (0xFF & data));
+        return Objects.requireNonNull(format);
     }
 
     /**
@@ -344,7 +364,7 @@ public class EBusUtils {
      * @param data The source
      * @return The StringBuilder with hex dump
      */
-    static public StringBuilder toHexDumpString(byte[] data) {
+    static public @NonNull StringBuilder toHexDumpString(byte @Nullable [] data) {
         StringBuilder sb = new StringBuilder();
         if (data != null && data.length > 0) {
             for (int i = 0; i < data.length; i++) {
@@ -365,7 +385,12 @@ public class EBusUtils {
      * @param data The source
      * @return The StringBuilder with hex dump
      */
-    static public StringBuilder toHexDumpString(ByteBuffer data) {
+    static public StringBuilder toHexDumpString(@Nullable ByteBuffer data) {
+
+        StringBuilder sb = new StringBuilder();
+        if (data == null) {
+            return sb;
+        }
 
         int size = 0;
         if (data.position() == 0) {
@@ -374,7 +399,6 @@ public class EBusUtils {
             size = data.position();
         }
 
-        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < size; i++) {
             byte c = data.get(i);
             if (i > 0) {
@@ -391,7 +415,7 @@ public class EBusUtils {
      * @param data
      * @return
      */
-    static public String toPrintHexDumpString(Byte data) {
+    static public String toPrintHexDumpString(@Nullable Byte data) {
         if (data != null) {
             return "0x" + String.format("%02X", (0xFF & data));
         }

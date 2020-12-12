@@ -12,8 +12,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
@@ -67,12 +69,9 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public EBusDateTime decodeInt(byte[] data) throws EBusTypeException {
+    public EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
-        if (data == null) {
-            // TODO replace value
-            return null;
-        }
+        Objects.requireNonNull(data);
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
@@ -115,6 +114,11 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
 
         } else if (StringUtils.equals(variant, DAYS)) {
             BigDecimal daysSince1900 = wordType.decode(data);
+
+            if (daysSince1900 == null) {
+                throw new EBusTypeException("Unable to compute days since 1990!");
+            }
+
             calendar.set(1900, 0, 1, 0, 0);
             calendar.add(Calendar.DAY_OF_YEAR, daysSince1900.intValue());
         }
@@ -149,7 +153,7 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public byte[] encodeInt(Object data) throws EBusTypeException {
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);

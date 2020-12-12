@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,27 +28,28 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusValueDTO {
 
+    private final transient Logger logger = LoggerFactory.getLogger(EBusValueDTO.class);
+
     @SerializedName("default")
     private String _default;
 
-    private List<EBusValueDTO> children;
-    private BigDecimal divider;
-    private BigDecimal factor;
-    private String format;
-    private String label;
-    private Integer length;
-    private final transient Logger logger = LoggerFactory.getLogger(EBusValueDTO.class);
-    private Map<String, String> mapping;
-    private BigDecimal max;
-    private BigDecimal min;
-    private String name;
-    private Integer pos;
+    private @Nullable List<EBusValueDTO> children;
+    private @Nullable BigDecimal divider;
+    private @Nullable BigDecimal factor;
+    private @Nullable String format;
+    private @Nullable String label;
+    private @Nullable Integer length;
+    private @Nullable Map<String, String> mapping;
+    private @Nullable BigDecimal max;
+    private @Nullable BigDecimal min;
+    private @Nullable String name;
+    private @Nullable Integer pos;
 
-    private Map<String, Object> properties;
-    private String replaceValue;
+    private @Nullable Map<String, Object> properties;
+    private @Nullable String replaceValue;
     private boolean reverseByteOrder = false;
-    private BigDecimal step;
-    private String type;
+    private @Nullable BigDecimal step;
+    private @Nullable String type;
 
     public Map<String, Object> getAsMap() {
 
@@ -76,51 +78,51 @@ public class EBusValueDTO {
         return map;
     }
 
-    public List<EBusValueDTO> getChildren() {
+    public @Nullable List<EBusValueDTO> getChildren() {
         return children;
     }
 
-    public String getDefault() {
+    public @Nullable String getDefault() {
         return _default;
     }
 
-    public BigDecimal getDivider() {
+    public @Nullable BigDecimal getDivider() {
         return divider;
     }
 
-    public BigDecimal getFactor() {
+    public @Nullable BigDecimal getFactor() {
         return factor;
     }
 
-    public String getFormat() {
+    public @Nullable String getFormat() {
         return format;
     }
 
-    public String getLabel() {
+    public @Nullable String getLabel() {
         return label;
     }
 
-    public Integer getLength() {
+    public @Nullable Integer getLength() {
         return length;
     }
 
-    public Map<String, String> getMapping() {
+    public @Nullable Map<String, String> getMapping() {
         return mapping;
     }
 
-    public BigDecimal getMax() {
+    public @Nullable BigDecimal getMax() {
         return max;
     }
 
-    public BigDecimal getMin() {
+    public @Nullable BigDecimal getMin() {
         return min;
     }
 
-    public String getName() {
+    public @Nullable String getName() {
         return name;
     }
 
-    public Integer getPos() {
+    public @Nullable Integer getPos() {
         return pos;
     }
 
@@ -133,15 +135,15 @@ public class EBusValueDTO {
         return CollectionUtils.get(properties, key);
     }
 
-    public String getReplaceValue() {
+    public @Nullable String getReplaceValue() {
         return replaceValue;
     }
 
-    public BigDecimal getStep() {
+    public @Nullable BigDecimal getStep() {
         return step;
     }
 
-    public String getType() {
+    public @Nullable String getType() {
         return type;
     }
 
@@ -199,7 +201,9 @@ public class EBusValueDTO {
 
     public void setProperty(String key, Object value) {
         properties = CollectionUtils.newMapIfNull(properties);
-        properties.put(key, value);
+        if (properties != null) {
+            properties.put(key, value);
+        }
     }
 
     public void setReplaceValue(String replaceValue) {

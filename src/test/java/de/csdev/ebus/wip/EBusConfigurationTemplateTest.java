@@ -12,6 +12,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommand;
@@ -41,16 +43,20 @@ public class EBusConfigurationTemplateTest {
         assertFalse("collection should not be empty!", registry.getCommandCollections().isEmpty());
 
         IEBusCommand commandById = registry.getCommandById("bai", "boiler.temp_outletx");
-        IEBusCommandMethod commandMethod = commandById.getCommandMethod(Method.GET);
+        assertNotNull(commandById);
 
-        @SuppressWarnings("unused")
+        IEBusCommandMethod commandMethod = commandById.getCommandMethod(Method.GET);
+        assertNotNull(commandMethod);
+
         Type type = commandMethod.getType();
-        List<IEBusValue> slaveTypes = commandMethod.getSlaveTypes();
+        assertNotNull(type);
+        List<@NonNull IEBusValue> slaveTypes = commandMethod.getSlaveTypes();
 
         // System.out.println(slaveTypes);
-
-        for (IEBusValue ieBusValue : slaveTypes) {
-            System.out.println(ieBusValue);
+        if (slaveTypes != null) {
+            for (IEBusValue ieBusValue : slaveTypes) {
+                System.out.println(ieBusValue);
+            }
         }
 
         System.out.println("EBusConfigurationTemplateTest.test_BuildMasterTelegram()");

@@ -14,8 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +47,8 @@ public class EBusCommandUtils {
      * @param commandMethod
      * @return
      */
-    public static String getFullId(IEBusCommandMethod commandMethod) {
+    public static @NonNull String getFullId(@NonNull IEBusCommandMethod commandMethod) {
+        Objects.requireNonNull(commandMethod);
         return getFullId(commandMethod.getParent()) + ":" + commandMethod.getMethod();
     }
 
@@ -54,7 +58,8 @@ public class EBusCommandUtils {
      * @param command
      * @return
      */
-    public static String getFullId(IEBusCommand command) {
+    public static @NonNull String getFullId(@NonNull IEBusCommand command) {
+        Objects.requireNonNull(command);
         return command.getParentCollection().getId() + "." + command.getId();
     }
 
@@ -64,7 +69,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusDataException
      */
-    public static byte[] prepareSendTelegram(byte[] data) throws EBusDataException {
+    public static byte @NonNull [] prepareSendTelegram(byte @NonNull [] data) throws EBusDataException {
 
         EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
         machine.updateBytes(data);
@@ -90,7 +95,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusDataException
      */
-    public static byte[] checkRawTelegram(byte[] data) throws EBusDataException {
+    public static byte @NonNull [] checkRawTelegram(byte @NonNull [] data) throws EBusDataException {
         EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
         machine.updateBytes(data);
@@ -115,7 +120,8 @@ public class EBusCommandUtils {
      * @param b The byte to escape
      * @return A escaped byte if required or the parameter byte as array
      */
-    public static byte[] escapeSymbol(byte b) {
+    @SuppressWarnings("null")
+    public static byte @NonNull [] escapeSymbol(byte b) {
         if (b == EBusConsts.ESCAPE) {
             return EBusConsts.ESCAPE_REPLACEMENT;
         } else if (b == EBusConsts.SYN) {
@@ -136,7 +142,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static ByteBuffer buildCompleteTelegram(byte source, byte target, byte[] command, byte[] masterData,
+    public static @NonNull ByteBuffer buildCompleteTelegram(byte source, byte target, byte[] command, byte[] masterData,
             byte[] slaveData) throws EBusTypeException {
 
         boolean isMastereMaster = EBusUtils.isMasterAddress(target);
@@ -181,8 +187,8 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static ByteBuffer buildPartMasterTelegram(byte source, byte target, byte[] command, byte[] masterData)
-            throws EBusTypeException {
+    public static @NonNull ByteBuffer buildPartMasterTelegram(byte source, byte target, byte[] command,
+            byte[] masterData) throws EBusTypeException {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
@@ -215,7 +221,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static ByteBuffer buildPartSlave(byte[] slaveData) throws EBusTypeException {
+    public static @NonNull ByteBuffer buildPartSlave(byte @NonNull [] slaveData) throws EBusTypeException {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
@@ -253,15 +259,18 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static ByteBuffer composeMasterData(IEBusCommandMethod commandMethod, Map<String, Object> values)
-            throws EBusTypeException {
+    public static @NonNull ByteBuffer composeMasterData(@NonNull IEBusCommandMethod commandMethod,
+            @Nullable Map<String, Object> values) throws EBusTypeException {
+
+        Objects.requireNonNull(commandMethod);
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
         Map<Integer, IEBusComplexType<?>> complexTypes = new HashMap<Integer, IEBusComplexType<?>>();
 
-        if (commandMethod.getMasterTypes() != null) {
-            for (IEBusValue entry : commandMethod.getMasterTypes()) {
+        List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        if (masterTypes != null) {
+            for (IEBusValue entry : masterTypes) {
 
                 IEBusType<?> type = entry.getType();
                 byte[] b = null;
@@ -269,10 +278,12 @@ public class EBusCommandUtils {
                 // compute byte value from 8 bits
                 if (entry instanceof IEBusNestedValue) {
                     IEBusNestedValue nestedValue = (IEBusNestedValue) entry;
-                    List<IEBusValue> list = nestedValue.getChildren();
+                    List<@NonNull IEBusValue> list = nestedValue.getChildren();
+
                     int n = 0;
 
                     for (int i = 0; i < list.size(); i++) {
+                        @SuppressWarnings("null")
                         IEBusValue childValue = list.get(i);
                         if (values != null && values.containsKey(childValue.getName())) {
                             Boolean object = (Boolean) values.get(childValue.getName());
@@ -338,8 +349,9 @@ public class EBusCommandUtils {
         return buf;
     }
 
-    public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
-            Map<String, Object> values) throws EBusTypeException {
+    public static @NonNull ByteBuffer buildMasterTelegram(@NonNull IEBusCommandMethod commandMethod,
+            @Nullable Byte source, @Nullable Byte target, @Nullable Map<String, Object> values)
+            throws EBusTypeException, EBusCommandException {
         return buildMasterTelegram(commandMethod, source, target, values, false);
     }
 
@@ -351,9 +363,13 @@ public class EBusCommandUtils {
      * @param skipAddressChecks
      * @return
      * @throws EBusTypeException
+     * @throws EBusCommandException
      */
-    public static ByteBuffer buildMasterTelegram(IEBusCommandMethod commandMethod, Byte source, Byte target,
-            Map<String, Object> values, boolean skipAddressChecks) throws EBusTypeException {
+    public static @NonNull ByteBuffer buildMasterTelegram(@NonNull IEBusCommandMethod commandMethod,
+            @Nullable Byte source, @Nullable Byte target, @Nullable Map<String, Object> values,
+            boolean skipAddressChecks) throws EBusTypeException, EBusCommandException {
+
+        Objects.requireNonNull(commandMethod, "Parameter command is null!");
 
         if (source == null && commandMethod.getSourceAddress() != null) {
             source = commandMethod.getSourceAddress();
@@ -361,10 +377,6 @@ public class EBusCommandUtils {
 
         if (target == null && commandMethod.getDestinationAddress() != null) {
             target = commandMethod.getDestinationAddress();
-        }
-
-        if (commandMethod == null) {
-            throw new IllegalArgumentException("Parameter command is null!");
         }
 
         if (source == null) {
@@ -408,6 +420,10 @@ public class EBusCommandUtils {
             }
         }
 
+        if (targetChecked == null) {
+            throw new EBusCommandException("Unable to calculate the correct trarget address!");
+        }
+
         byte[] data = EBusUtils.toByteArray(composeMasterData(commandMethod, values));
         ByteBuffer byteBuffer = buildPartMasterTelegram(source, targetChecked, commandMethod.getCommand(), data);
 
@@ -421,7 +437,7 @@ public class EBusCommandUtils {
      * @param ev
      * @return
      */
-    private static Object applyNumberOperations(Object decode, IEBusValue ev) {
+    private static @Nullable Object applyNumberOperations(@Nullable Object decode, @Nullable IEBusValue ev) {
 
         if (ev instanceof EBusCommandValue) {
             EBusCommandValue nev = (EBusCommandValue) ev;
@@ -460,8 +476,8 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    private static int decodeValueList(List<IEBusValue> values, byte[] data, HashMap<String, Object> result, int pos)
-            throws EBusTypeException {
+    private static int decodeValueList(@Nullable List<@NonNull IEBusValue> values, byte @NonNull [] data,
+            @NonNull HashMap<String, Object> result, int pos) throws EBusTypeException {
 
         if (values != null) {
             for (IEBusValue ev : values) {
@@ -516,15 +532,14 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static Map<String, Object> decodeTelegram(IEBusCommandMethod commandChannel, byte[] data)
-            throws EBusTypeException {
+    public static @NonNull Map<String, Object> decodeTelegram(@NonNull IEBusCommandMethod commandChannel,
+            byte @NonNull [] data) throws EBusTypeException {
+
+        Objects.requireNonNull(commandChannel, "Parameter command is null!");
+        Objects.requireNonNull(data);
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         int pos = 6;
-
-        if (commandChannel == null) {
-            throw new IllegalArgumentException("Parameter command is null!");
-        }
 
         pos = decodeValueList(commandChannel.getMasterTypes(), data, result, pos);
 
@@ -539,7 +554,9 @@ public class EBusCommandUtils {
      * @param commandChannel
      * @return
      */
-    public static ByteBuffer getMasterTelegramMask(IEBusCommandMethod commandChannel) {
+    public static @NonNull ByteBuffer getMasterTelegramMask(@NonNull IEBusCommandMethod commandChannel) {
+
+        Objects.requireNonNull(commandChannel, "Parameter command is null!");
 
         // byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
@@ -548,8 +565,9 @@ public class EBusCommandUtils {
         buf.put(new byte[] { (byte) 0xFF, (byte) 0xFF }); // PB SB - Command
         buf.put((byte) 0xFF); // NN - Length
 
-        if (commandChannel.getMasterTypes() != null) {
-            for (IEBusValue entry : commandChannel.getMasterTypes()) {
+        List<@NonNull IEBusValue> masterTypes = commandChannel.getMasterTypes();
+        if (masterTypes != null) {
+            for (IEBusValue entry : masterTypes) {
                 IEBusType<?> type = entry.getType();
 
                 if (entry.getName() == null && type instanceof EBusTypeBytes && entry.getDefaultValue() != null) {
@@ -579,11 +597,16 @@ public class EBusCommandUtils {
      * @param command
      * @return
      */
-    public static int getSlaveDataLength(IEBusCommandMethod command) {
+    public static int getSlaveDataLength(@NonNull IEBusCommandMethod command) {
+
+        Objects.requireNonNull(command, "Parameter command is null!");
+
         if (command.getType() == Type.MASTER_SLAVE) {
             int len = 0;
-            if (command.getSlaveTypes() != null) {
-                for (IEBusValue value : command.getSlaveTypes()) {
+
+            List<@NonNull IEBusValue> slaveTypes = command.getSlaveTypes();
+            if (slaveTypes != null) {
+                for (IEBusValue value : slaveTypes) {
                     if (value.getType() != null) {
                         len += value.getType().getTypeLength();
                     }

@@ -27,12 +27,14 @@ public class Data1cTest {
     EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 
     private void check(IEBusType<?> type, byte[] bs, float result) throws EBusTypeException {
         BigDecimal value = (BigDecimal) type.decode(bs);
+
+        assertNotNull(value);
         assertEquals(result, value.floatValue(), 0.1f);
 
         byte[] encode = type.encode(value.floatValue());

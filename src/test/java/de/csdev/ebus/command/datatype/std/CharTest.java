@@ -29,12 +29,13 @@ public class CharTest {
     EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 
     private void check(IEBusType<?> type, byte[] bs, int result) throws EBusTypeException {
         BigDecimal value = (BigDecimal) type.decode(bs);
+
         assertEquals(BigDecimal.valueOf(result), value);
 
         byte[] encode = type.encode(value);

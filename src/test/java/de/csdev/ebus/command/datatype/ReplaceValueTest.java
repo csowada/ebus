@@ -35,7 +35,7 @@ public class ReplaceValueTest {
     private byte[] encode;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 

@@ -11,6 +11,9 @@ package de.csdev.ebus.command;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.datatypes.IEBusType;
 
 /**
@@ -26,63 +29,64 @@ public interface IEBusValue extends Cloneable {
      *
      * @return
      */
-    public IEBusType<?> getType();
+
+    public @NonNull IEBusType<?> getType();
 
     /**
      * Returns the default value if set, can be <code>null</code>
      *
      * @return
      */
-    public Object getDefaultValue();
+    public @Nullable Object getDefaultValue();
 
     /**
      * Returns the name of the value, can be <code>null</code>
      *
      * @return
      */
-    public String getName();
+    public @Nullable String getName();
 
     /**
      * Returns the mapping, can be <code>null</code>
      *
      * @return
      */
-    public Map<String, String> getMapping();
+    public @Nullable Map<String, String> getMapping();
 
     /**
      * Returns the allowed step width of the value, can be <code>null</code>
      *
      * @return
      */
-    public BigDecimal getStep();
+    public @Nullable BigDecimal getStep();
 
     /**
      * Returns the factor of the value, can be <code>null</code>
      *
      * @return
      */
-    public BigDecimal getFactor();
+    public @Nullable BigDecimal getFactor();
 
     /**
      * Returns the label of the value, can be <code>null</code>
      *
      * @return
      */
-    public String getLabel();
+    public @Nullable String getLabel();
 
     /**
      * Returns the allowed max of the value, can be <code>null</code>
      *
      * @return
      */
-    public BigDecimal getMax();
+    public @Nullable BigDecimal getMax();
 
     /**
      * Returns the allowed min of the value, can be <code>null</code>
      *
      * @return
      */
-    public BigDecimal getMin();
+    public @Nullable BigDecimal getMin();
 
     /**
      * Returns the formatter, can be <code>null</code>
@@ -90,26 +94,26 @@ public interface IEBusValue extends Cloneable {
      * @return
      * @see String#format(String, Object...)
      */
-    public String getFormat();
+    public @Nullable String getFormat();
 
     /**
      * Returns a map of additional properties, can be <code>null</code>
      *
      * @return
      */
-    public Map<String, Object> getProperties();
+    public @Nullable Map<String, Object> getProperties();
 
     /**
      * Returns the parent command method
      *
      * @return
      */
-    public IEBusCommandMethod getParent();
+    public @Nullable IEBusCommandMethod getParent();
 
     /**
      * Clone a value
-     * 
+     *
      * @return
      */
-    public IEBusValue clone();
+    public @NonNull IEBusValue clone();
 }

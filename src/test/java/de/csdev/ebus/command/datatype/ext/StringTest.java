@@ -30,7 +30,7 @@ public class StringTest {
     private EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 
@@ -45,6 +45,7 @@ public class StringTest {
         IEBusType<String> type = types.getType(EBusTypeString.TYPE_STRING, properties);
 
         String str = type.decode(value);
+        assertNotNull(str);
         assertEquals("Hello World", str.trim());
 
     }

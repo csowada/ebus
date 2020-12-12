@@ -8,7 +8,6 @@
  */
 package de.csdev.ebus.utils;
 
-//import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -16,8 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +51,13 @@ public class EBusConsoleUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
 
-    public static String bruteforceData(byte[] data) {
+    /**
+     *
+     * @param data
+     * @return
+     * @throws EBusTypeException
+     */
+    public static String bruteforceData(byte @Nullable [] data) throws EBusTypeException {
 
         EBusTypeRegistry typeRegistry = new EBusTypeRegistry();
 
@@ -67,24 +75,26 @@ public class EBusConsoleUtils {
                 "    -----------------------------------------------------------------------------------------------");
 
         // Check all possible positions with known data types
-        for (int i = 0; i < data.length; i++) {
+        if (data != null) {
+            for (int i = 0; i < data.length; i++) {
 
-            try {
-                Object word = i == data.length - 1 ? "---" : typeWord.decode(new byte[] { data[i + 1], data[i] });
-                Object integer = i == data.length - 1 ? "---" : typeInt.decode(new byte[] { data[i + 1], data[i] });
-                Object data2b = i == data.length - 1 ? "---" : typeD2B.decode(new byte[] { data[i + 1], data[i] });
-                Object data2c = i == data.length - 1 ? "---" : typeD2C.decode(new byte[] { data[i + 1], data[i] });
+                try {
+                    Object word = i == data.length - 1 ? "---" : typeWord.decode(new byte[] { data[i + 1], data[i] });
+                    Object integer = i == data.length - 1 ? "---" : typeInt.decode(new byte[] { data[i + 1], data[i] });
+                    Object data2b = i == data.length - 1 ? "---" : typeD2B.decode(new byte[] { data[i + 1], data[i] });
+                    Object data2c = i == data.length - 1 ? "---" : typeD2C.decode(new byte[] { data[i + 1], data[i] });
 
-                Object data1c = typeD1C.decode(new byte[] { data[i] }).toString();
-                Object bcd = typeBCD.decode(new byte[] { data[i] });
-                int uint = data[i] & 0xFF;
+                    Object data1c = typeD1C.decode(new byte[] { data[i] });
+                    Object bcd = typeBCD.decode(new byte[] { data[i] });
+                    int uint = data[i] & 0xFF;
 
-                format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s%-13s", i + 6, word, integer, uint, data2b,
-                        data2c, data1c, bcd);
-                logger.info("    " + format);
+                    format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s%-13s", i + 6, word, integer, uint,
+                            data2b, data2c, data1c, bcd);
+                    logger.info("    " + format);
 
-            } catch (EBusTypeException e) {
-                logger.error("error!", e);
+                } catch (EBusTypeException e) {
+                    logger.error("error!", e);
+                }
             }
         }
 
@@ -97,7 +107,10 @@ public class EBusConsoleUtils {
      * @param service
      * @return
      */
-    public static String getMetricsInformation(EBusMetricsService service) {
+    public static @NonNull String getMetricsInformation(@NonNull EBusMetricsService service) {
+
+        Objects.requireNonNull(service, "service");
+
         StringBuilder sb = new StringBuilder();
 
         sb.append(String.format("%-25s | %-10s\n", "Successful received", service.getReceived()));
@@ -117,8 +130,8 @@ public class EBusConsoleUtils {
      *
      * @return
      */
-    public static String getDeviceTableInformation(Collection<IEBusCommandCollection> collections,
-            EBusDeviceTable deviceTable) {
+    public static String getDeviceTableInformation(@NonNull Collection<@NonNull IEBusCommandCollection> collections,
+            @NonNull EBusDeviceTable deviceTable) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -171,7 +184,10 @@ public class EBusConsoleUtils {
      * @param data
      * @return
      */
-    public static String analyzeTelegram(EBusCommandRegistry registry, byte[] data) {
+    public static @NonNull String analyzeTelegram(@NonNull EBusCommandRegistry registry, byte @NonNull [] data) {
+
+        Objects.requireNonNull(registry, "registry");
+        Objects.requireNonNull(data, "data");
 
         StringBuilder sb = new StringBuilder();
         try {
@@ -297,23 +313,24 @@ public class EBusConsoleUtils {
 
             for (IEBusCommandMethod method : methods) {
                 try {
-                    Map<String, Object> result = EBusCommandUtils.decodeTelegram(method, data);
+                    if (method != null) {
+                        Map<String, Object> result = EBusCommandUtils.decodeTelegram(method, data);
 
-                    sb.append(String.format("Values from command '%s' with method '%s' from collection '%s'\n",
-                            method.getParent().getId(), method.getMethod(),
-                            method.getParent().getParentCollection().getId()));
+                        sb.append(String.format("Values from command '%s' with method '%s' from collection '%s'\n",
+                                method.getParent().getId(), method.getMethod(),
+                                method.getParent().getParentCollection().getId()));
 
-                    for (Entry<String, Object> entry : result.entrySet()) {
-                        Object value = entry.getValue();
+                        for (Entry<String, Object> entry : result.entrySet()) {
+                            Object value = entry.getValue();
 
-                        if (value instanceof byte[]) {
-                            value = EBusUtils.toHexDumpString((byte[]) value);
+                            if (value instanceof byte[]) {
+                                value = EBusUtils.toHexDumpString((byte[]) value);
+                            }
+
+                            sb.append(String.format("  %-20s = %s\n", entry.getKey(),
+                                    value != null ? value.toString() : "NULL"));
                         }
-
-                        sb.append(String.format("  %-20s = %s\n", entry.getKey(),
-                                value != null ? value.toString() : "NULL"));
                     }
-
                 } catch (EBusTypeException e) {
                     logger.error("error!", e);
                 }
@@ -327,7 +344,7 @@ public class EBusConsoleUtils {
 
     }
 
-    private static String addressType(byte b) {
+    private static @NonNull String addressType(byte b) {
 
         if (EBusUtils.isMasterAddress(b)) {
             return "Master";
@@ -338,16 +355,16 @@ public class EBusConsoleUtils {
         return "Slave";
     }
 
-    private static String hex(byte[] b) {
+    private static @NonNull String hex(byte[] b) {
         return EBusUtils.toHexDumpString(b).toString();
 
     }
 
-    private static String hex(byte b) {
+    private static @NonNull String hex(byte b) {
         return EBusUtils.toHexDumpString(b);
     }
 
-    private static String createTelegramResoverRow(int pos, int length, int textStart, String text) {
+    private static @NonNull String createTelegramResoverRow(int pos, int length, int textStart, String text) {
 
         StringBuilder sb = new StringBuilder();
         String repeat = StringUtils.repeat("^^ ", length);

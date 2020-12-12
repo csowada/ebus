@@ -26,6 +26,7 @@ public class TestUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(TestUtils.class);
 
+    @SuppressWarnings("null")
     public static boolean canResolve(EBusCommandRegistry commandRegistry, byte[] data) {
 
         List<IEBusCommandMethod> list = commandRegistry.find(data);

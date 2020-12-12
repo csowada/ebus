@@ -13,6 +13,10 @@ import java.math.RoundingMode;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.IEBusCommandMethod;
 import de.csdev.ebus.core.EBusConnectorEventListener;
 import de.csdev.ebus.core.EBusDataException;
@@ -23,6 +27,7 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusMetricsService extends EBusConnectorEventListener implements IEBusParserListener {
 
     private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
@@ -39,7 +44,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
 
     private BigDecimal receivedAmount = BigDecimal.valueOf(0);
 
-    private Map<EBusError, BigDecimal> failedMap = new EnumMap<EBusDataException.EBusError, BigDecimal>(
+    private Map<EBusError, @Nullable BigDecimal> failedMap = new EnumMap<EBusDataException.EBusError, @Nullable BigDecimal>(
             EBusError.class);
 
     public void clear() {
@@ -53,39 +58,46 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
     }
 
     @Override
-    public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
-            Integer sendQueueId) {
+    public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
+            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @Nullable Integer sendQueueId) {
         resolved = resolved.add(BigDecimal.ONE);
     }
 
     @Override
-    public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
-            String exceptionMessage) {
+    public void onTelegramResolveFailed(@Nullable IEBusCommandMethod commandChannel, byte @Nullable [] receivedData,
+            @Nullable Integer sendQueueId, @Nullable String exceptionMessage) {
         unresolved = unresolved.add(BigDecimal.ONE);
     }
 
     @Override
-    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+    public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
         received = received.add(BigDecimal.ONE);
         receivedAmount = receivedAmount.add(BigDecimal.valueOf(receivedData.length));
     }
 
     @Override
-    public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+    public void onTelegramException(@NonNull EBusDataException exception, @Nullable Integer sendQueueId) {
 
-        BigDecimal val = failedMap.get(exception.getErrorCode());
-        if (val == null) {
-            val = BigDecimal.valueOf(0);
+        EBusError errorCode = exception.getErrorCode();
+
+        if (errorCode != null) {
+            if (failedMap.containsKey(errorCode)) {
+                BigDecimal val = failedMap.get(errorCode);
+                if (val == null) {
+                    val = BigDecimal.valueOf(0);
+                }
+
+                val = val.add(BigDecimal.ONE);
+                failedMap.put(errorCode, val);
+
+                failed = failed.add(BigDecimal.ONE);
+            }
         }
-
-        val = val.add(BigDecimal.ONE);
-        failedMap.put(exception.getErrorCode(), val);
-
-        failed = failed.add(BigDecimal.ONE);
     }
 
     @Override
-    public void onConnectionException(Exception e) {
+    public void onConnectionException(@NonNull Exception e) {
         connectionFailed = connectionFailed.add(BigDecimal.ONE);
     }
 
@@ -116,6 +128,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
     public BigDecimal getFailureRatio() {
         BigDecimal all = received.add(failed);
         if (!failed.equals(BigDecimal.ZERO) && !all.equals(BigDecimal.ZERO)) {
+
             return failed.setScale(3, RoundingMode.HALF_UP).divide(all, RoundingMode.HALF_UP).multiply(HUNDRED)
                     .setScale(1, RoundingMode.HALF_UP);
         } else {

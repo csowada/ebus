@@ -10,26 +10,28 @@ package de.csdev.ebus.cfg.std.dto;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusCommandDTO {
 
-    private EBusCommandMethodDTO broadcast;
-    private String command;
-    private String label;
-    private String device;
-    private String dst;
-    private EBusCommandMethodDTO get;
-    private String id;
-    private EBusCommandMethodDTO set;
+    private @Nullable EBusCommandMethodDTO broadcast;
+    private @Nullable String command;
+    private @Nullable String label;
+    private @Nullable String device;
+    private @Nullable String dst;
+    private @Nullable EBusCommandMethodDTO get;
+    private @Nullable String id;
+    private @Nullable EBusCommandMethodDTO set;
 
-    private List<EBusValueDTO> template;
+    private @Nullable List<EBusValueDTO> template;
 
-    private String src;
+    private @Nullable String src;
 
-    public String getSrc() {
+    public @Nullable String getSrc() {
         return src;
     }
 
@@ -37,39 +39,39 @@ public class EBusCommandDTO {
         this.src = src;
     }
 
-    public EBusCommandMethodDTO getBroadcast() {
+    public @Nullable EBusCommandMethodDTO getBroadcast() {
         return broadcast;
     }
 
-    public String getCommand() {
+    public @Nullable String getCommand() {
         return command;
     }
 
-    public String getLabel() {
+    public @Nullable String getLabel() {
         return label;
     }
 
-    public String getDevice() {
+    public @Nullable String getDevice() {
         return device;
     }
 
-    public String getDst() {
+    public @Nullable String getDst() {
         return dst;
     }
 
-    public EBusCommandMethodDTO getGet() {
+    public @Nullable EBusCommandMethodDTO getGet() {
         return get;
     }
 
-    public String getId() {
+    public @Nullable String getId() {
         return id;
     }
 
-    public EBusCommandMethodDTO getSet() {
+    public @Nullable EBusCommandMethodDTO getSet() {
         return set;
     }
 
-    public List<EBusValueDTO> getTemplate() {
+    public @Nullable List<EBusValueDTO> getTemplate() {
         return template;
     }
 

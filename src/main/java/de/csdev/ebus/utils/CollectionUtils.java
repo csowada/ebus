@@ -11,6 +11,10 @@ package de.csdev.ebus.utils;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -25,7 +29,7 @@ public class CollectionUtils {
      * @param key
      * @return
      */
-    public static <V, K> V get(Map<K, V> map, K key) {
+    public static @Nullable <V, K> V get(@Nullable Map<K, V> map, K key) {
         return map != null ? map.get(key) : null;
     }
 
@@ -35,12 +39,13 @@ public class CollectionUtils {
      * @param map
      * @return
      */
-    public static <K, V> Map<K, V> unmodifiableNotNullMap(Map<K, V> map) {
+    public static @NonNull <K, V> Map<K, V> unmodifiableNotNullMap(@Nullable Map<K, V> map) {
         if (map == null) {
-            return Collections.emptyMap();
+            Map<K, V> emptyMap = Collections.emptyMap();
+            return Objects.requireNonNull(emptyMap);
         }
 
-        return Collections.unmodifiableMap(map);
+        return Objects.requireNonNull(Collections.unmodifiableMap(map));
     }
 
     /**
@@ -49,7 +54,7 @@ public class CollectionUtils {
      * @param map
      * @return
      */
-    public static <K, V> Map<K, V> newMapIfNull(Map<K, V> map) {
+    public static <K, V> Map<K, V> newMapIfNull(@Nullable Map<K, V> map) {
         return map != null ? map : new HashMap<K, V>();
     }
 

@@ -10,33 +10,35 @@ package de.csdev.ebus.cfg.std.dto;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
 public class EBusCommandMethodDTO {
 
-    private String command;
+    private @Nullable String command;
 
-    private List<EBusValueDTO> master;
+    private @Nullable List<EBusValueDTO> master;
 
-    private List<EBusValueDTO> slave;
+    private @Nullable List<EBusValueDTO> slave;
 
-    private String type;
+    private @Nullable String type;
 
-    public String getCommand() {
+    public @Nullable String getCommand() {
         return command;
     }
 
-    public List<EBusValueDTO> getMaster() {
+    public @Nullable List<EBusValueDTO> getMaster() {
         return master;
     }
 
-    public List<EBusValueDTO> getSlave() {
+    public @Nullable List<EBusValueDTO> getSlave() {
         return slave;
     }
 
-    public String getType() {
+    public @Nullable String getType() {
         return type;
     }
 

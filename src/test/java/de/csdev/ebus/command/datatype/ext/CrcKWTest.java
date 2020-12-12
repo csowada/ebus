@@ -32,7 +32,7 @@ public class CrcKWTest {
     private EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 

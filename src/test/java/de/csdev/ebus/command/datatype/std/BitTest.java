@@ -8,7 +8,7 @@
  */
 package de.csdev.ebus.command.datatype.std;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class BitTest {
     EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 
@@ -49,35 +49,62 @@ public class BitTest {
 
         byte[] b = new byte[] { (byte) 0xA3 };
 
-        assertTrue((Boolean) typeB0.decode(b));
-        assertTrue((Boolean) typeB1.decode(b));
-        assertFalse((Boolean) typeB2.decode(b));
-        assertFalse((Boolean) typeB3.decode(b));
-        assertFalse((Boolean) typeB4.decode(b));
-        assertTrue((Boolean) typeB5.decode(b));
-        assertFalse((Boolean) typeB6.decode(b));
-        assertTrue((Boolean) typeB7.decode(b));
-        
+        assertEquals(typeB0.decode(b), Boolean.TRUE);
+        assertEquals(typeB1.decode(b), Boolean.TRUE);
+        assertEquals(typeB2.decode(b), Boolean.FALSE);
+        assertEquals(typeB3.decode(b), Boolean.FALSE);
+        assertEquals(typeB4.decode(b), Boolean.FALSE);
+        assertEquals(typeB5.decode(b), Boolean.TRUE);
+        assertEquals(typeB6.decode(b), Boolean.FALSE);
+        assertEquals(typeB7.decode(b), Boolean.TRUE);
+
+        // assertTrue((Boolean) typeB0.decode(b));
+        // assertTrue((Boolean) typeB1.decode(b));
+        // assertFalse((Boolean) typeB2.decode(b));
+        // assertFalse((Boolean) typeB3.decode(b));
+        // assertFalse((Boolean) typeB4.decode(b));
+        // assertTrue((Boolean) typeB5.decode(b));
+        // assertFalse((Boolean) typeB6.decode(b));
+        // assertTrue((Boolean) typeB7.decode(b));
+
         b = new byte[] { (byte) 0x00 };
 
-        assertFalse((Boolean) typeB0.decode(b));
-        assertFalse((Boolean) typeB1.decode(b));
-        assertFalse((Boolean) typeB2.decode(b));
-        assertFalse((Boolean) typeB3.decode(b));
-        assertFalse((Boolean) typeB4.decode(b));
-        assertFalse((Boolean) typeB5.decode(b));
-        assertFalse((Boolean) typeB6.decode(b));
-        assertFalse((Boolean) typeB7.decode(b));
-        
+        assertEquals(typeB0.decode(b), Boolean.FALSE);
+        assertEquals(typeB1.decode(b), Boolean.FALSE);
+        assertEquals(typeB2.decode(b), Boolean.FALSE);
+        assertEquals(typeB3.decode(b), Boolean.FALSE);
+        assertEquals(typeB4.decode(b), Boolean.FALSE);
+        assertEquals(typeB5.decode(b), Boolean.FALSE);
+        assertEquals(typeB6.decode(b), Boolean.FALSE);
+        assertEquals(typeB7.decode(b), Boolean.FALSE);
+
+        // assertFalse((Boolean) typeB0.decode(b));
+        // assertFalse((Boolean) typeB1.decode(b));
+        // assertFalse((Boolean) typeB2.decode(b));
+        // assertFalse((Boolean) typeB3.decode(b));
+        // assertFalse((Boolean) typeB4.decode(b));
+        // assertFalse((Boolean) typeB5.decode(b));
+        // assertFalse((Boolean) typeB6.decode(b));
+        // assertFalse((Boolean) typeB7.decode(b));
+
         b = new byte[] { (byte) 0xFF };
 
-        assertTrue((Boolean) typeB0.decode(b));
-        assertTrue((Boolean) typeB1.decode(b));
-        assertTrue((Boolean) typeB2.decode(b));
-        assertTrue((Boolean) typeB3.decode(b));
-        assertTrue((Boolean) typeB4.decode(b));
-        assertTrue((Boolean) typeB5.decode(b));
-        assertTrue((Boolean) typeB6.decode(b));
-        assertTrue((Boolean) typeB7.decode(b));
+        assertEquals(typeB0.decode(b), Boolean.TRUE);
+        assertEquals(typeB1.decode(b), Boolean.TRUE);
+        assertEquals(typeB2.decode(b), Boolean.TRUE);
+        assertEquals(typeB3.decode(b), Boolean.TRUE);
+        assertEquals(typeB4.decode(b), Boolean.TRUE);
+        assertEquals(typeB5.decode(b), Boolean.TRUE);
+        assertEquals(typeB6.decode(b), Boolean.TRUE);
+        assertEquals(typeB7.decode(b), Boolean.TRUE);
+
+        // assertTrue((Boolean) typeB0.decode(b));
+        // assertTrue((Boolean) typeB1.decode(b));
+        // assertTrue((Boolean) typeB2.decode(b));
+        // assertTrue((Boolean) typeB3.decode(b));
+        // assertTrue((Boolean) typeB4.decode(b));
+        // assertTrue((Boolean) typeB5.decode(b));
+        // assertTrue((Boolean) typeB6.decode(b));
+        // assertTrue((Boolean) typeB7.decode(b));
     }
 }

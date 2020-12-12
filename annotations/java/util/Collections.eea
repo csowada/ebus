@@ -1,0 +1,10 @@
+class java/util/Collections
+emptyMap
+ <K:Ljava/lang/Object;V:Ljava/lang/Object;>()Ljava/util/Map<TK;TV;>;
+ <K:Ljava/lang/Object;V:Ljava/lang/Object;>()L1java/util/Map<TK;TV;>;
+unmodifiableCollection
+ <T:Ljava/lang/Object;>(Ljava/util/Collection<+TT;>;)Ljava/util/Collection<TT;>;
+ <T:Ljava/lang/Object;>(Ljava/util/Collection<+TT;>;)L1java/util/Collection<TT;>;
+unmodifiableMap
+ <K:Ljava/lang/Object;V:Ljava/lang/Object;>(Ljava/util/Map<+TK;+TV;>;)Ljava/util/Map<TK;TV;>;
+ <K:Ljava/lang/Object;V:Ljava/lang/Object;>(Ljava/util/Map<+TK;+TV;>;)L1java/util/Map<TK;TV;>;

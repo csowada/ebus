@@ -12,6 +12,10 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.utils.CollectionUtils;
@@ -59,7 +63,7 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public EBusCommandValue clone() {
+    public @NonNull EBusCommandValue clone() {
 
         EBusCommandValue clone = createInstance();
         clone.defaultValue = this.defaultValue;
@@ -125,12 +129,12 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public String getName() {
+    public @Nullable String getName() {
         return name;
     }
 
     @Override
-    public IEBusCommandMethod getParent() {
+    public @Nullable IEBusCommandMethod getParent() {
         return parent;
     }
 
@@ -145,8 +149,8 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public IEBusType<?> getType() {
-        return type;
+    public @NonNull IEBusType<?> getType() {
+        return Objects.requireNonNull(type);
     }
 
     public void setDefaultValue(Object defaultValue) {
@@ -181,7 +185,7 @@ public class EBusCommandValue implements IEBusValue {
         this.name = name;
     }
 
-    public void setParent(EBusCommandMethod parent) {
+    public void setParent(@Nullable EBusCommandMethod parent) {
         this.parent = parent;
     }
 

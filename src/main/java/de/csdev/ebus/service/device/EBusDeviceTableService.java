@@ -11,9 +11,12 @@ package de.csdev.ebus.service.device;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
@@ -89,6 +92,10 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_INQ_EXISTENCE, IEBusCommandMethod.Method.BROADCAST);
 
+        if (command == null) {
+            throw new IllegalStateException("Unable to load command COMMAND_INQ_EXISTENCE!");
+        }
+
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
                     EBusConsts.BROADCAST_ADDRESS, null);
@@ -97,6 +104,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         } catch (EBusControllerException e) {
+            logger.error("error!", e);
+        } catch (EBusCommandException e) {
             logger.error("error!", e);
         }
     }
@@ -149,6 +158,10 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_IDENTIFICATION, IEBusCommandMethod.Method.GET);
 
+        if (command == null) {
+            throw new IllegalStateException("Unable to load command COMMAND_IDENTIFICATION!");
+        }
+
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, scanSlaveAddress, null);
 
@@ -159,6 +172,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         } catch (EBusControllerException e) {
+            logger.error("error!", e);
+        } catch (EBusCommandException e) {
             logger.error("error!", e);
         }
 
@@ -194,6 +209,10 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         IEBusCommandMethod command = configurationProvider.getCommandMethodById(EBusConsts.COLLECTION_STD,
                 EBusConsts.COMMAND_SIGN_OF_LIFE, IEBusCommandMethod.Method.BROADCAST);
 
+        if (command == null) {
+            throw new IllegalStateException("Unable to load command COMMAND_SIGN_OF_LIFE!");
+        }
+
         try {
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress,
                     EBusConsts.BROADCAST_ADDRESS, null);
@@ -202,6 +221,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         } catch (EBusTypeException e) {
             logger.error("error!", e);
         } catch (EBusControllerException e) {
+            logger.error("error!", e);
+        } catch (EBusCommandException e) {
             logger.error("error!", e);
         }
     }
@@ -238,6 +259,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             logger.error("error!", e);
         } catch (EBusControllerException e) {
             logger.error("error!", e);
+        } catch (EBusCommandException e) {
+            logger.error("error!", e);
         }
     }
 
@@ -247,7 +270,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
     @Override
-    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+    public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
 
         deviceTable.updateDevice(receivedData[0], null);
         deviceTable.updateDevice(receivedData[1], null);
@@ -276,7 +299,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
      * java.lang.Integer)
      */
     @Override
-    public void onTelegramException(EBusDataException exception, Integer sendQueueId) {
+    public void onTelegramException(@NonNull EBusDataException exception, @Nullable Integer sendQueueId) {
         if (sendQueueId != null && sendQueueId.equals(scanQueueId)) {
 
             if (scanRunning) {
@@ -299,8 +322,9 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
      * java.util.Map, byte[], java.lang.Integer)
      */
     @Override
-    public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
-            Integer sendQueueId) {
+    public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
+            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @Nullable Integer sendQueueId) {
 
         String id = commandChannel.getParent().getId();
         Byte slaveAddress = receivedData[1];
@@ -323,7 +347,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
      * EBusDeviceTableListener.TYPE, de.csdev.ebus.service.device.IEBusDevice)
      */
     @Override
-    public void onEBusDeviceUpdate(IEBusDeviceTableListener.TYPE type, IEBusDevice device) {
+    public void onEBusDeviceUpdate(IEBusDeviceTableListener.@NonNull TYPE type, @NonNull IEBusDevice device) {
 
         if (!type.equals(TYPE.UPDATE_ACTIVITY)) {
             logger.debug("DATA TABLE UPDATE {}", device);
@@ -338,8 +362,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     }
 
     @Override
-    public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
-            String exceptionMessage) {
+    public void onTelegramResolveFailed(@Nullable IEBusCommandMethod commandChannel, byte @Nullable [] receivedData,
+            @Nullable Integer sendQueueId, @Nullable String exceptionMessage) {
         // noop
     }
 }

@@ -10,12 +10,16 @@ package de.csdev.ebus.service.parser;
 
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.IEBusCommandMethod;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusParserListener {
 
     /**
@@ -27,7 +31,7 @@ public interface IEBusParserListener {
      * @param sendQueueId The sendQueue id if available
      */
     public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
-            Integer sendQueueId);
+            @Nullable Integer sendQueueId);
 
     /**
      * A parsed eBUS telegram was received but failed to resolve.
@@ -37,7 +41,7 @@ public interface IEBusParserListener {
      * @param sendQueueId
      * @param exceptionMessage
      */
-    public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
-            String exceptionMessage);
+    public void onTelegramResolveFailed(@Nullable IEBusCommandMethod commandChannel, byte @Nullable [] receivedData,
+            @Nullable Integer sendQueueId, @Nullable String exceptionMessage);
 
 }

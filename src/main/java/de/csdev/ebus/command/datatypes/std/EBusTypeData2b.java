@@ -10,9 +10,11 @@ package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.datatypes.EBusTypeException;
+import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
-import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -35,14 +37,14 @@ public class EBusTypeData2b extends AbstractEBusTypeNumber {
     }
 
     @Override
-    public BigDecimal decodeInt(byte[] data) throws EBusTypeException {
+    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
         BigDecimal decodeInt = super.decodeInt(data);
         return decodeInt.divide(BigDecimal.valueOf(256));
     }
 
     @Override
-    public byte[] encodeInt(Object data) throws EBusTypeException {
-        BigDecimal b = NumberUtils.toBigDecimal(data);
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+        BigDecimal b = EBusTypeUtils.toBigDecimal(data);
         return super.encodeInt(b.multiply(BigDecimal.valueOf(256)));
     }
 

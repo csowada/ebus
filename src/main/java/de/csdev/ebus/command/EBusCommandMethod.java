@@ -11,6 +11,10 @@ package de.csdev.ebus.command;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -24,13 +28,13 @@ public class EBusCommandMethod implements IEBusCommandMethod {
 
     private Byte destinationAddress;
 
-    private List<IEBusValue> masterTypes;
+    private List<@NonNull IEBusValue> masterTypes;
 
-    private IEBusCommandMethod.Method method;
+    private IEBusCommandMethod.@NonNull Method method;
 
-    private IEBusCommand parent;
+    private @NonNull IEBusCommand parent;
 
-    private List<IEBusValue> slaveTypes;
+    private List<@NonNull IEBusValue> slaveTypes;
 
     private Byte sourceAddress;
 
@@ -39,6 +43,10 @@ public class EBusCommandMethod implements IEBusCommandMethod {
     private Type type;
 
     public EBusCommandMethod(EBusCommand parent, IEBusCommandMethod.Method method) {
+
+        Objects.requireNonNull(parent);
+        Objects.requireNonNull(method);
+
         this.parent = parent;
         this.method = method;
 
@@ -52,7 +60,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      */
     public EBusCommandMethod addMasterValue(IEBusValue value) {
         if (masterTypes == null) {
-            masterTypes = new ArrayList<IEBusValue>();
+            masterTypes = new ArrayList<@NonNull IEBusValue>();
         }
 
         if (value != null) {
@@ -69,7 +77,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      */
     public EBusCommandMethod addSlaveValue(IEBusValue value) {
         if (slaveTypes == null) {
-            slaveTypes = new ArrayList<IEBusValue>();
+            slaveTypes = new ArrayList<@NonNull IEBusValue>();
         }
 
         if (value != null) {
@@ -85,8 +93,8 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      * @see de.csdev.ebus.command.IEBusCommand#getCommand()
      */
     @Override
-    public byte[] getCommand() {
-        return command;
+    public byte @NonNull [] getCommand() {
+        return Objects.requireNonNull(command);
     }
 
     /*
@@ -105,13 +113,13 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTelegramMask()
      */
     @Override
-    public ByteBuffer getMasterTelegramMask() {
+    public @NonNull ByteBuffer getMasterTelegramMask() {
 
         if (telegramMask == null) {
             telegramMask = EBusCommandUtils.getMasterTelegramMask(this);
         }
 
-        return telegramMask;
+        return Objects.requireNonNull(telegramMask);
 
     }
 
@@ -121,7 +129,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTypes()
      */
     @Override
-    public List<IEBusValue> getMasterTypes() {
+    public @Nullable List<@NonNull IEBusValue> getMasterTypes() {
         return masterTypes;
     }
 
@@ -131,7 +139,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      * @see de.csdev.ebus.command.IEBusCommand#getType()
      */
     @Override
-    public IEBusCommandMethod.Method getMethod() {
+    public IEBusCommandMethod.@NonNull Method getMethod() {
         return method;
     }
 
@@ -141,7 +149,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      * @see de.csdev.ebus.command.IEBusCommandChannel#getParent()
      */
     @Override
-    public IEBusCommand getParent() {
+    public @NonNull IEBusCommand getParent() {
         return parent;
     }
 
@@ -151,7 +159,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      * @see de.csdev.ebus.command.IEBusCommand#getSlaveTypes()
      */
     @Override
-    public List<IEBusValue> getSlaveTypes() {
+    public @Nullable List<@NonNull IEBusValue> getSlaveTypes() {
         return slaveTypes;
     }
 
@@ -166,7 +174,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
     }
 
     @Override
-    public Type getType() {
+    public @NonNull Type getType() {
 
         if (type != null) {
             return type;
@@ -188,11 +196,11 @@ public class EBusCommandMethod implements IEBusCommandMethod {
         this.destinationAddress = destinationAddress;
     }
 
-    public void setMasterTypes(List<IEBusValue> masterTypes) {
+    public void setMasterTypes(List<@NonNull IEBusValue> masterTypes) {
         this.masterTypes = masterTypes;
     }
 
-    public void setSlaveTypes(List<IEBusValue> slaveTypes) {
+    public void setSlaveTypes(List<@NonNull IEBusValue> slaveTypes) {
         this.slaveTypes = slaveTypes;
     }
 

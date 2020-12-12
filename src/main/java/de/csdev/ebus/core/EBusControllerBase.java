@@ -9,6 +9,7 @@
 package de.csdev.ebus.core;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,6 +19,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +32,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     private static final Logger logger = LoggerFactory.getLogger(EBusControllerBase.class);
 
     /** serial receive buffer */
-    protected EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+    protected @NonNull EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
     /** the list for listeners */
-    private final List<IEBusConnectorEventListener> listeners = new CopyOnWriteArrayList<IEBusConnectorEventListener>();
+    private final @NonNull List<IEBusConnectorEventListener> listeners = new CopyOnWriteArrayList<IEBusConnectorEventListener>();
 
     /** The thread pool to execute events without blocking */
     private ExecutorService threadPool;
@@ -44,9 +46,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     private int watchdogTimerTimeout = 300; // 5min
 
-    protected EBusQueue queue = new EBusQueue();
+    protected @NonNull EBusQueue queue = new EBusQueue();
 
-    private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
+    private @NonNull ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
 
     /*
      * (non-Javadoc)
@@ -54,11 +56,18 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[], int)
      */
     @Override
-    public Integer addToSendQueue(byte[] buffer, int maxAttemps) throws EBusControllerException {
+    public @NonNull Integer addToSendQueue(byte @NonNull [] buffer, int maxAttemps) throws EBusControllerException {
         if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
             throw new EBusControllerException("Controller not connected, unable to add telegrams to send queue!");
         }
-        return queue.addToSendQueue(buffer, maxAttemps);
+
+        Integer sendId = queue.addToSendQueue(buffer, maxAttemps);
+
+        if (sendId == null) {
+            throw new EBusControllerException("Unable to add telegrams to send queue!");
+        }
+
+        return sendId;
     }
 
     /*
@@ -67,11 +76,18 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[])
      */
     @Override
-    public Integer addToSendQueue(byte[] buffer) throws EBusControllerException {
+    public @NonNull Integer addToSendQueue(byte @NonNull [] buffer) throws EBusControllerException {
         if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
             throw new EBusControllerException("Controller not connected, unable to add telegrams to send queue!");
         }
-        return queue.addToSendQueue(buffer);
+
+        Integer sendId = queue.addToSendQueue(buffer);
+
+        if (sendId == null) {
+            throw new EBusControllerException("Unable to add telegrams to send queue!");
+        }
+
+        return sendId;
     }
 
     /*
@@ -80,7 +96,8 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#addEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
     @Override
-    public void addEBusEventListener(IEBusConnectorEventListener listener) {
+    public void addEBusEventListener(@NonNull IEBusConnectorEventListener listener) {
+        Objects.requireNonNull(listener);
         listeners.add(listener);
     }
 
@@ -90,14 +107,17 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#removeEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
     @Override
-    public boolean removeEBusEventListener(IEBusConnectorEventListener listener) {
+    public boolean removeEBusEventListener(@NonNull IEBusConnectorEventListener listener) {
+        Objects.requireNonNull(listener);
         return listeners.remove(listener);
     }
 
     /**
      * @param e
      */
-    protected void fireOnConnectionException(final Exception e) {
+    protected void fireOnConnectionException(final @NonNull Exception e) {
+
+        Objects.requireNonNull(e);
 
         if (!isRunning()) {
             return;
@@ -130,7 +150,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @param receivedData
      * @param sendQueueId
      */
-    protected void fireOnEBusTelegramReceived(final byte[] receivedData, final Integer sendQueueId) {
+    protected void fireOnEBusTelegramReceived(final byte @NonNull [] receivedData, final Integer sendQueueId) {
 
         if (!isRunning()) {
             return;
@@ -164,7 +184,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @param exception
      * @param sendQueueId
      */
-    protected void fireOnEBusDataException(final EBusDataException exception, final Integer sendQueueId) {
+    protected void fireOnEBusDataException(final @NonNull EBusDataException exception, final Integer sendQueueId) {
+
+        Objects.requireNonNull(exception);
 
         if (!isRunning()) {
             return;
@@ -192,7 +214,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     /**
      * @param status
      */
-    protected void fireOnEBusConnectionStatusChange(ConnectionStatus status) {
+    protected void fireOnEBusConnectionStatusChange(@NonNull ConnectionStatus status) {
+
+        Objects.requireNonNull(status);
 
         if (!isRunning()) {
             return;
@@ -287,9 +311,6 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         }
 
         shutdownThreadPool();
-
-        queue = null;
-        machine = null;
     }
 
     protected void resetWatchdogTimer() {
@@ -322,7 +343,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     protected abstract void fireWatchDogTimer();
 
-    protected void setConnectionStatus(ConnectionStatus status) {
+    protected void setConnectionStatus(@NonNull ConnectionStatus status) {
+
+        Objects.requireNonNull(status, "status");
+
         this.connectionStatus = status;
         fireOnEBusConnectionStatusChange(status);
     }

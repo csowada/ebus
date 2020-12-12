@@ -10,6 +10,10 @@ package de.csdev.ebus.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -17,10 +21,13 @@ import java.util.List;
  */
 public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNestedValue {
 
-    private List<IEBusValue> list;
+    private @NonNull List<@NonNull IEBusValue> list = new ArrayList<@NonNull IEBusValue>();
 
     @Override
-    public void setParent(EBusCommandMethod parent) {
+    public void setParent(@Nullable EBusCommandMethod parent) {
+
+        Objects.requireNonNull(parent, "parent");
+
         super.setParent(parent);
 
         for (IEBusValue value : list) {
@@ -28,28 +35,18 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
         }
     }
 
-    public boolean add(IEBusValue value) {
-
-        if (list == null) {
-            list = new ArrayList<IEBusValue>();
-        }
-
+    public boolean add(@NonNull IEBusValue value) {
+        Objects.requireNonNull(value, "value");
         return list.add(value);
     }
 
     @Override
-    public List<IEBusValue> getChildren() {
-
-        if (list == null) {
-            list = new ArrayList<IEBusValue>();
-        }
-
+    public @NonNull List<@NonNull IEBusValue> getChildren() {
         return list;
     }
 
     @Override
     public boolean hasChildren() {
-
         return list != null && !list.isEmpty();
     }
 
@@ -59,7 +56,7 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
     }
 
     @Override
-    public EBusCommandValue clone() {
+    public @NonNull EBusCommandValue clone() {
         EBusCommandNestedValue clone = (EBusCommandNestedValue) super.clone();
 
         // deep clone list

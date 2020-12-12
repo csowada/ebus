@@ -8,10 +8,13 @@
  */
 package de.csdev.ebus.service.device;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusDeviceTableListener {
 
     public enum TYPE {

@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.wip;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -18,6 +20,7 @@ import java.util.Map.Entry;
 import de.csdev.ebus.StaticTestTelegrams;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommand;
@@ -33,9 +36,11 @@ import de.csdev.ebus.utils.EBusUtils;
 public class ConfigurationReaderTest {
 
     // @Test
+    @SuppressWarnings("null")
     public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 
         URL url = EBusConfigurationReader.class.getResource("/commands/wolf-sm1-configuration.json");
+        assertNotNull(url);
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
         commandRegistry.loadCommandCollection(url);
@@ -49,21 +54,28 @@ public class ConfigurationReaderTest {
 
             for (IEBusCommand command : collection.getCommands()) {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
-                    ByteBuffer masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00,
-                            (byte) 0xFF, null);
-                    StringBuilder hexDumpString = EBusUtils.toHexDumpString(masterTelegram);
-                    System.out.println(hexDumpString);
+                    ByteBuffer masterTelegram;
+                    try {
+                        masterTelegram = EBusCommandUtils.buildMasterTelegram(commandChannel, (byte) 0x00, (byte) 0xFF,
+                                null);
 
-                    ByteBuffer masterTelegramMask = commandChannel.getMasterTelegramMask();
-                    StringBuilder xx = EBusUtils.toHexDumpString(masterTelegramMask);
-                    System.out.println(xx);
+                        StringBuilder hexDumpString = EBusUtils.toHexDumpString(masterTelegram);
+                        System.out.println(hexDumpString);
+
+                        ByteBuffer masterTelegramMask = commandChannel.getMasterTelegramMask();
+                        StringBuilder xx = EBusUtils.toHexDumpString(masterTelegramMask);
+                        System.out.println(xx);
+
+                    } catch (EBusTypeException | EBusCommandException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
                 }
 
             }
         }
 
-        
-        
         // byte[] bs = EBusUtils.toByteArray("71 FE 50 17 10 08 95 F8 00 C3 02 00 80 00 80 00 80 00 80 00 80 DB");
         //
         // byte[] bs2 = EBusUtils.toByteArray("71 FE 50 18 0E 00 00 D0 01 05 00 E2 03 0F 01 01 00 00 00 18");
@@ -80,8 +92,12 @@ public class ConfigurationReaderTest {
             }
         }
 
-        Map<String, Object> encode = EBusCommandUtils.decodeTelegram(commandRegistry.getCommandMethodById("wolf-sm1",
-                "solar.solar_data", IEBusCommandMethod.Method.BROADCAST), StaticTestTelegrams.WOLF_SOLAR_B);
+        IEBusCommandMethod commandMethod = commandRegistry.getCommandMethodById("wolf-sm1", "solar.solar_data",
+                IEBusCommandMethod.Method.BROADCAST);
+
+        assertNotNull(commandMethod);
+
+        Map<String, Object> encode = EBusCommandUtils.decodeTelegram(commandMethod, StaticTestTelegrams.WOLF_SOLAR_B);
 
         for (Entry<String, Object> eBusCommand2 : encode.entrySet()) {
             System.out.println("ConfigurationReaderTest.testIsMasterAddress()" + eBusCommand2.getKey() + " > "

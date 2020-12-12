@@ -9,6 +9,9 @@
 package de.csdev.ebus.command.datatypes.ext;
 
 import java.util.Map;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.IEBusType;
@@ -31,12 +34,12 @@ public class EBusTypeBytes extends EBusAbstractType<byte[]> {
     }
 
     @Override
-    public byte[] decodeInt(byte[] data) {
+    public byte @Nullable [] decodeInt(byte @Nullable [] data) {
         return data;
     }
 
     @Override
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(@Nullable Object data) {
 
         byte[] b = new byte[length];
 
@@ -53,7 +56,8 @@ public class EBusTypeBytes extends EBusAbstractType<byte[]> {
     }
 
     @Override
-    public IEBusType<byte[]> getInstance(Map<String, Object> properties) {
+    public IEBusType<byte[]> getInstance(@Nullable Map<String, Object> properties) {
+        Objects.requireNonNull(properties);
 
         if (properties.containsKey(IEBusType.LENGTH)) {
             EBusTypeBytes type = new EBusTypeBytes();

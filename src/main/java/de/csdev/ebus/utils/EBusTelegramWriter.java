@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +45,9 @@ public class EBusTelegramWriter implements IEBusParserListener {
     }
 
     @Override
-    public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
-            Integer sendQueueId) {
+    public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
+            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @Nullable Integer sendQueueId) {
 
         try {
             if (writerResolved == null) {
@@ -62,8 +65,8 @@ public class EBusTelegramWriter implements IEBusParserListener {
     }
 
     @Override
-    public void onTelegramResolveFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
-            String exceptionMessage) {
+    public void onTelegramResolveFailed(@Nullable IEBusCommandMethod commandChannel, byte @Nullable [] receivedData,
+            @Nullable Integer sendQueueId, @Nullable String exceptionMessage) {
 
         try {
             if (writerUnresolved == null) {

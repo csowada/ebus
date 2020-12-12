@@ -9,6 +9,7 @@
 package de.csdev.ebus.command;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -16,14 +17,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
 import de.csdev.ebus.command.IEBusCommandMethod.Type;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
@@ -34,13 +39,13 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusCommandRegistry {
 
-    private Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
-
     private final Logger logger = LoggerFactory.getLogger(EBusCommandRegistry.class);
 
-    private EBusTypeRegistry typeRegistry;
+    private @NonNull Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
 
-    private IEBusConfigurationReader reader;
+    private @NonNull EBusTypeRegistry typeRegistry;
+
+    private @NonNull IEBusConfigurationReader reader;
 
     public IEBusConfigurationReader getConfigurationReader() {
         return reader;
@@ -57,22 +62,33 @@ public class EBusCommandRegistry {
      * @param readerClass
      * @param loadBuildInCommands
      */
+    @SuppressWarnings("null")
     public EBusCommandRegistry(Class<? extends IEBusConfigurationReader> readerClass, boolean loadBuildInCommands) {
 
-        typeRegistry = new EBusTypeRegistry();
-
         try {
-            this.reader = readerClass.newInstance();
-            this.reader.setEBusTypes(typeRegistry);
+            this.typeRegistry = new EBusTypeRegistry();
+
+            this.reader = readerClass.getDeclaredConstructor().newInstance();
+            reader.setEBusTypes(this.typeRegistry);
+
+            if (loadBuildInCommands) {
+                loadBuildInCommandCollections();
+            }
 
         } catch (InstantiationException e) {
-            logger.error("error!", e);
+            throw new IllegalStateException(e);
         } catch (IllegalAccessException e) {
-            logger.error("error!", e);
-        }
-
-        if (loadBuildInCommands) {
-            loadBuildInCommandCollections();
+            throw new IllegalStateException(e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        } catch (SecurityException e) {
+            throw new IllegalStateException(e);
+        } catch (EBusTypeException e) {
+            throw new IllegalStateException(e);
         }
     }
 
@@ -80,7 +96,7 @@ public class EBusCommandRegistry {
      * Loads all build-in command collections
      */
     public void loadBuildInCommandCollections() {
-        List<IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurationCollections();
+        List<@NonNull IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurationCollections();
 
         if (loadBuildInConfigurations != null && !loadBuildInConfigurations.isEmpty()) {
             for (IEBusCommandCollection collection : loadBuildInConfigurations) {
@@ -94,7 +110,9 @@ public class EBusCommandRegistry {
      *
      * @param url
      */
-    public void loadCommandCollection(URL url) {
+    public void loadCommandCollection(@NonNull URL url) {
+
+        Objects.requireNonNull(url);
 
         try {
             addCommandCollection(reader.loadConfigurationCollection(url));
@@ -110,8 +128,11 @@ public class EBusCommandRegistry {
     /**
      * @param url
      */
-    public void loadCommandCollectionBundle(URL url) {
-        List<IEBusCommandCollection> collections = reader.loadConfigurationCollectionBundle(url);
+    public void loadCommandCollectionBundle(@NonNull URL url) {
+
+        Objects.requireNonNull(url);
+
+        List<@NonNull IEBusCommandCollection> collections = reader.loadConfigurationCollectionBundle(url);
 
         for (IEBusCommandCollection collection : collections) {
             addCommandCollection(collection);
@@ -135,7 +156,11 @@ public class EBusCommandRegistry {
      * @param data The complete unescaped eBUS telegram
      * @return Returns the a list of all matching configuration methods or an empty list
      */
-    public List<IEBusCommandMethod> find(byte[] data) {
+    @SuppressWarnings("null")
+    public @NonNull List<IEBusCommandMethod> find(byte @NonNull [] data) {
+
+        Objects.requireNonNull(data);
+
         ByteBuffer buffer = ByteBuffer.wrap(data);
         return find(buffer);
     }
@@ -146,7 +171,9 @@ public class EBusCommandRegistry {
      * @param data The complete unescaped eBUS telegram
      * @return Returns the a list of all matching configuration methods or an empty list
      */
-    public List<IEBusCommandMethod> find(ByteBuffer data) {
+    public @NonNull List<IEBusCommandMethod> find(@NonNull ByteBuffer data) {
+
+        Objects.requireNonNull(data);
 
         ArrayList<IEBusCommandMethod> result = new ArrayList<IEBusCommandMethod>();
 
@@ -155,7 +182,7 @@ public class EBusCommandRegistry {
                 for (IEBusCommandMethod commandChannel : command.getCommandMethods()) {
 
                     // check if telegram matches
-                    if (matchesCommand(commandChannel, data)) {
+                    if (commandChannel != null && matchesCommand(commandChannel, data)) {
                         result.add(commandChannel);
                     }
                 }
@@ -174,7 +201,10 @@ public class EBusCommandRegistry {
      * @param id
      * @return
      */
-    public IEBusCommand getCommandById(String collectionId, String id) {
+    public @Nullable IEBusCommand getCommandById(@NonNull String collectionId, @NonNull String id) {
+
+        Objects.requireNonNull(collectionId);
+        Objects.requireNonNull(id);
 
         IEBusCommandCollection collection = collections.get(collectionId);
         if (collection == null) {
@@ -190,7 +220,8 @@ public class EBusCommandRegistry {
      * @param id
      * @return
      */
-    public IEBusCommandCollection getCommandCollection(String id) {
+    public @Nullable IEBusCommandCollection getCommandCollection(@NonNull String id) {
+        Objects.requireNonNull(id);
         return collections.get(id);
     }
 
@@ -199,7 +230,8 @@ public class EBusCommandRegistry {
      *
      * @return
      */
-    public List<IEBusCommandCollection> getCommandCollections() {
+    @SuppressWarnings("null")
+    public @NonNull List<@NonNull IEBusCommandCollection> getCommandCollections() {
         return Collections.unmodifiableList(new ArrayList<IEBusCommandCollection>(collections.values()));
     }
 
@@ -210,7 +242,8 @@ public class EBusCommandRegistry {
      * @param type
      * @return
      */
-    public IEBusCommandMethod getCommandMethodById(String collectionId, String id, IEBusCommandMethod.Method type) {
+    public @Nullable IEBusCommandMethod getCommandMethodById(@NonNull String collectionId, @NonNull String id,
+            IEBusCommandMethod.@NonNull Method type) {
 
         IEBusCommand command = getCommandById(collectionId, id);
 
@@ -232,7 +265,7 @@ public class EBusCommandRegistry {
      * @param data
      * @return
      */
-    public boolean matchesCommand(IEBusCommandMethod command, ByteBuffer data) {
+    public boolean matchesCommand(@NonNull IEBusCommandMethod command, @NonNull ByteBuffer data) {
 
         Byte sourceAddress = (Byte) ObjectUtils.defaultIfNull(command.getSourceAddress(), Byte.valueOf((byte) 0x00));
 

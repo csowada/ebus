@@ -10,8 +10,11 @@ package de.csdev.ebus.service.parser;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,15 +34,16 @@ public class EBusParserService extends EBusConnectorEventListener {
     private static final Logger logger = LoggerFactory.getLogger(EBusParserService.class);
 
     /** the list for listeners */
-    private final List<IEBusParserListener> listeners = new CopyOnWriteArrayList<IEBusParserListener>();
+    private final @NonNull List<IEBusParserListener> listeners = new CopyOnWriteArrayList<IEBusParserListener>();
 
     /** */
-    private EBusCommandRegistry commandRegistry;
+    private @NonNull EBusCommandRegistry commandRegistry;
 
     /**
      * @param configurationProvider
      */
-    public EBusParserService(EBusCommandRegistry configurationProvider) {
+    public EBusParserService(@NonNull EBusCommandRegistry configurationProvider) {
+        Objects.requireNonNull(configurationProvider);
         this.commandRegistry = configurationProvider;
     }
 
@@ -57,7 +61,8 @@ public class EBusParserService extends EBusConnectorEventListener {
      *
      * @param listener
      */
-    public void addEBusParserListener(IEBusParserListener listener) {
+    public void addEBusParserListener(@NonNull IEBusParserListener listener) {
+        Objects.requireNonNull(listener);
         listeners.add(listener);
     }
 
@@ -67,7 +72,8 @@ public class EBusParserService extends EBusConnectorEventListener {
      * @param listener
      * @return
      */
-    public boolean removeEBusParserListener(IEBusParserListener listener) {
+    public boolean removeEBusParserListener(@NonNull IEBusParserListener listener) {
+        Objects.requireNonNull(listener);
         return listeners.remove(listener);
     }
 
@@ -76,8 +82,9 @@ public class EBusParserService extends EBusConnectorEventListener {
      *
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
+    @SuppressWarnings("null")
     @Override
-    public void onTelegramReceived(byte[] receivedData, Integer sendQueueId) {
+    public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
 
         final List<IEBusCommandMethod> commandChannelList = commandRegistry.find(receivedData);
 
@@ -86,18 +93,23 @@ public class EBusParserService extends EBusConnectorEventListener {
                 logger.trace("No command method matches the telegram {} ...", EBusUtils.toHexDumpString(receivedData));
             }
             fireOnTelegramFailed(null, receivedData, sendQueueId, "No command method matches the telegram!");
+            return;
         }
 
-        for (IEBusCommandMethod commandChannel : commandChannelList) {
+        if (!commandChannelList.isEmpty()) {
+            for (IEBusCommandMethod commandChannel : commandChannelList) {
 
-            try {
-                Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, receivedData);
-                fireOnTelegramResolved(commandChannel, map, receivedData, sendQueueId);
-            } catch (EBusTypeException e) {
-                fireOnTelegramFailed(commandChannel, receivedData, sendQueueId, e.getMessage());
-                logger.error("Parsing error details >> Data: {} - {} {}", EBusUtils.toHexDumpString(receivedData),
-                        commandChannel.getParent(), commandChannel.getType());
-                logger.error("error!", e);
+                try {
+                    if (commandChannel != null) {
+                        Map<String, Object> map = EBusCommandUtils.decodeTelegram(commandChannel, receivedData);
+                        fireOnTelegramResolved(commandChannel, map, receivedData, sendQueueId);
+                    }
+                } catch (EBusTypeException e) {
+                    fireOnTelegramFailed(commandChannel, receivedData, sendQueueId, e.getMessage());
+                    logger.error("Parsing error details >> Data: {} - {} {}", EBusUtils.toHexDumpString(receivedData),
+                            commandChannel.getParent(), commandChannel.getType());
+                    logger.error("error!", e);
+                }
             }
         }
 
@@ -109,8 +121,9 @@ public class EBusParserService extends EBusConnectorEventListener {
      * @param receivedData
      * @param sendQueueId
      */
-    private void fireOnTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
-            byte[] receivedData, Integer sendQueueId) {
+    private void fireOnTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
+            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @Nullable Integer sendQueueId) {
 
         for (IEBusParserListener listener : listeners) {
             try {
@@ -127,8 +140,8 @@ public class EBusParserService extends EBusConnectorEventListener {
      * @param receivedData
      * @param sendQueueId
      */
-    private void fireOnTelegramFailed(IEBusCommandMethod commandChannel, byte[] receivedData, Integer sendQueueId,
-            String exceptionMessage) {
+    private void fireOnTelegramFailed(@Nullable IEBusCommandMethod commandChannel, byte @NonNull [] receivedData,
+            @Nullable Integer sendQueueId, @NonNull String exceptionMessage) {
 
         for (IEBusParserListener listener : listeners) {
             try {

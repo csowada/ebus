@@ -25,12 +25,14 @@ public class BCDTest {
     EBusTypeRegistry types;
 
     @Before
-    public void before() {
+    public void before() throws EBusTypeException {
         types = new EBusTypeRegistry();
     }
 
     private void check(IEBusType<?> type, byte[] bs, int result) throws EBusTypeException {
         BigDecimal value = (BigDecimal) type.decode(bs);
+
+        assertNotNull(value);
         assertEquals(result, value.intValue());
 
         byte[] encode = type.encode(value);
@@ -39,6 +41,7 @@ public class BCDTest {
 
     private void checkReplaceValue(IEBusType<?> type, byte[] bs) throws EBusTypeException {
         BigDecimal value = (BigDecimal) type.decode(bs);
+
         assertNull(value);
 
         byte[] encode = type.encode(value);

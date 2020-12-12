@@ -11,6 +11,7 @@ package de.csdev.ebus.cfg;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
@@ -41,7 +43,11 @@ public class EBusBitTypeTest {
     @BeforeClass
     public static void before() throws IOException, EBusConfigurationReaderException {
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(EBusBitTypeTest.class.getResource("/common-configuration.json"));
+
+        URL url = EBusBitTypeTest.class.getResource("/common-configuration.json");
+        assertNotNull(url);
+
+        commandRegistry.loadCommandCollection(url);
     }
 
     @Test
@@ -77,12 +83,20 @@ public class EBusBitTypeTest {
 
         assertFalse(values.isEmpty());
 
-        ByteBuffer buildMasterTelegram = EBusCommandUtils.buildMasterTelegram(method, (byte) 0x03, (byte) 0xFE, values);
+        try {
+            ByteBuffer buildMasterTelegram = EBusCommandUtils.buildMasterTelegram(method, (byte) 0x03, (byte) 0xFE,
+                    values);
 
-        String hexDumpString = EBusUtils.toHexDumpString(buildMasterTelegram).toString();
+            String hexDumpString = EBusUtils.toHexDumpString(buildMasterTelegram).toString();
 
-        assertEquals(sourceTelegram, hexDumpString);
+            assertEquals(sourceTelegram, hexDumpString);
 
+        } catch (EBusTypeException e) {
+            e.printStackTrace();
+            fail();
+        } catch (EBusCommandException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
-
 }

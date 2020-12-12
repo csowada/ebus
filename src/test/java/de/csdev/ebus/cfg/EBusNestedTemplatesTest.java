@@ -8,20 +8,24 @@
  */
 package de.csdev.ebus.cfg;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
+import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.EBusCommandUtils;
 import de.csdev.ebus.command.IEBusCommandMethod;
@@ -43,12 +47,21 @@ public class EBusNestedTemplatesTest {
     @BeforeClass
     public static void before() throws IOException, EBusConfigurationReaderException {
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
-        commandRegistry.loadCommandCollection(
-                EBusNestedTemplatesTest.class.getResource("/nested-templates/FirstTemplate.json"));
-        commandRegistry.loadCommandCollection(
-                EBusNestedTemplatesTest.class.getResource("/nested-templates/SecondTemplate.json"));
-        commandRegistry.loadCommandCollection(
-                EBusNestedTemplatesTest.class.getResource("/nested-templates/ThirdCommand.json"));
+
+        URL url = EBusNestedTemplatesTest.class.getResource("/nested-templates/FirstTemplate.json");
+        assertNotNull(url);
+
+        commandRegistry.loadCommandCollection(url);
+
+        url = EBusNestedTemplatesTest.class.getResource("/nested-templates/SecondTemplate.json");
+        assertNotNull(url);
+
+        commandRegistry.loadCommandCollection(url);
+
+        url = EBusNestedTemplatesTest.class.getResource("/nested-templates/ThirdCommand.json");
+        assertNotNull(url);
+
+        commandRegistry.loadCommandCollection(url);
     }
 
     @Test
@@ -67,6 +80,10 @@ public class EBusNestedTemplatesTest {
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);
+            fail();
+        } catch (EBusCommandException e) {
+            logger.error("error!", e);
+            fail();
         }
 
     }
@@ -79,7 +96,11 @@ public class EBusNestedTemplatesTest {
 
         assertNotNull("Command et.test.tth not found!", commandMethod);
 
-        IEBusValue value = commandMethod.getMasterTypes().get(0);
+        List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        assertNotNull(masterTypes);
+
+        @SuppressWarnings("null")
+        IEBusValue value = masterTypes.get(0);
         IEBusType<?> type = value.getType();
 
         @SuppressWarnings("unused")
@@ -96,6 +117,10 @@ public class EBusNestedTemplatesTest {
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);
+            fail();
+        } catch (EBusCommandException e) {
+            logger.error("error!", e);
+            fail();
         }
 
     }
@@ -108,7 +133,10 @@ public class EBusNestedTemplatesTest {
 
         assertNotNull("Command et.test.tth not found!", commandMethod);
 
-        IEBusValue value = commandMethod.getMasterTypes().get(0);
+        List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        assertNotNull(masterTypes);
+        @SuppressWarnings("null")
+        IEBusValue value = masterTypes.get(0);
         IEBusType<?> type = value.getType();
 
         @SuppressWarnings("unused")
@@ -125,6 +153,10 @@ public class EBusNestedTemplatesTest {
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);
+            fail();
+        } catch (EBusCommandException e) {
+            logger.error("error!", e);
+            fail();
         }
 
     }

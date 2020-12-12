@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 
 /**
@@ -32,7 +33,7 @@ public class EBusVaillantBAI00TelegramTest {
     EBusCommandRegistry commandRegistry;
 
     // @Before
-    public void before() throws IOException, EBusConfigurationReaderException {
+    public void before() throws IOException, EBusConfigurationReaderException, EBusTypeException {
 
         types = new EBusTypeRegistry();
 
@@ -43,8 +44,7 @@ public class EBusVaillantBAI00TelegramTest {
             throw new RuntimeException("Unable to load json file ...");
         }
 
-        EBusConfigurationReader cfg = new EBusConfigurationReader();
-        cfg.setEBusTypes(types);
+        // EBusConfigurationReader cfg = new EBusConfigurationReader(types);
 
         commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
     }

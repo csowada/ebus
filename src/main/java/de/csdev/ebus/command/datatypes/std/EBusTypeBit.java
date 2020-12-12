@@ -8,6 +8,10 @@
  */
 package de.csdev.ebus.command.datatypes.std;
 
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -28,12 +32,12 @@ public class EBusTypeBit extends EBusAbstractType<Boolean> {
     public EBusTypeBit() {
 
     }
-    
+
     @Override
     public byte[] getReplaceValue() {
-    	return null;
+        return null;
     }
-    
+
     @Override
     public String[] getSupportedTypes() {
         return supportedTypes;
@@ -45,13 +49,16 @@ public class EBusTypeBit extends EBusAbstractType<Boolean> {
     }
 
     @Override
-    public Boolean decodeInt(byte[] data) {
+    public Boolean decodeInt(byte @Nullable [] data) {
+
+        Objects.requireNonNull(data);
+
         Boolean isSet = (data[0] >> pos & 0x1) == 1;
         return isSet;
     }
 
     @Override
-    public byte[] encodeInt(Object data) {
+    public byte[] encodeInt(@Nullable Object data) {
         throw new RuntimeException("Not implemented yet!");
     }
 

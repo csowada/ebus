@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public EBusDateTime decodeInt(byte[] data) throws EBusTypeException {
+    public EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();
@@ -107,7 +108,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public byte[] encodeInt(Object data) throws EBusTypeException {
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();

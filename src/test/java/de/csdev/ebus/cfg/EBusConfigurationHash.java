@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.cfg;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 
 import org.junit.Assert;
@@ -20,7 +22,7 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommand;
 import de.csdev.ebus.command.IEBusCommandCollection;
 import de.csdev.ebus.command.IEBusCommandMethod;
-import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
+import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusConsts;
 
 /**
@@ -31,12 +33,12 @@ public class EBusConfigurationHash {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConfigurationHash.class);
 
-    private EBusCommandRegistry initCommandRegistry() throws IOException, EBusConfigurationReaderException {
-
-        EBusTypeRegistry types = new EBusTypeRegistry();
-
-        EBusConfigurationReader cfg = new EBusConfigurationReader();
-        cfg.setEBusTypes(types);
+    private EBusCommandRegistry initCommandRegistry()
+            throws IOException, EBusConfigurationReaderException, EBusTypeException {
+        //
+        // EBusTypeRegistry types = new EBusTypeRegistry();
+        //
+        // EBusConfigurationReader cfg = new EBusConfigurationReader(types);
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class);
         commandRegistry.loadBuildInCommandCollections();
@@ -45,7 +47,7 @@ public class EBusConfigurationHash {
     }
 
     @Test
-    public void testMethodHashs() throws IOException, EBusConfigurationReaderException {
+    public void testMethodHashs() throws IOException, EBusConfigurationReaderException, EBusTypeException {
 
         EBusCommandRegistry reg1 = initCommandRegistry();
         EBusCommandRegistry reg2 = initCommandRegistry();
@@ -53,11 +55,18 @@ public class EBusConfigurationHash {
         IEBusCommandCollection collection1 = reg1.getCommandCollection(EBusConsts.COLLECTION_STD);
         IEBusCommandCollection collection2 = reg2.getCommandCollection(EBusConsts.COLLECTION_STD);
 
+        assertNotNull(collection1);
+        assertNotNull(collection2);
+
         for (IEBusCommand command1 : collection1.getCommands()) {
             IEBusCommand command2 = collection2.getCommand(command1.getId());
 
+            assertNotNull(command2);
+
             for (IEBusCommandMethod method1 : command1.getCommandMethods()) {
                 IEBusCommandMethod method2 = command2.getCommandMethod(method1.getMethod());
+
+                assertNotNull(method2);
 
                 logger.debug("Check command {}, H1:{}, H2:{}",
                         new Object[] { method2.getMethod(), method2.hashCode(), method2.hashCode() });
