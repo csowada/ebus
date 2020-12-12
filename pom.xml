@@ -249,24 +249,28 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.2</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.neuronrobotics</groupId>
 			<artifactId>nrjavaserial</artifactId>
 			<version>3.12.1</version>
+			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 
@@ -274,6 +278,7 @@
 			<groupId>com.fazecast</groupId>
 			<artifactId>jSerialComm</artifactId>
 			<version>2.5.3</version>
+			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 
@@ -281,12 +286,13 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>org.eclipse.jdt.annotation</artifactId>
-			<version>2.2.100</version>
+			<version>2.2.600</version>
 			<scope>provided</scope>
 		</dependency>
 
