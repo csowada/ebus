@@ -67,7 +67,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     private EBusAbstractType<T> createNewInstance() {
 
         try {
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings({ "unchecked", "null" })
             EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
             newInstance.types = this.types;
             return newInstance;

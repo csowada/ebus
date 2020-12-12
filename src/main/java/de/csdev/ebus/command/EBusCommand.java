@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.utils.CollectionUtils;
@@ -24,30 +25,31 @@ import de.csdev.ebus.utils.CollectionUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusCommand implements IEBusCommand {
 
-    private @NonNull Map<IEBusCommandMethod.@NonNull Method, @Nullable IEBusCommandMethod> channels = new EnumMap<IEBusCommandMethod.@NonNull Method, @Nullable IEBusCommandMethod>(
+    private Map<IEBusCommandMethod.@NonNull Method, @NonNull IEBusCommandMethod> channels = new EnumMap<IEBusCommandMethod.@NonNull Method, @NonNull IEBusCommandMethod>(
             IEBusCommandMethod.Method.class);
 
-    private String configurationSource;
+    private @Nullable String configurationSource;
 
-    private String device;
+    private @Nullable String device;
 
-    private String id;
+    private @Nullable String id;
 
-    private String label;
+    private @Nullable String label;
 
-    private IEBusCommandCollection parentCollection;
+    private @Nullable IEBusCommandCollection parentCollection;
 
-    private Map<String, Object> properties;
+    private @Nullable Map<String, Object> properties;
 
-    public void addCommandChannel(@NonNull IEBusCommandMethod channel) {
+    public void addCommandChannel(IEBusCommandMethod channel) {
         Objects.requireNonNull(channel);
         channels.put(channel.getMethod(), channel);
     }
 
     @Override
-    public @NonNull Collection<IEBusCommandMethod.Method> getCommandChannelMethods() {
+    public @NonNull Collection<IEBusCommandMethod.@NonNull Method> getCommandChannelMethods() {
         return Objects.requireNonNull(Collections.unmodifiableCollection(channels.keySet()));
     }
 
@@ -58,7 +60,7 @@ public class EBusCommand implements IEBusCommand {
     }
 
     @Override
-    public @NonNull Collection<IEBusCommandMethod> getCommandMethods() {
+    public @NonNull Collection<@NonNull IEBusCommandMethod> getCommandMethods() {
         return Objects.requireNonNull(Collections.unmodifiableCollection(channels.values()));
     }
 
@@ -68,7 +70,7 @@ public class EBusCommand implements IEBusCommand {
      * @see de.csdev.ebus.command.IEBusCommand#getConfigurationSource()
      */
     @Override
-    public String getConfigurationSource() {
+    public @Nullable String getConfigurationSource() {
         return configurationSource;
     }
 
@@ -78,7 +80,7 @@ public class EBusCommand implements IEBusCommand {
      * @see de.csdev.ebus.command.IEBusCommand#getDevice()
      */
     @Override
-    public String getDevice() {
+    public @Nullable String getDevice() {
         return device;
     }
 
@@ -98,49 +100,60 @@ public class EBusCommand implements IEBusCommand {
      * @see de.csdev.ebus.command.IEBusCommand#getDescription()
      */
     @Override
-    public String getLabel() {
+    public @Nullable String getLabel() {
         return label;
     }
 
     @Override
-    public @NonNull IEBusCommandCollection getParentCollection() {
+    public IEBusCommandCollection getParentCollection() {
         return Objects.requireNonNull(parentCollection);
     }
 
     @Override
-    public @NonNull Map<String, Object> getProperties() {
+    public Map<@NonNull String, @NonNull Object> getProperties() {
         return Objects.requireNonNull(CollectionUtils.unmodifiableNotNullMap(properties));
     }
 
-    public void setConfigurationSource(String configurationSource) {
+    public void setConfigurationSource(@Nullable String configurationSource) {
         this.configurationSource = configurationSource;
     }
 
-    public void setDevice(String device) {
+    public void setDevice(@Nullable String device) {
         this.device = device;
     }
 
     public EBusCommand setId(String id) {
+        Objects.requireNonNull(id, "id");
         this.id = id;
         return this;
     }
 
-    public void setLabel(String label) {
+    public void setLabel(@Nullable String label) {
         this.label = label;
     }
 
     public void setParentCollection(IEBusCommandCollection parentCollection) {
+        Objects.requireNonNull(parentCollection, "parentCollection");
         this.parentCollection = parentCollection;
     }
 
     public void setProperties(Map<String, Object> properties) {
+        Objects.requireNonNull(properties, "properties");
         this.properties = new HashMap<String, Object>();
         this.properties.putAll(properties);
     }
 
     public void setProperty(String key, String value) {
-        properties = CollectionUtils.newMapIfNull(properties);
-        properties.put(key, value);
+
+        Objects.requireNonNull(key, "key");
+        Objects.requireNonNull(value, "value");
+
+        this.properties = CollectionUtils.newMapIfNull(this.properties);
+
+        Map<String, Object> propertiesx = this.properties;
+        if (propertiesx != null) {
+            propertiesx.put(key, value);
+        }
     }
 
     @Override

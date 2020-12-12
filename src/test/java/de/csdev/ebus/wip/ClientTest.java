@@ -51,6 +51,7 @@ public class ClientTest {
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
 
+        @SuppressWarnings("null")
         EBusLowLevelController controller = new EBusLowLevelController(emulator);
         EBusClient client = new EBusClient(commandRegistry);
 

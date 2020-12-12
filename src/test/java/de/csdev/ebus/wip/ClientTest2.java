@@ -40,6 +40,7 @@ public class ClientTest2 {
     // @Before
     public void before() throws IOException, EBusConfigurationReaderException {
         emulator = new EBusEmulatorConnection();
+
     }
 
     // @Test
@@ -48,6 +49,7 @@ public class ClientTest2 {
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
 
+        @SuppressWarnings("null")
         EBusLowLevelController controller = new EBusLowLevelController(emulator);
 
         EBusClient client = new EBusClient(commandRegistry);

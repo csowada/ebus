@@ -28,13 +28,13 @@ public class EBusCommandMethod implements IEBusCommandMethod {
 
     private Byte destinationAddress;
 
-    private List<IEBusValue> masterTypes;
+    private List<@NonNull IEBusValue> masterTypes;
 
     private IEBusCommandMethod.@NonNull Method method;
 
     private @NonNull IEBusCommand parent;
 
-    private List<IEBusValue> slaveTypes;
+    private List<@NonNull IEBusValue> slaveTypes;
 
     private Byte sourceAddress;
 
@@ -60,7 +60,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      */
     public EBusCommandMethod addMasterValue(IEBusValue value) {
         if (masterTypes == null) {
-            masterTypes = new ArrayList<IEBusValue>();
+            masterTypes = new ArrayList<@NonNull IEBusValue>();
         }
 
         if (value != null) {
@@ -77,7 +77,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      */
     public EBusCommandMethod addSlaveValue(IEBusValue value) {
         if (slaveTypes == null) {
-            slaveTypes = new ArrayList<IEBusValue>();
+            slaveTypes = new ArrayList<@NonNull IEBusValue>();
         }
 
         if (value != null) {
@@ -129,7 +129,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      * @see de.csdev.ebus.command.IEBusCommand#getMasterTypes()
      */
     @Override
-    public @Nullable List<IEBusValue> getMasterTypes() {
+    public @Nullable List<@NonNull IEBusValue> getMasterTypes() {
         return masterTypes;
     }
 
@@ -159,7 +159,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      * @see de.csdev.ebus.command.IEBusCommand#getSlaveTypes()
      */
     @Override
-    public @Nullable List<IEBusValue> getSlaveTypes() {
+    public @Nullable List<@NonNull IEBusValue> getSlaveTypes() {
         return slaveTypes;
     }
 
@@ -196,11 +196,11 @@ public class EBusCommandMethod implements IEBusCommandMethod {
         this.destinationAddress = destinationAddress;
     }
 
-    public void setMasterTypes(List<IEBusValue> masterTypes) {
+    public void setMasterTypes(List<@NonNull IEBusValue> masterTypes) {
         this.masterTypes = masterTypes;
     }
 
-    public void setSlaveTypes(List<IEBusValue> slaveTypes) {
+    public void setSlaveTypes(List<@NonNull IEBusValue> slaveTypes) {
         this.slaveTypes = slaveTypes;
     }
 

@@ -77,7 +77,8 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      */
     @Override
     public @NonNull Collection<IEBusCommand> getCommands() {
-        return Objects.requireNonNull(Collections.unmodifiableCollection((commands.values())));
+        Collection<IEBusCommand> collection = Collections.unmodifiableCollection((commands.values()));
+        return Objects.requireNonNull(collection);
     }
 
     /*

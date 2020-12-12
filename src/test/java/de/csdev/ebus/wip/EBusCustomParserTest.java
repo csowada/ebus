@@ -35,7 +35,6 @@ public class EBusCustomParserTest {
     private final Logger logger = LoggerFactory.getLogger(EBusCustomParserTest.class);
 
     // @Test
-    @SuppressWarnings("null")
     public void test_BuildMasterTelegram() {
 
         URL url = EBusConfigurationReader.class.getResource("/custom.json");

@@ -41,7 +41,8 @@ public class CollectionUtils {
      */
     public static @NonNull <K, V> Map<K, V> unmodifiableNotNullMap(@Nullable Map<K, V> map) {
         if (map == null) {
-            return Objects.requireNonNull(Collections.emptyMap());
+            Map<K, V> emptyMap = Collections.emptyMap();
+            return Objects.requireNonNull(emptyMap);
         }
 
         return Objects.requireNonNull(Collections.unmodifiableMap(map));

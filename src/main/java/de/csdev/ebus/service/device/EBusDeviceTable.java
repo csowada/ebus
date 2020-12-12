@@ -97,7 +97,7 @@ public class EBusDeviceTable {
         return vendors.get(EBusUtils.toHexDumpString(vendorCode));
     }
 
-    public void updateDevice(byte address, Map<String, Object> data) {
+    public void updateDevice(byte address, Map<@NonNull String, @NonNull Object> data) {
 
         boolean newDevice = false;
         boolean updatedDevice = false;

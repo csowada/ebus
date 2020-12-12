@@ -134,8 +134,8 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public @NonNull IEBusCommandMethod getParent() {
-        return Objects.requireNonNull(parent);
+    public @Nullable IEBusCommandMethod getParent() {
+        return parent;
     }
 
     @Override
@@ -185,7 +185,7 @@ public class EBusCommandValue implements IEBusValue {
         this.name = name;
     }
 
-    public void setParent(EBusCommandMethod parent) {
+    public void setParent(@Nullable EBusCommandMethod parent) {
         this.parent = parent;
     }
 

@@ -268,7 +268,7 @@ public class EBusCommandUtils {
 
         Map<Integer, IEBusComplexType<?>> complexTypes = new HashMap<Integer, IEBusComplexType<?>>();
 
-        List<IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
         if (masterTypes != null) {
             for (IEBusValue entry : masterTypes) {
 
@@ -278,10 +278,12 @@ public class EBusCommandUtils {
                 // compute byte value from 8 bits
                 if (entry instanceof IEBusNestedValue) {
                     IEBusNestedValue nestedValue = (IEBusNestedValue) entry;
-                    List<IEBusValue> list = nestedValue.getChildren();
+                    List<@NonNull IEBusValue> list = nestedValue.getChildren();
+
                     int n = 0;
 
                     for (int i = 0; i < list.size(); i++) {
+                        @SuppressWarnings("null")
                         IEBusValue childValue = list.get(i);
                         if (values != null && values.containsKey(childValue.getName())) {
                             Boolean object = (Boolean) values.get(childValue.getName());
@@ -474,7 +476,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    private static int decodeValueList(@Nullable List<IEBusValue> values, byte @NonNull [] data,
+    private static int decodeValueList(@Nullable List<@NonNull IEBusValue> values, byte @NonNull [] data,
             @NonNull HashMap<String, Object> result, int pos) throws EBusTypeException {
 
         if (values != null) {
@@ -563,7 +565,7 @@ public class EBusCommandUtils {
         buf.put(new byte[] { (byte) 0xFF, (byte) 0xFF }); // PB SB - Command
         buf.put((byte) 0xFF); // NN - Length
 
-        List<IEBusValue> masterTypes = commandChannel.getMasterTypes();
+        List<@NonNull IEBusValue> masterTypes = commandChannel.getMasterTypes();
         if (masterTypes != null) {
             for (IEBusValue entry : masterTypes) {
                 IEBusType<?> type = entry.getType();
@@ -602,7 +604,7 @@ public class EBusCommandUtils {
         if (command.getType() == Type.MASTER_SLAVE) {
             int len = 0;
 
-            List<IEBusValue> slaveTypes = command.getSlaveTypes();
+            List<@NonNull IEBusValue> slaveTypes = command.getSlaveTypes();
             if (slaveTypes != null) {
                 for (IEBusValue value : slaveTypes) {
                     if (value.getType() != null) {

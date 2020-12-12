@@ -8,10 +8,13 @@
  */
 package de.csdev.ebus.core;
 
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,7 +132,7 @@ public class EBusQueue {
      * @param buffer
      * @return The unique send id, id is later available on event
      */
-    public Integer addToSendQueue(byte[] buffer) {
+    public Integer addToSendQueue(byte @NonNull [] buffer) {
         return addToSendQueue(buffer, 10);
     }
 
@@ -140,12 +143,9 @@ public class EBusQueue {
      * @param maxAttemps
      * @return The unique send id, id is later available on event
      */
-    public Integer addToSendQueue(byte[] buffer, int maxAttemps) {
+    public Integer addToSendQueue(byte @NonNull [] buffer, int maxAttemps) {
 
-        if (buffer == null) {
-            logger.trace("Send data is empty, skip");
-            return null;
-        }
+        Objects.requireNonNull(buffer, "buffer");
 
         QueueEntry entry = new QueueEntry(buffer);
         entry.maxAttemps = maxAttemps;
@@ -156,10 +156,10 @@ public class EBusQueue {
 
         } catch (IllegalStateException e) {
             logger.error("Send queue is full! The eBUS service will reset the queue to ensure proper operation.");
-            
+
             // clear the queue, remove all waiting messages
             outputQueue.clear();
-            
+
             // reset the current state to a defined state
             resetSendQueue();
 
@@ -184,7 +184,7 @@ public class EBusQueue {
         outputQueue.poll();
     }
 
-    public QueueEntry getCurrent() {
+    public @Nullable QueueEntry getCurrent() {
         return sendEntry;
     }
 

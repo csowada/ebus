@@ -10,8 +10,10 @@ package de.csdev.ebus.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -19,10 +21,13 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNestedValue {
 
-    private @NonNull List<IEBusValue> list = new ArrayList<IEBusValue>();
+    private @NonNull List<@NonNull IEBusValue> list = new ArrayList<@NonNull IEBusValue>();
 
     @Override
-    public void setParent(EBusCommandMethod parent) {
+    public void setParent(@Nullable EBusCommandMethod parent) {
+
+        Objects.requireNonNull(parent, "parent");
+
         super.setParent(parent);
 
         for (IEBusValue value : list) {
@@ -30,12 +35,13 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
         }
     }
 
-    public boolean add(IEBusValue value) {
+    public boolean add(@NonNull IEBusValue value) {
+        Objects.requireNonNull(value, "value");
         return list.add(value);
     }
 
     @Override
-    public @NonNull List<IEBusValue> getChildren() {
+    public @NonNull List<@NonNull IEBusValue> getChildren() {
         return list;
     }
 

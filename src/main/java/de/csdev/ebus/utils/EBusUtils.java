@@ -310,13 +310,10 @@ public class EBusUtils {
             return new byte[0];
         }
 
-        // String hexDumpString = "A0B";
-
         if (hexDumpString.length() % 2 != 0) {
             hexDumpString = "0" + hexDumpString;
         }
 
-        // String[] elements = hexDumpString.split(" ");
         byte[] result = new byte[hexDumpString.length() / 2];
 
         int pos = 0;
@@ -357,7 +354,8 @@ public class EBusUtils {
             return "";
         }
 
-        return Objects.requireNonNull(String.format("%02X", (0xFF & data)));
+        String format = String.format("%02X", (0xFF & data));
+        return Objects.requireNonNull(format);
     }
 
     /**

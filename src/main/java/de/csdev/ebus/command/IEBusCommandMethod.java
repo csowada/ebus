@@ -98,14 +98,14 @@ public interface IEBusCommandMethod {
      *
      * @return
      */
-    public @Nullable List<IEBusValue> getMasterTypes();
+    public @Nullable List<@NonNull IEBusValue> getMasterTypes();
 
     /**
      * Get ordered list of eBus data types for the slave part
      *
      * @return
      */
-    public @Nullable List<IEBusValue> getSlaveTypes();
+    public @Nullable List<@NonNull IEBusValue> getSlaveTypes();
 
     /**
      * Returns the eBus command bytes

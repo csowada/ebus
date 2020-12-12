@@ -12,6 +12,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommand;
@@ -48,7 +50,7 @@ public class EBusConfigurationTemplateTest {
 
         Type type = commandMethod.getType();
         assertNotNull(type);
-        List<IEBusValue> slaveTypes = commandMethod.getSlaveTypes();
+        List<@NonNull IEBusValue> slaveTypes = commandMethod.getSlaveTypes();
 
         // System.out.println(slaveTypes);
         if (slaveTypes != null) {

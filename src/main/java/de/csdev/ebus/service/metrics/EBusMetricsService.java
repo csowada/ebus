@@ -44,7 +44,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
 
     private BigDecimal receivedAmount = BigDecimal.valueOf(0);
 
-    private Map<EBusError, BigDecimal> failedMap = new EnumMap<EBusDataException.EBusError, BigDecimal>(
+    private Map<EBusError, @Nullable BigDecimal> failedMap = new EnumMap<EBusDataException.EBusError, @Nullable BigDecimal>(
             EBusError.class);
 
     public void clear() {
@@ -79,15 +79,21 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
     @Override
     public void onTelegramException(@NonNull EBusDataException exception, @Nullable Integer sendQueueId) {
 
-        BigDecimal val = failedMap.get(exception.getErrorCode());
-        if (val == null) {
-            val = BigDecimal.valueOf(0);
+        EBusError errorCode = exception.getErrorCode();
+
+        if (errorCode != null) {
+            if (failedMap.containsKey(errorCode)) {
+                BigDecimal val = failedMap.get(errorCode);
+                if (val == null) {
+                    val = BigDecimal.valueOf(0);
+                }
+
+                val = val.add(BigDecimal.ONE);
+                failedMap.put(errorCode, val);
+
+                failed = failed.add(BigDecimal.ONE);
+            }
         }
-
-        val = val.add(BigDecimal.ONE);
-        failedMap.put(exception.getErrorCode(), val);
-
-        failed = failed.add(BigDecimal.ONE);
     }
 
     @Override
@@ -122,6 +128,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
     public BigDecimal getFailureRatio() {
         BigDecimal all = received.add(failed);
         if (!failed.equals(BigDecimal.ZERO) && !all.equals(BigDecimal.ZERO)) {
+
             return failed.setScale(3, RoundingMode.HALF_UP).divide(all, RoundingMode.HALF_UP).multiply(HUNDRED)
                     .setScale(1, RoundingMode.HALF_UP);
         } else {

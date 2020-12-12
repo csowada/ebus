@@ -27,7 +27,7 @@ public interface IEBusCommand {
      *
      * @return
      */
-    public @NonNull Collection<IEBusCommandMethod> getCommandMethods();
+    public @NonNull Collection<@NonNull IEBusCommandMethod> getCommandMethods();
 
     /**
      * Returns the command method if available. Returns <code>null</code> if not availble.
@@ -42,7 +42,7 @@ public interface IEBusCommand {
      *
      * @return
      */
-    public @NonNull Collection<IEBusCommandMethod.Method> getCommandChannelMethods();
+    public @NonNull Collection<IEBusCommandMethod.@NonNull Method> getCommandChannelMethods();
 
     /**
      * Returns device information from database
@@ -77,7 +77,7 @@ public interface IEBusCommand {
      *
      * @return
      */
-    public @NonNull Map<String, Object> getProperties();
+    public @NonNull Map<@NonNull String, @NonNull Object> getProperties();
 
     /**
      * Returns the parent collection

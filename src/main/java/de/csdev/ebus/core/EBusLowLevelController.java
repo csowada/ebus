@@ -11,7 +11,9 @@ package de.csdev.ebus.core;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.nio.BufferOverflowException;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,15 +29,17 @@ public class EBusLowLevelController extends EBusControllerBase {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusLowLevelController.class);
 
-    protected IEBusConnection connection;
+    protected @NonNull IEBusConnection connection;
 
     /** counts the re-connection tries */
     private int reConnectCounter = 0;
 
     private long sendRoundTrip = -1;
 
-    public EBusLowLevelController(IEBusConnection connection) {
+    public EBusLowLevelController(@NonNull IEBusConnection connection) {
         super();
+
+        Objects.requireNonNull(connection, "connection");
         this.connection = connection;
     }
 
@@ -48,7 +52,7 @@ public class EBusLowLevelController extends EBusControllerBase {
      * @return
      * @throws EBusControllerException
      */
-    public IEBusConnection getConnection() throws EBusControllerException {
+    public @NonNull IEBusConnection getConnection() throws EBusControllerException {
         if (!isRunning()) {
             throw new EBusControllerException();
         }
@@ -144,8 +148,10 @@ public class EBusLowLevelController extends EBusControllerBase {
      */
     private boolean resend() throws IOException {
 
-        if (isRunning() && !queue.getCurrent().secondTry) {
-            queue.getCurrent().secondTry = true;
+        QueueEntry entry = queue.getCurrent();
+
+        if (isRunning() && entry != null && !entry.secondTry) {
+            entry.secondTry = true;
             return true;
 
         } else {
@@ -453,7 +459,7 @@ public class EBusLowLevelController extends EBusControllerBase {
         try {
             if (connection != null) {
                 connection.close();
-                connection = null;
+                // connection = null;
             }
         } catch (IOException e) {
             logger.error(e.toString(), e);

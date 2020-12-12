@@ -49,6 +49,7 @@ public class EBusValueJsonDeserializer implements JsonDeserializer<List<EBusValu
 
         ArrayList<String> fields = new ArrayList<String>();
         for (Field field : EBusValueDTO.class.getDeclaredFields()) {
+
             SerializedName annotation = field.getAnnotation(SerializedName.class);
             if (annotation != null) {
                 fields.add(annotation.value());

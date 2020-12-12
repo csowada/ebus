@@ -32,10 +32,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     private static final Logger logger = LoggerFactory.getLogger(EBusControllerBase.class);
 
     /** serial receive buffer */
-    protected EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
+    protected @NonNull EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
     /** the list for listeners */
-    private final List<IEBusConnectorEventListener> listeners = new CopyOnWriteArrayList<IEBusConnectorEventListener>();
+    private final @NonNull List<IEBusConnectorEventListener> listeners = new CopyOnWriteArrayList<IEBusConnectorEventListener>();
 
     /** The thread pool to execute events without blocking */
     private ExecutorService threadPool;
@@ -46,9 +46,9 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     private int watchdogTimerTimeout = 300; // 5min
 
-    protected EBusQueue queue = new EBusQueue();
+    protected @NonNull EBusQueue queue = new EBusQueue();
 
-    private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
+    private @NonNull ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
 
     /*
      * (non-Javadoc)
@@ -115,7 +115,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     /**
      * @param e
      */
-    protected void fireOnConnectionException(final Exception e) {
+    protected void fireOnConnectionException(final @NonNull Exception e) {
 
         Objects.requireNonNull(e);
 
@@ -150,7 +150,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @param receivedData
      * @param sendQueueId
      */
-    protected void fireOnEBusTelegramReceived(final byte[] receivedData, final Integer sendQueueId) {
+    protected void fireOnEBusTelegramReceived(final byte @NonNull [] receivedData, final Integer sendQueueId) {
 
         if (!isRunning()) {
             return;
@@ -184,7 +184,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @param exception
      * @param sendQueueId
      */
-    protected void fireOnEBusDataException(final EBusDataException exception, final Integer sendQueueId) {
+    protected void fireOnEBusDataException(final @NonNull EBusDataException exception, final Integer sendQueueId) {
 
         Objects.requireNonNull(exception);
 
@@ -214,7 +214,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     /**
      * @param status
      */
-    protected void fireOnEBusConnectionStatusChange(ConnectionStatus status) {
+    protected void fireOnEBusConnectionStatusChange(@NonNull ConnectionStatus status) {
 
         Objects.requireNonNull(status);
 
@@ -311,9 +311,6 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         }
 
         shutdownThreadPool();
-
-        queue = null;
-        machine = null;
     }
 
     protected void resetWatchdogTimer() {
@@ -346,7 +343,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     protected abstract void fireWatchDogTimer();
 
-    protected void setConnectionStatus(ConnectionStatus status) {
+    protected void setConnectionStatus(@NonNull ConnectionStatus status) {
+
+        Objects.requireNonNull(status, "status");
+
         this.connectionStatus = status;
         fireOnEBusConnectionStatusChange(status);
     }

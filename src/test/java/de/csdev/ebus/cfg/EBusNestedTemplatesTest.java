@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -95,9 +96,10 @@ public class EBusNestedTemplatesTest {
 
         assertNotNull("Command et.test.tth not found!", commandMethod);
 
-        List<IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
         assertNotNull(masterTypes);
 
+        @SuppressWarnings("null")
         IEBusValue value = masterTypes.get(0);
         IEBusType<?> type = value.getType();
 
@@ -131,8 +133,9 @@ public class EBusNestedTemplatesTest {
 
         assertNotNull("Command et.test.tth not found!", commandMethod);
 
-        List<IEBusValue> masterTypes = commandMethod.getMasterTypes();
+        List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
         assertNotNull(masterTypes);
+        @SuppressWarnings("null")
         IEBusValue value = masterTypes.get(0);
         IEBusType<?> type = value.getType();
 

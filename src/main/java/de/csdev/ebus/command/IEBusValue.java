@@ -108,7 +108,7 @@ public interface IEBusValue extends Cloneable {
      *
      * @return
      */
-    public @NonNull IEBusCommandMethod getParent();
+    public @Nullable IEBusCommandMethod getParent();
 
     /**
      * Clone a value

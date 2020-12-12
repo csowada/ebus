@@ -32,6 +32,6 @@ public interface IEBusNestedValue {
      *
      * @return
      */
-    public @NonNull List<IEBusValue> getChildren();
+    public @NonNull List<@NonNull IEBusValue> getChildren();
 
 }
