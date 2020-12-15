@@ -33,17 +33,22 @@ jobs:
         name: Package
         path: staging
         
-    - name: Extract GPG Key file
-      run: 'echo "$SSH_KEY" > ~/codesigning.asc'
+#    - name: Extract GPG Key file
+#      run: 'echo "$SSH_KEY" > ~/codesigning.asc'
+#      shell: bash
+#      env:
+#        SSH_KEY: ${{secrets.GPG_FILE}}
+    
+#    - name: Import GPG keys
+#      run: 'gpg --fast-import ~/codesigning.asc'
+    - name: Import GPG keys
+      run: 'echo $SSH_KEY | gpg --import --no-tty --batch --yes'
       shell: bash
       env:
         SSH_KEY: ${{secrets.GPG_FILE}}
-    
-    - name: Import GPG keys
-      run: 'gpg --fast-import ~/codesigning.asc'
 
-    - name: Remove GPG key file
-      run: 'rm ~/codesigning.asc'
+#    - name: Remove GPG key file
+#      run: 'rm ~/codesigning.asc'
 
     - name: Publish to GitHub Packages Apache Maven x
       run: mvn install -P sign,build-extras --settings ~/mvnsettings.xml
