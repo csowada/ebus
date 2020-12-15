@@ -62,7 +62,7 @@ jobs:
 
     - name: Publish to GitHub Packages Apache Maven x
 #      run: mvn install -P sign,build-extras --settings cd/mvnsettings.xml
-      run: mvn --batch-mode --update-snapshots verify
+      run: mvn --batch-mode --update-snapshots verify -P sign,build-extras --settings cd/mvnsettings.xml
       env:
         GPG_KEY_NAME: ${{ secrets.GPG_KEY_NAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
