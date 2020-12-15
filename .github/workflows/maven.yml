@@ -35,7 +35,8 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
+ #     run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
+      run: mvn deploy --batch-mode --update-snapshots
       env:
         GITHUB_TOKEN: ${{ github.token }} # GITHUB_TOKEN is the default env for the password
 
