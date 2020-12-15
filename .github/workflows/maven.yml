@@ -25,12 +25,27 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file:  
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+      
     - run: mkdir staging && cp target/*.jar staging
+    
     - uses: actions/upload-artifact@v2
       with:
         name: Package
         path: staging
+        
+    - name: Extract GPG Key file
+      run: 'echo "$GPG_FILE" > cd/codesigning.asc'
+      shell: bash
+      env:
+        SSH_KEY: ${{secrets.GPG_FILE}}
+    
+    - name: Import GPG keys
+      run: 'gpg --fast-import cd/codesigning.asc'
+
+    - name: Remove GPG key file
+    - run: 'rm cd/codesigning.asc'
+
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+      run: mvn install -P sign,build-extras --settings cd/mvnsettings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
