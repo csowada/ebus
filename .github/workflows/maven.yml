@@ -26,7 +26,7 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file:  
         server-username: OSSRH_JIRA_USERNAME # env variable for username in deploy
         server-password: OSSRH_JIRA_PASSWORD # env variable for token in deploy
-        gpg-private-key: ${{ secrets.GPG_FILE }} # Value of the GPG private key to import
+#        gpg-private-key: ${{ secrets.GPG_FILE }} # Value of the GPG private key to import
         gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase
         
     - name: Cache Maven packages
@@ -39,11 +39,11 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
       
-#    - name: Import GPG keys
-#      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
-#      shell: bash
-#      env:
-#        GPG_FILE: ${{secrets.GPG_FILE}}
+    - name: Import GPG keys
+      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
+      shell: bash
+      env:
+        GPG_FILE: ${{secrets.GPG_FILE}}
 
     - name: Publish to Apache Maven Central
 #      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
