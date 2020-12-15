@@ -26,7 +26,7 @@ jobs:
         
         
     - name: Import GPG keys
-      run: 'echo $SSH_KEY | gpg --import --no-tty --batch --yes'
+      run: 'echo -e "$SSH_KEY" | gpg --import --no-tty --batch --yes'
       shell: bash
       env:
         SSH_KEY: ${{secrets.GPG_FILE}}
