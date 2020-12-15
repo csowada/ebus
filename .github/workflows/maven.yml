@@ -23,6 +23,14 @@ jobs:
         java-version: 11
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file:  
+        
+        
+    - name: Import GPG keys
+      run: 'echo $SSH_KEY | gpg --import --no-tty --batch --yes'
+      shell: bash
+      env:
+        SSH_KEY: ${{secrets.GPG_FILE}}
+        
     - name: Build with Maven
       run: mvn -B package --file pom.xml
       
@@ -41,11 +49,7 @@ jobs:
     
 #    - name: Import GPG keys
 #      run: 'gpg --fast-import ~/codesigning.asc'
-    - name: Import GPG keys
-      run: 'echo $SSH_KEY | gpg --import --no-tty --batch --yes'
-      shell: bash
-      env:
-        SSH_KEY: ${{secrets.GPG_FILE}}
+
 
 #    - name: Remove GPG key file
 #      run: 'rm ~/codesigning.asc'
