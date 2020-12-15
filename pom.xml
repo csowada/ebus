@@ -161,8 +161,6 @@
 
 	<profiles>
 
-
-
 		<profile>
 			<id>build-extras</id>
 			<activation>
@@ -278,7 +276,7 @@
 
 	</dependencies>
 
-	<distributionManagement>
+<!-- 	<distributionManagement>
 
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -290,5 +288,5 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 
-	</distributionManagement>
+	</distributionManagement> -->
 </project>
