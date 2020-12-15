@@ -29,12 +29,12 @@ jobs:
         gpg-private-key: ${{ secrets.GPG_FILE  }} # Value of the GPG private key to import
 #        gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
         
-    - name: Cache Maven packages
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+#    - name: Cache Maven packages
+ #     uses: actions/cache@v2
+#      with:
+#        path: ~/.m2
+#        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+#        restore-keys: ${{ runner.os }}-m2
       
     - name: Build with Maven
       run: mvn -B package --file pom.xml
