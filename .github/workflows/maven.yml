@@ -23,7 +23,14 @@ jobs:
         java-version: 11
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file:  
-
+        
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+      
     - name: Import GPG keys
       run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
       shell: bash
