@@ -22,12 +22,12 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-        server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
+        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file:  
-        server-username: MAVEN_USERNAME  # env variable for username in deploy
-        server-password: MAVEN_CENTRAL_TOKEN  # env variable for token in deploy
+        server-username: OSSRH_USERNAME  # env variable for username in deploy
+        server-password: OSSRH_PASSWORD  # env variable for token in deploy
         gpg-private-key: ${{ secrets.GPG_FILE  }} # Value of the GPG private key to import
-        gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
+#        gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
         
     - name: Cache Maven packages
       uses: actions/cache@v2
@@ -48,9 +48,9 @@ jobs:
     - name: Publish to Apache Maven Central
 #      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
 #      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
-      run: mvn deploy -P build-extras --batch-mode --update-snapshots
+      run: mvn deploy --batch-mode --update-snapshots
       env:
-        MAVEN_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
-        MAVEN_CENTRAL_TOKEN: ${{ secrets.OSSRH_JIRA_PASSWORD }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
