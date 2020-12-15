@@ -30,41 +30,28 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-      
-    - name: Import GPG keys
-      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
-      shell: bash
-      env:
-        GPG_FILE: ${{secrets.GPG_FILE}}
         
-#    - name: Build with Maven
-#      run: mvn -B package --file pom.xml
-      
-#    - run: mkdir staging && cp target/*.jar staging
-    
-#    - uses: actions/upload-artifact@v2
-#      with:
-#        name: Package
-#        path: staging
-#        
-#    - name: Extract GPG Key file
-#      run: 'echo "$SSH_KEY" > ~/codesigning.asc'
-#      shell: bash
-#      env:
-#        SSH_KEY: ${{secrets.GPG_FILE}}
-    
-#    - name: Import GPG keys
-#      run: 'gpg --fast-import ~/codesigning.asc'
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
 
-
-#    - name: Remove GPG key file
-#      run: 'rm ~/codesigning.asc'
-
-    - name: Publish to GitHub Packages Apache Maven x
-      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
-#      run: mvn --batch-mode --update-snapshots verify -P sign,build-extras --settings cd/mvnsettings.xml
+    - name: Publish to GitHub Packages Apache Maven
+      run: mvn deploy
       env:
-        GPG_KEY_NAME: ${{ secrets.GPG_KEY_NAME }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        OSSRH_JIRA_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
-        OSSRH_JIRA_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
+        GITHUB_TOKEN: ${{ github.token }} # GITHUB_TOKEN is the default env for the password
+
+    - name: Set up Apache Maven Central
+      uses: actions/setup-java@v1
+      with: # running setup-java again overwrites the settings.xml
+        java-version: 11
+        server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: MAVEN_USERNAME # env variable for username in deploy
+        server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
+        gpg-private-key: ${{ secrets.GPG_FILE }} # Value of the GPG private key to import
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
+
+    - name: Publish to Apache Maven Central
+      run: mvn deploy
+      env:
+        MAVEN_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
+        MAVEN_CENTRAL_TOKEN: ${{ secrets.OSSRH_JIRA_PASSWORD }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
