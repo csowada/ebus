@@ -65,7 +65,8 @@ jobs:
 
     - name: Publish to Apache Maven Central
 #      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
-      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
+#      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
+      run: mvn deploy -P build-extras --batch-mode --update-snapshots
       env:
         GPG_KEY_NAME: ${{ secrets.GPG_KEY_NAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
