@@ -45,7 +45,7 @@ jobs:
     - name: Remove GPG key file
     - run: 'rm cd/codesigning.asc'
 
-    - name: Publish to GitHub Packages Apache Maven
+    - name: Publish to GitHub Packages Apache Maven x
       run: mvn install -P sign,build-extras --settings cd/mvnsettings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
