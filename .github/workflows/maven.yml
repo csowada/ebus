@@ -23,24 +23,23 @@ jobs:
         java-version: 11
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file:  
-        
-        
+
     - name: Import GPG keys
-      run: 'echo -e "$SSH_KEY" | gpg --import --no-tty --batch --yes'
+      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
       shell: bash
       env:
-        SSH_KEY: ${{secrets.GPG_FILE}}
+        GPG_FILE: ${{secrets.GPG_FILE}}
         
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+#    - name: Build with Maven
+#      run: mvn -B package --file pom.xml
       
-    - run: mkdir staging && cp target/*.jar staging
+#    - run: mkdir staging && cp target/*.jar staging
     
-    - uses: actions/upload-artifact@v2
-      with:
-        name: Package
-        path: staging
-        
+#    - uses: actions/upload-artifact@v2
+#      with:
+#        name: Package
+#        path: staging
+#        
 #    - name: Extract GPG Key file
 #      run: 'echo "$SSH_KEY" > ~/codesigning.asc'
 #      shell: bash
@@ -55,6 +54,9 @@ jobs:
 #      run: 'rm ~/codesigning.asc'
 
     - name: Publish to GitHub Packages Apache Maven x
-      run: mvn install -P sign,build-extras --settings ~/mvnsettings.xml
+      run: mvn install -P sign,build-extras --settings cd/mvnsettings.xml
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        GPG_KEY_NAME: ${{ secrets.GPG_KEY_NAME }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        OSSRH_JIRA_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
+        OSSRH_JIRA_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
