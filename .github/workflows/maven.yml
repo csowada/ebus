@@ -43,7 +43,7 @@ jobs:
       run: 'gpg --fast-import cd/codesigning.asc'
 
     - name: Remove GPG key file
-    - run: 'rm cd/codesigning.asc'
+      run: 'rm cd/codesigning.asc'
 
     - name: Publish to GitHub Packages Apache Maven x
       run: mvn install -P sign,build-extras --settings cd/mvnsettings.xml
