@@ -31,7 +31,7 @@ jobs:
         # gpg-private-key: ${{ secrets.GPG_FILE  }} # Value of the GPG private key to import
         
     - name: Import GPG keys
-      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
+      run: 'echo -e "$GPG_FILE" | gpg2 --import --no-tty --batch --yes'
       shell: bash
       env:
         GPG_FILE: ${{secrets.GPG_FILE}}
