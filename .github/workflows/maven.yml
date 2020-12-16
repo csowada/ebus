@@ -28,8 +28,14 @@ jobs:
         gpg-passphrase: GPG_PASSPHRASE  # env variable for GPG private key passphrase
 
         # FIXME: remove this feature due to the cleanup bug to remove the keys
-        gpg-private-key: ${{ secrets.GPG_FILE  }} # Value of the GPG private key to import
+        # gpg-private-key: ${{ secrets.GPG_FILE  }} # Value of the GPG private key to import
         
+    - name: Import GPG keys
+      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
+      shell: bash
+      env:
+        GPG_FILE: ${{secrets.GPG_FILE}}
+
     - name: Cache Maven packages
       uses: actions/cache@v2
       with:
@@ -37,45 +43,9 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
       
-    # - name: Import GPG keys
-    #   run: 'echo -e "$GPG_FILE" | gpg --batch --import-options import-show --import'
-    #   shell: bash
-    #   env:
-    #     GPG_FILE: ${{secrets.GPG_FILE}}
-
-    - name:  GPG list
-      run: gpg --list-keys
-
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-      
-
-
-
-
-#    - name: Import GPG keys
-#      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
-#      shell: bash
-#      env:
-#        GPG_FILE: ${{secrets.GPG_FILE}}
-
-#    - name: Publish to Apache Maven Central
-      # run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
-      # run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
-      # run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras --settings cd/settings.xml
-      # run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
-#      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
-#      env:
-#        OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
-#        OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
-#        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-    # - name: Remove GPG keys 1
-    #   run: 'gpg --batch --yes --delete-secret-keys $GPG_KEY_ID'
-    #   env:
-    #     GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-
-    # - name: Remove GPG keys 2
-    #   run: 'gpg --batch--yes --delete-keys $GPG_KEY_ID'
-    #   env:
-    #     GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+    - name: Publish to Apache Maven Central
+      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
