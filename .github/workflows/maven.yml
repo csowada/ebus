@@ -49,7 +49,8 @@ jobs:
 #      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
 #      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
 #      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras --settings cd/settings.xml
-      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
+      # run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
+      run: mvn deploy --batch-mode --update-snapshots
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
