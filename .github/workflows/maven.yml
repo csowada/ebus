@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Apache Maven Central
+    - name: Set up Java for Apache Maven Central
       uses: actions/setup-java@v1
       with:
         java-version: 11
@@ -48,7 +48,8 @@ jobs:
     - name: Publish to Apache Maven Central
 #      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
 #      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
-      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras --settings cd/settings.xml
+#      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras --settings cd/settings.xml
+      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
