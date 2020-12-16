@@ -26,7 +26,7 @@ jobs:
         server-username: OSSRH_USERNAME  # env variable for username in deploy
         server-password: OSSRH_PASSWORD  # env variable for token in deploy
         gpg-passphrase: GPG_PASSPHRASE  # env variable for GPG private key passphrase
-        
+
         # FIXME: remove this feature due to the cleanup bug to remove the keys
         # gpg-private-key: ${{ secrets.GPG_FILE  }} # Value of the GPG private key to import
         
@@ -37,14 +37,16 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
       
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-      
     - name: Import GPG keys
       run: 'echo -e "$GPG_FILE" | gpg --batch --import-options import-show --import'
       shell: bash
       env:
         GPG_FILE: ${{secrets.GPG_FILE}}
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+      
+
 
 #    - name: Import GPG keys
 #      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
@@ -63,7 +65,12 @@ jobs:
 #        OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
 #        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-    - name: Remove GPG keys
-      run: 'gpg --batch --yes --delete-secret-keys $GPG_KEY_ID && gpg --batch--yes --delete-keys $GPG_KEY_ID'
+    - name: Remove GPG keys 1
+      run: 'gpg --batch --yes --delete-secret-keys $GPG_KEY_ID'
+      env:
+        GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+
+    - name: Remove GPG keys 2
+      run: 'gpg --batch--yes --delete-keys $GPG_KEY_ID'
       env:
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
