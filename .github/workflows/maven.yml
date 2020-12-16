@@ -18,8 +18,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
  
-    - name: List GPG keys 
-      run: 'gpg2 --list-keys'
+    # - name: List GPG keys 
+    #   run: 'gpg2 --list-keys'
 
     - name: Set up Java for Apache Maven Central
       uses: actions/setup-java@v1
@@ -33,17 +33,17 @@ jobs:
         # FIXME: remove this feature due to the cleanup bug to remove the keys
         gpg-private-key: ${{ secrets.GPG_FILE  }} # Value of the GPG private key to import
         
-    - name: List GPG keys 2
-      run: 'gpg2 --list-keys'
+    # - name: List GPG keys 2
+    #   run: 'gpg2 --list-keys'
 
-    - name: Import GPG keys
-      run: 'echo -e "$GPG_FILE" | gpg2 --import --no-tty --batch --yes'
-      shell: bash
-      env:
-        GPG_FILE: ${{secrets.GPG_FILE}}
+    # - name: Import GPG keys
+    #   run: 'echo -e "$GPG_FILE" | gpg2 --import --no-tty --batch --yes'
+    #   shell: bash
+    #   env:
+    #     GPG_FILE: ${{secrets.GPG_FILE}}
 
-    - name: List GPG keys 3
-      run: 'gpg2 --list-keys'
+    # - name: List GPG keys 3
+    #   run: 'gpg2 --list-keys'
 
     - name: Cache Maven packages
       uses: actions/cache@v2
