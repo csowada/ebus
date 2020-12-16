@@ -33,8 +33,10 @@ jobs:
     - name: Build witrh Maven
       run: mvn --batch-mode --update-snapshots clean compile verify
 
+    - run: mkdir staging && cp target/*.jar staging
+
     - name: Upload Maven build artifact
       uses: actions/upload-artifact@v1
       with:
         name: artifact
-        path: target/**.jar
+        path: staging
