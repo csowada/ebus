@@ -39,7 +39,7 @@ jobs:
       run: mvn -B package --file pom.xml
       
     - name: Import GPG keys
-      run: 'echo -e "$GPG_FILE" | --batch --import-options import-show --import'
+      run: 'echo -e "$GPG_FILE" | gpg --batch --import-options import-show --import'
       shell: bash
       env:
         GPG_FILE: ${{secrets.GPG_FILE}}
