@@ -92,7 +92,8 @@
 						<Bundle-Version>${bundle.version}</Bundle-Version>
 						<Export-Package>de.csdev.ebus.*</Export-Package>
 						<opt>resolution:=optional</opt>
-						<Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt], org.eclipse.jdt.annotation;$[opt], *</Import-Package>
+						<Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt],
+							org.eclipse.jdt.annotation;$[opt], *</Import-Package>
 
 						<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
 						<Build-Commit>${buildNumber}</Build-Commit>
@@ -176,6 +177,13 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
+								<configuration>
+					                <!-- Prevent `gpg` from using pinentry programs -->
+					                <gpgArguments>
+					                    <arg>--pinentry-mode</arg>
+					                    <arg>loopback</arg>
+					                </gpgArguments>
+					            </configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -299,16 +307,14 @@
 	</dependencies>
 
 	<distributionManagement>
-
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
-
 		<repository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-
 	</distributionManagement>
+
 </project>
