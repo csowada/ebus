@@ -43,9 +43,14 @@ jobs:
       env:
         GPG_FILE: ${{secrets.GPG_FILE}}
 
+    - name:  GPG list
+      run: gpg --list-keys
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
       
+
+
 
 
 #    - name: Import GPG keys
