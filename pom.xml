@@ -92,7 +92,8 @@
 						<Bundle-Version>${bundle.version}</Bundle-Version>
 						<Export-Package>de.csdev.ebus.*</Export-Package>
 						<opt>resolution:=optional</opt>
-						<Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt], org.eclipse.jdt.annotation;$[opt], *</Import-Package>
+						<Import-Package>org.slf4j;$[opt], com.fazecast.jSerialComm;$[opt], gnu.io;$[opt],
+							org.eclipse.jdt.annotation;$[opt], *</Import-Package>
 
 						<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
 						<Build-Commit>${buildNumber}</Build-Commit>
@@ -102,7 +103,7 @@
 				</configuration>
 			</plugin>
 
-<!--  			<plugin>
+			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
 				<version>1.6.8</version>
@@ -112,7 +113,7 @@
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>false</autoReleaseAfterClose>
 				</configuration>
-			</plugin> -->
+			</plugin>
 
 			<plugin>
 				<groupId>com.mycila</groupId>
@@ -160,6 +161,35 @@
 	</build>
 
 	<profiles>
+
+		<profile>
+			<id>sign</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+					                <!-- Prevent `gpg` from using pinentry programs -->
+					                <gpgArguments>
+					                    <arg>--pinentry-mode</arg>
+					                    <arg>loopback</arg>
+					                </gpgArguments>
+					            </configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 		<profile>
 			<id>build-extras</id>
@@ -277,14 +307,12 @@
 	</dependencies>
 
 	<distributionManagement>
-
 		<snapshotRepository>
-			<id>maven</id>
+			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
-
 		<repository>
-			<id>maven</id>
+			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
