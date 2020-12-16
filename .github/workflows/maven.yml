@@ -17,7 +17,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Set up Java
       uses: actions/setup-java@v1
       with:
@@ -37,4 +37,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: artifact
-        path: target/*.jar
+        path: target/**.jar
