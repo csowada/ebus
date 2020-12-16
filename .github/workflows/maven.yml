@@ -38,20 +38,26 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
       
+    - name: Import GPG keys
+      run: 'echo -e "$GPG_FILE" | --batch --import-options import-show --import'
+      shell: bash
+      env:
+        GPG_FILE: ${{secrets.GPG_FILE}}
+
 #    - name: Import GPG keys
 #      run: 'echo -e "$GPG_FILE" | gpg --import --no-tty --batch --yes'
 #      shell: bash
 #      env:
 #        GPG_FILE: ${{secrets.GPG_FILE}}
 
-    - name: Publish to Apache Maven Central
-#      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
-#      run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
-#      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras --settings cd/settings.xml
+#    - name: Publish to Apache Maven Central
+      # run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots --settings cd/mvnsettings.xml
+      # run: mvn deploy -P sign,build-extras --batch-mode --update-snapshots
+      # run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras --settings cd/settings.xml
       # run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
-      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
-      env:
-        OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
-        OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+#      run: mvn deploy --batch-mode --update-snapshots -P sign,build-extras
+#      env:
+#        OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
+#        OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
+#        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
