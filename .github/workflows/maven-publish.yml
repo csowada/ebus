@@ -35,8 +35,8 @@ jobs:
       env:
         GPG_FILE: ${{secrets.GPG_FILE}}
 
-    - name: Build with Maven
-      run: mvn --batch-mode --update-snapshots -P sign,build-extras clean compile verify
+    # - name: Build with Maven
+    #   run: mvn --batch-mode --update-snapshots -P sign,build-extras clean compile verify
 
     # - name: Set up Java for Apache Maven Central
     #   uses: actions/setup-java@v1
