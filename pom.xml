@@ -267,6 +267,22 @@
 				</repository>
 			</distributionManagement>
 		</profile>
+
+		<profile>
+			<id>deploy-github</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<distributionManagement>
+				<repository>
+				<id>github</id>
+				<name>GitHub Packages</name>
+				<url>https://maven.pkg.github.com/csowada/ebus</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+
 	</profiles>
 
 	<dependencies>
