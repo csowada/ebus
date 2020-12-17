@@ -3,11 +3,14 @@
 
 name: Maven Package
 
+# on:
+#   push:
+#     # Sequence of patterns matched against refs/tags
+#     tags:
+#       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 on:
   push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_dispatch:
 
 jobs:
   build:
@@ -44,7 +47,7 @@ jobs:
 
     - name: Publish to Apache Maven Central
       # run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras -Dmaven.test.skip=true
-      run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras -Dmaven.test.skip=true
+      run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras,deploy-ossrh -Dmaven.test.skip=true
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
