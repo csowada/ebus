@@ -67,7 +67,7 @@ jobs:
         server-id: github
 
     - name: Publish to GitHub Packages
-      run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras,!deploy-ossrh -Dmaven.test.skip=true -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/csowada/ebus
+      run: mvn deploy --batch-mode --update-snapshots -P !sign,!build-extras,!deploy-ossrh -Dmaven.test.skip=true -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/csowada/ebus
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
