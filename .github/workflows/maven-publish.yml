@@ -17,13 +17,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Cache Maven packages
+    - name: Use Cache for Maven packages
       uses: actions/cache@v2
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-      
+
+    - name: Import GPG keys
+      run: 'echo -e "$GPG_FILE" | gpg2 --import --no-tty --batch --yes'
+      shell: bash
+      env:
+        GPG_FILE: ${{secrets.GPG_FILE}}
+
     - name: Set up Java for Apache Maven Central
       uses: actions/setup-java@v1
       with:
@@ -33,18 +39,12 @@ jobs:
         server-password: OSSRH_PASSWORD  # env variable for token in deploy
         gpg-passphrase: GPG_PASSPHRASE  # env variable for GPG private key passphrase
 
-    - name: Import GPG keys
-      run: 'echo -e "$GPG_FILE" | gpg2 --import --no-tty --batch --yes'
-      shell: bash
-      env:
-        GPG_FILE: ${{secrets.GPG_FILE}}
-
-    - name: Build with Maven
+    - name: Build and Verify with Maven
       run: mvn --batch-mode --update-snapshots clean compile verify
 
     - name: Publish to Apache Maven Central
       # run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras -Dmaven.test.skip=true
-      run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras -Dmaven.test.skip=true
+      run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras,deploy-ossrh -Dmaven.test.skip=true
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
@@ -56,11 +56,12 @@ jobs:
         java-version: 11
 
     - name: Publish to GitHub Packages
-      run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras,!deploy-ossrh -Dmaven.test.skip=true -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/csowada/ebus
+    #  -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/csowada/ebus
+      run: mvn deploy --batch-mode --update-snapshots -P !sign,!build-extras,!deploy-ossrh,deploy-github -Dmaven.test.skip=true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create Release
+    - name: Create GitGub Release
       id: create_release
       uses: actions/create-release@v1
       env:
