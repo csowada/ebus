@@ -19,6 +19,9 @@
 		<maven.compiler.release>8</maven.compiler.release>
 		<license.year>2020</license.year>
 		<!-- <bundle.version>1.1.0.${maven.build.timestamp}</bundle.version> -->
+		<sonar.projectKey>csowada_ebus</sonar.projectKey>
+		<sonar.organization>csowada</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<organization>
@@ -35,7 +38,7 @@
 
 	<developers>
 		<developer>
-			<email>git@cs-dev.de</email>
+			<email>opensource@cs-dev.de</email>
 			<name>Christian Sowada</name>
 			<url>https://github.com/csowada</url>
 			<id>csowada</id>
@@ -267,6 +270,22 @@
 				</repository>
 			</distributionManagement>
 		</profile>
+
+		<profile>
+			<id>deploy-github</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<distributionManagement>
+				<repository>
+				<id>github</id>
+				<name>GitHub Packages</name>
+				<url>https://maven.pkg.github.com/csowada/ebus</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+
 	</profiles>
 
 	<dependencies>
