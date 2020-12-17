@@ -19,6 +19,9 @@
 		<maven.compiler.release>8</maven.compiler.release>
 		<license.year>2020</license.year>
 		<!-- <bundle.version>1.1.0.${maven.build.timestamp}</bundle.version> -->
+		<sonar.projectKey>csowada_ebus</sonar.projectKey>
+  		<sonar.organization>csowada</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<organization>
