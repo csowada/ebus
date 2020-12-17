@@ -1,104 +1,120 @@
-## 1.0.7 (2020-05-17)
+# Changelog
+All notable changes to this project will be documented in this file.
 
-Features:
+## Unreleased 
 
-   - Limit the ThreadPoolExecutor to max. 30 threads
+## [1.1.2] - 2020-12-17
+### Added
+- Added ``sonarcloud`` to build pipeline
+### Removed
+- Removed all old CI files from the project
 
-Bugfixes:
+## [1.1.1] - 2020-12-17
+### Added
+- Added ``gitflow-maven-plugin`` to manage release process, see BUILD-HELP.md
+### Changed
+- Switched from Travis CI to GitHub Actions
 
-   - Add sender thread restart to main loop
-   - Fix a NullPoint Exception
+## [1.1.0] - 2020-12-12
+### Added
+- Add Eclipse Null Annotionas to project
+### Changed
+- Changed a lot of code lines to fix several ``null`` issues etc.
+- Declare all dependencies in ``pom.xml`` as ``provided``
+
+## [1.0.8] - 2020-06-21
+### Fixed
+- Fixed several ``NullPointException``
+
+## [1.0.7] - 2020-05-17
+
+### Changed
+- Limit the ThreadPoolExecutor to max. 30 threads
+
+### Fixed
+- Add sender thread restart to main loop
+- Fix a NullPoint Exception
    
-## 1.0.6 (2020-02-09)
+## [1.0.6] - 2020-02-09
 
-Features:
+### Added
+- Add a send preparation function incl. auto attach crc if missing
 
-   - Add a send preparation function incl. auto attach crc if missing
-   - Enhance fireOn... events, including some sendId fixes
+### Change
+- Enhance fireOn... events, including some sendId fixes
    
-Bugfixes:
+### Fixed
+- Disable ``InterruptedIOException`` to prevent ebusd connector from closing after a short time
 
-   - Disable ``InterruptedIOException`` to prevent ebusd connector from closing after a short time
+## [1.0.5] - 2020-01-29
 
-## 1.0.5 (2020-01-29)
-
-Features:
-
-   - Enhance telegram matcher in Command registry
-   - Add (debug) warning if master-slave command configuration is without slave part
-   - Throw an exception on ``master-master`` commands with slave addresses that have no master address pair
+### Changed
+- Enhance telegram matcher in Command registry
+- Add (debug) warning if master-slave command configuration is without slave part
+- Throw an exception on ``master-master`` commands with slave addresses that have no master address pair
    
-Bugfixes:
+### Fixed
+- Fix matcher in Command registry
+- Fix several nested template bugs
+  - Fix  internal clone() of nested templates
+  - Set type and default value for nested types
+  - Use list for ``template-block`` to also copy values without ``name``
+  - Rename template to valueDto, better variable name
+  - Add nested values to ``composeMasterData`` incl. test case
+  - Fix parent method for nested values
 
-   - Fix matcher in Command registry
-   - Fix several nested template bugs
-     - Fix  internal clone() of nested templates
-     - Set type and default value for nested types
-     - Use list for ``template-block`` to also copy values without ``name``
-     - Rename template to valueDto, better variable name
-     - Add nested values to ``composeMasterData`` incl. test case
-     - Fix parent method for nested values
+## [1.0.4] - 2020-01-21
 
-## 1.0.4 (2020-01-21)
+### Added
+- Add Version class to identify build version, commit etc.
 
-Features:
+### Fixed
+- Use timestamps for Bundle-Version
 
-   - Add Version class to identify build version, commit etc.
+## [1.0.3] - 2020-01-20
 
-Bugfixes:
+### Changed
+- enhance ebusd controller with version check
+- update all unit tests
+- improve NRJavaSerial connector
+- add a warning if the received data doesn't match to the found config method.
 
-   - Use timestamps for Bundle-Version
-
-## 1.0.3 (2020-01-20)
-
-Features:
-
-  - enhance ebusd controller with version check
-  - update all unit tests
-  - improve NRJavaSerial connector
-  - add a warning if the received data doesn't match to the found config method.
-
-Bugfixes:
-
-  - fix ``FF`` byte issue on sending
-  - add a warning if a template-block element has no name (more a bug workaround!)
-  - revert default telegram type to ``master-slave`` if not specified
-  - harden slave length function, expect no slave data
+### Fixed
+- fix ``FF`` byte issue on sending
+- add a warning if a template-block element has no name (more a bug workaround!)
+- revert default telegram type to ``master-slave`` if not specified
+- harden slave length function, expect no slave data
   
-## 1.0.2 (2020-01-12)
+## [1.0.2] - 2020-01-12
 
-Features:
+### Changed
+- check every send byte for LowLevelController
+- enhance error and parsing logging
+- enhance queue for ebusd controller
+- adjust NRJavaSerial driver for low latency
 
-  - check every send byte for LowLevelController
-  - enhance error and parsing logging
-  - enhance queue for ebusd controller
-  - adjust NRJavaSerial driver for low latency
-
-Bugfixes:
-
-  - block send queue while controller is not connected
-  - reduce Device Table Service log messages
+### Fixed
+- block send queue while controller is not connected
+- reduce Device Table Service log messages
   
-## 1.0.1 (2020-01-03)
+## [1.0.1] - 2020-01-03
 
-Features:
+### Changed
+- add more details on connection errors
+- add more details on parser errors
+- add connection status incl. listeners to controllers
 
-  - add more details on connection errors
-  - add more details on parser errors
-  - add connection status incl. listeners to controllers
-
-Bugfixes:
-
-  - fix thread interrupt handling
-  - allow null values for date and/or time for "datetime" type
-  - fix wrong replace broadcast message on building a telegram
-  - block table services if connection is not established
-  - add slave length to command match function to only process expected slave answer
+### Fixed
+- fix thread interrupt handling
+- allow null values for date and/or time for "datetime" type
+- fix wrong replace broadcast message on building a telegram
+- block table services if connection is not established
+- add slave length to command match function to only process expected slave answer
 
 
-## 1.0.0 (2019-12-28)
-
-Just a new label for the Alpha 0.9.22 release
+## [1.0.0] - 2019-12-28
+### Changed
+- Just a new label for the Alpha 0.9.22 release
   
 ## Alpha 0.9.22 (2019-12.28)
 
