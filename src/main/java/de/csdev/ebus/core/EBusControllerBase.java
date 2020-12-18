@@ -35,7 +35,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     protected @NonNull EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
     /** the list for listeners */
-    private final @NonNull List<IEBusConnectorEventListener> listeners = new CopyOnWriteArrayList<IEBusConnectorEventListener>();
+    private final @NonNull List<IEBusConnectorEventListener> listeners = new CopyOnWriteArrayList<>();
 
     /** The thread pool to execute events without blocking */
     private ExecutorService threadPool;

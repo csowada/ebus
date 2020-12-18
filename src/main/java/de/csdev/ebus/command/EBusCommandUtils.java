@@ -266,7 +266,7 @@ public class EBusCommandUtils {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
-        Map<Integer, IEBusComplexType<?>> complexTypes = new HashMap<Integer, IEBusComplexType<?>>();
+        Map<Integer, IEBusComplexType<?>> complexTypes = new HashMap<>();
 
         List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
         if (masterTypes != null) {

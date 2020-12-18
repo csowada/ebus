@@ -21,7 +21,7 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNestedValue {
 
-    private @NonNull List<@NonNull IEBusValue> list = new ArrayList<@NonNull IEBusValue>();
+    private @NonNull List<@NonNull IEBusValue> list = new ArrayList<>();
 
     @Override
     public void setParent(@Nullable EBusCommandMethod parent) {

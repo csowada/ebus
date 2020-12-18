@@ -27,13 +27,13 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusCommandCollection implements IEBusCommandCollection {
 
-    private @NonNull Map<String, IEBusCommand> commands = new HashMap<String, IEBusCommand>();
+    private @NonNull Map<String, IEBusCommand> commands = new HashMap<>();
 
     private @NonNull String description;
 
     private @NonNull String id;
 
-    private @NonNull List<String> identification = new ArrayList<String>();
+    private @NonNull List<String> identification = new ArrayList<>();
 
     private @NonNull String label;
 
@@ -51,7 +51,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
         this.label = label;
         this.description = description;
 
-        this.properties = new HashMap<String, Object>();
+        this.properties = new HashMap<>();
 
         if (properties != null) {
             // this.properties = CollectionUtils.newMapIfNull(this.properties);

@@ -41,7 +41,7 @@ public class EBusCommandRegistry {
 
     private final Logger logger = LoggerFactory.getLogger(EBusCommandRegistry.class);
 
-    private @NonNull Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
+    private @NonNull Map<String, IEBusCommandCollection> collections = new HashMap<>();
 
     private @NonNull EBusTypeRegistry typeRegistry;
 

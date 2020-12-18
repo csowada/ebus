@@ -190,7 +190,7 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     public void setProperties(Map<String, Object> properties) {
-        this.properties = new HashMap<String, Object>();
+        this.properties = new HashMap<>();
         this.properties.putAll(properties);
     }
 
