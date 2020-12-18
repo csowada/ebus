@@ -260,9 +260,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     }
 
     /**
+     * @throws InterruptedException
      *
      */
-    protected void shutdownThreadPool() {
+    protected void shutdownThreadPool() throws InterruptedException {
         // shutdown threadpool
         if (threadPool != null && !threadPool.isShutdown()) {
             threadPool.shutdownNow();
@@ -273,21 +274,15 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         }
 
         if (threadPool != null) {
-            try {
-                // wait up to 10sec. for the thread pool
-                threadPool.awaitTermination(10, TimeUnit.SECONDS);
-                threadPool = null;
-            } catch (InterruptedException e) {
-            }
+            // wait up to 10sec. for the thread pool
+            threadPool.awaitTermination(10, TimeUnit.SECONDS);
+            threadPool = null;
         }
 
         if (threadPoolWDT != null) {
-            try {
-                // wait up to 10sec. for the thread pool
-                threadPoolWDT.awaitTermination(10, TimeUnit.SECONDS);
-                threadPoolWDT = null;
-            } catch (InterruptedException e) {
-            }
+            // wait up to 10sec. for the thread pool
+            threadPoolWDT.awaitTermination(10, TimeUnit.SECONDS);
+            threadPoolWDT = null;
         }
     }
 
@@ -301,7 +296,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         return !isInterrupted() && isAlive();
     }
 
-    protected void dispose() {
+    protected void dispose() throws InterruptedException {
 
         listeners.clear();
 
@@ -354,5 +349,10 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     @Override
     public ConnectionStatus getConnectionStatus() {
         return this.connectionStatus;
+    }
+
+    @Override
+    public void run() {
+        throw new IllegalStateException("Method run() should be overwritten!");
     }
 }

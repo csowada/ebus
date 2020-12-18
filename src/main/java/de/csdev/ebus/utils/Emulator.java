@@ -117,9 +117,9 @@ public class Emulator {
 
                         // delay for 2400baud
                         try {
-                            Thread.sleep(4 * factor);
+                            out.wait(4 * factor);
                         } catch (InterruptedException e) {
-                            // noop, ignore this
+                            Thread.currentThread().interrupt();
                         }
 
                         startAutoSync();

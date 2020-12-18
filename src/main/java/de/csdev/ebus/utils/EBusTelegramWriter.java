@@ -134,32 +134,32 @@ public class EBusTelegramWriter implements IEBusParserListener {
 
     private void write(BufferedWriter writer, byte[] receivedData, String comment) throws IOException {
 
-        synchronized (writer) {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = new Date();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
 
-            writer.write(df.format(date));
-            writer.write(";");
+        StringBuilder sb = new StringBuilder();
 
-            writer.write('"' + EBusUtils.toHexDumpString(receivedData[0]) + '"');
-            writer.write(";");
+        sb.append(df.format(date));
+        sb.append(";");
 
-            writer.write('"' + EBusUtils.toHexDumpString(receivedData[1]) + '"');
-            writer.write(";");
+        sb.append('"' + EBusUtils.toHexDumpString(receivedData[0]) + '"');
+        sb.append(";");
 
-            byte[] command = Arrays.copyOfRange(receivedData, 2, 4);
-            writer.write('"' + EBusUtils.toHexDumpString(command).toString() + '"');
-            writer.write(";");
+        sb.append('"' + EBusUtils.toHexDumpString(receivedData[1]) + '"');
+        sb.append(";");
 
-            byte[] rest = Arrays.copyOfRange(receivedData, 4, receivedData.length);
-            writer.write('"' + EBusUtils.toHexDumpString(rest).toString() + '"');
-            writer.write(";");
+        byte[] command = Arrays.copyOfRange(receivedData, 2, 4);
+        sb.append('"' + EBusUtils.toHexDumpString(command).toString() + '"');
+        sb.append(";");
 
-            writer.write(comment);
+        byte[] rest = Arrays.copyOfRange(receivedData, 4, receivedData.length);
+        sb.append('"' + EBusUtils.toHexDumpString(rest).toString() + '"');
+        sb.append(";");
 
-            writer.newLine();
-            writer.flush();
-        }
+        sb.append(comment);
 
+        sb.append("\n");
+
+        writer.append(sb).flush();
     }
 }

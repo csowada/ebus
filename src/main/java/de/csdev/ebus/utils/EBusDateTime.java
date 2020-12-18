@@ -78,9 +78,9 @@ public class EBusDateTime {
         if (anyDate) {
             format = new SimpleDateFormat("HH:mm:ss");
         } else if (anyTime) {
-            format = new SimpleDateFormat("dd.MM.YYYY");
+            format = new SimpleDateFormat("dd.MM.yyyy");
         } else {
-            format = new SimpleDateFormat("dd.MM.YYYY HH:mm:ss");
+            format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         }
 
         return format.format(calendar.getTime());
