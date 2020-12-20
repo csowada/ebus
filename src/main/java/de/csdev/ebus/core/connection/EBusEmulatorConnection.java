@@ -57,6 +57,7 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
             logger.error("error!", e);
+            Thread.currentThread().interrupt();
         }
 
         writeBytes(byteArray);

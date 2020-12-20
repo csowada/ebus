@@ -243,7 +243,12 @@ public class EBusLowLevelController extends EBusControllerBase {
             }
         } // while loop
 
-        dispose();
+        try {
+            dispose();
+        } catch (InterruptedException e) {
+            logger.error("error!", e);
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
@@ -442,7 +447,7 @@ public class EBusLowLevelController extends EBusControllerBase {
     }
 
     @Override
-    protected void dispose() {
+    protected void dispose() throws InterruptedException {
 
         logger.info("eBUS connection thread is shuting down ...");
 

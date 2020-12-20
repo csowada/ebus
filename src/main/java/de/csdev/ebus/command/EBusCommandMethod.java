@@ -60,7 +60,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      */
     public EBusCommandMethod addMasterValue(IEBusValue value) {
         if (masterTypes == null) {
-            masterTypes = new ArrayList<@NonNull IEBusValue>();
+            masterTypes = new ArrayList<>();
         }
 
         if (value != null) {
@@ -77,7 +77,7 @@ public class EBusCommandMethod implements IEBusCommandMethod {
      */
     public EBusCommandMethod addSlaveValue(IEBusValue value) {
         if (slaveTypes == null) {
-            slaveTypes = new ArrayList<@NonNull IEBusValue>();
+            slaveTypes = new ArrayList<>();
         }
 
         if (value != null) {

@@ -292,7 +292,8 @@ public class EBusEbusdController extends EBusControllerBase {
                     this.fireOnEBusDataException(e, currentSendId);
 
                 } catch (InterruptedIOException e) {
-                    // disable the interrupt, can be a simple java.net.SocketTimeoutException: Read timed out
+                    // disable the interrupt, can be a simple java.net.SocketTimeoutException: Read
+                    // timed out
 
                 } catch (InterruptedException e) {
                     // re-enable the interrupt to stop the while loop
@@ -315,7 +316,12 @@ public class EBusEbusdController extends EBusControllerBase {
             logger.error("error!", e);
         }
 
-        dispose();
+        try {
+            dispose();
+        } catch (InterruptedException e) {
+            logger.error("error!", e);
+            Thread.currentThread().interrupt();
+        }
 
     }
 
@@ -445,7 +451,7 @@ public class EBusEbusdController extends EBusControllerBase {
     }
 
     @Override
-    protected void dispose() {
+    protected void dispose() throws InterruptedException {
 
         logger.debug("eBUS connection thread is shutting down ...");
 

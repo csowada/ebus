@@ -87,6 +87,8 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
             // wait for shutdown
             shutdownThread.join(2000);
         } catch (InterruptedException e) {
+            logger.error("error!", e);
+            Thread.currentThread().interrupt();
         }
 
         return true;
