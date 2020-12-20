@@ -14,19 +14,19 @@ package de.csdev.ebus.core;
  */
 public class EBusConsts {
 
-    /** The Broadcast address */
+    /** The Broadcast address 0xFE */
     public final static byte BROADCAST_ADDRESS = (byte) 0xFE;
 
-    /** The ACK FAIL answer byte */
+    /** The ACK FAIL answer byte 0xFF */
     public final static byte ACK_FAIL = (byte) 0xFF;
 
-    /** The ACK OK answer byte */
+    /** The ACK OK answer byte 0x00 */
     public final static byte ACK_OK = (byte) 0x00;
 
-    /** The SYN byte */
+    /** The SYN byte 0xAA */
     public final static byte SYN = (byte) 0xAA;
 
-    /** The escape byte for expanded bytes */
+    /** The escape byte for expanded bytes 0xA9 */
     public final static byte ESCAPE = (byte) 0xA9;
 
     /** replacement for an excape symbol */

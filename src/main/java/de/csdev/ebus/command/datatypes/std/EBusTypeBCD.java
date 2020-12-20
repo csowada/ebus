@@ -15,7 +15,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
 import de.csdev.ebus.utils.NumberUtils;
 
@@ -72,7 +71,11 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
         final BigDecimal hundred = BigDecimal.valueOf(100);
         byte[] result = new byte[getTypeLength()];
 
-        BigDecimal b = EBusTypeUtils.toBigDecimal(data);
+        BigDecimal b = NumberUtils.toBigDecimal(data);
+
+        if (b == null) {
+            throw new EBusTypeException("Unable to convert input data to number!");
+        }
 
         for (int i = 0; i < result.length; i++) {
 

@@ -20,18 +20,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.eclipse.jdt.annotation.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.apache.commons.lang.ObjectUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -97,7 +99,7 @@ public class EBusDeviceTable {
         return vendors.get(EBusUtils.toHexDumpString(vendorCode));
     }
 
-    public void updateDevice(byte address, Map<@NonNull String, @NonNull Object> data) {
+    public void updateDevice(byte address, Map<@NonNull String, @Nullable Object> data) {
 
         boolean newDevice = false;
         boolean updatedDevice = false;
@@ -133,34 +135,44 @@ public class EBusDeviceTable {
 
         if (data != null && !data.isEmpty()) {
 
-            Object obj = data.get("device_id");
-            if (obj != null && !obj.equals(device.getDeviceId())) {
-                device.setDeviceId((byte[]) obj);
-                updatedDevice = true;
+            if (data.containsKey("device_id")) {
+                @Nullable
+                Object obj = data.get("device_id");
+                if (obj != null && !obj.equals(device.getDeviceId())) {
+                    if (obj instanceof byte[]) {
+                        device.setDeviceId((byte[]) obj);
+                        updatedDevice = true;
+                    }
+                }
             }
 
-            try {
-                BigDecimal obj2 = EBusTypeUtils.toBigDecimal(data.get("hardware_version"));
+            @Nullable
+            Object value = data.get("hardware_version");
+            if (value != null) {
+                BigDecimal obj2 = NumberUtils.toBigDecimal(value);
                 if (obj2 != null && !ObjectUtils.equals(obj2, device.getHardwareVersion())) {
                     device.setHardwareVersion(obj2);
                     updatedDevice = true;
                 }
+            }
 
-                obj2 = EBusTypeUtils.toBigDecimal(data.get("software_version"));
+            value = data.get("software_version");
+            if (value != null) {
+                BigDecimal obj2 = NumberUtils.toBigDecimal(value);
                 if (obj2 != null && !ObjectUtils.equals(obj2, device.getSoftwareVersion())) {
                     device.setSoftwareVersion(obj2);
                     updatedDevice = true;
                 }
+            }
 
-                obj2 = EBusTypeUtils.toBigDecimal(data.get("vendor"));
+            value = data.get("vendor");
+            if (value != null) {
+                BigDecimal obj2 = NumberUtils.toBigDecimal(value);
                 if (obj2 != null && !ObjectUtils.equals(obj2.byteValue(), device.getManufacturer())) {
                     int intValue = obj2.intValue();
                     device.setManufacturer((byte) intValue);
                     updatedDevice = true;
                 }
-            } catch (EBusTypeException e) {
-                logger.warn("Unable to update device table entry!", e);
-                return;
             }
         }
 

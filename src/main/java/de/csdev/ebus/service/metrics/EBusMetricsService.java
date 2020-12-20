@@ -59,7 +59,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
 
     @Override
     public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
-            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @NonNull Map<@NonNull String, @Nullable Object> result, byte @NonNull [] receivedData,
             @Nullable Integer sendQueueId) {
         resolved = resolved.add(BigDecimal.ONE);
     }

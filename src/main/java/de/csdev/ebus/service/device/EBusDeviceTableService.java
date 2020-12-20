@@ -323,7 +323,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
      */
     @Override
     public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
-            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @NonNull Map<@NonNull String, @Nullable Object> result, byte @NonNull [] receivedData,
             @Nullable Integer sendQueueId) {
 
         String id = commandChannel.getParent().getId();

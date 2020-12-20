@@ -46,7 +46,7 @@ public class EBusTelegramWriter implements IEBusParserListener {
 
     @Override
     public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
-            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @NonNull Map<@NonNull String, @Nullable Object> result, byte @NonNull [] receivedData,
             @Nullable Integer sendQueueId) {
 
         try {
