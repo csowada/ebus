@@ -9,6 +9,7 @@
 package de.csdev.ebus.cfg;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -55,9 +56,10 @@ public class EBusCommonTelegramTest {
 
         } catch (EBusTypeException e) {
             logger.error("error!", e);
+            fail("An exception occured!");
         } catch (EBusCommandException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("error!", e);
+            fail("An exception occured!");
         }
 
     }

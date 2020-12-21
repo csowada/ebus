@@ -120,7 +120,6 @@ public class EBusCommandUtils {
      * @param b The byte to escape
      * @return A escaped byte if required or the parameter byte as array
      */
-    @SuppressWarnings("null")
     public static byte @NonNull [] escapeSymbol(byte b) {
         if (b == EBusConsts.ESCAPE) {
             return EBusConsts.ESCAPE_REPLACEMENT;
@@ -283,7 +282,6 @@ public class EBusCommandUtils {
                     int n = 0;
 
                     for (int i = 0; i < list.size(); i++) {
-                        @SuppressWarnings("null")
                         IEBusValue childValue = list.get(i);
                         if (values != null && values.containsKey(childValue.getName())) {
                             Boolean object = (Boolean) values.get(childValue.getName());

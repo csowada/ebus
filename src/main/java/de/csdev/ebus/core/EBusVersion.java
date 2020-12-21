@@ -16,7 +16,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault
 public class EBusVersion {
 
-    @SuppressWarnings("null")
     private static String getAttribute(Class<?> rootClass, String name) {
         try {
             Manifest manifest = new Manifest(rootClass.getResourceAsStream("/META-INF/MANIFEST.MF"));

@@ -55,11 +55,11 @@ public class EBusCustomParserTest {
                                 collection.getId(), EBusUtils.toHexDumpString(masterTelegram)));
 
                     } catch (EBusTypeException e) {
-                        e.printStackTrace();
+                        logger.error("error!", e);
                         fail();
                     } catch (EBusCommandException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        logger.error("error!", e);
+                        fail();
                     }
                 }
 

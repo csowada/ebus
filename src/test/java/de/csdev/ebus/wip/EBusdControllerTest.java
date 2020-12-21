@@ -23,14 +23,13 @@ import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusControllerException;
 import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusEbusdController;
-import de.csdev.ebus.core.EBusStateMachineTest;
 import de.csdev.ebus.core.IEBusConnectorEventListener;
 import de.csdev.ebus.core.IEBusController.ConnectionStatus;
 import de.csdev.ebus.utils.EBusUtils;
 
 public class EBusdControllerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusStateMachineTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusdControllerTest.class);
 
     // private IEBusConnection connection;
 
@@ -55,33 +54,23 @@ public class EBusdControllerTest {
 
         controller.addEBusEventListener(new IEBusConnectorEventListener() {
 
-            @SuppressWarnings("null")
             @Override
             public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
-                // TODO Auto-generated method stub
                 logger.info("Received: " + EBusUtils.toHexDumpString(receivedData).toString());
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
-                System.err.println(exception.getLocalizedMessage());
-                // logger.error(exception.getLocalizedMessage());
-                // TODO Auto-gen1erated method stub
-                // logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramException()");
+                logger.error(exception.getLocalizedMessage());
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onConnectionException(Exception e) {
-                // TODO Auto-generated method stub
                 logger.info("ClientTest.xxx().new EBusConnectorEventListener() {...}.onConnectionException()");
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onConnectionStatusChanged(ConnectionStatus status) {
-                // TODO Auto-generated method stub
                 logger.info(
                         "EBusdControllerTest.testNoSlaveResponse().new IEBusConnectorEventListener() {...}.onConnectionStatusChanged()");
             }

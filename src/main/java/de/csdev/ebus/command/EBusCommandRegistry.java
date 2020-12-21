@@ -62,7 +62,6 @@ public class EBusCommandRegistry {
      * @param readerClass
      * @param loadBuildInCommands
      */
-    @SuppressWarnings("null")
     public EBusCommandRegistry(Class<? extends IEBusConfigurationReader> readerClass, boolean loadBuildInCommands) {
 
         try {
@@ -156,7 +155,6 @@ public class EBusCommandRegistry {
      * @param data The complete unescaped eBUS telegram
      * @return Returns the a list of all matching configuration methods or an empty list
      */
-    @SuppressWarnings("null")
     public @NonNull List<IEBusCommandMethod> find(byte @NonNull [] data) {
 
         Objects.requireNonNull(data);
@@ -230,7 +228,6 @@ public class EBusCommandRegistry {
      *
      * @return
      */
-    @SuppressWarnings("null")
     public @NonNull List<@NonNull IEBusCommandCollection> getCommandCollections() {
         return Collections.unmodifiableList(new ArrayList<IEBusCommandCollection>(collections.values()));
     }

@@ -22,7 +22,6 @@ import com.fazecast.jSerialComm.SerialPort;
  */
 public class EBusJSerialCommConnection extends AbstractEBusConnection {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(EBusJSerialCommConnection.class);
 
     /** The serial object */

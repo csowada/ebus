@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.wip;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -56,12 +58,9 @@ public class EBusWolfSM1TelegramTest2XXX {
                     ByteBuffer buildTelegram = client.buildTelegram(method, (byte) 0x08, null);
                     logger.info("{} -> {}", method.getMethod(), EBusUtils.toHexDumpString(buildTelegram));
 
-                } catch (EBusTypeException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (EBusCommandException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                } catch (EBusTypeException | EBusCommandException e) {
+                    logger.error("error!", e);
+                    fail();
                 }
             }
         }

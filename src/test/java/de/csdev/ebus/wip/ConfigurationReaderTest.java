@@ -9,6 +9,7 @@
 package de.csdev.ebus.wip;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,6 +17,9 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.StaticTestTelegrams;
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
@@ -35,8 +39,9 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class ConfigurationReaderTest {
 
+    private final Logger logger = LoggerFactory.getLogger(EBusCustomParserTest.class);
+
     // @Test
-    @SuppressWarnings("null")
     public void testIsMasterAddress() throws IOException, EBusTypeException, EBusConfigurationReaderException {
 
         URL url = EBusConfigurationReader.class.getResource("/commands/wolf-sm1-configuration.json");
@@ -67,8 +72,8 @@ public class ConfigurationReaderTest {
                         System.out.println(xx);
 
                     } catch (EBusTypeException | EBusCommandException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        logger.error("error!", e);
+                        fail();
                     }
 
                 }

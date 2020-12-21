@@ -47,7 +47,6 @@ public class ClientTest3 {
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
 
-        @SuppressWarnings("null")
         EBusLowLevelController controller = new EBusLowLevelController(connection);
 
         EBusClient client = new EBusClient(commandRegistry);
@@ -56,29 +55,21 @@ public class ClientTest3 {
 
         controller.addEBusEventListener(new IEBusConnectorEventListener() {
 
-            @SuppressWarnings("null")
             @Override
             public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
-                // TODO Auto-generated method stub
                 logger.info("Received: " + EBusUtils.toHexDumpString(receivedData).toString());
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
-                System.err.println(exception.getLocalizedMessage());
-                // logger.error(exception.getLocalizedMessage());
-                // TODO Auto-gen1erated method stub
-                // logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramException()");
+                logger.error(exception.getLocalizedMessage());
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onConnectionException(Exception e) {
                 logger.info("ClientTest.xxx().new EBusConnectorEventListener() {...}.onConnectionException()");
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onConnectionStatusChanged(ConnectionStatus status) {
                 logger.info(

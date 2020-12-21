@@ -82,7 +82,6 @@ public class EBusParserService extends EBusConnectorEventListener {
      *
      * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
-    @SuppressWarnings("null")
     @Override
     public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
 
