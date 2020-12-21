@@ -47,7 +47,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        BUILD_BUILD_NUMBER: ${{ github.github.run_id + "-" + github.run_number }}
+        BUILD_NUMBER: ${{ github.github.run_id }}-${{ github.run_number }}
 
     - name: Upload Maven build artifact
       uses: actions/upload-artifact@v2
