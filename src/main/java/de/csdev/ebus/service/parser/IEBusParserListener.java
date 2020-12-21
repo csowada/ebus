@@ -30,7 +30,7 @@ public interface IEBusParserListener {
      * @param receivedData The raw data
      * @param sendQueueId The sendQueue id if available
      */
-    public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result, byte[] receivedData,
+    public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, @Nullable Object> result, byte[] receivedData,
             @Nullable Integer sendQueueId);
 
     /**

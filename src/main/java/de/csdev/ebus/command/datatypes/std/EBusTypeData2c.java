@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -44,7 +44,12 @@ public class EBusTypeData2c extends AbstractEBusTypeNumber {
 
     @Override
     public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
-        BigDecimal b = EBusTypeUtils.toBigDecimal(data);
+        BigDecimal b = NumberUtils.toBigDecimal(data);
+        
+        if (b == null) {
+            throw new EBusTypeException("Unable to convert input data to number!");
+        }
+
         return super.encodeInt(b.multiply(BigDecimal.valueOf(16)));
     }
 
