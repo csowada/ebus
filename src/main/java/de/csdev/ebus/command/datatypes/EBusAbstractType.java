@@ -33,7 +33,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
 
-    protected Map<Object, EBusAbstractType<T>> otherInstances = new HashMap<Object, EBusAbstractType<T>>();
+    protected Map<Object, EBusAbstractType<T>> otherInstances = new HashMap<>();
 
     protected byte[] replaceValue = null;
 
@@ -72,17 +72,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
             newInstance.types = this.types;
             return newInstance;
 
-        } catch (InstantiationException e) {
-            logger.error("error!", e);
-        } catch (IllegalAccessException e) {
-            logger.error("error!", e);
-        } catch (IllegalArgumentException e) {
-            logger.error("error!", e);
-        } catch (InvocationTargetException e) {
-            logger.error("error!", e);
-        } catch (NoSuchMethodException e) {
-            logger.error("error!", e);
-        } catch (SecurityException e) {
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             logger.error("error!", e);
         }
 
@@ -123,7 +113,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @throws EBusTypeException
      */
     public @Nullable T decodeInt(byte @Nullable [] data) throws EBusTypeException {
-        throw new RuntimeException("Must be overwritten by superclass!");
+        throw new UnsupportedOperationException("Must be overwritten by superclass!");
     }
 
     /*
@@ -160,7 +150,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @throws EBusTypeException
      */
     public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
-        throw new RuntimeException("Must be overwritten by superclass!");
+        throw new UnsupportedOperationException("Must be overwritten by superclass!");
     }
 
     /**
@@ -187,7 +177,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         }
 
         // Sort all members to have a reliable key
-        TreeMap<String, Object> sortedMap = new TreeMap<String, Object>(properties);
+        TreeMap<String, Object> sortedMap = new TreeMap<>(properties);
         String instanceKey = sortedMap.toString();
 
         EBusAbstractType<T> instance = otherInstances.get(instanceKey);
@@ -266,11 +256,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
                 field.set(instance, value);
             }
 
-        } catch (SecurityException e) {
-            logger.error("error!", e);
-        } catch (IllegalArgumentException e) {
-            logger.error("error!", e);
-        } catch (IllegalAccessException e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
             logger.error("error!", e);
         }
     }

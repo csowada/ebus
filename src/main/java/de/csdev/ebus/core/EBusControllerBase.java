@@ -239,7 +239,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     protected void initThreadPool() {
         // create new thread pool to send received telegrams
         // limit the number of threads to 30
-        threadPool = new ThreadPoolExecutor(0, 30, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+        threadPool = new ThreadPoolExecutor(0, 30, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(),
                 new EBusWorkerThreadFactory("ebus-receiver", true));
 
         // create watch dog thread pool

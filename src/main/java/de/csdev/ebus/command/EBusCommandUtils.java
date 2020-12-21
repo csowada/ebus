@@ -114,8 +114,10 @@ public class EBusCommandUtils {
      * @return
      */
     public static byte unescapeSymbol(byte reversedByte) {
-        return reversedByte == (byte) 0x00 ? EBusConsts.ESCAPE
-                : reversedByte == (byte) 0x01 ? EBusConsts.SYN : reversedByte;
+        if (reversedByte == (byte) 0x00 ) {
+            return EBusConsts.ESCAPE;
+        }
+        return reversedByte == (byte) 0x01 ? EBusConsts.SYN : reversedByte;
     }
 
     /**
@@ -458,13 +460,13 @@ public class EBusCommandUtils {
                     decode = multiply;
                 }
 
-                if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
+                if (nev.getMin() != null && multiply.compareTo(nev.getMin()) < 0) {
                     logger.debug("Value {} with {} is smaller then allowed {}",
                             ev.getName(), multiply, nev.getMax());
                     decode = null;
                 }
 
-                if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
+                if (nev.getMax() != null && multiply.compareTo(nev.getMax()) > 0) {
                     logger.debug("Value {} with {} is larger then allowed {}",
                             ev.getName(), multiply, nev.getMax());
                     decode = null;
@@ -545,7 +547,7 @@ public class EBusCommandUtils {
         Objects.requireNonNull(commandChannel, "commandChannel");
         Objects.requireNonNull(data, "data");
 
-        HashMap<String, Object> result = new HashMap<String, Object>();
+        HashMap<String, Object> result = new HashMap<>();
         int pos = 6;
 
         pos = decodeValueList(commandChannel.getMasterTypes(), data, result, pos);
