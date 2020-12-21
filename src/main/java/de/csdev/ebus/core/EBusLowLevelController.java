@@ -215,9 +215,7 @@ public class EBusLowLevelController extends EBusControllerBase {
                     }
                 }
 
-            } catch (InterruptedIOException e) {
-                Thread.currentThread().interrupt();
-            } catch (InterruptedException e) {
+            } catch (InterruptedIOException | InterruptedException e) {
                 Thread.currentThread().interrupt();
 
             } catch (IOException e) {
@@ -334,14 +332,15 @@ public class EBusLowLevelController extends EBusControllerBase {
                 if (readByte == EBusConsts.SYN) {
                     logger.debug("eBUS collision with SYN detected!");
                 } else {
-                    logger.debug("eBUS collision detected! 0x{}", EBusUtils.toHexDumpString(readByte));
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("eBUS collision detected! 0x{}", EBusUtils.toHexDumpString(readByte));
+                    }
                 }
 
                 // last send try was a collision
                 if (queue.isLastSendCollisionDetected()) {
                     logger.warn("A second collision occured!");
                     queue.resetSendQueue();
-                    return;
                 }
                 // priority class identical
                 else if ((byte) (readByte & 0x0F) == (byte) (b & 0x0F)) {
@@ -386,8 +385,11 @@ public class EBusLowLevelController extends EBusControllerBase {
                     return;
 
                 } else if (b0 != b1) {
-                    logger.warn("Received byte 0x{} is not equal to send byte 0x{}! Stop send attempt ...",
-                            EBusUtils.toHexDumpString(b1), EBusUtils.toHexDumpString(b0));
+                    if (logger.isWarnEnabled()) {
+                        logger.warn("Received byte 0x{} is not equal to send byte 0x{}! Stop send attempt ...",
+                                EBusUtils.toHexDumpString(b1), EBusUtils.toHexDumpString(b0));
+                    }
+
                     queue.setBlockNextSend(true);
                     return;
                 }
@@ -428,7 +430,10 @@ public class EBusLowLevelController extends EBusControllerBase {
 
             // after send process the received telegram
             if (sendMachine.isTelegramAvailable()) {
-                logger.debug("Succesful send: {}", sendMachine.toDumpString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Succesful send: {}", sendMachine.toDumpString());
+                }
+
                 fireOnEBusTelegramReceived(sendMachine.getTelegramData(), sendEntry.id);
             }
 
@@ -464,7 +469,6 @@ public class EBusLowLevelController extends EBusControllerBase {
         try {
             if (connection != null) {
                 connection.close();
-                // connection = null;
             }
         } catch (IOException e) {
             logger.error(e.toString(), e);

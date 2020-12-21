@@ -39,7 +39,11 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusCommandUtils {
 
-    private final static Logger logger = LoggerFactory.getLogger(EBusCommandUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusCommandUtils.class);
+
+    private EBusCommandUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Returns a full unique id to a method
@@ -142,7 +146,7 @@ public class EBusCommandUtils {
      * @throws EBusTypeException
      */
     public static @NonNull ByteBuffer buildCompleteTelegram(byte source, byte target, byte[] command, byte[] masterData,
-            byte[] slaveData) throws EBusTypeException {
+            byte[] slaveData) {
 
         boolean isMastereMaster = EBusUtils.isMasterAddress(target);
         boolean isBroadcast = target == EBusConsts.BROADCAST_ADDRESS;
@@ -187,7 +191,7 @@ public class EBusCommandUtils {
      * @throws EBusTypeException
      */
     public static @NonNull ByteBuffer buildPartMasterTelegram(byte source, byte target, byte[] command,
-            byte[] masterData) throws EBusTypeException {
+            byte[] masterData) {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
@@ -220,14 +224,16 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static @NonNull ByteBuffer buildPartSlave(byte @NonNull [] slaveData) throws EBusTypeException {
+    public static @NonNull ByteBuffer buildPartSlave(byte @NonNull [] slaveData) {
+
+        Objects.requireNonNull(slaveData, "slaveData");
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
         buf.put(EBusConsts.ACK_OK); // ACK
 
         // if payload available
-        if (slaveData != null && slaveData.length > 0) {
+        if (slaveData.length > 0) {
             buf.put((byte) slaveData.length); // NN - Length
 
             // add the escaped bytes
@@ -317,11 +323,10 @@ public class EBusCommandUtils {
                 }
 
                 if (b == null) {
-                    throw new RuntimeException("Encoded value is null! " + type.toString());
+                    throw new EBusTypeException("Encoded value is null! " + type.toString());
                 }
-                // buf.p
+
                 buf.put(b);
-                // len += type.getTypeLength();
             }
         }
 
@@ -367,7 +372,7 @@ public class EBusCommandUtils {
             @Nullable Byte source, @Nullable Byte target, @Nullable Map<String, Object> values,
             boolean skipAddressChecks) throws EBusTypeException, EBusCommandException {
 
-        Objects.requireNonNull(commandMethod, "Parameter command is null!");
+        Objects.requireNonNull(commandMethod, "commandMethod");
 
         if (source == null && commandMethod.getSourceAddress() != null) {
             source = commandMethod.getSourceAddress();
@@ -392,8 +397,10 @@ public class EBusCommandUtils {
             if (commandMethod.getType().equals(Type.BROADCAST)) {
                 if (target != EBusConsts.BROADCAST_ADDRESS) {
                     targetChecked = EBusConsts.BROADCAST_ADDRESS;
-                    logger.warn("Replace target address {} with valid broadcast address 0xFE !",
+                    if (logger.isWarnEnabled()) {
+                        logger.warn("Replace target address {} with valid broadcast address 0xFE !",
                             EBusUtils.toHexDumpString(target));
+                    }
                 }
             } else if (commandMethod.getType().equals(Type.MASTER_MASTER)) {
                 if (!EBusUtils.isMasterAddress(target)) {
@@ -404,16 +411,20 @@ public class EBusCommandUtils {
                                 "Cannot replace the slave address 0x%s with a master address because it is a slave address without a master address.",
                                 EBusUtils.toHexDumpString(target)));
                     } else {
-                        logger.warn("Replace slave target address {} with valid master address {}!",
+                        if (logger.isWarnEnabled()) {
+                            logger.warn("Replace slave target address {} with valid master address {}!",
                                 EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+                        }
                     }
                 }
 
             } else if (commandMethod.getType().equals(Type.MASTER_SLAVE)) {
                 if (EBusUtils.isMasterAddress(target)) {
                     targetChecked = EBusUtils.getSlaveAddress(target);
-                    logger.warn("Replace master target address {} with valid slave address {}!",
-                            EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+                    if (logger.isWarnEnabled()) {
+                        logger.warn("Replace master target address {} with valid slave address {}!",
+                                EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+                    }
                 }
             }
         }
@@ -423,9 +434,7 @@ public class EBusCommandUtils {
         }
 
         byte[] data = EBusUtils.toByteArray(composeMasterData(commandMethod, values));
-        ByteBuffer byteBuffer = buildPartMasterTelegram(source, targetChecked, commandMethod.getCommand(), data);
-
-        return byteBuffer;
+        return buildPartMasterTelegram(source, targetChecked, commandMethod.getCommand(), data);
     }
 
     /**
@@ -451,13 +460,13 @@ public class EBusCommandUtils {
 
                 if (nev.getMin() != null && multiply.compareTo(nev.getMin()) == -1) {
                     logger.debug("Value {} with {} is smaller then allowed {}",
-                            new Object[] { ev.getName(), multiply, nev.getMax() });
+                            ev.getName(), multiply, nev.getMax());
                     decode = null;
                 }
 
                 if (nev.getMax() != null && multiply.compareTo(nev.getMax()) == 1) {
                     logger.debug("Value {} with {} is larger then allowed {}",
-                            new Object[] { ev.getName(), multiply, nev.getMax() });
+                            ev.getName(), multiply, nev.getMax());
                     decode = null;
                 }
             }
@@ -533,8 +542,8 @@ public class EBusCommandUtils {
     public static @NonNull Map<String, Object> decodeTelegram(@NonNull IEBusCommandMethod commandChannel,
             byte @NonNull [] data) throws EBusTypeException {
 
-        Objects.requireNonNull(commandChannel, "Parameter command is null!");
-        Objects.requireNonNull(data);
+        Objects.requireNonNull(commandChannel, "commandChannel");
+        Objects.requireNonNull(data, "data");
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         int pos = 6;
@@ -543,7 +552,7 @@ public class EBusCommandUtils {
 
         pos += 3;
 
-        pos = decodeValueList(commandChannel.getSlaveTypes(), data, result, pos);
+        decodeValueList(commandChannel.getSlaveTypes(), data, result, pos);
 
         return result;
     }
@@ -556,7 +565,6 @@ public class EBusCommandUtils {
 
         Objects.requireNonNull(commandChannel, "Parameter command is null!");
 
-        // byte len = 0;
         ByteBuffer buf = ByteBuffer.allocate(50);
         buf.put(commandChannel.getSourceAddress() == null ? (byte) 0x00 : (byte) 0xFF); // QQ - Source
         buf.put(commandChannel.getDestinationAddress() == null ? (byte) 0x00 : (byte) 0xFF); // ZZ - Target

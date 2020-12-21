@@ -44,8 +44,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
 
     private BigDecimal receivedAmount = BigDecimal.valueOf(0);
 
-    private Map<EBusError, @Nullable BigDecimal> failedMap = new EnumMap<EBusDataException.EBusError, @Nullable BigDecimal>(
-            EBusError.class);
+    private Map<EBusError, @Nullable BigDecimal> failedMap = new EnumMap<>(EBusError.class);
 
     public void clear() {
         resolved = BigDecimal.valueOf(0);

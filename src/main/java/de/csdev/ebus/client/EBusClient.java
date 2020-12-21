@@ -121,7 +121,6 @@ public class EBusClient {
 
         Objects.requireNonNull(buffer, "buffer");
 
-        IEBusController controller = this.controller;
         if (controller == null) {
             throw new EBusControllerException("Controller not set!");
         }
@@ -140,12 +139,11 @@ public class EBusClient {
      */
     public @NonNull Integer addToSendQueue(byte @NonNull [] buffer, int maxAttemps) throws EBusControllerException {
 
-        IEBusController controller = this.controller;
-        if (controller == null) {
+        if (this.controller == null) {
             throw new EBusControllerException("Controller not set!");
         }
 
-        return controller.addToSendQueue(buffer, maxAttemps);
+        return this.controller.addToSendQueue(buffer, maxAttemps);
     }
 
     /**
@@ -200,31 +198,19 @@ public class EBusClient {
     public void dispose() {
         if (controller != null) {
             controller.interrupt();
-            // controller = null;
         }
-
-        // if (commandRegistry != null) {
-        // commandRegistry = null;
-        // }
 
         if (deviceTableService != null) {
             deviceTableService.dispose();
-            // deviceTableService = null;
         }
 
         if (deviceTable != null) {
             deviceTable.dispose();
-            // deviceTable = null;
         }
 
         if (resolverService != null) {
             resolverService.dispose();
-            // resolverService = null;
         }
-
-        // if (metricsService != null) {
-        // metricsService = null;
-        // }
     }
 
     /**

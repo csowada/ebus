@@ -435,7 +435,7 @@ public class EBusEbusdController extends EBusControllerBase {
                 Thread.sleep(100);
 
             } catch (InterruptedException e) {
-                // noop
+                Thread.currentThread().interrupt();
             }
 
             return true;

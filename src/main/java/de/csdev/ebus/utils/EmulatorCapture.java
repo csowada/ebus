@@ -35,9 +35,7 @@ public class EmulatorCapture {
         referenceTime = System.currentTimeMillis();
         try {
             writer = new PrintWriter(outputFile, "UTF-8");
-        } catch (FileNotFoundException e) {
-            logger.error("error!", e);
-        } catch (UnsupportedEncodingException e) {
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
             logger.error("error!", e);
         }
     }

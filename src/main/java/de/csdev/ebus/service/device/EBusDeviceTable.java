@@ -44,7 +44,7 @@ public class EBusDeviceTable {
     private Map<Byte, EBusDevice> deviceTable;
 
     /** the list for listeners */
-    private final List<IEBusDeviceTableListener> listeners = new CopyOnWriteArrayList<IEBusDeviceTableListener>();
+    private final List<IEBusDeviceTableListener> listeners = new CopyOnWriteArrayList<>();
 
     private Map<String, String> vendors;
 
@@ -52,13 +52,11 @@ public class EBusDeviceTable {
     private byte ownAddress;
 
     public EBusDeviceTable() {
-        deviceTable = new HashMap<Byte, EBusDevice>();
+        deviceTable = new HashMap<>();
     }
 
     public void dispose() {
-        if (listeners != null) {
-            listeners.clear();
-        }
+        listeners.clear();
 
         if (deviceTable != null) {
             deviceTable.clear();

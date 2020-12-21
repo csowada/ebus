@@ -66,17 +66,14 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
 
         // run the serial.close in a new not-interrupted thread to
         // prevent an IllegalMonitorStateException error
-        Thread shutdownThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
+        Thread shutdownThread = new Thread(() -> {
 
-                IOUtils.closeQuietly(inputStream);
-                IOUtils.closeQuietly(outputStream);
+            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly(outputStream);
 
-                if (serialPort != null) {
-                    serialPort.closePort();
-                    serialPort = null;
-                }
+            if (serialPort != null) {
+                serialPort.closePort();
+                serialPort = null;
             }
         }, "eBUS serial shutdown thread");
 

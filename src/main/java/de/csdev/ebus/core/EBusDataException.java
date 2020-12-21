@@ -103,7 +103,7 @@ public class EBusDataException extends Exception {
     @Override
     public String getMessage() {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append(super.getMessage());
         sb.append(" [");

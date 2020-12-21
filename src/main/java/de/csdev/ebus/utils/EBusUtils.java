@@ -25,6 +25,10 @@ import de.csdev.ebus.core.EBusConsts;
  */
 public class EBusUtils {
 
+    private EBusUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /** calculated crc values */
     final static public byte CRC_TAB_8_VALUE[] = { (byte) 0x00, (byte) 0x9B, (byte) 0xAD, (byte) 0x36, (byte) 0xC1,
             (byte) 0x5A, (byte) 0x6C, (byte) 0xF7, (byte) 0x19, (byte) 0x82, (byte) 0xB4, (byte) 0x2F, (byte) 0xD8,
@@ -153,7 +157,7 @@ public class EBusUtils {
      * @param slaveAddress
      * @return
      */
-    static public @Nullable Byte getMasterAddress(byte slaveAddress) {
+    public static @Nullable Byte getMasterAddress(byte slaveAddress) {
 
         if (slaveAddress == EBusConsts.ESCAPE || slaveAddress == EBusConsts.SYN) {
             return null;
@@ -175,7 +179,7 @@ public class EBusUtils {
      * @param masterAddress The master address
      * @return The slave address or null if the master address is invalid
      */
-    static public @Nullable Byte getSlaveAddress(byte masterAddress) {
+    public static @Nullable Byte getSlaveAddress(byte masterAddress) {
         if (isMasterAddress(masterAddress)) {
             return (byte) (masterAddress == (byte) 0xFF ? (byte) 0x04 : masterAddress + 5);
         }
@@ -282,7 +286,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte @NonNull [] toByteArray(@Nullable String hexDumpString) throws NumberFormatException {
+    public static byte @NonNull [] toByteArray(@Nullable String hexDumpString) throws NumberFormatException {
         if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
@@ -304,7 +308,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public byte @NonNull [] toByteArray2(@Nullable String hexDumpString) throws NumberFormatException {
+    public static byte @NonNull [] toByteArray2(@Nullable String hexDumpString) throws NumberFormatException {
 
         if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
@@ -325,7 +329,7 @@ public class EBusUtils {
         return result;
     }
 
-    static public @NonNull String mergeHexDumpStrings(@Nullable String... args) {
+    public static @NonNull String mergeHexDumpStrings(@Nullable String... args) {
 
         if (args == null) {
             return "";
@@ -348,7 +352,7 @@ public class EBusUtils {
      * @param data The source
      * @return The hex string
      */
-    static public @NonNull String toHexDumpString(@Nullable Byte data) {
+    public static @NonNull String toHexDumpString(@Nullable Byte data) {
 
         if (data == null) {
             return "";
@@ -364,7 +368,7 @@ public class EBusUtils {
      * @param data The source
      * @return The StringBuilder with hex dump
      */
-    static public @NonNull StringBuilder toHexDumpString(byte @Nullable [] data) {
+    public static @NonNull StringBuilder toHexDumpString(byte @Nullable [] data) {
         StringBuilder sb = new StringBuilder();
         if (data != null && data.length > 0) {
             for (int i = 0; i < data.length; i++) {
@@ -385,7 +389,7 @@ public class EBusUtils {
      * @param data The source
      * @return The StringBuilder with hex dump
      */
-    static public StringBuilder toHexDumpString(@Nullable ByteBuffer data) {
+    public static StringBuilder toHexDumpString(@Nullable ByteBuffer data) {
 
         StringBuilder sb = new StringBuilder();
         if (data == null) {
@@ -415,7 +419,7 @@ public class EBusUtils {
      * @param data
      * @return
      */
-    static public String toPrintHexDumpString(@Nullable Byte data) {
+    public static String toPrintHexDumpString(@Nullable Byte data) {
         if (data != null) {
             return "0x" + String.format("%02X", (0xFF & data));
         }

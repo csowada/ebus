@@ -20,6 +20,10 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class NumberUtils {
 
+    private NumberUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Convert number object to BigDecimal
      *

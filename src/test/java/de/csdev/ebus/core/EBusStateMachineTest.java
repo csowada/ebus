@@ -379,12 +379,6 @@ public class EBusStateMachineTest {
 
                     runMachine(EBusUtils.toByteArray(masterTelegramPart));
 
-                } catch (EBusTypeException e) {
-
-                    logger.info(EBusUtils.toHexDumpString(bb).toString());
-                    logger.info(e.getLocalizedMessage());
-                    errors++;
-
                 } catch (EBusDataException e) {
 
                     logger.info(EBusUtils.toHexDumpString(bb).toString());

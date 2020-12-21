@@ -138,7 +138,7 @@ public class EBusCommand implements IEBusCommand {
 
     public void setProperties(Map<String, Object> properties) {
         Objects.requireNonNull(properties, "properties");
-        this.properties = new HashMap<String, Object>();
+        this.properties = new HashMap<>();
         this.properties.putAll(properties);
     }
 

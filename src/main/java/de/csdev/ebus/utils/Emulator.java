@@ -55,14 +55,7 @@ public class Emulator {
     }
 
     private void startAutoSync() {
-        autoSyncFuture = playThreadExecutor.schedule(new Runnable() {
-
-            @Override
-            public void run() {
-                write(EBusConsts.SYN);
-            }
-
-        }, 40 * factor, TimeUnit.MILLISECONDS);
+        autoSyncFuture = playThreadExecutor.schedule(() -> write(EBusConsts.SYN), 40 * factor, TimeUnit.MILLISECONDS);
     }
 
     public Emulator() {
@@ -103,31 +96,27 @@ public class Emulator {
      */
     public void write(final byte b) {
 
-        pipeThreadExecutor.submit(new Runnable() {
+        pipeThreadExecutor.submit(() -> {
+            try {
+                synchronized (out) {
 
-            @Override
-            public void run() {
-                try {
-                    synchronized (out) {
+                    stopAutoSync();
 
-                        stopAutoSync();
+                    out.write(b);
+                    out.flush();
 
-                        out.write(b);
-                        out.flush();
-
-                        // delay for 2400baud
-                        try {
-                            out.wait(4 * factor);
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
-
-                        startAutoSync();
+                    // delay for 2400baud
+                    try {
+                        out.wait(4 * factor);
+                    } catch (InterruptedException e1) {
+                        Thread.currentThread().interrupt();
                     }
 
-                } catch (IOException e) {
-                    logger.trace("error!", e);
+                    startAutoSync();
                 }
+
+            } catch (IOException e2) {
+                logger.trace("error!", e2);
             }
         });
     }
@@ -138,16 +127,9 @@ public class Emulator {
      * @param byteArray
      */
     public void write(final byte[] byteArray) {
-
-        pipeThreadExecutor.submit(new Runnable() {
-
-            @Override
-            public void run() {
-
-                for (byte b : byteArray) {
-                    write(b);
-                }
-
+        pipeThreadExecutor.submit(() -> {
+            for (byte b : byteArray) {
+                write(b);
             }
         });
     }

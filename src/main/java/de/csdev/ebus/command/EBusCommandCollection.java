@@ -54,7 +54,6 @@ public class EBusCommandCollection implements IEBusCommandCollection {
         this.properties = new HashMap<>();
 
         if (properties != null) {
-            // this.properties = CollectionUtils.newMapIfNull(this.properties);
             this.properties.putAll(properties);
         }
 

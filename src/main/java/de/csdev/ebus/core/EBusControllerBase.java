@@ -128,17 +128,13 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
             return;
         }
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IEBusConnectorEventListener listener : listeners) {
-                    try {
-                        listener.onConnectionException(e);
-                    } catch (Exception e) {
-                        logger.error("Error while firing onConnectionException events!", e);
-                    }
+        threadPool.execute(() -> {
+            for (IEBusConnectorEventListener listener : listeners) {
+                try {
+                    listener.onConnectionException(e);
+                } catch (Exception e1) {
+                    logger.error("Error while firing onConnectionException events!", e1);
                 }
-
             }
         });
     }
@@ -166,15 +162,12 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
             return;
         }
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IEBusConnectorEventListener listener : listeners) {
-                    try {
-                        listener.onTelegramReceived(receivedData, sendQueueId);
-                    } catch (Exception e) {
-                        logger.error("Error while firing onTelegramReceived events!", e);
-                    }
+        threadPool.execute(() -> {
+            for (IEBusConnectorEventListener listener : listeners) {
+                try {
+                    listener.onTelegramReceived(receivedData, sendQueueId);
+                } catch (Exception e) {
+                    logger.error("Error while firing onTelegramReceived events!", e);
                 }
             }
         });
@@ -197,15 +190,12 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
             return;
         }
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IEBusConnectorEventListener listener : listeners) {
-                    try {
-                        listener.onTelegramException(exception, sendQueueId);
-                    } catch (Exception e) {
-                        logger.error("Error while firing onTelegramException events!", e);
-                    }
+        threadPool.execute(() -> {
+            for (IEBusConnectorEventListener listener : listeners) {
+                try {
+                    listener.onTelegramException(exception, sendQueueId);
+                } catch (Exception e) {
+                    logger.error("Error while firing onTelegramException events!", e);
                 }
             }
         });
@@ -232,15 +222,12 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
             return;
         }
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IEBusConnectorEventListener listener : listeners) {
-                    try {
-                        listener.onConnectionStatusChanged(status);
-                    } catch (Exception e) {
-                        logger.error("Error while firing fireOnEBusConnectionStatusChange events!", e);
-                    }
+        threadPool.execute(() -> {
+            for (IEBusConnectorEventListener listener : listeners) {
+                try {
+                    listener.onConnectionStatusChanged(status);
+                } catch (Exception e) {
+                    logger.error("Error while firing fireOnEBusConnectionStatusChange events!", e);
                 }
             }
         });
@@ -309,12 +296,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     }
 
     protected void resetWatchdogTimer() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                EBusControllerBase.this.fireWatchDogTimer();
-            }
-        };
+        Runnable r = EBusControllerBase.this::fireWatchDogTimer;
 
         if (watchdogTimer != null && !watchdogTimer.isCancelled()) {
             watchdogTimer.cancel(true);

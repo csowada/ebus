@@ -101,11 +101,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
                     EBusConsts.BROADCAST_ADDRESS, null);
 
             scanQueueId = controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        } catch (EBusControllerException e) {
-            logger.error("error!", e);
-        } catch (EBusCommandException e) {
+        } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
             logger.error("error!", e);
         }
     }
@@ -169,11 +165,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
             return true;
 
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        } catch (EBusControllerException e) {
-            logger.error("error!", e);
-        } catch (EBusCommandException e) {
+        } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
             logger.error("error!", e);
         }
 
@@ -218,11 +210,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
                     EBusConsts.BROADCAST_ADDRESS, null);
 
             controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        } catch (EBusControllerException e) {
-            logger.error("error!", e);
-        } catch (EBusCommandException e) {
+        } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
             logger.error("error!", e);
         }
     }
@@ -255,11 +243,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
 
             controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        } catch (EBusControllerException e) {
-            logger.error("error!", e);
-        } catch (EBusCommandException e) {
+        } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
             logger.error("error!", e);
         }
     }

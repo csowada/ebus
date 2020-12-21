@@ -69,8 +69,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
     private @NonNull EBusTypeRegistry registry;
 
-    private @NonNull Map<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>> templateValueRegistry = new HashMap<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>>();
-    private @NonNull Map<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>> templateBlockRegistry = new HashMap<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>>();
+    private @NonNull Map<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>> templateValueRegistry = new HashMap<>();
+    private @NonNull Map<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>> templateBlockRegistry = new HashMap<>();
 
     public EBusConfigurationReader() {
         try {
@@ -108,8 +108,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         Type merchantListType = new TypeToken<List<EBusValueDTO>>() {
         }.getType();
 
-        Gson gson = new Gson();
-        gson = new GsonBuilder().registerTypeAdapter(merchantListType, new EBusValueJsonDeserializer()).create();
+        Gson gson = new GsonBuilder().registerTypeAdapter(merchantListType, new EBusValueJsonDeserializer()).create();
 
         MessageDigest md = null;
 
@@ -171,7 +170,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 List<EBusValueDTO> templateValues = templates.getTemplate();
                 if (templateValues != null) {
 
-                    Collection<EBusCommandValue> blockList = new ArrayList<EBusCommandValue>();
+                    Collection<EBusCommandValue> blockList = new ArrayList<>();
 
                     for (EBusValueDTO value : templateValues) {
                         if (value != null) {
@@ -211,8 +210,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         Objects.requireNonNull(commandCollection, "commandCollection");
 
-        LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<String, EBusCommandValue>();
-        ArrayList<EBusCommandValue> templateList = new ArrayList<EBusCommandValue>();
+        LinkedHashMap<String, EBusCommandValue> templateMap = new LinkedHashMap<>();
+        ArrayList<EBusCommandValue> templateList = new ArrayList<>();
 
         // collect available channels
         List<String> methods = new ArrayList<String>();
@@ -357,7 +356,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         Objects.requireNonNull(valueDto, "valueDto");
 
-        Collection<@NonNull EBusCommandValue> result = new ArrayList<@NonNull EBusCommandValue>();
+        Collection<@NonNull EBusCommandValue> result = new ArrayList<>();
         String typeStr = valueDto.getType();
         String collectionId = null;
 
@@ -402,7 +401,6 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
             } else if (templateMap != null) {
                 // return the complete template block from within command block
-                // templateCollection = templateMap.values();
                 templateCollection = new ArrayList<>(templateList);
 
             } else {
@@ -443,7 +441,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
             } else if (templateMap != null && templateMap.containsKey(id)) {
                 // return the complete template block from within command block
-                templateCollection = new ArrayList<@NonNull EBusCommandValue>();
+                templateCollection = new ArrayList<>();
                 templateCollection.add(templateMap.get(id));
 
             } else {
@@ -474,7 +472,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             // convert static content to bytes
 
             byte[] byteArray = EBusUtils.toByteArray(valueDto.getDefault());
-            Map<String, Object> properties = new HashMap<String, Object>();
+            Map<String, Object> properties = new HashMap<>();
             properties.put("length", byteArray.length);
             final IEBusType<?> typeByte = registry.getType(EBusTypeBytes.TYPE_BYTES, properties);
 
@@ -571,7 +569,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         Objects.requireNonNull(url, "url");
 
-        List<@NonNull IEBusCommandCollection> result = new ArrayList<@NonNull IEBusCommandCollection>();
+        List<@NonNull IEBusCommandCollection> result = new ArrayList<>();
 
         Gson gson = new Gson();
         Type type = new TypeToken<Map<String, ?>>() {
@@ -593,9 +591,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                         try {
                             logger.debug("Load configuration from url {} ...", fileUrl);
                             IEBusCommandCollection collection = loadConfigurationCollection(fileUrl);
-                            if (collection != null) {
-                                result.add(collection);
-                            }
+                            result.add(collection);
 
                         } catch (EBusConfigurationReaderException e) {
                             logger.error(e.getMessage() + " (Url: " + fileUrl + ")");
@@ -607,11 +603,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 }
             }
 
-        } catch (JsonSyntaxException e) {
-            logger.error("error!", e);
-        } catch (JsonIOException e) {
-            logger.error("error!", e);
-        } catch (IOException e) {
+        } catch (JsonSyntaxException | JsonIOException | IOException e) {
             logger.error("error!", e);
         }
 
