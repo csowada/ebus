@@ -99,7 +99,6 @@ public class EBusNestedTemplatesTest {
         List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
         assertNotNull(masterTypes);
 
-        @SuppressWarnings("null")
         IEBusValue value = masterTypes.get(0);
         IEBusType<?> type = value.getType();
 
@@ -135,7 +134,7 @@ public class EBusNestedTemplatesTest {
 
         List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
         assertNotNull(masterTypes);
-        @SuppressWarnings("null")
+
         IEBusValue value = masterTypes.get(0);
         IEBusType<?> type = value.getType();
 

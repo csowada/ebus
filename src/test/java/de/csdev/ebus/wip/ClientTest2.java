@@ -49,7 +49,6 @@ public class ClientTest2 {
 
         EBusCommandRegistry commandRegistry = new EBusCommandRegistry(EBusConfigurationReader.class, true);
 
-        @SuppressWarnings("null")
         EBusLowLevelController controller = new EBusLowLevelController(emulator);
 
         EBusClient client = new EBusClient(commandRegistry);
@@ -58,27 +57,21 @@ public class ClientTest2 {
 
         controller.addEBusEventListener(new IEBusConnectorEventListener() {
 
-            @SuppressWarnings("null")
             @Override
             public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
                 logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramReceived()");
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
                 logger.error(exception.getLocalizedMessage());
-                // TODO Auto-generated method stub
-                // logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onTelegramException()");
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onConnectionException(Exception e) {
                 logger.error("ClientTest.xxx().new EBusConnectorEventListener() {...}.onConnectionException()");
             }
 
-            @SuppressWarnings("null")
             @Override
             public void onConnectionStatusChanged(ConnectionStatus status) {
                 logger.error(
@@ -88,7 +81,6 @@ public class ClientTest2 {
 
         client.getResolverService().addEBusParserListener(new IEBusParserListener() {
 
-            @SuppressWarnings("null")
             @Override
             public void onTelegramResolved(IEBusCommandMethod commandChannel, Map<String, Object> result,
                     byte[] receivedData, @Nullable Integer sendQueueId) {

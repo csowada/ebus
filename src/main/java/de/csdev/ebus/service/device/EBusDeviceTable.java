@@ -20,18 +20,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.eclipse.jdt.annotation.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import de.csdev.ebus.command.datatypes.EBusTypeException;
+import org.apache.commons.lang.ObjectUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.csdev.ebus.core.EBusConsts;
-import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -44,7 +44,7 @@ public class EBusDeviceTable {
     private Map<Byte, EBusDevice> deviceTable;
 
     /** the list for listeners */
-    private final List<IEBusDeviceTableListener> listeners = new CopyOnWriteArrayList<IEBusDeviceTableListener>();
+    private final List<IEBusDeviceTableListener> listeners = new CopyOnWriteArrayList<>();
 
     private Map<String, String> vendors;
 
@@ -52,13 +52,14 @@ public class EBusDeviceTable {
     private byte ownAddress;
 
     public EBusDeviceTable() {
-        deviceTable = new HashMap<Byte, EBusDevice>();
+        deviceTable = new HashMap<>();
     }
 
+    /**
+     * 
+     */
     public void dispose() {
-        if (listeners != null) {
-            listeners.clear();
-        }
+        listeners.clear();
 
         if (deviceTable != null) {
             deviceTable.clear();
@@ -69,13 +70,22 @@ public class EBusDeviceTable {
         }
     }
 
-    public void setOwnAddress(byte ownAddress) {
+    /**
+     * 
+     * @param ownAddress
+     */
+    public void setOwnAddress(final byte ownAddress) {
         this.ownAddress = ownAddress;
         EBusDevice d = new EBusDevice(ownAddress, this);
         deviceTable.put(d.getMasterAddress(), d);
     }
 
-    public String getManufacturerName(byte vendorCode) {
+    /**
+     * 
+     * @param vendorCode
+     * @return
+     */
+    public String getManufacturerName(final byte vendorCode) {
 
         // vendor list not loaded?
         if (vendors == null) {
@@ -97,35 +107,41 @@ public class EBusDeviceTable {
         return vendors.get(EBusUtils.toHexDumpString(vendorCode));
     }
 
-    public void updateDevice(byte address, Map<@NonNull String, @NonNull Object> data) {
+    /**
+     * 
+     * @param address
+     * @param data
+     */
+    public void updateDevice(final byte address, final Map<@NonNull String, @Nullable Object> data) {
 
         boolean newDevice = false;
         boolean updatedDevice = false;
+        byte addr = address;
 
-        if (address == EBusConsts.BROADCAST_ADDRESS) {
+        if (addr == EBusConsts.BROADCAST_ADDRESS) {
             return;
-        } else if (EBusUtils.isMasterAddress(address)) {
-            Byte result = EBusUtils.getSlaveAddress(address);
+        } else if (EBusUtils.isMasterAddress(addr)) {
+            Byte result = EBusUtils.getSlaveAddress(addr);
 
             if (result == null) {
                 throw new IllegalArgumentException(
-                        String.format("Given slave address %s is invalid!", EBusUtils.toHexDumpString(address)));
+                        String.format("Given slave address %s is invalid!", EBusUtils.toHexDumpString(addr)));
             }
 
-            address = result;
+            addr = result;
         }
 
-        if (address == ownAddress) {
+        if (addr == ownAddress) {
             // ignore own address
             return;
         }
 
-        EBusDevice device = deviceTable.get(address);
+        EBusDevice device = deviceTable.get(addr);
 
         if (device == null) {
-            device = new EBusDevice(address, this);
+            device = new EBusDevice(addr, this);
             device.setLastActivity(System.currentTimeMillis());
-            deviceTable.put(address, device);
+            deviceTable.put(addr, device);
             newDevice = true;
         }
 
@@ -133,34 +149,44 @@ public class EBusDeviceTable {
 
         if (data != null && !data.isEmpty()) {
 
-            Object obj = data.get("device_id");
-            if (obj != null && !obj.equals(device.getDeviceId())) {
-                device.setDeviceId((byte[]) obj);
-                updatedDevice = true;
+            if (data.containsKey("device_id")) {
+                @Nullable
+                Object obj = data.get("device_id");
+                if (obj != null && !obj.equals(device.getDeviceId())) {
+                    if (obj instanceof byte[]) {
+                        device.setDeviceId((byte[]) obj);
+                        updatedDevice = true;
+                    }
+                }
             }
 
-            try {
-                BigDecimal obj2 = EBusTypeUtils.toBigDecimal(data.get("hardware_version"));
+            @Nullable
+            Object value = data.get("hardware_version");
+            if (value != null) {
+                BigDecimal obj2 = NumberUtils.toBigDecimal(value);
                 if (obj2 != null && !ObjectUtils.equals(obj2, device.getHardwareVersion())) {
                     device.setHardwareVersion(obj2);
                     updatedDevice = true;
                 }
+            }
 
-                obj2 = EBusTypeUtils.toBigDecimal(data.get("software_version"));
+            value = data.get("software_version");
+            if (value != null) {
+                BigDecimal obj2 = NumberUtils.toBigDecimal(value);
                 if (obj2 != null && !ObjectUtils.equals(obj2, device.getSoftwareVersion())) {
                     device.setSoftwareVersion(obj2);
                     updatedDevice = true;
                 }
+            }
 
-                obj2 = EBusTypeUtils.toBigDecimal(data.get("vendor"));
+            value = data.get("vendor");
+            if (value != null) {
+                BigDecimal obj2 = NumberUtils.toBigDecimal(value);
                 if (obj2 != null && !ObjectUtils.equals(obj2.byteValue(), device.getManufacturer())) {
                     int intValue = obj2.intValue();
                     device.setManufacturer((byte) intValue);
                     updatedDevice = true;
                 }
-            } catch (EBusTypeException e) {
-                logger.warn("Unable to update device table entry!", e);
-                return;
             }
         }
 
@@ -173,11 +199,20 @@ public class EBusDeviceTable {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public Collection<EBusDevice> getDeviceTable() {
         return Collections.unmodifiableCollection(deviceTable.values());
     }
 
-    private void fireOnDeviceUpdate(IEBusDeviceTableListener.@NonNull TYPE type, @NonNull EBusDevice device) {
+    /**
+     * 
+     * @param type
+     * @param device
+     */
+    private void fireOnDeviceUpdate(final IEBusDeviceTableListener.@NonNull TYPE type, final @NonNull EBusDevice device) {
         for (IEBusDeviceTableListener listener : listeners) {
             try {
                 listener.onEBusDeviceUpdate(type, device);
@@ -187,6 +222,10 @@ public class EBusDeviceTable {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public EBusDevice getOwnDevice() {
         return deviceTable.get(ownAddress);
     }
@@ -196,7 +235,7 @@ public class EBusDeviceTable {
      *
      * @param listener
      */
-    public void addEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+    public void addEBusDeviceTableListener(final IEBusDeviceTableListener listener) {
         Objects.requireNonNull(listener);
         listeners.add(listener);
     }
@@ -207,7 +246,7 @@ public class EBusDeviceTable {
      * @param listener
      * @return
      */
-    public boolean removeEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+    public boolean removeEBusDeviceTableListener(final IEBusDeviceTableListener listener) {
         Objects.requireNonNull(listener);
         return listeners.remove(listener);
     }

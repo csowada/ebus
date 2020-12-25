@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.3] - 2020-12-25
+### Changed
+- Changed many line of code to fix sonarlint/cloud issues
+- Add more ``final`` to parameters
+- Changed to Java 8 syntax like Lambda expressions or Multi-Exceptions
+- Fixed one or two wrong handled Interrupts
+
 ## [1.1.2] - 2020-12-17
 ### Added
 - Added ``sonarcloud`` to build pipeline

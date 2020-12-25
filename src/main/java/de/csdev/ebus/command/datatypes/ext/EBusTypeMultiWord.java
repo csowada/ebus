@@ -15,8 +15,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.std.EBusTypeWord;
-import de.csdev.ebus.utils.EBusTypeUtils;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -72,7 +72,12 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
     @Override
     public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
 
-        BigDecimal value = EBusTypeUtils.toBigDecimal(data);
+        BigDecimal value = NumberUtils.toBigDecimal(data);
+
+        if (value == null) {
+            throw new EBusTypeException("Unable to convert input data to number!");
+        }
+
         byte[] result = new byte[getTypeLength()];
 
         int length = this.length - 1;

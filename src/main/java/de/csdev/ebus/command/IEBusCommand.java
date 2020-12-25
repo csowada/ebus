@@ -35,7 +35,7 @@ public interface IEBusCommand {
      * @param method
      * @return
      */
-    public @Nullable IEBusCommandMethod getCommandMethod(IEBusCommandMethod.@NonNull Method method);
+    public @Nullable IEBusCommandMethod getCommandMethod(final IEBusCommandMethod.@NonNull Method method);
 
     /**
      * Returns the available command method enums.

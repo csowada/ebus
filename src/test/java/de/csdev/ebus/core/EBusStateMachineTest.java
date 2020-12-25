@@ -8,19 +8,18 @@
  */
 package de.csdev.ebus.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusDataException.EBusError;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -38,9 +37,6 @@ public class EBusStateMachineTest {
     public void init() {
         machine = new EBusReceiveStateMachine();
     }
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testNoAnswer() {
@@ -69,9 +65,13 @@ public class EBusStateMachineTest {
 
         logger.info("Master/Slave - NACK");
 
-        thrown.expect(EBusDataException.class);
+        try {
+            runMachine(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 FF AA"));
+        } catch (EBusDataException e) {
+            // System.out.println("EBusStateMachineTest.testNACK()" + e);
+            assertTrue(e.getErrorCode().equals(EBusError.SLAVE_ACK_FAIL));
+        }
 
-        runMachine(EBusUtils.toByteArray("AA 30 08 50 22 03 CC 1A 27 59 FF AA"));
     }
 
     @Test
@@ -377,12 +377,6 @@ public class EBusStateMachineTest {
                     bb.put(masterTelegramPart);
 
                     runMachine(EBusUtils.toByteArray(masterTelegramPart));
-
-                } catch (EBusTypeException e) {
-
-                    logger.info(EBusUtils.toHexDumpString(bb).toString());
-                    logger.info(e.getLocalizedMessage());
-                    errors++;
 
                 } catch (EBusDataException e) {
 

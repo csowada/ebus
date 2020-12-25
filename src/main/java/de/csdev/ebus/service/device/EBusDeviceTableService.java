@@ -101,12 +101,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
                     EBusConsts.BROADCAST_ADDRESS, null);
 
             scanQueueId = controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        } catch (EBusControllerException e) {
-            logger.error("error!", e);
-        } catch (EBusCommandException e) {
-            logger.error("error!", e);
+        } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
     }
 
@@ -151,7 +147,9 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             scanSlaveAddress = addr;
         }
 
-        logger.debug("Scan address {} ...", EBusUtils.toHexDumpString(scanSlaveAddress));
+        if (logger.isDebugEnabled()) {
+            logger.debug("Scan address {} ...", EBusUtils.toHexDumpString(scanSlaveAddress));
+        }
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
@@ -169,12 +167,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
             return true;
 
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        } catch (EBusControllerException e) {
-            logger.error("error!", e);
-        } catch (EBusCommandException e) {
-            logger.error("error!", e);
+        } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
 
         return false;
@@ -218,11 +212,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
                     EBusConsts.BROADCAST_ADDRESS, null);
 
             controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        } catch (EBusControllerException e) {
-            logger.error("error!", e);
-        } catch (EBusCommandException e) {
+        } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
             logger.error("error!", e);
         }
     }
@@ -255,11 +245,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             ByteBuffer buffer = EBusCommandUtils.buildMasterTelegram(command, masterAddress, slaveAddress, null);
 
             controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
-        } catch (EBusTypeException e) {
-            logger.error("error!", e);
-        } catch (EBusControllerException e) {
-            logger.error("error!", e);
-        } catch (EBusCommandException e) {
+        } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
             logger.error("error!", e);
         }
     }
@@ -323,7 +309,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
      */
     @Override
     public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
-            @NonNull Map<@NonNull String, @NonNull Object> result, byte @NonNull [] receivedData,
+            @NonNull Map<@NonNull String, @Nullable Object> result, byte @NonNull [] receivedData,
             @Nullable Integer sendQueueId) {
 
         String id = commandChannel.getParent().getId();
@@ -354,10 +340,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         }
 
         // identify new devices
-        if (type.equals(IEBusDeviceTableListener.TYPE.NEW)) {
-            if (!disableIdentificationRequests) {
-                sendIdentificationRequest(device.getSlaveAddress());
-            }
+        if (type.equals(IEBusDeviceTableListener.TYPE.NEW) && !disableIdentificationRequests) {
+            sendIdentificationRequest(device.getSlaveAddress());
         }
     }
 

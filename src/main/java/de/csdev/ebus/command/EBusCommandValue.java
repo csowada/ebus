@@ -77,14 +77,14 @@ public class EBusCommandValue implements IEBusValue {
         clone.type = this.type;
 
         if (this.mapping != null) {
-            clone.mapping = new HashMap<String, String>();
+            clone.mapping = new HashMap<>();
             for (Entry<String, String> elem : this.mapping.entrySet()) {
                 clone.mapping.put(elem.getKey(), elem.getValue());
             }
         }
 
         if (this.properties != null) {
-            clone.properties = new HashMap<String, Object>();
+            clone.properties = new HashMap<>();
             for (Entry<String, Object> elem : this.properties.entrySet()) {
                 clone.properties.put(elem.getKey(), elem.getValue());
             }
@@ -190,7 +190,7 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     public void setProperties(Map<String, Object> properties) {
-        this.properties = new HashMap<String, Object>();
+        this.properties = new HashMap<>();
         this.properties.putAll(properties);
     }
 

@@ -28,8 +28,7 @@ import de.csdev.ebus.utils.CollectionUtils;
 @NonNullByDefault
 public class EBusCommand implements IEBusCommand {
 
-    private Map<IEBusCommandMethod.@NonNull Method, @NonNull IEBusCommandMethod> channels = new EnumMap<IEBusCommandMethod.@NonNull Method, @NonNull IEBusCommandMethod>(
-            IEBusCommandMethod.Method.class);
+    private Map<IEBusCommandMethod.@NonNull Method, @NonNull IEBusCommandMethod> channels = new EnumMap<>(IEBusCommandMethod.Method.class);
 
     private @Nullable String configurationSource;
 
@@ -139,7 +138,7 @@ public class EBusCommand implements IEBusCommand {
 
     public void setProperties(Map<String, Object> properties) {
         Objects.requireNonNull(properties, "properties");
-        this.properties = new HashMap<String, Object>();
+        this.properties = new HashMap<>();
         this.properties.putAll(properties);
     }
 

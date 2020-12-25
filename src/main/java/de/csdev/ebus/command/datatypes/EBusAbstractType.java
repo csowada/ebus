@@ -23,6 +23,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -33,7 +34,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
 
-    protected Map<Object, EBusAbstractType<T>> otherInstances = new HashMap<Object, EBusAbstractType<T>>();
+    protected Map<Object, EBusAbstractType<T>> otherInstances = new HashMap<>();
 
     protected byte[] replaceValue = null;
 
@@ -67,23 +68,13 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     private EBusAbstractType<T> createNewInstance() {
 
         try {
-            @SuppressWarnings({ "unchecked", "null" })
+            @SuppressWarnings({ "unchecked"})
             EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
             newInstance.types = this.types;
             return newInstance;
 
-        } catch (InstantiationException e) {
-            logger.error("error!", e);
-        } catch (IllegalAccessException e) {
-            logger.error("error!", e);
-        } catch (IllegalArgumentException e) {
-            logger.error("error!", e);
-        } catch (InvocationTargetException e) {
-            logger.error("error!", e);
-        } catch (NoSuchMethodException e) {
-            logger.error("error!", e);
-        } catch (SecurityException e) {
-            logger.error("error!", e);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
 
         return null;
@@ -123,7 +114,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @throws EBusTypeException
      */
     public @Nullable T decodeInt(byte @Nullable [] data) throws EBusTypeException {
-        throw new RuntimeException("Must be overwritten by superclass!");
+        throw new UnsupportedOperationException("Must be overwritten by superclass!");
     }
 
     /*
@@ -160,7 +151,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @throws EBusTypeException
      */
     public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
-        throw new RuntimeException("Must be overwritten by superclass!");
+        throw new UnsupportedOperationException("Must be overwritten by superclass!");
     }
 
     /**
@@ -187,7 +178,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         }
 
         // Sort all members to have a reliable key
-        TreeMap<String, Object> sortedMap = new TreeMap<String, Object>(properties);
+        TreeMap<String, Object> sortedMap = new TreeMap<>(properties);
         String instanceKey = sortedMap.toString();
 
         EBusAbstractType<T> instance = otherInstances.get(instanceKey);
@@ -252,7 +243,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
                 try {
                     instance.setReplaceValue(EBusUtils.toByteArray((String) value));
                 } catch (EBusTypeException e) {
-                    logger.error("error!", e);
+                    logger.error(EBusConsts.LOG_ERR_DEF, e);
                 }
             }
 
@@ -266,12 +257,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
                 field.set(instance, value);
             }
 
-        } catch (SecurityException e) {
-            logger.error("error!", e);
-        } catch (IllegalArgumentException e) {
-            logger.error("error!", e);
-        } catch (IllegalAccessException e) {
-            logger.error("error!", e);
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
     }
 

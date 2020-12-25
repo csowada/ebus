@@ -22,19 +22,19 @@ public class EBusCommandException extends Exception {
         super();
     }
 
-    public EBusCommandException(String message, Throwable cause) {
+    public EBusCommandException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public EBusCommandException(String message) {
+    public EBusCommandException(final String message) {
         super(message);
     }
 
-    public EBusCommandException(String message, Object... args) {
+    public EBusCommandException(final String message, final Object... args) {
         super(MessageFormat.format(message, args));
     }
 
-    public EBusCommandException(Throwable cause) {
+    public EBusCommandException(final Throwable cause) {
         super(cause);
     }
 

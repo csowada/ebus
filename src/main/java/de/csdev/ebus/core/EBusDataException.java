@@ -51,40 +51,51 @@ public class EBusDataException extends Exception {
      */
     private static final long serialVersionUID = 1L;
 
-    private EBusError error = EBusError.NONE;
+    private final EBusError error;
 
-    private byte[] data;
+    private final byte[] data;
 
-    private Integer sendId;
+    private final Integer sendId;
 
     public EBusDataException(String message) {
         super(message);
+        this.data = new byte[0];
+        this.sendId = null;
+        this.error = EBusError.NONE;
     }
 
     public EBusDataException(String message, EBusError errorCode) {
         super(message);
         this.error = errorCode;
+        this.data = new byte[0];
+        this.sendId = null;
     }
 
     public EBusDataException(String message, EBusError errorCode, byte[] data) {
-        this(message, errorCode);
+        super(message);
+        this.error = errorCode;
         this.data = data;
+        this.sendId = null;
     }
 
     public EBusDataException(String message, EBusError errorCode, ByteBuffer data) {
-        this(message, errorCode);
+        super(message);
+        this.error = errorCode;
         this.data = EBusUtils.toByteArray(data);
+        this.sendId = null;
     }
 
     public EBusDataException(String message, EBusError errorCode, byte[] data, int sendId) {
-        this(message, errorCode);
+        super(message);
+        this.error = errorCode;
         this.data = data;
         this.sendId = sendId;
     }
 
     public EBusDataException(String message, EBusError errorCode, ByteBuffer data, int sendId) {
-        this(message, errorCode);
-        this.data = EBusUtils.toByteArray(data);
+        super(message);
+        this.error = errorCode;
+        this.data = EBusUtils.toByteArray(data);;
         this.sendId = sendId;
     }
 
@@ -103,7 +114,7 @@ public class EBusDataException extends Exception {
     @Override
     public String getMessage() {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append(super.getMessage());
         sb.append(" [");

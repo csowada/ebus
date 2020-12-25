@@ -16,8 +16,11 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault
 public class EBusVersion {
 
-    @SuppressWarnings("null")
-    private static String getAttribute(Class<?> rootClass, String name) {
+    protected EBusVersion() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    private static String getAttribute(final Class<?> rootClass, final String name) {
         try {
             Manifest manifest = new Manifest(rootClass.getResourceAsStream("/META-INF/MANIFEST.MF"));
             return manifest.getMainAttributes().getValue(name);
@@ -31,7 +34,7 @@ public class EBusVersion {
         return getVersion(EBusVersion.class);
     }
 
-    protected static String getVersion(Class<?> rootClass) {
+    protected static String getVersion(final Class<?> rootClass) {
         return getAttribute(rootClass, "Bundle-Version");
     }
 
@@ -39,7 +42,7 @@ public class EBusVersion {
         return getBuildCommit(EBusVersion.class);
     }
 
-    protected static String getBuildCommit(Class<?> rootClass) {
+    protected static String getBuildCommit(final Class<?> rootClass) {
         return getAttribute(rootClass, "Build-Commit");
     }
 
@@ -47,7 +50,7 @@ public class EBusVersion {
         return getBuildTimestamp(EBusVersion.class);
     }
 
-    protected static String getBuildTimestamp(Class<?> rootClass) {
+    protected static String getBuildTimestamp(final Class<?> rootClass) {
         return getAttribute(rootClass, "Build-Timestamp");
     }
 
@@ -55,7 +58,7 @@ public class EBusVersion {
         return getBuildNumber(EBusVersion.class);
     }
 
-    protected static String getBuildNumber(Class<?> rootClass) {
+    protected static String getBuildNumber(final Class<?> rootClass) {
         return getAttribute(rootClass, "Build-Number");
     }
 

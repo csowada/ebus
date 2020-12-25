@@ -10,6 +10,7 @@ package de.csdev.ebus.service.device;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Objects;
 
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -147,10 +148,18 @@ public class EBusDevice implements IEBusDevice {
     }
 
     public void setDeviceId(byte[] deviceId) {
+
+        Objects.requireNonNull(deviceId, "deviceId");
+
+        if(deviceId.length != 5) {
+            throw new IllegalArgumentException("Argument 'deviceId' must be an array of 5 bytes!");
+        }
+
         this.deviceId = deviceId;
     }
 
     public void setHardwareVersion(BigDecimal hardwareVersion) {
+        Objects.requireNonNull(hardwareVersion, "hardwareVersion");
         this.hardwareVersion = hardwareVersion;
     }
 
@@ -159,10 +168,12 @@ public class EBusDevice implements IEBusDevice {
     }
 
     public void setManufacturer(Byte manufactur) {
+        Objects.requireNonNull(manufactur, "manufactur");
         this.manufacturer = manufactur;
     }
 
     public void setSoftwareVersion(BigDecimal softwareVersion) {
+        Objects.requireNonNull(softwareVersion, "softwareVersion");
         this.softwareVersion = softwareVersion;
     }
 

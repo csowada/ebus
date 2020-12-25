@@ -8,9 +8,16 @@
  */
 package de.csdev.ebus.wip;
 
+import static org.junit.Assert.fail;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.csdev.ebus.utils.Emulator;
 
 public class EmulatorTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(EmulatorTest.class);
 
     // @Test
     public void xxx() {
@@ -25,8 +32,8 @@ public class EmulatorTest {
 
             Thread.sleep(5000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("error!", e);
+            fail();
         }
 
     }

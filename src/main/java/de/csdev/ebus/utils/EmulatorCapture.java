@@ -31,28 +31,26 @@ public class EmulatorCapture {
 
     protected PrintWriter writer;
 
-    public EmulatorCapture(File outputFile) {
+    public EmulatorCapture(final File outputFile) {
         referenceTime = System.currentTimeMillis();
         try {
             writer = new PrintWriter(outputFile, "UTF-8");
-        } catch (FileNotFoundException e) {
-            logger.error("error!", e);
-        } catch (UnsupportedEncodingException e) {
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
             logger.error("error!", e);
         }
     }
 
-    public void write(byte[] buffer, int len) {
+    public void write(final byte[] buffer, final int len) {
         byte[] copyOf = Arrays.copyOf(buffer, len);
         write(copyOf);
     }
 
-    public void write(byte[] buffer, int from, int len) {
+    public void write(final byte[] buffer, final int from, final int len) {
         byte[] copyOf = Arrays.copyOfRange(buffer, from, len);
         write(copyOf);
     }
 
-    public void write(byte[] buffer) {
+    public void write(final byte[] buffer) {
         writer.printf("%09d", System.currentTimeMillis() - referenceTime);
         writer.print(" - ");
         writer.println(EBusUtils.toHexDumpString(buffer).toString());

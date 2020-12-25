@@ -41,7 +41,7 @@ public class EBusCommandRegistry {
 
     private final Logger logger = LoggerFactory.getLogger(EBusCommandRegistry.class);
 
-    private @NonNull Map<String, IEBusCommandCollection> collections = new HashMap<String, IEBusCommandCollection>();
+    private @NonNull Map<String, IEBusCommandCollection> collections = new HashMap<>();
 
     private @NonNull EBusTypeRegistry typeRegistry;
 
@@ -62,7 +62,6 @@ public class EBusCommandRegistry {
      * @param readerClass
      * @param loadBuildInCommands
      */
-    @SuppressWarnings("null")
     public EBusCommandRegistry(Class<? extends IEBusConfigurationReader> readerClass, boolean loadBuildInCommands) {
 
         try {
@@ -75,19 +74,7 @@ public class EBusCommandRegistry {
                 loadBuildInCommandCollections();
             }
 
-        } catch (InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException(e);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException(e);
-        } catch (SecurityException e) {
-            throw new IllegalStateException(e);
-        } catch (EBusTypeException e) {
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | EBusTypeException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -98,7 +85,7 @@ public class EBusCommandRegistry {
     public void loadBuildInCommandCollections() {
         List<@NonNull IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurationCollections();
 
-        if (loadBuildInConfigurations != null && !loadBuildInConfigurations.isEmpty()) {
+        if (!loadBuildInConfigurations.isEmpty()) {
             for (IEBusCommandCollection collection : loadBuildInConfigurations) {
                 addCommandCollection(collection);
             }
@@ -117,9 +104,7 @@ public class EBusCommandRegistry {
         try {
             addCommandCollection(reader.loadConfigurationCollection(url));
 
-        } catch (EBusConfigurationReaderException e) {
-            logger.error("error!", e);
-        } catch (IOException e) {
+        } catch (EBusConfigurationReaderException | IOException e) {
             logger.error("error!", e);
         }
 
@@ -132,9 +117,7 @@ public class EBusCommandRegistry {
 
         Objects.requireNonNull(url);
 
-        List<@NonNull IEBusCommandCollection> collections = reader.loadConfigurationCollectionBundle(url);
-
-        for (IEBusCommandCollection collection : collections) {
+        for (IEBusCommandCollection collection : reader.loadConfigurationCollectionBundle(url)) {
             addCommandCollection(collection);
         }
     }
@@ -156,7 +139,6 @@ public class EBusCommandRegistry {
      * @param data The complete unescaped eBUS telegram
      * @return Returns the a list of all matching configuration methods or an empty list
      */
-    @SuppressWarnings("null")
     public @NonNull List<IEBusCommandMethod> find(byte @NonNull [] data) {
 
         Objects.requireNonNull(data);
@@ -175,7 +157,7 @@ public class EBusCommandRegistry {
 
         Objects.requireNonNull(data);
 
-        ArrayList<IEBusCommandMethod> result = new ArrayList<IEBusCommandMethod>();
+        ArrayList<IEBusCommandMethod> result = new ArrayList<>();
 
         for (IEBusCommandCollection collection : collections.values()) {
             for (IEBusCommand command : collection.getCommands()) {
@@ -230,7 +212,6 @@ public class EBusCommandRegistry {
      *
      * @return
      */
-    @SuppressWarnings("null")
     public @NonNull List<@NonNull IEBusCommandCollection> getCommandCollections() {
         return Collections.unmodifiableList(new ArrayList<IEBusCommandCollection>(collections.values()));
     }
@@ -273,11 +254,11 @@ public class EBusCommandRegistry {
                 Byte.valueOf((byte) 0x00));
 
         // fast check - is this the right telegram type?
-        if (data.get(1) == EBusConsts.BROADCAST_ADDRESS && command.getType() != Type.BROADCAST) {
-            return false;
-        } else if (EBusUtils.isMasterAddress(data.get(1)) && command.getType() != Type.MASTER_MASTER) {
-            return false;
-        } else if (EBusUtils.isSlaveAddress(data.get(1)) && command.getType() != Type.MASTER_SLAVE) {
+        boolean isInvalidBroadcast = data.get(1) == EBusConsts.BROADCAST_ADDRESS && command.getType() != Type.BROADCAST;
+        boolean isInvalidMasterMaster = EBusUtils.isMasterAddress(data.get(1)) && command.getType() != Type.MASTER_MASTER;
+        boolean isInvalidMasterSlave = EBusUtils.isSlaveAddress(data.get(1)) && command.getType() != Type.MASTER_SLAVE;
+
+        if (isInvalidBroadcast || isInvalidMasterMaster || isInvalidMasterSlave) {
             return false;
         }
 
@@ -304,10 +285,13 @@ public class EBusCommandRegistry {
                         // is a broadcast or master-master telegram
                         if (!EBusUtils.isSlaveAddress(data.get(1))) {
 
-                            logger.warn(
+                            if (logger.isWarnEnabled()) {
+                                logger.warn(
                                     "Data for matching command configuration \"{}\" is not a master-slave telegram as expected!",
                                     EBusCommandUtils.getFullId(command));
-                            logger.warn("DATA: {}", EBusUtils.toHexDumpString(data));
+                                logger.warn("DATA: {}", EBusUtils.toHexDumpString(data));
+                            }
+
                             return false;
 
                             // slave data is not defined in the configuration, not good!
@@ -347,7 +331,7 @@ public class EBusCommandRegistry {
             }
         } catch (Exception e) {
             logger.error("DATA: {}", EBusUtils.toHexDumpString(data));
-            logger.error("CMD : {}", command.getParent().getParentCollection().getId(), command.getParent().getId());
+            logger.error("CMD : {}, {}", command.getParent().getParentCollection().getId(), command.getParent().getId());
             logger.error("error!", e);
         }
 

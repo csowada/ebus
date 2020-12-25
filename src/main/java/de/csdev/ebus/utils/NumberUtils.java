@@ -20,13 +20,17 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class NumberUtils {
 
+    private NumberUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Convert number object to BigDecimal
      *
      * @param obj Any kind of primitive datatype
      * @return A converted BigDecimal
      */
-    public static @Nullable BigDecimal toBigDecimal(@Nullable Object obj) {
+    public static @Nullable BigDecimal toBigDecimal(final @Nullable Object obj) {
 
         if (obj instanceof Integer) {
             return BigDecimal.valueOf((Integer) obj);
@@ -57,7 +61,7 @@ public class NumberUtils {
      * @param data
      * @return
      */
-    public static @Nullable Byte convertDec2Bcd(int data) {
+    public static @Nullable Byte convertDec2Bcd(final int data) {
 
         if (data > 99) {
             return null;
@@ -70,7 +74,7 @@ public class NumberUtils {
      * @param bcd
      * @return
      */
-    public static @Nullable Byte convertBcd2Dec(byte bcd) {
+    public static @Nullable Byte convertBcd2Dec(final byte bcd) {
         byte high = (byte) (bcd >> 4 & 0x0F);
         byte low = (byte) (bcd & 0x0F);
 

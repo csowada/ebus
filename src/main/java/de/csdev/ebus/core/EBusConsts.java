@@ -14,34 +14,39 @@ package de.csdev.ebus.core;
  */
 public class EBusConsts {
 
-    /** The Broadcast address */
-    public final static byte BROADCAST_ADDRESS = (byte) 0xFE;
+    private EBusConsts() {
+        throw new IllegalStateException("Utility class");
+    }
 
-    /** The ACK FAIL answer byte */
-    public final static byte ACK_FAIL = (byte) 0xFF;
+    /** The Broadcast address 0xFE */
+    public static final  byte BROADCAST_ADDRESS = (byte) 0xFE;
 
-    /** The ACK OK answer byte */
-    public final static byte ACK_OK = (byte) 0x00;
+    /** The ACK FAIL answer byte 0xFF */
+    public static final byte ACK_FAIL = (byte) 0xFF;
 
-    /** The SYN byte */
-    public final static byte SYN = (byte) 0xAA;
+    /** The ACK OK answer byte 0x00 */
+    public static final byte ACK_OK = (byte) 0x00;
 
-    /** The escape byte for expanded bytes */
-    public final static byte ESCAPE = (byte) 0xA9;
+    /** The SYN byte 0xAA */
+    public static final byte SYN = (byte) 0xAA;
+
+    /** The escape byte for expanded bytes 0xA9 */
+    public static final byte ESCAPE = (byte) 0xA9;
 
     /** replacement for an excape symbol */
-    public final static byte[] ESCAPE_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x00 };
+    public static final byte[] ESCAPE_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x00 };
 
     /** replacement for an sync symbol */
-    public final static byte[] SYN_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x01 };
+    public static final byte[] SYN_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x01 };
 
     /** eBUS standard collection id */
-    public final static String COLLECTION_STD = "std";
+    public static final String COLLECTION_STD = "std";
 
-    public final static String COMMAND_INQ_EXISTENCE = "common.inquiry_of_existence";
+    public static final String COMMAND_INQ_EXISTENCE = "common.inquiry_of_existence";
 
-    public final static String COMMAND_SIGN_OF_LIFE = "common.sign_of_life";
+    public static final String COMMAND_SIGN_OF_LIFE = "common.sign_of_life";
 
-    public final static String COMMAND_IDENTIFICATION = "common.identification";
+    public static final String COMMAND_IDENTIFICATION = "common.identification";
 
+    public static final String LOG_ERR_DEF = "error!";
 }

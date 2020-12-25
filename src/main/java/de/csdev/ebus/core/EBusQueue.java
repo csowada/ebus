@@ -29,11 +29,11 @@ public class EBusQueue {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusQueue.class);
 
-    /** the send output queue */
-    private final Queue<QueueEntry> outputQueue = new LinkedBlockingQueue<QueueEntry>(20);
-
     /** eBUS lockout */
-    private static int LOCKOUT_COUNTER_MAX = 3;
+    private static final int LOCKOUT_COUNTER_MAX = 3;
+
+    /** the send output queue */
+    private final Queue<QueueEntry> outputQueue = new LinkedBlockingQueue<>(20);
 
     /** data to send */
     private QueueEntry sendEntry;

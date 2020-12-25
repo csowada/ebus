@@ -10,11 +10,13 @@ package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
 
+import com.fazecast.jSerialComm.SerialPort;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fazecast.jSerialComm.SerialPort;
+import de.csdev.ebus.core.EBusConsts;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -22,7 +24,6 @@ import com.fazecast.jSerialComm.SerialPort;
  */
 public class EBusJSerialCommConnection extends AbstractEBusConnection {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(EBusJSerialCommConnection.class);
 
     /** The serial object */
@@ -62,22 +63,19 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
     @Override
     public boolean close() throws IOException {
         if (serialPort == null) {
-            return true;
+            return false;
         }
 
         // run the serial.close in a new not-interrupted thread to
         // prevent an IllegalMonitorStateException error
-        Thread shutdownThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
+        Thread shutdownThread = new Thread(() -> {
 
-                IOUtils.closeQuietly(inputStream);
-                IOUtils.closeQuietly(outputStream);
+            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly(outputStream);
 
-                if (serialPort != null) {
-                    serialPort.closePort();
-                    serialPort = null;
-                }
+            if (serialPort != null) {
+                serialPort.closePort();
+                serialPort = null;
             }
         }, "eBUS serial shutdown thread");
 
@@ -87,6 +85,8 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
             // wait for shutdown
             shutdownThread.join(2000);
         } catch (InterruptedException e) {
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
+            Thread.currentThread().interrupt();
         }
 
         return true;

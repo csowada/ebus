@@ -38,6 +38,6 @@ public interface IEBusDeviceTableListener {
      * @param type
      * @param device
      */
-    public void onEBusDeviceUpdate(TYPE type, IEBusDevice device);
+    public void onEBusDeviceUpdate(final TYPE type, final IEBusDevice device);
 
 }

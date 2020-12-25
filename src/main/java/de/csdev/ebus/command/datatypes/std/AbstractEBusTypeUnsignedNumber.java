@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
-import de.csdev.ebus.utils.EBusTypeUtils;
+import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -36,7 +36,12 @@ public abstract class AbstractEBusTypeUnsignedNumber extends EBusAbstractType<Bi
     @Override
     public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
 
-        BigDecimal b = EBusTypeUtils.toBigDecimal(data == null ? 0 : data);
+        BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
+
+        if (b == null) {
+            throw new EBusTypeException("Unable to convert input data to number!");
+        }
+
         long l = b.longValue() & Long.MAX_VALUE;
 
         int length = getTypeLength();

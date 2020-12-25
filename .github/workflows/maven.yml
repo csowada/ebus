@@ -38,17 +38,27 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: OSSRH_USERNAME  # env variable for username in deploy
+        server-password: OSSRH_PASSWORD  # env variable for token in deploy
 
     - name: Build and analyze
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-
-    - run: mkdir staging && cp target/*.jar staging
+        BUILD_NUMBER: ${{ github.run_id }}-${{ github.run_number }}
 
     - name: Upload Maven build artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: artifact
-        path: staging
+        path: target/*.jar
+
+    # Upload if develop branch
+    - name: Upload snapshot to OSSRH if development release
+      if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' }}
+      run: mvn deploy --batch-mode --update-snapshots -P !sign,!build-extras,deploy-ossrh -Dmaven.test.skip=true -DskipChecks -DskipTest
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
