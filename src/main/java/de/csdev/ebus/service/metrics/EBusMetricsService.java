@@ -80,18 +80,16 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
 
         EBusError errorCode = exception.getErrorCode();
 
-        if (errorCode != null) {
-            if (failedMap.containsKey(errorCode)) {
-                BigDecimal val = failedMap.get(errorCode);
-                if (val == null) {
-                    val = BigDecimal.valueOf(0);
-                }
-
-                val = val.add(BigDecimal.ONE);
-                failedMap.put(errorCode, val);
-
-                failed = failed.add(BigDecimal.ONE);
+        if (errorCode != null && failedMap.containsKey(errorCode)) {
+            BigDecimal val = failedMap.get(errorCode);
+            if (val == null) {
+                val = BigDecimal.valueOf(0);
             }
+
+            val = val.add(BigDecimal.ONE);
+            failedMap.put(errorCode, val);
+
+            failed = failed.add(BigDecimal.ONE);
         }
     }
 

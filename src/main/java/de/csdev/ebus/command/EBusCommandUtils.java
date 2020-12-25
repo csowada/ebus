@@ -420,13 +420,11 @@ public class EBusCommandUtils {
                     }
                 }
 
-            } else if (commandMethod.getType().equals(Type.MASTER_SLAVE)) {
-                if (EBusUtils.isMasterAddress(target)) {
-                    targetChecked = EBusUtils.getSlaveAddress(target);
-                    if (logger.isWarnEnabled()) {
-                        logger.warn("Replace master target address {} with valid slave address {}!",
-                                EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
-                    }
+            } else if (commandMethod.getType().equals(Type.MASTER_SLAVE) && EBusUtils.isMasterAddress(target)) {
+                targetChecked = EBusUtils.getSlaveAddress(target);
+                if (logger.isWarnEnabled()) {
+                    logger.warn("Replace master target address {} with valid slave address {}!",
+                            EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
                 }
             }
         }

@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 public interface IEBusController {
 
     @NonNull
-    Integer addToSendQueue(byte @NonNull [] buffer, int maxAttemps) throws EBusControllerException;
+    Integer addToSendQueue(final byte @NonNull [] buffer, final int maxAttemps) throws EBusControllerException;
 
     /**
      * @param buffer
@@ -21,14 +21,14 @@ public interface IEBusController {
      * @throws EBusControllerException
      */
     @NonNull
-    Integer addToSendQueue(byte @NonNull [] buffer) throws EBusControllerException;
+    Integer addToSendQueue(final byte @NonNull [] buffer) throws EBusControllerException;
 
     /**
      * Add an eBUS listener to receive valid eBus telegrams
      *
      * @param listener
      */
-    void addEBusEventListener(@NonNull IEBusConnectorEventListener listener);
+    void addEBusEventListener(final @NonNull IEBusConnectorEventListener listener);
 
     /**
      * Remove an eBUS listener
@@ -36,7 +36,7 @@ public interface IEBusController {
      * @param listener
      * @return
      */
-    boolean removeEBusEventListener(@NonNull IEBusConnectorEventListener listener);
+    boolean removeEBusEventListener(final @NonNull IEBusConnectorEventListener listener);
 
     boolean isRunning();
 

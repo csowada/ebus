@@ -172,11 +172,7 @@ public class EBusReceiveStateMachine {
             return true;
         }
 
-        if (state.equals(State.ACK2)) {
-            return true;
-        }
-
-        return false;
+        return state.equals(State.ACK2);
     }
 
     /**
@@ -186,7 +182,7 @@ public class EBusReceiveStateMachine {
         reset(false);
     }
 
-    private void reset(boolean ignoreState) {
+    private void reset(final boolean ignoreState) {
         len = 0;
         crc = 0;
         isEscapedByte = false;
@@ -199,12 +195,14 @@ public class EBusReceiveStateMachine {
         }
     }
 
-    private void setState(State newState) {
-        logger.trace("Update state from " + state.name() + " to " + newState.name());
+    private void setState(final State newState) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("Update state from {} to {}", state.name(), newState.name());
+        }
         state = newState;
     }
 
-    private void throwExceptionIfSYN(byte data) throws EBusDataException {
+    private void throwExceptionIfSYN(final byte data) throws EBusDataException {
         if (data == EBusConsts.SYN) {
             bb.put(data);
             throw new EBusDataException("Received SYN byte while receiving telegram!",
@@ -227,7 +225,9 @@ public class EBusReceiveStateMachine {
      * @param data The next byte
      * @throws EBusDataException throws an exception on any telegram error
      */
-    public void update(byte data) throws EBusDataException {
+    public void update(final byte data0) throws EBusDataException {
+
+        byte data = data0;
 
         try {
 
@@ -327,7 +327,10 @@ public class EBusReceiveStateMachine {
                     }
 
                     len = data;
-                    logger.trace("Master data length: " + len);
+
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Master data length: {}", len);
+                    }
 
                     // add data to result and crc
                     bb.put(data);
@@ -365,7 +368,9 @@ public class EBusReceiveStateMachine {
                         setState(State.DATA1);
                     } else {
                         // keep in this state
-                        logger.trace("Data " + len);
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("Data length: {}", len);
+                        }
                     }
 
                     break;
@@ -475,7 +480,10 @@ public class EBusReceiveStateMachine {
                     }
 
                     len = data;
-                    logger.trace("Slave data Length: " + len);
+
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Slave data length: {}", len);
+                    }
 
                     // if no payload goto CRC2
                     setState(len == 0 ? State.CRC2 : State.LENGTH2);
@@ -514,7 +522,9 @@ public class EBusReceiveStateMachine {
                         setState(State.DATA2);
                     } else {
                         // keep in this state
-                        logger.trace("Data " + len);
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("Data length: {}", len);
+                        }
                     }
 
                     break;

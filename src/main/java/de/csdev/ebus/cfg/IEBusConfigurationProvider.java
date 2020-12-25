@@ -34,7 +34,7 @@ public interface IEBusConfigurationProvider {
      * @param configurationId
      * @return Returns a configuration label for an id or null if not existent.
      */
-    public @Nullable String getConfigurationLabel(String configurationId);
+    public @Nullable String getConfigurationLabel(final String configurationId);
 
     /**
      * Returns the input stream for a configuration id or null if not existent.
@@ -42,6 +42,6 @@ public interface IEBusConfigurationProvider {
      * @param configurationId
      * @return Returns the input stream for a configuration id or null if not existent.
      */
-    public @Nullable InputStream getConfigurationStream(String configurationId);
+    public @Nullable InputStream getConfigurationStream(final String configurationId);
 
 }

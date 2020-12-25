@@ -254,11 +254,11 @@ public class EBusCommandRegistry {
                 Byte.valueOf((byte) 0x00));
 
         // fast check - is this the right telegram type?
-        if (data.get(1) == EBusConsts.BROADCAST_ADDRESS && command.getType() != Type.BROADCAST) {
-            return false;
-        } else if (EBusUtils.isMasterAddress(data.get(1)) && command.getType() != Type.MASTER_MASTER) {
-            return false;
-        } else if (EBusUtils.isSlaveAddress(data.get(1)) && command.getType() != Type.MASTER_SLAVE) {
+        boolean isInvalidBroadcast = data.get(1) == EBusConsts.BROADCAST_ADDRESS && command.getType() != Type.BROADCAST;
+        boolean isInvalidMasterMaster = EBusUtils.isMasterAddress(data.get(1)) && command.getType() != Type.MASTER_MASTER;
+        boolean isInvalidMasterSlave = EBusUtils.isSlaveAddress(data.get(1)) && command.getType() != Type.MASTER_SLAVE;
+
+        if (isInvalidBroadcast || isInvalidMasterMaster || isInvalidMasterSlave) {
             return false;
         }
 
@@ -285,10 +285,13 @@ public class EBusCommandRegistry {
                         // is a broadcast or master-master telegram
                         if (!EBusUtils.isSlaveAddress(data.get(1))) {
 
-                            logger.warn(
+                            if (logger.isWarnEnabled()) {
+                                logger.warn(
                                     "Data for matching command configuration \"{}\" is not a master-slave telegram as expected!",
                                     EBusCommandUtils.getFullId(command));
-                            logger.warn("DATA: {}", EBusUtils.toHexDumpString(data));
+                                logger.warn("DATA: {}", EBusUtils.toHexDumpString(data));
+                            }
+
                             return false;
 
                             // slave data is not defined in the configuration, not good!
@@ -328,7 +331,7 @@ public class EBusCommandRegistry {
             }
         } catch (Exception e) {
             logger.error("DATA: {}", EBusUtils.toHexDumpString(data));
-            logger.error("CMD : {}", command.getParent().getParentCollection().getId(), command.getParent().getId());
+            logger.error("CMD : {}, {}", command.getParent().getParentCollection().getId(), command.getParent().getId());
             logger.error("error!", e);
         }
 

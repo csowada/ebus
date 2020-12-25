@@ -30,7 +30,7 @@ public class EBusUtils {
     }
 
     /** calculated crc values */
-    final static public byte CRC_TAB_8_VALUE[] = { (byte) 0x00, (byte) 0x9B, (byte) 0xAD, (byte) 0x36, (byte) 0xC1,
+    protected static final  byte CRC_TAB_8_VALUE[] = { (byte) 0x00, (byte) 0x9B, (byte) 0xAD, (byte) 0x36, (byte) 0xC1,
             (byte) 0x5A, (byte) 0x6C, (byte) 0xF7, (byte) 0x19, (byte) 0x82, (byte) 0xB4, (byte) 0x2F, (byte) 0xD8,
             (byte) 0x43, (byte) 0x75, (byte) 0xEE, (byte) 0x32, (byte) 0xA9, (byte) 0x9F, (byte) 0x04, (byte) 0xF3,
             (byte) 0x68, (byte) 0x5E, (byte) 0xC5, (byte) 0x2B, (byte) 0xB0, (byte) 0x86, (byte) 0x1D, (byte) 0xEA,
@@ -71,7 +71,7 @@ public class EBusUtils {
      * @param size The final byte array size
      * @return The new byte arrray or <code>null</code> if the source array is to large
      */
-    public static byte @Nullable [] leftPadByteArray(byte @Nullable [] source, int size) {
+    public static byte @Nullable [] leftPadByteArray(final byte @Nullable [] source, final int size) {
         byte[] bs = new byte[size];
 
         if (source == null || size < source.length) {
@@ -92,13 +92,15 @@ public class EBusUtils {
      * @param poly The polynom
      * @return The crc result
      */
-    public static byte crc8(byte data, byte crcInit, byte poly) {
+    public static byte crc8(final byte data, final byte crcInit, final byte poly) {
 
         byte crc;
         byte polynom;
         int i;
 
+        byte d = data;
         crc = crcInit;
+
         for (i = 0; i < 8; i++) {
 
             if ((uint(crc) & 0x80) != 0) {
@@ -108,12 +110,12 @@ public class EBusUtils {
             }
 
             crc = (byte) ((uint(crc) & ~0x80) << 1);
-            if ((uint(data) & 0x80) != 0) {
+            if ((uint(d) & 0x80) != 0) {
                 crc = (byte) (uint(crc) | 1);
             }
 
             crc = (byte) (uint(crc) ^ uint(polynom));
-            data = (byte) (uint(data) << 1);
+            d = (byte) (uint(d) << 1);
         }
         return crc;
     }
@@ -123,18 +125,18 @@ public class EBusUtils {
      * @param len
      * @return
      */
-    public static byte crc8(byte @Nullable [] data, int len) {
-        byte uc_crc = 0;
+    public static byte crc8(final byte @Nullable [] data, final int len) {
+        byte ucCrc = 0;
 
         if (data == null) {
-            return uc_crc;
+            return ucCrc;
         }
 
         for (int i = 0; i < len; i++) {
             byte b = data[i];
-            uc_crc = crc8_tab(b, uc_crc);
+            ucCrc = crc8_tab(b, ucCrc);
         }
-        return uc_crc;
+        return ucCrc;
     }
 
     /**
@@ -144,10 +146,9 @@ public class EBusUtils {
      * @param crcInit The current crc result or another start value
      * @return The crc result
      */
-    public static byte crc8_tab(byte data, byte crcInit) {
+    public static byte crc8_tab(final byte data, final byte crcInit) {
         short ci = (short) (crcInit & 0xFF);
-        byte crc = (byte) (CRC_TAB_8_VALUE[ci] ^ (data & 0xFF));
-        return crc;
+        return (byte) (CRC_TAB_8_VALUE[ci] ^ (data & 0xFF));
     }
 
     /**
@@ -157,7 +158,7 @@ public class EBusUtils {
      * @param slaveAddress
      * @return
      */
-    public static @Nullable Byte getMasterAddress(byte slaveAddress) {
+    public static @Nullable Byte getMasterAddress(final byte slaveAddress) {
 
         if (slaveAddress == EBusConsts.ESCAPE || slaveAddress == EBusConsts.SYN) {
             return null;
@@ -179,7 +180,7 @@ public class EBusUtils {
      * @param masterAddress The master address
      * @return The slave address or null if the master address is invalid
      */
-    public static @Nullable Byte getSlaveAddress(byte masterAddress) {
+    public static @Nullable Byte getSlaveAddress(final byte masterAddress) {
         if (isMasterAddress(masterAddress)) {
             return (byte) (masterAddress == (byte) 0xFF ? (byte) 0x04 : masterAddress + 5);
         }
@@ -193,7 +194,7 @@ public class EBusUtils {
      * @param address
      * @return
      */
-    public static boolean isMasterAddress(byte address) {
+    public static boolean isMasterAddress(final byte address) {
 
         if (!isValidAddress(address)) {
             return false;
@@ -203,14 +204,11 @@ public class EBusUtils {
         byte prio = (byte) (address & (byte) 0x0F);
 
         if (isValidAddress(address)) {
-            if (addr == (byte) 0x00 || addr == (byte) 0x01 || addr == (byte) 0x03 || addr == (byte) 0x07
-                    || addr == (byte) 0x0F) {
-                if (prio == (byte) 0x00 || prio == (byte) 0x01 || prio == (byte) 0x03 || prio == (byte) 0x07
-                        || prio == (byte) 0x0F) {
 
-                    return true;
-                }
-            }
+            boolean addrB = addr == (byte) 0x00 || addr == (byte) 0x01 || addr == (byte) 0x03 || addr == (byte) 0x07 || addr == (byte) 0x0F;
+            boolean prioB = prio == (byte) 0x00 || prio == (byte) 0x01 || prio == (byte) 0x03 || prio == (byte) 0x07 || prio == (byte) 0x0F;
+
+            return addrB && prioB;
         }
 
         return false;
@@ -222,7 +220,7 @@ public class EBusUtils {
      * @param address
      * @return
      */
-    public static boolean isSlaveAddress(byte address) {
+    public static boolean isSlaveAddress(final byte address) {
         return isValidAddress(address) && !isMasterAddress(address);
     }
 
@@ -232,11 +230,8 @@ public class EBusUtils {
      * @param address
      * @return
      */
-    public static boolean isValidAddress(byte address) {
-        if (address == EBusConsts.BROADCAST_ADDRESS || address == EBusConsts.SYN || address == EBusConsts.ESCAPE) {
-            return false;
-        }
-        return true;
+    public static boolean isValidAddress(final byte address) {
+        return !(address == EBusConsts.BROADCAST_ADDRESS || address == EBusConsts.SYN || address == EBusConsts.ESCAPE);
     }
 
     /**
@@ -245,7 +240,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    static public @Nullable Byte toByte(String hexDumpString) {
+    static public @Nullable Byte toByte(final String hexDumpString) {
         if (StringUtils.isEmpty(hexDumpString)) {
             return null;
         }
@@ -286,7 +281,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    public static byte @NonNull [] toByteArray(@Nullable String hexDumpString) throws NumberFormatException {
+    public static byte @NonNull [] toByteArray(final @Nullable String hexDumpString) throws NumberFormatException {
         if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
             return new byte[0];
         }
@@ -308,41 +303,43 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    public static byte @NonNull [] toByteArray2(@Nullable String hexDumpString) throws NumberFormatException {
+    public static byte @NonNull [] toByteArray2(final @Nullable String hexDumpString) throws NumberFormatException {
 
-        if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
+        String h = hexDumpString;
+
+        if (h == null || StringUtils.isEmpty(h)) {
             return new byte[0];
         }
 
-        if (hexDumpString.length() % 2 != 0) {
-            hexDumpString = "0" + hexDumpString;
+        if (h.length() % 2 != 0) {
+            h = "0" + h;
         }
 
-        byte[] result = new byte[hexDumpString.length() / 2];
+        byte[] result = new byte[h.length() / 2];
 
         int pos = 0;
-        for (int i = 0; i < hexDumpString.length(); i = i + 2) {
-            String val = hexDumpString.substring(i, i + 2);
+        for (int i = 0; i < h.length(); i = i + 2) {
+            String val = h.substring(i, i + 2);
             result[pos++] = Integer.valueOf(val, 16).byteValue();
         }
 
         return result;
     }
 
-    public static @NonNull String mergeHexDumpStrings(@Nullable String... args) {
+    public static @NonNull String mergeHexDumpStrings(final @Nullable String... args) {
 
         if (args == null) {
             return "";
         }
 
-        String merge = "";
+        StringBuilder sb = new StringBuilder();
         for (String string : args) {
             if (string != null && StringUtils.isNotEmpty(string)) {
-                merge += string.length() % 2 == 0 ? string : "0" + string;
+                sb.append(string.length() % 2 == 0 ? string : "0" + string);
             }
         }
 
-        StringBuilder sb = toHexDumpString(toByteArray2(merge));
+        sb = toHexDumpString(toByteArray2(sb.toString()));
         return Objects.requireNonNull(sb.toString());
     }
 
@@ -352,7 +349,7 @@ public class EBusUtils {
      * @param data The source
      * @return The hex string
      */
-    public static @NonNull String toHexDumpString(@Nullable Byte data) {
+    public static @NonNull String toHexDumpString(final @Nullable Byte data) {
 
         if (data == null) {
             return "";
@@ -368,7 +365,7 @@ public class EBusUtils {
      * @param data The source
      * @return The StringBuilder with hex dump
      */
-    public static @NonNull StringBuilder toHexDumpString(byte @Nullable [] data) {
+    public static @NonNull StringBuilder toHexDumpString(final byte @Nullable [] data) {
         StringBuilder sb = new StringBuilder();
         if (data != null && data.length > 0) {
             for (int i = 0; i < data.length; i++) {
@@ -389,7 +386,7 @@ public class EBusUtils {
      * @param data The source
      * @return The StringBuilder with hex dump
      */
-    public static StringBuilder toHexDumpString(@Nullable ByteBuffer data) {
+    public static StringBuilder toHexDumpString(final @Nullable ByteBuffer data) {
 
         StringBuilder sb = new StringBuilder();
         if (data == null) {
@@ -419,7 +416,7 @@ public class EBusUtils {
      * @param data
      * @return
      */
-    public static String toPrintHexDumpString(@Nullable Byte data) {
+    public static String toPrintHexDumpString(final @Nullable Byte data) {
         if (data != null) {
             return "0x" + String.format("%02X", (0xFF & data));
         }
@@ -432,7 +429,7 @@ public class EBusUtils {
      * @param v
      * @return
      */
-    public static int uint(byte v) {
+    public static int uint(final byte v) {
         return v & 0xFF;
     }
 }

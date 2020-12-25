@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.utils.CollectionUtils;
@@ -25,6 +26,7 @@ import de.csdev.ebus.utils.CollectionUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusCommandCollection implements IEBusCommandCollection {
 
     private @NonNull Map<String, IEBusCommand> commands = new HashMap<>();
@@ -37,33 +39,28 @@ public class EBusCommandCollection implements IEBusCommandCollection {
 
     private @NonNull String label;
 
-    private @NonNull Map<String, Object> properties;
+    private @NonNull Map<String, Object> properties = new HashMap<>();
 
     private byte[] sourceHash;
 
-    public EBusCommandCollection(String id, String label, String description, Map<String, Object> properties) {
+    public EBusCommandCollection(final String id, final String label, final String description, final Map<String, Object> properties) {
 
         Objects.requireNonNull(id);
         Objects.requireNonNull(label);
         Objects.requireNonNull(description);
+        Objects.requireNonNull(properties);
 
         this.id = id;
         this.label = label;
         this.description = description;
-
-        this.properties = new HashMap<>();
-
-        if (properties != null) {
-            this.properties.putAll(properties);
-        }
-
+        this.properties.putAll(properties);
     }
 
-    public void addCommand(IEBusCommand command) {
+    public void addCommand(final IEBusCommand command) {
         this.commands.put(command.getId(), command);
     }
 
-    public void addCommands(List<IEBusCommand> commands) {
+    public void addCommands(final List<IEBusCommand> commands) {
         for (IEBusCommand command : commands) {
             addCommand(command);
         }
@@ -136,18 +133,18 @@ public class EBusCommandCollection implements IEBusCommandCollection {
      * @see de.csdev.ebus.command.IEBusCommandCollection#getProperty(java.lang.String)
      */
     @Override
-    public Object getProperty(String key) {
+    public Object getProperty(final String key) {
         return CollectionUtils.get(properties, key);
     }
 
-    public void setIdentification(@Nullable List<String> identification) {
+    public void setIdentification(final @Nullable List<String> identification) {
         if (identification != null && !identification.isEmpty()) {
             this.identification.clear();
             this.identification.addAll(identification);
         }
     }
 
-    public void setSourceHash(byte[] sourceHash) {
+    public void setSourceHash(final byte[] sourceHash) {
         this.sourceHash = sourceHash;
     }
 
@@ -158,7 +155,7 @@ public class EBusCommandCollection implements IEBusCommandCollection {
     }
 
     @Override
-    public IEBusCommand getCommand(String id) {
+    public IEBusCommand getCommand(final String id) {
         return commands.get(id);
     }
 

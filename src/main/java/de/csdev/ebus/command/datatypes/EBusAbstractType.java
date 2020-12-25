@@ -23,6 +23,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -73,7 +74,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
             return newInstance;
 
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
 
         return null;
@@ -242,7 +243,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
                 try {
                     instance.setReplaceValue(EBusUtils.toByteArray((String) value));
                 } catch (EBusTypeException e) {
-                    logger.error("error!", e);
+                    logger.error(EBusConsts.LOG_ERR_DEF, e);
                 }
             }
 
@@ -257,7 +258,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
             }
 
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
     }
 

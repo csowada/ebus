@@ -97,7 +97,10 @@ public class EBusEbusdController extends EBusControllerBase {
                             // count as send attempt
                             queueEntry.sendAttempts++;
 
-                            logger.trace("-->>|" + buildEbusdSendString(queueEntry.buffer) + "|");
+                            if (logger.isTraceEnabled()) {
+                                logger.trace("-->>|{}|", buildEbusdSendString(queueEntry.buffer));
+                            }
+                            
                             writer.write(buildEbusdSendString(queueEntry.buffer) + "\n");
                             writer.flush();
 
@@ -112,7 +115,7 @@ public class EBusEbusdController extends EBusControllerBase {
                     Thread.sleep(100);
 
                 } catch (EBusDataException | IOException e) {
-                    logger.error("error!", e);
+                    logger.error(EBusConsts.LOG_ERR_DEF, e);
 
                 } catch (InterruptedException e) {
                     // re-enable the interrupt to stop the while loop
@@ -131,7 +134,9 @@ public class EBusEbusdController extends EBusControllerBase {
 
         try {
 
-            logger.trace("<<--|" + readLine + "|");
+            if (logger.isTraceEnabled()) {
+                logger.trace("<<--|{}|", readLine);
+            }
 
             if (readLine == null) {
                 logger.error("End of stream has been reached!");
@@ -169,7 +174,7 @@ public class EBusEbusdController extends EBusControllerBase {
                     }
                 } catch (Exception e) {
                     // do not stop because of version check
-                    logger.error("error!", e);
+                    logger.error(EBusConsts.LOG_ERR_DEF, e);
                 }
 
             } else if (directMode) {
@@ -300,7 +305,7 @@ public class EBusEbusdController extends EBusControllerBase {
                     Thread.currentThread().interrupt();
 
                 } catch (IOException e) {
-                    logger.error("error!", e);
+                    logger.error(EBusConsts.LOG_ERR_DEF, e);
                     fireOnConnectionException(e);
 
                     try {
@@ -313,13 +318,13 @@ public class EBusEbusdController extends EBusControllerBase {
 
             } // while loop
         } catch (Exception e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
 
         try {
             dispose();
         } catch (InterruptedException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
             Thread.currentThread().interrupt();
         }
 

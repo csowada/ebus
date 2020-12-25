@@ -40,6 +40,8 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
  */
 public class EBusClient {
 
+    private static final String LABEL_LISTENER = "listener";
+
     private @NonNull EBusCommandRegistry commandRegistry;
 
     private @Nullable IEBusController controller;
@@ -57,7 +59,7 @@ public class EBusClient {
      *
      * @param commandRegistry
      */
-    public EBusClient(@NonNull EBusCommandRegistry commandRegistry) {
+    public EBusClient(final @NonNull EBusCommandRegistry commandRegistry) {
 
         Objects.requireNonNull(commandRegistry);
 
@@ -76,8 +78,8 @@ public class EBusClient {
      * @param listener
      * @see de.csdev.ebus.service.device.EBusDeviceTable#addEBusDeviceTableListener(IEBusDeviceTableListener)
      */
-    public void addEBusDeviceTableListener(@NonNull IEBusDeviceTableListener listener) {
-        Objects.requireNonNull(listener, "listener");
+    public void addEBusDeviceTableListener(final @NonNull IEBusDeviceTableListener listener) {
+        Objects.requireNonNull(listener, LABEL_LISTENER);
         if (deviceTable != null) {
             deviceTable.addEBusDeviceTableListener(listener);
         }
@@ -89,8 +91,8 @@ public class EBusClient {
      * @param listener
      * @see de.csdev.ebus.core.EBusControllerBase#addEBusEventListener(IEBusConnectorEventListener)
      */
-    public void addEBusEventListener(@NonNull IEBusConnectorEventListener listener) {
-        Objects.requireNonNull(listener, "listener");
+    public void addEBusEventListener(final @NonNull IEBusConnectorEventListener listener) {
+        Objects.requireNonNull(listener, LABEL_LISTENER);
         if (controller != null) {
             controller.addEBusEventListener(listener);
         }
@@ -102,8 +104,8 @@ public class EBusClient {
      * @param listener
      * @see de.csdev.ebus.client.EBusClient#addEBusParserListener(IEBusParserListener)
      */
-    public void addEBusParserListener(@NonNull IEBusParserListener listener) {
-        Objects.requireNonNull(listener, "listener");
+    public void addEBusParserListener(final @NonNull IEBusParserListener listener) {
+        Objects.requireNonNull(listener, LABEL_LISTENER);
         if (resolverService != null) {
             resolverService.addEBusParserListener(listener);
         }
@@ -117,7 +119,7 @@ public class EBusClient {
      * @throws EBusControllerException
      * @see de.csdev.ebus.core.EBusLowLevelController#addToSendQueue(byte[])
      */
-    public @NonNull Integer addToSendQueue(byte @NonNull [] buffer) throws EBusControllerException {
+    public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer) throws EBusControllerException {
 
         Objects.requireNonNull(buffer, "buffer");
 
@@ -137,7 +139,7 @@ public class EBusClient {
      * @throws EBusControllerException
      * @see de.csdev.ebus.core.EBusLowLevelController#addToSendQueue(byte[], int)
      */
-    public @NonNull Integer addToSendQueue(byte @NonNull [] buffer, int maxAttemps) throws EBusControllerException {
+    public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer, final int maxAttemps) throws EBusControllerException {
 
         if (this.controller == null) {
             throw new EBusControllerException("Controller not set!");
@@ -155,8 +157,8 @@ public class EBusClient {
      * @throws EBusTypeException
      * @throws EBusCommandException
      */
-    public @NonNull ByteBuffer buildTelegram(@NonNull IEBusCommandMethod commandMethod,
-            @NonNull Byte destinationAddress, @Nullable Map<String, Object> values)
+    public @NonNull ByteBuffer buildTelegram(final @NonNull IEBusCommandMethod commandMethod,
+        final @NonNull Byte destinationAddress, final @Nullable Map<String, Object> values)
             throws EBusTypeException, EBusCommandException {
 
         Objects.requireNonNull(commandMethod, "commandMethod");
@@ -172,7 +174,7 @@ public class EBusClient {
      * @param controller
      * @param masterAddress
      */
-    public void connect(@NonNull IEBusController controller, byte masterAddress) {
+    public void connect(final @NonNull IEBusController controller, final byte masterAddress) {
 
         Objects.requireNonNull(controller, "Parameter controller can't be null!");
 
@@ -217,7 +219,7 @@ public class EBusClient {
      * @param id
      * @return
      */
-    public @Nullable IEBusCommandCollection getCommandCollection(@NonNull String id) {
+    public @Nullable IEBusCommandCollection getCommandCollection(final @NonNull String id) {
         Objects.requireNonNull(id);
         return getConfigurationProvider().getCommandCollection(id);
     }
@@ -290,7 +292,7 @@ public class EBusClient {
      * @return
      * @see de.csdev.ebus.service.device.EBusDeviceTable#removeEBusDeviceTableListener(IEBusDeviceTableListener)
      */
-    public boolean removeEBusDeviceTableListener(@NonNull IEBusDeviceTableListener listener) {
+    public boolean removeEBusDeviceTableListener(final @NonNull IEBusDeviceTableListener listener) {
         Objects.requireNonNull(listener);
         return getDeviceTable().removeEBusDeviceTableListener(listener);
     }
@@ -302,7 +304,7 @@ public class EBusClient {
      * @return
      * @see de.csdev.ebus.core.EBusControllerBase#removeEBusEventListener(IEBusConnectorEventListener)
      */
-    public boolean removeEBusEventListener(@NonNull IEBusConnectorEventListener listener) {
+    public boolean removeEBusEventListener(final @NonNull IEBusConnectorEventListener listener) {
         Objects.requireNonNull(listener);
 
         if (controller != null) {
@@ -318,7 +320,7 @@ public class EBusClient {
      * @return
      * @see de.csdev.ebus.client.EBusClient#removeEBusParserListener(IEBusParserListener)
      */
-    public boolean removeEBusParserListener(@NonNull IEBusParserListener listener) {
+    public boolean removeEBusParserListener(final @NonNull IEBusParserListener listener) {
         Objects.requireNonNull(listener);
         return getResolverService().removeEBusParserListener(listener);
     }

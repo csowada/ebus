@@ -48,4 +48,5 @@ public class EBusConsts {
 
     public static final String COMMAND_IDENTIFICATION = "common.identification";
 
+    public static final String LOG_ERR_DEF = "error!";
 }

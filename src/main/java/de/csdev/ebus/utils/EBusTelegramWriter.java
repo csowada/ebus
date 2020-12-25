@@ -19,17 +19,20 @@ import java.util.Date;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.command.IEBusCommandMethod;
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.service.parser.IEBusParserListener;
 
 /**
  *
  * @author Christian Sowada - Initial contribution
  */
+@NonNullByDefault
 public class EBusTelegramWriter implements IEBusParserListener {
 
     private final Logger logger = LoggerFactory.getLogger(EBusTelegramWriter.class);
@@ -59,7 +62,7 @@ public class EBusTelegramWriter implements IEBusParserListener {
             write(writerResolved, receivedData, comment);
 
         } catch (IOException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
 
     }
@@ -72,10 +75,13 @@ public class EBusTelegramWriter implements IEBusParserListener {
             if (writerUnresolved == null) {
                 writerUnresolved = open("ebus-unresolved.csv");
             }
-            write(writerUnresolved, receivedData, "");
+
+            if (receivedData != null) {
+                write(writerUnresolved, receivedData, "");
+            }
 
         } catch (IOException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
     }
 
@@ -85,18 +91,20 @@ public class EBusTelegramWriter implements IEBusParserListener {
      * @param csvFile The file object
      * @throws IOException
      */
-    private BufferedWriter open(String filename) throws IOException {
+    private BufferedWriter open(final String filename) throws IOException {
 
-        // File loggingFolder = new File(System.getProperty("openhab.logdir"));
         File file = new File(loggingDirectory, filename);
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
         if (!file.exists()) {
-            file.createNewFile();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Create new file {}", filename);
+            }
+            if (!file.createNewFile()) {
+                throw new IOException("Unable to create file!");
+            }
         }
-
-        logger.warn(file.getAbsolutePath());
 
         writer.write("Date/Time;");
         writer.write("SRC;");
@@ -132,7 +140,7 @@ public class EBusTelegramWriter implements IEBusParserListener {
         }
     }
 
-    private void write(BufferedWriter writer, byte[] receivedData, String comment) throws IOException {
+    private void write(final BufferedWriter writer, final byte[] receivedData, final @Nullable String comment) throws IOException {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
@@ -156,7 +164,7 @@ public class EBusTelegramWriter implements IEBusParserListener {
         sb.append('"' + EBusUtils.toHexDumpString(rest).toString() + '"');
         sb.append(";");
 
-        sb.append(comment);
+        sb.append(comment == null ? "" : comment);
 
         sb.append("\n");
 

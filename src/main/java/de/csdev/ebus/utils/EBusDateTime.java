@@ -29,11 +29,10 @@ public class EBusDateTime {
      * @param anyDate Set date part to any date
      * @param anyTime Set time part to any time
      */
-    public EBusDateTime(Calendar calendar, boolean anyDate, boolean anyTime) {
+    public EBusDateTime(final Calendar calendar, boolean anyDate, boolean anyTime) {
         this.calendar = calendar;
         this.anyDate = anyDate;
         this.anyTime = anyTime;
-
     }
 
     /**

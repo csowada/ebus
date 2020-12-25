@@ -214,7 +214,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         ArrayList<EBusCommandValue> templateList = new ArrayList<>();
 
         // collect available channels
-        List<String> methods = new ArrayList<String>();
+        List<String> methods = new ArrayList<>();
         if (commandElement.getGet() != null) {
             methods.add("get");
         }
@@ -594,7 +594,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                             result.add(collection);
 
                         } catch (EBusConfigurationReaderException e) {
-                            logger.error(e.getMessage() + " (Url: " + fileUrl + ")");
+                            logger.error("{} (url: {})", e.getMessage(), fileUrl);
                         } catch (IOException e) {
                             logger.error("error!", e);
                         }

@@ -55,6 +55,9 @@ public class EBusDeviceTable {
         deviceTable = new HashMap<>();
     }
 
+    /**
+     * 
+     */
     public void dispose() {
         listeners.clear();
 
@@ -67,13 +70,22 @@ public class EBusDeviceTable {
         }
     }
 
-    public void setOwnAddress(byte ownAddress) {
+    /**
+     * 
+     * @param ownAddress
+     */
+    public void setOwnAddress(final byte ownAddress) {
         this.ownAddress = ownAddress;
         EBusDevice d = new EBusDevice(ownAddress, this);
         deviceTable.put(d.getMasterAddress(), d);
     }
 
-    public String getManufacturerName(byte vendorCode) {
+    /**
+     * 
+     * @param vendorCode
+     * @return
+     */
+    public String getManufacturerName(final byte vendorCode) {
 
         // vendor list not loaded?
         if (vendors == null) {
@@ -95,35 +107,41 @@ public class EBusDeviceTable {
         return vendors.get(EBusUtils.toHexDumpString(vendorCode));
     }
 
-    public void updateDevice(byte address, Map<@NonNull String, @Nullable Object> data) {
+    /**
+     * 
+     * @param address
+     * @param data
+     */
+    public void updateDevice(final byte address, final Map<@NonNull String, @Nullable Object> data) {
 
         boolean newDevice = false;
         boolean updatedDevice = false;
+        byte addr = address;
 
-        if (address == EBusConsts.BROADCAST_ADDRESS) {
+        if (addr == EBusConsts.BROADCAST_ADDRESS) {
             return;
-        } else if (EBusUtils.isMasterAddress(address)) {
-            Byte result = EBusUtils.getSlaveAddress(address);
+        } else if (EBusUtils.isMasterAddress(addr)) {
+            Byte result = EBusUtils.getSlaveAddress(addr);
 
             if (result == null) {
                 throw new IllegalArgumentException(
-                        String.format("Given slave address %s is invalid!", EBusUtils.toHexDumpString(address)));
+                        String.format("Given slave address %s is invalid!", EBusUtils.toHexDumpString(addr)));
             }
 
-            address = result;
+            addr = result;
         }
 
-        if (address == ownAddress) {
+        if (addr == ownAddress) {
             // ignore own address
             return;
         }
 
-        EBusDevice device = deviceTable.get(address);
+        EBusDevice device = deviceTable.get(addr);
 
         if (device == null) {
-            device = new EBusDevice(address, this);
+            device = new EBusDevice(addr, this);
             device.setLastActivity(System.currentTimeMillis());
-            deviceTable.put(address, device);
+            deviceTable.put(addr, device);
             newDevice = true;
         }
 
@@ -181,11 +199,20 @@ public class EBusDeviceTable {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public Collection<EBusDevice> getDeviceTable() {
         return Collections.unmodifiableCollection(deviceTable.values());
     }
 
-    private void fireOnDeviceUpdate(IEBusDeviceTableListener.@NonNull TYPE type, @NonNull EBusDevice device) {
+    /**
+     * 
+     * @param type
+     * @param device
+     */
+    private void fireOnDeviceUpdate(final IEBusDeviceTableListener.@NonNull TYPE type, final @NonNull EBusDevice device) {
         for (IEBusDeviceTableListener listener : listeners) {
             try {
                 listener.onEBusDeviceUpdate(type, device);
@@ -195,6 +222,10 @@ public class EBusDeviceTable {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public EBusDevice getOwnDevice() {
         return deviceTable.get(ownAddress);
     }
@@ -204,7 +235,7 @@ public class EBusDeviceTable {
      *
      * @param listener
      */
-    public void addEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+    public void addEBusDeviceTableListener(final IEBusDeviceTableListener listener) {
         Objects.requireNonNull(listener);
         listeners.add(listener);
     }
@@ -215,7 +246,7 @@ public class EBusDeviceTable {
      * @param listener
      * @return
      */
-    public boolean removeEBusDeviceTableListener(IEBusDeviceTableListener listener) {
+    public boolean removeEBusDeviceTableListener(final IEBusDeviceTableListener listener) {
         Objects.requireNonNull(listener);
         return listeners.remove(listener);
     }

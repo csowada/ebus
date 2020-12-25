@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.core.EBusConsts;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -110,8 +111,9 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
      */
     @Override
     public boolean close() throws IOException {
+
         if (serialPort == null) {
-            return true;
+            return false;
         }
 
         // run the serial.close in a new not-interrupted thread to
@@ -124,6 +126,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
                 try {
                     outputStream.flush();
                 } catch (IOException e) {
+                    // noop
                 }
                 IOUtils.closeQuietly(outputStream);
             }
@@ -147,7 +150,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
             // wait for shutdown
             shutdownThread.join(2000);
         } catch (InterruptedException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
             Thread.currentThread().interrupt();
         }
 

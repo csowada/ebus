@@ -34,7 +34,7 @@ public class EBusParserService extends EBusConnectorEventListener {
     private static final Logger logger = LoggerFactory.getLogger(EBusParserService.class);
 
     /** the list for listeners */
-    private final @NonNull List<IEBusParserListener> listeners = new CopyOnWriteArrayList<IEBusParserListener>();
+    private final @NonNull List<IEBusParserListener> listeners = new CopyOnWriteArrayList<>();
 
     /** */
     private @NonNull EBusCommandRegistry commandRegistry;

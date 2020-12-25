@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusDataException.EBusError;
 import de.csdev.ebus.utils.EBusUtils;
 

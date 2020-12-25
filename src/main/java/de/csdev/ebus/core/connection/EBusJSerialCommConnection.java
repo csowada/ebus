@@ -10,11 +10,13 @@ package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
 
+import com.fazecast.jSerialComm.SerialPort;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fazecast.jSerialComm.SerialPort;
+import de.csdev.ebus.core.EBusConsts;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -61,7 +63,7 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
     @Override
     public boolean close() throws IOException {
         if (serialPort == null) {
-            return true;
+            return false;
         }
 
         // run the serial.close in a new not-interrupted thread to
@@ -83,7 +85,7 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
             // wait for shutdown
             shutdownThread.join(2000);
         } catch (InterruptedException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
             Thread.currentThread().interrupt();
         }
 

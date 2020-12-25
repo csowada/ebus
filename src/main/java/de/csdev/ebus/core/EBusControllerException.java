@@ -25,15 +25,15 @@ public class EBusControllerException extends Exception {
         super();
     }
 
-    public EBusControllerException(String message, Throwable cause) {
+    public EBusControllerException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public EBusControllerException(String message) {
+    public EBusControllerException(final String message) {
         super(message);
     }
 
-    public EBusControllerException(Throwable cause) {
+    public EBusControllerException(final Throwable cause) {
         super(cause);
     }
 

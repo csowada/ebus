@@ -146,7 +146,7 @@ public class EBusLowLevelController extends EBusControllerBase {
      * @return
      * @throws IOException
      */
-    private boolean resend() throws IOException {
+    private boolean resend() {
 
         QueueEntry entry = queue.getCurrent();
 
@@ -178,7 +178,7 @@ public class EBusLowLevelController extends EBusControllerBase {
                 connection.open();
             }
         } catch (IOException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
             fireOnConnectionException(e);
         }
 
@@ -483,7 +483,7 @@ public class EBusLowLevelController extends EBusControllerBase {
         try {
             connection.close();
         } catch (IOException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
     }
 }

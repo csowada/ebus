@@ -102,7 +102,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
             scanQueueId = controller.addToSendQueue(EBusUtils.toByteArray(buffer), 2);
         } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
     }
 
@@ -147,7 +147,9 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             scanSlaveAddress = addr;
         }
 
-        logger.debug("Scan address {} ...", EBusUtils.toHexDumpString(scanSlaveAddress));
+        if (logger.isDebugEnabled()) {
+            logger.debug("Scan address {} ...", EBusUtils.toHexDumpString(scanSlaveAddress));
+        }
 
         byte masterAddress = deviceTable.getOwnDevice().getMasterAddress();
 
@@ -166,7 +168,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
             return true;
 
         } catch (EBusTypeException | EBusControllerException | EBusCommandException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
 
         return false;
@@ -338,10 +340,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         }
 
         // identify new devices
-        if (type.equals(IEBusDeviceTableListener.TYPE.NEW)) {
-            if (!disableIdentificationRequests) {
-                sendIdentificationRequest(device.getSlaveAddress());
-            }
+        if (type.equals(IEBusDeviceTableListener.TYPE.NEW) && !disableIdentificationRequests) {
+            sendIdentificationRequest(device.getSlaveAddress());
         }
     }
 

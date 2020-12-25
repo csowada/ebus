@@ -55,14 +55,15 @@ public class Emulator {
     }
 
     private void startAutoSync() {
-        autoSyncFuture = playThreadExecutor.schedule(() -> write(EBusConsts.SYN), 40 * factor, TimeUnit.MILLISECONDS);
+        long v = 40 * (long) factor;
+        autoSyncFuture = playThreadExecutor.schedule(() -> write(EBusConsts.SYN), v, TimeUnit.MILLISECONDS);
     }
 
     public Emulator() {
         this(1, true);
     }
 
-    public Emulator(int factor, boolean autoSync) {
+    public Emulator(final int factor, final boolean autoSync) {
 
         this.factor = factor;
         pipeThreadExecutor = Executors.newSingleThreadExecutor(new EBusWorkerThreadFactory("ebus-emu-pipe", false));
@@ -76,7 +77,7 @@ public class Emulator {
             in = new PipedInputStream();
             out = new PipedOutputStream(in);
         } catch (IOException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
         }
     }
 
@@ -116,7 +117,7 @@ public class Emulator {
                 }
 
             } catch (IOException e2) {
-                logger.trace("error!", e2);
+                logger.trace(EBusConsts.LOG_ERR_DEF, e2);
             }
         });
     }
@@ -149,13 +150,15 @@ public class Emulator {
         try {
             this.playThreadExecutor.awaitTermination(3, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.trace("error!", e);
+            logger.trace(EBusConsts.LOG_ERR_DEF, e);
+            Thread.currentThread().interrupt();
         }
 
         try {
             this.pipeThreadExecutor.awaitTermination(3, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.trace("error!", e);
+            logger.trace(EBusConsts.LOG_ERR_DEF, e);
+            Thread.currentThread().interrupt();
         }
 
         IOUtils.closeQuietly(in);

@@ -26,7 +26,7 @@ public class EBusConnectorEventListener implements IEBusConnectorEventListener {
      * @see de.csdev.ebus.core.IEBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
      */
     @Override
-    public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
+    public void onTelegramReceived(final byte[] receivedData, final @Nullable Integer sendQueueId) {
         // noop
     }
 
@@ -37,7 +37,7 @@ public class EBusConnectorEventListener implements IEBusConnectorEventListener {
      * java.lang.Integer)
      */
     @Override
-    public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
+    public void onTelegramException(final EBusDataException exception, final @Nullable Integer sendQueueId) {
         // noop
     }
 
@@ -47,12 +47,12 @@ public class EBusConnectorEventListener implements IEBusConnectorEventListener {
      * @see de.csdev.ebus.core.IEBusConnectorEventListener#onConnectionException(java.lang.Exception)
      */
     @Override
-    public void onConnectionException(Exception e) {
+    public void onConnectionException(final Exception e) {
         // noop
     }
 
     @Override
-    public void onConnectionStatusChanged(ConnectionStatus status) {
+    public void onConnectionStatusChanged(final ConnectionStatus status) {
         // noop
     }
 }

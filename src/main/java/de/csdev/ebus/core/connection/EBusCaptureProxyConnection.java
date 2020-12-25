@@ -22,7 +22,7 @@ public class EBusCaptureProxyConnection implements IEBusConnection {
 
     private EmulatorCapture captureWriter;
 
-    public EBusCaptureProxyConnection(IEBusConnection proxyConnection, EmulatorCapture captureWriter) {
+    public EBusCaptureProxyConnection(final IEBusConnection proxyConnection, final EmulatorCapture captureWriter) {
         this.proxyConnection = proxyConnection;
         this.captureWriter = captureWriter;
     }
@@ -40,7 +40,7 @@ public class EBusCaptureProxyConnection implements IEBusConnection {
         return proxyConnection.isOpen();
     }
 
-    public int readByte(boolean lowLatency) throws IOException {
+    public int readByte(final boolean lowLatency) throws IOException {
         int readByte = proxyConnection.readByte(lowLatency);
 
         if (readByte != -1) {
@@ -54,13 +54,13 @@ public class EBusCaptureProxyConnection implements IEBusConnection {
         return proxyConnection.isReceiveBufferEmpty();
     }
 
-    public int readBytes(byte[] buffer) throws IOException {
+    public int readBytes(final byte[] buffer) throws IOException {
         int readBytes = proxyConnection.readBytes(buffer);
         captureWriter.write(buffer, readBytes);
         return readBytes;
     }
 
-    public void writeByte(int b) throws IOException {
+    public void writeByte(final int b) throws IOException {
         proxyConnection.writeByte(b);
     }
 
