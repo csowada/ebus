@@ -22,6 +22,10 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class CollectionUtils {
 
+    private CollectionUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * A null checked variant of map.get
      *
@@ -55,7 +59,7 @@ public class CollectionUtils {
      * @return
      */
     public static <K, V> Map<K, V> newMapIfNull(@Nullable Map<K, V> map) {
-        return map != null ? map : new HashMap<K, V>();
+        return map != null ? map : new HashMap<>();
     }
 
     /**
@@ -66,7 +70,7 @@ public class CollectionUtils {
      * @return
      */
     public static Map<String, Object> createProperties(Object... args) {
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
 
         for (int i = 0; i < args.length; i = i + 2) {
             properties.put(args[i].toString(), args[i + 1]);

@@ -34,7 +34,7 @@ public class EBusParserService extends EBusConnectorEventListener {
     private static final Logger logger = LoggerFactory.getLogger(EBusParserService.class);
 
     /** the list for listeners */
-    private final @NonNull List<IEBusParserListener> listeners = new CopyOnWriteArrayList<IEBusParserListener>();
+    private final @NonNull List<IEBusParserListener> listeners = new CopyOnWriteArrayList<>();
 
     /** */
     private @NonNull EBusCommandRegistry commandRegistry;
@@ -51,9 +51,7 @@ public class EBusParserService extends EBusConnectorEventListener {
      *
      */
     public void dispose() {
-        if (listeners != null) {
-            listeners.clear();
-        }
+        listeners.clear();
     }
 
     /**
@@ -87,7 +85,7 @@ public class EBusParserService extends EBusConnectorEventListener {
 
         final List<IEBusCommandMethod> commandChannelList = commandRegistry.find(receivedData);
 
-        if (commandChannelList == null || commandChannelList.isEmpty()) {
+        if (commandChannelList.isEmpty()) {
             if (logger.isTraceEnabled()) {
                 logger.trace("No command method matches the telegram {} ...", EBusUtils.toHexDumpString(receivedData));
             }

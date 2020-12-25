@@ -13,6 +13,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.Emulator;
 
 /**
@@ -43,20 +44,20 @@ public class EBusEmulatorConnection extends AbstractEBusConnection {
     }
 
     @Override
-    public void writeByte(int b) throws IOException {
+    public void writeByte(final int b) throws IOException {
         emu.write((byte) b);
     }
 
-    public void writeBytes(byte[] byteArray) {
+    public void writeBytes(final byte[] byteArray) {
         emu.write(byteArray);
     }
 
-    public void writeBytesDelayed(byte[] byteArray, long delay) {
+    public void writeBytesDelayed(final byte[] byteArray, final long delay) {
 
         try {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
-            logger.error("error!", e);
+            logger.error(EBusConsts.LOG_ERR_DEF, e);
             Thread.currentThread().interrupt();
         }
 

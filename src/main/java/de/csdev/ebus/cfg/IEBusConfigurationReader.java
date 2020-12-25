@@ -40,21 +40,21 @@ public interface IEBusConfigurationReader {
      * @throws EBusConfigurationReaderException
      * @throws IOException
      */
-    public @Nullable IEBusCommandCollection loadConfigurationCollection(URL url)
+    public @Nullable IEBusCommandCollection loadConfigurationCollection(final URL url)
             throws EBusConfigurationReaderException, IOException;
 
     /**
      * @param url
      * @return
      */
-    public List<IEBusCommandCollection> loadConfigurationCollectionBundle(URL url);
+    public List<IEBusCommandCollection> loadConfigurationCollectionBundle(final URL url);
 
     /**
      * Sets the eBUS type registry to use
      *
      * @param ebusTypes
      */
-    public void setEBusTypes(EBusTypeRegistry ebusTypes);
+    public void setEBusTypes(final EBusTypeRegistry ebusTypes);
 
     /**
      * Clears all internal states

@@ -212,18 +212,7 @@ public class EBusTypeRegistry {
                 types.put(typeName, newInstance);
             }
 
-        } catch (InstantiationException e) {
-            logger.error("error!", e);
-
-        } catch (IllegalAccessException e) {
-            logger.error("error!", e);
-        } catch (IllegalArgumentException e) {
-            logger.error("error!", e);
-        } catch (InvocationTargetException e) {
-            logger.error("error!", e);
-        } catch (NoSuchMethodException e) {
-            logger.error("error!", e);
-        } catch (SecurityException e) {
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             logger.error("error!", e);
         }
     }

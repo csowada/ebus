@@ -23,7 +23,7 @@ public interface IEBusCommandMethod {
     /**
      * Type of the method
      */
-    public static enum Type {
+    public enum Type {
 
         /** master slave telegram */
         MASTER_SLAVE,
@@ -39,7 +39,7 @@ public interface IEBusCommandMethod {
     /**
      * Kind of the method
      */
-    public static enum Method {
+    public enum Method {
 
         /** A getter command */
         GET,

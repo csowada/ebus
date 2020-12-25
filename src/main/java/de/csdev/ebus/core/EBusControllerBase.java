@@ -31,6 +31,8 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     private static final Logger logger = LoggerFactory.getLogger(EBusControllerBase.class);
 
+    private static final String THREADPOOL_NOT_READY = "ThreadPool not ready!";
+
     /** serial receive buffer */
     protected @NonNull EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
@@ -56,7 +58,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[], int)
      */
     @Override
-    public @NonNull Integer addToSendQueue(byte @NonNull [] buffer, int maxAttemps) throws EBusControllerException {
+    public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer, final int maxAttemps) throws EBusControllerException {
         if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
             throw new EBusControllerException("Controller not connected, unable to add telegrams to send queue!");
         }
@@ -76,7 +78,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[])
      */
     @Override
-    public @NonNull Integer addToSendQueue(byte @NonNull [] buffer) throws EBusControllerException {
+    public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer) throws EBusControllerException {
         if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
             throw new EBusControllerException("Controller not connected, unable to add telegrams to send queue!");
         }
@@ -96,7 +98,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#addEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
     @Override
-    public void addEBusEventListener(@NonNull IEBusConnectorEventListener listener) {
+    public void addEBusEventListener(final @NonNull IEBusConnectorEventListener listener) {
         Objects.requireNonNull(listener);
         listeners.add(listener);
     }
@@ -107,7 +109,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#removeEBusEventListener(de.csdev.ebus.core.IEBusConnectorEventListener)
      */
     @Override
-    public boolean removeEBusEventListener(@NonNull IEBusConnectorEventListener listener) {
+    public boolean removeEBusEventListener(final @NonNull IEBusConnectorEventListener listener) {
         Objects.requireNonNull(listener);
         return listeners.remove(listener);
     }
@@ -124,21 +126,17 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         }
 
         if (threadPool == null || threadPool.isTerminated()) {
-            logger.warn("ThreadPool not ready!");
+            logger.warn(THREADPOOL_NOT_READY);
             return;
         }
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IEBusConnectorEventListener listener : listeners) {
-                    try {
-                        listener.onConnectionException(e);
-                    } catch (Exception e) {
-                        logger.error("Error while firing onConnectionException events!", e);
-                    }
+        threadPool.execute(() -> {
+            for (IEBusConnectorEventListener listener : listeners) {
+                try {
+                    listener.onConnectionException(e);
+                } catch (Exception e1) {
+                    logger.error("Error while firing onConnectionException events!", e1);
                 }
-
             }
         });
     }
@@ -157,24 +155,21 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         }
 
         if (threadPool == null || threadPool.isTerminated()) {
-            logger.warn("ThreadPool not ready!  Can't fire onTelegramReceived events ...");
+            logger.warn(THREADPOOL_NOT_READY + " Can't fire onTelegramReceived events ...");
             return;
         }
 
-        if (receivedData == null || receivedData.length == 0) {
-            logger.warn("Telegram data is null or empty! Can't fire onTelegramReceived events ...");
+        if (receivedData.length == 0) {
+            logger.warn("Telegram data is empty! Can't fire onTelegramReceived events ...");
             return;
         }
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IEBusConnectorEventListener listener : listeners) {
-                    try {
-                        listener.onTelegramReceived(receivedData, sendQueueId);
-                    } catch (Exception e) {
-                        logger.error("Error while firing onTelegramReceived events!", e);
-                    }
+        threadPool.execute(() -> {
+            for (IEBusConnectorEventListener listener : listeners) {
+                try {
+                    listener.onTelegramReceived(receivedData, sendQueueId);
+                } catch (Exception e) {
+                    logger.error("Error while firing onTelegramReceived events!", e);
                 }
             }
         });
@@ -193,19 +188,16 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         }
 
         if (threadPool == null || threadPool.isTerminated()) {
-            logger.warn("ThreadPool not ready!");
+            logger.warn(THREADPOOL_NOT_READY);
             return;
         }
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IEBusConnectorEventListener listener : listeners) {
-                    try {
-                        listener.onTelegramException(exception, sendQueueId);
-                    } catch (Exception e) {
-                        logger.error("Error while firing onTelegramException events!", e);
-                    }
+        threadPool.execute(() -> {
+            for (IEBusConnectorEventListener listener : listeners) {
+                try {
+                    listener.onTelegramException(exception, sendQueueId);
+                } catch (Exception e) {
+                    logger.error("Error while firing onTelegramException events!", e);
                 }
             }
         });
@@ -214,7 +206,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     /**
      * @param status
      */
-    protected void fireOnEBusConnectionStatusChange(@NonNull ConnectionStatus status) {
+    protected void fireOnEBusConnectionStatusChange(final @NonNull ConnectionStatus status) {
 
         Objects.requireNonNull(status);
 
@@ -228,19 +220,16 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         }
 
         if (threadPool == null || threadPool.isTerminated()) {
-            logger.warn("ThreadPool not ready!");
+            logger.warn(THREADPOOL_NOT_READY);
             return;
         }
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IEBusConnectorEventListener listener : listeners) {
-                    try {
-                        listener.onConnectionStatusChanged(status);
-                    } catch (Exception e) {
-                        logger.error("Error while firing fireOnEBusConnectionStatusChange events!", e);
-                    }
+        threadPool.execute(() -> {
+            for (IEBusConnectorEventListener listener : listeners) {
+                try {
+                    listener.onConnectionStatusChanged(status);
+                } catch (Exception e) {
+                    logger.error("Error while firing fireOnEBusConnectionStatusChange events!", e);
                 }
             }
         });
@@ -252,7 +241,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     protected void initThreadPool() {
         // create new thread pool to send received telegrams
         // limit the number of threads to 30
-        threadPool = new ThreadPoolExecutor(0, 30, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+        threadPool = new ThreadPoolExecutor(0, 30, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(),
                 new EBusWorkerThreadFactory("ebus-receiver", true));
 
         // create watch dog thread pool
@@ -309,12 +298,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     }
 
     protected void resetWatchdogTimer() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                EBusControllerBase.this.fireWatchDogTimer();
-            }
-        };
+        Runnable r = EBusControllerBase.this::fireWatchDogTimer;
 
         if (watchdogTimer != null && !watchdogTimer.isCancelled()) {
             watchdogTimer.cancel(true);
@@ -332,13 +316,13 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
      * @see de.csdev.ebus.core.IEBusController#setWatchdogTimerTimeout(int)
      */
     @Override
-    public void setWatchdogTimerTimeout(int seconds) {
+    public void setWatchdogTimerTimeout(final int seconds) {
         watchdogTimerTimeout = seconds;
     }
 
     protected abstract void fireWatchDogTimer();
 
-    protected void setConnectionStatus(@NonNull ConnectionStatus status) {
+    protected void setConnectionStatus(final @NonNull ConnectionStatus status) {
 
         Objects.requireNonNull(status, "status");
 

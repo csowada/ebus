@@ -22,13 +22,13 @@ public class EBusWorkerThreadFactory implements ThreadFactory {
     private String prefix = "";
     private boolean useCounter;
 
-    public EBusWorkerThreadFactory(String prefix, boolean useCounter) {
+    public EBusWorkerThreadFactory(final String prefix, final boolean useCounter) {
         this.prefix = prefix;
         this.useCounter = useCounter;
     }
 
     @Override
-    public Thread newThread(Runnable runnable) {
+    public Thread newThread(final Runnable runnable) {
         String name = useCounter ? prefix + "-" + counter++ : prefix;
         return new Thread(runnable, name);
     }

@@ -52,12 +52,12 @@ public abstract class AbstractEBusConnection implements IEBusConnection {
     }
 
     @Override
-    public int readBytes(byte[] buffer) throws IOException {
+    public int readBytes(final byte[] buffer) throws IOException {
         return inputStream.read(buffer);
     }
 
     @Override
-    public int readByte(boolean lowLatency) throws IOException {
+    public int readByte(final boolean lowLatency) throws IOException {
         return inputStream.read();
     }
 
@@ -67,7 +67,7 @@ public abstract class AbstractEBusConnection implements IEBusConnection {
     }
 
     @Override
-    public void writeByte(int b) throws IOException {
+    public void writeByte(final int b) throws IOException {
         outputStream.write(b);
         outputStream.flush();
     }

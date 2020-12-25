@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.command.EBusCommandUtils;
-import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.core.EBusDataException.EBusError;
 import de.csdev.ebus.utils.EBusUtils;
 
@@ -378,12 +377,6 @@ public class EBusStateMachineTest {
                     bb.put(masterTelegramPart);
 
                     runMachine(EBusUtils.toByteArray(masterTelegramPart));
-
-                } catch (EBusTypeException e) {
-
-                    logger.info(EBusUtils.toHexDumpString(bb).toString());
-                    logger.info(e.getLocalizedMessage());
-                    errors++;
 
                 } catch (EBusDataException e) {
 

@@ -45,9 +45,9 @@ public class EBusValueJsonDeserializer implements JsonDeserializer<List<EBusValu
             throws JsonParseException {
 
         JsonArray asJsonArray = jElement.getAsJsonArray();
-        ArrayList<EBusValueDTO> result = new ArrayList<EBusValueDTO>();
+        ArrayList<EBusValueDTO> result = new ArrayList<>();
 
-        ArrayList<String> fields = new ArrayList<String>();
+        ArrayList<String> fields = new ArrayList<>();
         for (Field field : EBusValueDTO.class.getDeclaredFields()) {
 
             SerializedName annotation = field.getAnnotation(SerializedName.class);

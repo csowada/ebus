@@ -28,7 +28,7 @@ public interface IEBusConnectorEventListener {
      * @param receivedData
      * @param sendQueueId
      */
-    public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId);
+    public void onTelegramReceived(final byte[] receivedData, final @Nullable Integer sendQueueId);
 
     /**
      * A new valid telegram has been received.
@@ -36,19 +36,19 @@ public interface IEBusConnectorEventListener {
      * @param exception
      * @param sendQueueId
      */
-    public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId);
+    public void onTelegramException(final EBusDataException exception, final @Nullable Integer sendQueueId);
 
     /**
      * A connection exception has occurred
      *
      * @param e
      */
-    public void onConnectionException(Exception e);
+    public void onConnectionException(final Exception e);
 
     /**
      * The connection status has changed
      *
      * @param status ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED or ConnectionStatus.DISCONNECTED
      */
-    public void onConnectionStatusChanged(ConnectionStatus status);
+    public void onConnectionStatusChanged(final ConnectionStatus status);
 }

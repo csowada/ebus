@@ -18,19 +18,19 @@ public class EBusConfigurationReaderException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public EBusConfigurationReaderException(String message, Throwable cause, Object... args) {
+    public EBusConfigurationReaderException(final String message, final Throwable cause, final Object... args) {
         super(String.format(message, args), cause);
     }
 
-    public EBusConfigurationReaderException(String message, Object... args) {
+    public EBusConfigurationReaderException(final String message, final Object... args) {
         super(MessageFormat.format(message, args));
     }
 
-    public EBusConfigurationReaderException(String message) {
+    public EBusConfigurationReaderException(final String message) {
         super(message);
     }
 
-    public EBusConfigurationReaderException(String message, Throwable cause) {
+    public EBusConfigurationReaderException(final String message, final Throwable cause) {
         super(message, cause);
     }
 

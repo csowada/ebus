@@ -47,7 +47,7 @@ public interface IEBusConnection {
      * @return
      * @throws IOException
      */
-    public int readByte(boolean lowLatency) throws IOException;
+    public int readByte(final boolean lowLatency) throws IOException;
 
     /**
      * Returns <code>true</code> if not data is available in the buffer
@@ -64,7 +64,7 @@ public interface IEBusConnection {
      * @return
      * @throws IOException
      */
-    public int readBytes(byte[] buffer) throws IOException;
+    public int readBytes(final byte[] buffer) throws IOException;
 
     /**
      * Writes a byte to the connection
@@ -72,7 +72,7 @@ public interface IEBusConnection {
      * @param b
      * @throws IOException
      */
-    public void writeByte(int b) throws IOException;
+    public void writeByte(final int b) throws IOException;
 
     /**
      * Resets the connection and flushes all buffers

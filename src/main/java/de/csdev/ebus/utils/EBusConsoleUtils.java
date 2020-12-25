@@ -51,6 +51,10 @@ public class EBusConsoleUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusConsoleUtils.class);
 
+    private EBusConsoleUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      *
      * @param data
