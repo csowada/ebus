@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased 
+### Fixed
+- The new "Change Status" check (from v1.0.8) does not work, since the old status is already set previously
 
 ## [1.1.3] - 2020-12-25
 ### Changed

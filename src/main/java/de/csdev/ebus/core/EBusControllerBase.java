@@ -214,11 +214,6 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
             return;
         }
 
-        // only run on a real status change
-        if (getConnectionStatus() == status) {
-            return;
-        }
-
         if (threadPool == null || threadPool.isTerminated()) {
             logger.warn(THREADPOOL_NOT_READY);
             return;
@@ -326,8 +321,12 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
         Objects.requireNonNull(status, "status");
 
-        this.connectionStatus = status;
-        fireOnEBusConnectionStatusChange(status);
+
+        // only run on a real status change
+        if (this.connectionStatus != status) {
+            this.connectionStatus = status;
+            fireOnEBusConnectionStatusChange(status);
+        }
     }
 
     @Override
