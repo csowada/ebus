@@ -1,4 +1,0 @@
-class java/lang/Class
-getResource
- (Ljava/lang/String;)Ljava/net/URL;
- (Ljava/lang/String;)L0java/net/URL;
