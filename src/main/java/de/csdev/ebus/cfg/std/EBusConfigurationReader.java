@@ -23,17 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.IEBusConfigurationReader;
@@ -86,7 +84,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
      * @see de.csdev.ebus.cfg.IEBusConfigurationReader#loadBuildInConfigurations()
      */
     @Override
-    public @NonNull List<@NonNull IEBusCommandCollection> loadBuildInConfigurationCollections() {
+    public @NonNull List<@NonNull IEBusCommandCollection> loadBuildInConfigurationCollections()
+            throws EBusConfigurationReaderException, IOException {
 
         URL url = EBusConfigurationReader.class.getResource("/index-configuration.json");
         Objects.requireNonNull(url);
@@ -97,7 +96,9 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
     /*
      * (non-Javadoc)
      *
-     * @see de.csdev.ebus.cfg.IEBusConfigurationReader#loadConfigurationCollection(java.io.InputStream)
+     * @see
+     * de.csdev.ebus.cfg.IEBusConfigurationReader#loadConfigurationCollection(java.
+     * io.InputStream)
      */
     @Override
     public @NonNull IEBusCommandCollection loadConfigurationCollection(@NonNull URL url)
@@ -124,18 +125,38 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         EBusCollectionDTO collection = Objects
                 .requireNonNull(gson.fromJson(new InputStreamReader(dis), EBusCollectionDTO.class));
 
-        EBusCommandCollection commandCollection = (EBusCommandCollection) loadConfigurationCollection(collection);
+        try {
+            EBusCommandCollection commandCollection = (EBusCommandCollection) loadConfigurationCollection(collection);
+            // add md5 hash
+            commandCollection.setSourceHash(md.digest());
 
-        // add md5 hash
-        commandCollection.setSourceHash(md.digest());
+            return commandCollection;
 
-        return commandCollection;
+        } catch (EBusConfigurationReaderException e) {
+            throw new EBusConfigurationReaderException("%s [ URL: %s ]", e.getMessage(), url);
+        }
     }
 
     public @NonNull IEBusCommandCollection loadConfigurationCollection(@NonNull EBusCollectionDTO collection)
             throws EBusConfigurationReaderException {
 
         Objects.requireNonNull(collection, "collection");
+
+        if (StringUtils.isEmpty(collection.getId())) {
+            throw new EBusConfigurationReaderException("The property 'id' is missing for the configuration!");
+        }
+
+        if (StringUtils.isEmpty(collection.getLabel())) {
+            throw new EBusConfigurationReaderException("The property 'label' is missing for the configuration!");
+        }
+
+        if (StringUtils.isEmpty(collection.getDescription())) {
+            throw new EBusConfigurationReaderException("The property 'description' is missing for the configuration!");
+        }
+
+        if (collection.getProperties() == null) {
+            throw new EBusConfigurationReaderException("The property 'properties' is missing for the configuration!");
+        }
 
         EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
                 collection.getDescription(), collection.getProperties());
@@ -250,7 +271,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
 
         if (id == null) {
-            throw new EBusConfigurationReaderException("Property 'id' is missing for command ! {0}",
+            throw new EBusConfigurationReaderException("Property 'id' is missing for command ! %s",
                     commandElement != null ? commandElement.toString() : "<NULL>");
         }
 
@@ -367,7 +388,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
 
         if (StringUtils.isEmpty(typeStr)) {
-            throw new EBusConfigurationReaderException("Property 'type' is missing for command ! {0}",
+            throw new EBusConfigurationReaderException("Property 'type' is missing for command ! %s",
                     commandMethod != null ? commandMethod.getParent() : "<NULL>");
         }
 
@@ -395,7 +416,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                     templateCollection = templateBlockRegistry.get(globalId);
 
                     if (templateCollection == null) {
-                        throw new EBusConfigurationReaderException("Unable to find a template-block with id {0}!", id);
+                        throw new EBusConfigurationReaderException("Unable to find a template-block with id %s!", id);
                     }
                 }
 
@@ -445,7 +466,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 templateCollection.add(templateMap.get(id));
 
             } else {
-                throw new EBusConfigurationReaderException("Unable to find a template for id {0}!", id);
+                throw new EBusConfigurationReaderException("Unable to find a template for id %s!", id);
 
             }
 
@@ -556,7 +577,9 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
     /*
      * (non-Javadoc)
      *
-     * @see de.csdev.ebus.cfg.IEBusConfigurationReader#setEBusTypes(de.csdev.ebus.command.datatypes.EBusTypeRegistry)
+     * @see
+     * de.csdev.ebus.cfg.IEBusConfigurationReader#setEBusTypes(de.csdev.ebus.command
+     * .datatypes.EBusTypeRegistry)
      */
     @Override
     public void setEBusTypes(@NonNull EBusTypeRegistry ebusTypes) {
@@ -565,7 +588,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
     }
 
     @Override
-    public @NonNull List<@NonNull IEBusCommandCollection> loadConfigurationCollectionBundle(@NonNull URL url) {
+    public @NonNull List<@NonNull IEBusCommandCollection> loadConfigurationCollectionBundle(@NonNull URL url)
+        throws EBusConfigurationReaderException, IOException {
 
         Objects.requireNonNull(url, "url");
 
@@ -575,36 +599,22 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         Type type = new TypeToken<Map<String, ?>>() {
         }.getType();
 
-        try {
+        Map<String, ?> mapping = gson.fromJson(new InputStreamReader(url.openStream()), type);
 
-            Map<String, ?> mapping = gson.fromJson(new InputStreamReader(url.openStream()), type);
+        if (mapping.containsKey("files")) {
 
-            if (mapping.containsKey("files")) {
+            @SuppressWarnings("unchecked")
+            List<Map<String, String>> files = (List<Map<String, String>>) mapping.get("files");
 
-                @SuppressWarnings("unchecked")
-                List<Map<String, String>> files = (List<Map<String, String>>) mapping.get("files");
+            if (files != null && !files.isEmpty()) {
+                for (Map<String, String> file : files) {
+                    URL fileUrl = new URL(url, file.get("url"));
 
-                if (files != null && !files.isEmpty()) {
-                    for (Map<String, String> file : files) {
-                        URL fileUrl = new URL(url, file.get("url"));
-
-                        try {
-                            logger.debug("Load configuration from url {} ...", fileUrl);
-                            IEBusCommandCollection collection = loadConfigurationCollection(fileUrl);
-                            result.add(collection);
-
-                        } catch (EBusConfigurationReaderException e) {
-                            logger.error("{} (url: {})", e.getMessage(), fileUrl);
-                        } catch (IOException e) {
-                            logger.error("error!", e);
-                        }
-
-                    }
+                    logger.debug("Load configuration from url {} ...", fileUrl);
+                    IEBusCommandCollection collection = loadConfigurationCollection(fileUrl);
+                    result.add(collection);
                 }
             }
-
-        } catch (JsonSyntaxException | JsonIOException | IOException e) {
-            logger.error("error!", e);
         }
 
         return result;

@@ -74,15 +74,19 @@ public class EBusCommandRegistry {
                 loadBuildInCommandCollections();
             }
 
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | EBusTypeException e) {
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | EBusTypeException
+                | EBusConfigurationReaderException | IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
     /**
      * Loads all build-in command collections
+     * 
+     * @throws IOException
+     * @throws EBusConfigurationReaderException
      */
-    public void loadBuildInCommandCollections() {
+    public void loadBuildInCommandCollections() throws EBusConfigurationReaderException, IOException {
         List<@NonNull IEBusCommandCollection> loadBuildInConfigurations = reader.loadBuildInConfigurationCollections();
 
         if (!loadBuildInConfigurations.isEmpty()) {
@@ -97,23 +101,15 @@ public class EBusCommandRegistry {
      *
      * @param url
      */
-    public void loadCommandCollection(@NonNull URL url) {
-
+    public void loadCommandCollection(@NonNull URL url) throws EBusConfigurationReaderException, IOException {
         Objects.requireNonNull(url);
-
-        try {
-            addCommandCollection(reader.loadConfigurationCollection(url));
-
-        } catch (EBusConfigurationReaderException | IOException e) {
-            logger.error("error!", e);
-        }
-
+        addCommandCollection(reader.loadConfigurationCollection(url));
     }
 
     /**
      * @param url
      */
-    public void loadCommandCollectionBundle(@NonNull URL url) {
+    public void loadCommandCollectionBundle(@NonNull URL url) throws EBusConfigurationReaderException, IOException  {
 
         Objects.requireNonNull(url);
 

@@ -10,12 +10,14 @@ package de.csdev.ebus.wip;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandException;
 import de.csdev.ebus.command.EBusCommandRegistry;
@@ -35,7 +37,7 @@ public class EBusCustomParserTest {
     private final Logger logger = LoggerFactory.getLogger(EBusCustomParserTest.class);
 
     // @Test
-    public void test_BuildMasterTelegram() {
+    public void test_BuildMasterTelegram() throws EBusConfigurationReaderException, IOException {
 
         URL url = EBusConfigurationReader.class.getResource("/custom.json");
         assertNotNull(url);

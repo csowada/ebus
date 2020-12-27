@@ -10,6 +10,7 @@ package de.csdev.ebus.cfg;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.net.URL;
 
 import org.junit.Test;
@@ -24,7 +25,7 @@ import de.csdev.ebus.command.EBusCommandRegistry;
 public class EBusConfigurationBundleTest {
 
     @Test
-    public void test_BuildMasterTelegram() {
+    public void test_BuildMasterTelegram() throws EBusConfigurationReaderException, IOException {
 
         URL url = EBusCommandRegistry.class.getResource("/index-configuration.json");
         assertNotNull(url);
