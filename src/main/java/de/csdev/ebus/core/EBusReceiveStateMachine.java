@@ -222,12 +222,12 @@ public class EBusReceiveStateMachine {
     /**
      * Update the state machine
      *
-     * @param data The next byte
+     * @param dataByte The next byte
      * @throws EBusDataException throws an exception on any telegram error
      */
-    public void update(final byte data0) throws EBusDataException {
+    public void update(final byte dataByte) throws EBusDataException {
 
-        byte data = data0;
+        byte data = dataByte;
 
         try {
 
