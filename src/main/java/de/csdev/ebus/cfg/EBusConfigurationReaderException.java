@@ -8,8 +8,6 @@
  */
 package de.csdev.ebus.cfg;
 
-import java.text.MessageFormat;
-
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -18,20 +16,19 @@ public class EBusConfigurationReaderException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public EBusConfigurationReaderException(final String message, final Throwable cause, final Object... args) {
-        super(String.format(message, args), cause);
+    public EBusConfigurationReaderException(final String message) {
+        super(message);
     }
 
     public EBusConfigurationReaderException(final String message, final Object... args) {
-        super(MessageFormat.format(message, args));
-    }
-
-    public EBusConfigurationReaderException(final String message) {
-        super(message);
+        super(String.format(message, args));
     }
 
     public EBusConfigurationReaderException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
+    public EBusConfigurationReaderException(final String message, final Throwable cause, final Object... args) {
+        super(String.format(message, args), cause);
+    }
 }

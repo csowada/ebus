@@ -1,0 +1,64 @@
+{
+    "id":           "test",
+    "vendor":       "TestCase",
+    "x-label":      "Test Case",
+    "description":  "Test Case commands",
+    
+    "authors":      ["Christian Sowada, opensource@cs-dev.de"],
+    
+    "commands":
+    [
+
+        {
+            "label":    "Identification of eBUS devices - Request",
+            "id":       "common.identification",
+            "command":  "99 04",
+    
+            "template": [
+                {"name": "vendor", "type": "byte", "label": "Vendor"},
+                {"name": "device_id", "type": "bytes", "length": 5, "label": "Device ID"},
+                {"name": "software_version", "type": "version", "label": "Software Version"},
+                {"name": "hardware_version", "type": "version", "label": "Hardware Version"}
+            ],
+    
+            "broadcast": {
+                "master": [
+                    {"type": "template-block"}
+                ]
+            },
+    
+            "get": {
+                "slave": [
+                    {"type": "template-block"}
+                ]
+            }
+        },
+    
+        {
+            "label":    "Inquiry of Existence",
+            "id":       "common.inquiry_of_existence",
+            "command":  "99 FE",
+            "broadcast":{}
+        },
+    
+        {
+            "label":    "Sign of Life",
+            "id":       "common.sign_of_life",
+            "command":  "99 FF",
+            "broadcast":{}
+        },
+    
+        {
+            "label":    "Error Message",
+            "id":       "common.error",
+            "command":  "FE 99",
+    
+            "broadcast": {
+                "master": [
+                    {"type": "string", "name":"error", "length": 10}
+                    
+                ]
+            }
+        }
+    ]
+}

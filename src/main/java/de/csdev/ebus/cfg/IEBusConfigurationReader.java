@@ -25,39 +25,41 @@ import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 @NonNullByDefault
 public interface IEBusConfigurationReader {
 
-    /**
-     * Loads all build-in command collections implemented by the reader
-     *
-     * @return
-     */
-    public List<IEBusCommandCollection> loadBuildInConfigurationCollections();
+        /**
+         * Loads all build-in command collections implemented by the reader
+         *
+         * @return
+         */
+        public List<IEBusCommandCollection> loadBuildInConfigurationCollections()
+                        throws EBusConfigurationReaderException, IOException;
 
-    /**
-     * Loads the configuration from an InputStream and returns a command collection
-     *
-     * @param url
-     * @return
-     * @throws EBusConfigurationReaderException
-     * @throws IOException
-     */
-    public @Nullable IEBusCommandCollection loadConfigurationCollection(final URL url)
-            throws EBusConfigurationReaderException, IOException;
+        /**
+         * Loads the configuration from an InputStream and returns a command collection
+         *
+         * @param url
+         * @return
+         * @throws EBusConfigurationReaderException
+         * @throws IOException
+         */
+        public @Nullable IEBusCommandCollection loadConfigurationCollection(final URL url)
+                        throws EBusConfigurationReaderException, IOException;
 
-    /**
-     * @param url
-     * @return
-     */
-    public List<IEBusCommandCollection> loadConfigurationCollectionBundle(final URL url);
+        /**
+         * @param url
+         * @return
+         */
+        public List<IEBusCommandCollection> loadConfigurationCollectionBundle(final URL url)
+                        throws EBusConfigurationReaderException, IOException;
 
-    /**
-     * Sets the eBUS type registry to use
-     *
-     * @param ebusTypes
-     */
-    public void setEBusTypes(final EBusTypeRegistry ebusTypes);
+        /**
+         * Sets the eBUS type registry to use
+         *
+         * @param ebusTypes
+         */
+        public void setEBusTypes(final EBusTypeRegistry ebusTypes);
 
-    /**
-     * Clears all internal states
-     */
-    public void clear();
+        /**
+         * Clears all internal states
+         */
+        public void clear();
 }
