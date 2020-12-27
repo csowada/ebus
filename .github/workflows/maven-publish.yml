@@ -61,16 +61,15 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create GitGub Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Create a new GitHub Release
+      uses: docker://antonyurchenko/git-release:latest
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DRAFT_RELEASE: "true"
+        PRE_RELEASE: "false"
+        CHANGELOG_FILE: "CHANGELOG.md"
+        ALLOW_EMPTY_CHANGELOG: "true"
+        ALLOW_TAG_PREFIX: "true"
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this Release
-          
-        draft: true
-        prerelease: false
+        args: |
+          target/*.jar

@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.4] - 2020-12-27
+### Changed
+- Enhanced the internal ThreadPool from 30 to 60 to prevent issues on startup
+- Throw better excepetions if the json configuration file is not valid
+- Removed the unsed ``annotation`` folder
+### Fixed
+- The new "Change Status" check (from v1.0.8) does not work, since the old status is already set previously
+
 ## [1.1.3] - 2020-12-25
 ### Changed
 - Changed many line of code to fix sonarlint/cloud issues

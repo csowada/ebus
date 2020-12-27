@@ -82,6 +82,8 @@ public class EBusClient {
         Objects.requireNonNull(listener, LABEL_LISTENER);
         if (deviceTable != null) {
             deviceTable.addEBusDeviceTableListener(listener);
+        } else {
+            throw new IllegalStateException("Device Table is not initialized!");
         }
     }
 
@@ -95,6 +97,8 @@ public class EBusClient {
         Objects.requireNonNull(listener, LABEL_LISTENER);
         if (controller != null) {
             controller.addEBusEventListener(listener);
+        } else {
+            throw new IllegalStateException("Controller is not initialized!");
         }
     }
 
@@ -108,6 +112,8 @@ public class EBusClient {
         Objects.requireNonNull(listener, LABEL_LISTENER);
         if (resolverService != null) {
             resolverService.addEBusParserListener(listener);
+        } else {
+            throw new IllegalStateException("Resolver Service is not initialized!");
         }
     }
 

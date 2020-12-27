@@ -214,11 +214,6 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
             return;
         }
 
-        // only run on a real status change
-        if (getConnectionStatus() == status) {
-            return;
-        }
-
         if (threadPool == null || threadPool.isTerminated()) {
             logger.warn(THREADPOOL_NOT_READY);
             return;
@@ -241,7 +236,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     protected void initThreadPool() {
         // create new thread pool to send received telegrams
         // limit the number of threads to 30
-        threadPool = new ThreadPoolExecutor(0, 30, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(),
+        threadPool = new ThreadPoolExecutor(5, 60, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(),
                 new EBusWorkerThreadFactory("ebus-receiver", true));
 
         // create watch dog thread pool
@@ -326,8 +321,12 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
         Objects.requireNonNull(status, "status");
 
-        this.connectionStatus = status;
-        fireOnEBusConnectionStatusChange(status);
+
+        // only run on a real status change
+        if (this.connectionStatus != status) {
+            this.connectionStatus = status;
+            fireOnEBusConnectionStatusChange(status);
+        }
     }
 
     @Override

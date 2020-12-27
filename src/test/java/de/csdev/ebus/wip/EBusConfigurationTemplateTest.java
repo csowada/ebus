@@ -10,10 +10,12 @@ package de.csdev.ebus.wip;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import de.csdev.ebus.cfg.EBusConfigurationReaderException;
 import de.csdev.ebus.cfg.std.EBusConfigurationReader;
 import de.csdev.ebus.command.EBusCommandRegistry;
 import de.csdev.ebus.command.IEBusCommand;
@@ -29,7 +31,7 @@ import de.csdev.ebus.command.IEBusValue;
 public class EBusConfigurationTemplateTest {
 
     // @Test
-    public void test_BuildMasterTelegram() {
+    public void test_BuildMasterTelegram() throws EBusConfigurationReaderException, IOException {
 
         EBusCommandRegistry registry = new EBusCommandRegistry(EBusConfigurationReader.class);
         registry.loadBuildInCommandCollections();
