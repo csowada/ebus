@@ -25,13 +25,12 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
 
     @Override
     public void setParent(@Nullable EBusCommandMethod parent) {
+        if (parent != null) {
+            super.setParent(parent);
 
-        Objects.requireNonNull(parent, "parent");
-
-        super.setParent(parent);
-
-        for (IEBusValue value : list) {
-            ((EBusCommandValue) value).setParent(parent);
+            for (IEBusValue value : list) {
+                ((EBusCommandValue) value).setParent(parent);
+            }
         }
     }
 
