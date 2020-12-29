@@ -16,7 +16,7 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusTypeUnsignedNumber extends AbstractEBusTypeUnsignedNumber {
 
-    public static String TYPE_UNUMBER = "unumber";
+    public static final String TYPE_UNUMBER = "unumber";
 
     private static String[] supportedTypes = new String[] { TYPE_UNUMBER };
 

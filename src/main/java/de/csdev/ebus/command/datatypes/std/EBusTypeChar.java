@@ -16,7 +16,7 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusTypeChar extends AbstractEBusTypeNumber {
 
-    public static String TYPE_CHAR = "char";
+    public static final String TYPE_CHAR = "char";
 
     private static String[] supportedTypes = new String[] { TYPE_CHAR };
 

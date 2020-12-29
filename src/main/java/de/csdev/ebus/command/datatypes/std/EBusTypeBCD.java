@@ -24,7 +24,7 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
 
-    public static String TYPE_BCD = "bcd";
+    public static final String TYPE_BCD = "bcd";
 
     private static String[] supportedTypes = new String[] { TYPE_BCD };
 
