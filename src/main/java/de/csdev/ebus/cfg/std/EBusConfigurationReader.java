@@ -164,8 +164,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         // add md5 hash
         commandCollection.setIdentification(collection.getIdentification());
 
-        // parse the template block
-        parseTemplateConfiguration(collection);
+        // parse the template list block
+        parseTemplateListConfiguration(collection);
 
         List<EBusCommandDTO> commands = collection.getCommands();
         if (commands != null) {
@@ -179,7 +179,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         return commandCollection;
     }
 
-    protected void parseTemplateConfiguration(@NonNull EBusCollectionDTO collection)
+    protected void parseTemplateListConfiguration(@NonNull EBusCollectionDTO collection)
             throws EBusConfigurationReaderException {
 
         Objects.requireNonNull(collection, "collection");
@@ -188,35 +188,41 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         List<EBusCommandTemplatesDTO> templateSection = collection.getTemplates();
         if (templateSection != null) {
             for (EBusCommandTemplatesDTO templates : templateSection) {
-                List<EBusValueDTO> templateValues = templates.getTemplate();
-                if (templateValues != null) {
+                parseTemplateBlockConfiguration(templates.getTemplate(), collection, templates);
+            }
+        }
+    }
 
-                    Collection<EBusCommandValue> blockList = new ArrayList<>();
+    protected void parseTemplateBlockConfiguration(@Nullable List<EBusValueDTO> templateValues, @NonNull EBusCollectionDTO collection, @NonNull EBusCommandTemplatesDTO templates)
+            throws EBusConfigurationReaderException {
 
-                    for (EBusValueDTO value : templateValues) {
-                        if (value != null) {
-                            Collection<@NonNull EBusCommandValue> pv = parseValueConfiguration(value, null, null, null);
+        if (templateValues == null) {
+            return;
+        }
 
-                            if (pv != null && !pv.isEmpty()) {
-                                blockList.addAll(pv);
+        Collection<EBusCommandValue> blockList = new ArrayList<>();
 
-                                // global id
-                                String id = collection.getId() + "." + templates.getName() + "." + value.getName();
-                                logger.trace("Add template with global id {} to registry ...", id);
-                                templateValueRegistry.put(id, pv);
-                            }
-                        }
-                    }
+        for (EBusValueDTO value : templateValues) {
+            if (value != null) {
+                Collection<@NonNull EBusCommandValue> pv = parseValueConfiguration(value, null, null, null);
 
-                    if (!blockList.isEmpty()) {
-                        String id = collection.getId() + "." + templates.getName();
+                if (!pv.isEmpty()) {
+                    blockList.addAll(pv);
 
-                        // global id
-                        logger.trace("Add template block with global id {} to registry ...", id);
-                        templateBlockRegistry.put(id, blockList);
-                    }
+                    // global id
+                    String id = collection.getId() + "." + templates.getName() + "." + value.getName();
+                    logger.trace("Add template with global id {} to registry ...", id);
+                    templateValueRegistry.put(id, pv);
                 }
             }
+        }
+
+        if (!blockList.isEmpty()) {
+            String id = collection.getId() + "." + templates.getName();
+
+            // global id
+            logger.trace("Add template block with global id {} to registry ...", id);
+            templateBlockRegistry.put(id, blockList);
         }
     }
 
@@ -255,18 +261,13 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         Byte source = EBusUtils.toByte(commandElement.getSrc());
 
         // read in template block
-        List<EBusValueDTO> templates = commandElement.getTemplate();
-        if (templates != null) {
-            for (EBusValueDTO template : templates) {
-                if (template != null) {
-                    for (EBusCommandValue templateCfg : parseValueConfiguration(template, null, null, null)) {
-                        if (StringUtils.isEmpty(templateCfg.getName())) {
-                            templateMap.put(templateCfg.getName(), templateCfg);
-                        }
-
-                        templateList.add(templateCfg);
-                    }
+        for (EBusValueDTO template : checkedList(commandElement.getTemplate())) {
+            for (EBusCommandValue templateCfg : parseValueConfiguration(template, null, null, null)) {
+                if (StringUtils.isEmpty(templateCfg.getName())) {
+                    templateMap.put(templateCfg.getName(), templateCfg);
                 }
+
+                templateList.add(templateCfg);
             }
         }
 
@@ -315,28 +316,16 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 commandMethod.setDestinationAddress(destination);
                 commandMethod.setSourceAddress(source);
 
-                List<EBusValueDTO> master = commandMethodElement.getMaster();
-                if (master != null) {
-                    for (EBusValueDTO template : master) {
-                        if (template != null) {
-                            for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, templateList,
-                                    commandMethod)) {
-                                commandMethod.addMasterValue(ev);
-                            }
+                for (EBusValueDTO template : checkedList(commandMethodElement.getMaster())) {
+                    for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, templateList, commandMethod)) {
+                            commandMethod.addMasterValue(ev);
                         }
-                    }
                 }
 
-                List<EBusValueDTO> slave = commandMethodElement.getSlave();
-                if (slave != null) {
-                    for (EBusValueDTO template : slave) {
-                        if (template != null) {
-                            for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, templateList,
-                                    commandMethod)) {
-                                commandMethod.addSlaveValue(ev);
-                            }
+                for (EBusValueDTO template : checkedList(commandMethodElement.getSlave())) {
+                    for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, templateList, commandMethod)) {
+                            commandMethod.addSlaveValue(ev);
                         }
-                    }
                 }
 
                 // default type is always master-slave if not explicit set or a broadcast
@@ -361,6 +350,23 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
 
         return cfg;
+    }
+
+    /**
+     * Helper function to work with a secure non null list
+     * @param master
+     * @return
+     */
+    protected @NonNull List<@NonNull EBusValueDTO> checkedList(List<EBusValueDTO> master) {
+        List<EBusValueDTO> templates = new ArrayList<>();
+        if (master != null) {
+            for (EBusValueDTO template : master) {
+                if (template != null) {
+                    templates.add(template);
+                }
+            }
+        }
+        return templates;
     }
 
     /**
@@ -447,7 +453,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         } else if (typeStr != null && typeStr.equals("template")) {
 
             String id = (String) valueDto.getProperty("id");
-            String globalId = collectionId + "." + id;
+            String globalId = collectionId != null ? collectionId + "." + id : null;
             Collection<@NonNull EBusCommandValue> templateCollection = null;
 
             if (StringUtils.isEmpty(id)) {
@@ -457,7 +463,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             if (templateValueRegistry.containsKey(id)) {
                 templateCollection = templateValueRegistry.get(id);
 
-            } else if (templateValueRegistry.containsKey(globalId)) {
+            } else if (globalId != null && templateValueRegistry.containsKey(globalId)) {
                 templateCollection = templateValueRegistry.get(globalId);
 
             } else if (templateMap != null && templateMap.containsKey(id)) {
