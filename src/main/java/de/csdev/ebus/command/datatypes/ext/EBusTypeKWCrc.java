@@ -23,9 +23,9 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComplexType<Byte> {
 
-    public static String TYPE_KW_CRC = "kw-crc";
+    public static final String TYPE_KW_CRC = "kw-crc";
 
-    public static String POS = "pos";
+    public static final String POS = "pos";
 
     public static int pos = 0;
 

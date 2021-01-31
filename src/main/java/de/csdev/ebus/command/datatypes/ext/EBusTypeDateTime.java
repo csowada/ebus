@@ -32,15 +32,15 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeDateTime.class);
 
-    public static String TYPE_DATETIME = "datetime";
+    public static final String TYPE_DATETIME = "datetime";
+
+    public static final String TIME_FIRST = "timeFirst";
+
+    public static final String VARIANT_DATE = "variantDate";
+
+    public static final String VARIANT_TIME = "variantTime";
 
     private static String[] supportedTypes = new String[] { TYPE_DATETIME };
-
-    public static String TIME_FIRST = "timeFirst";
-
-    public static String VARIANT_DATE = "variantDate";
-
-    public static String VARIANT_TIME = "variantTime";
 
     private boolean timeFirst = true;
 
