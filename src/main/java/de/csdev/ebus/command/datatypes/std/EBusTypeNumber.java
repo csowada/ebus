@@ -16,7 +16,7 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusTypeNumber extends AbstractEBusTypeNumber {
 
-    public static final String TYPE_NUMBER = "number";
+    public static String TYPE_NUMBER = "number";
 
     private static String[] supportedTypes = new String[] { TYPE_NUMBER };
 

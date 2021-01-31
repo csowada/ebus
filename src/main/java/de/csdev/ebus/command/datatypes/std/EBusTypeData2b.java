@@ -22,7 +22,7 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class EBusTypeData2b extends AbstractEBusTypeNumber {
 
-    public static final String TYPE_DATA2B = "data2b";
+    public static String TYPE_DATA2B = "data2b";
 
     private static String[] supportedTypes = new String[] { TYPE_DATA2B };
 

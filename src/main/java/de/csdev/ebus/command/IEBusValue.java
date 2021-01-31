@@ -22,7 +22,7 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  * @author Christian Sowada - Initial contribution
  *
  */
-public interface IEBusValue {
+public interface IEBusValue extends Cloneable {
 
     /**
      * Returns the type of this value
@@ -115,5 +115,5 @@ public interface IEBusValue {
      *
      * @return
      */
-    public @NonNull IEBusValue getClonedInstance();
+    public @NonNull IEBusValue clone();
 }

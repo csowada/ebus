@@ -24,9 +24,9 @@ import de.csdev.ebus.utils.NumberUtils;
  */
 public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
 
-    public static final String TYPE_MWORD = "mword";
+    public static String TYPE_MWORD = "mword";
 
-    public static final String BLOCK_MULTIPLIER = "multiplier";
+    public static String BLOCK_MULTIPLIER = "multiplier";
 
     private static String[] supportedTypes = new String[] { TYPE_MWORD };
 

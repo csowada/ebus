@@ -16,8 +16,8 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusTypeWord extends AbstractEBusTypeUnsignedNumber {
 
-    public static final String TYPE_WORD = "word";
-    public static final String TYPE_UINT = "uint";
+    public static String TYPE_WORD = "word";
+    public static String TYPE_UINT = "uint";
 
     private static String[] supportedTypes = new String[] { TYPE_WORD, TYPE_UINT };
 
