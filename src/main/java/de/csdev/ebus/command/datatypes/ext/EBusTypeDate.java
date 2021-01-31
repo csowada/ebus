@@ -31,17 +31,17 @@ import de.csdev.ebus.utils.EBusDateTime;
  */
 public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
 
-    public static String TYPE_DATE = "date";
+    public static final String TYPE_DATE = "date";
 
-    public static String DEFAULT = "std"; // BDA - 4
+    public static final String DEFAULT = "std"; // BDA - 4
 
-    public static String SHORT = "short"; // BDA:3 - 3
+    public static final String SHORT = "short"; // BDA:3 - 3
 
-    public static String HEX = "hex"; // BDA:3 - 4
+    public static final String HEX = "hex"; // BDA:3 - 4
 
-    public static String HEX_SHORT = "hex_short"; // BDA:3 - 3
+    public static final String HEX_SHORT = "hex_short"; // BDA:3 - 3
 
-    public static String DAYS = "days"; // DAY - 2
+    public static final String DAYS = "days"; // DAY - 2
 
     private static String[] supportedTypes = new String[] { TYPE_DATE };
 

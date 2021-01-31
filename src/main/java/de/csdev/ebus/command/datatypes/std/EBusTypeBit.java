@@ -21,11 +21,11 @@ import de.csdev.ebus.utils.EBusUtils;
  */
 public class EBusTypeBit extends EBusAbstractType<Boolean> {
 
-    public static String TYPE_BIT = "bit";
+    public static final String TYPE_BIT = "bit";
 
+    public static final String POS = "pos";
+    
     private static String[] supportedTypes = new String[] { TYPE_BIT };
-
-    public static String POS = "pos";
 
     private Integer pos = null;
 

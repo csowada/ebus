@@ -56,12 +56,12 @@ public class EBusCommandNestedValue extends EBusCommandValue implements IEBusNes
     }
 
     @Override
-    public @NonNull EBusCommandValue clone() {
-        EBusCommandNestedValue clone = (EBusCommandNestedValue) super.clone();
+    public @NonNull EBusCommandValue getClonedInstance() {
+        EBusCommandNestedValue clone = (EBusCommandNestedValue) super.getClonedInstance();
 
         // deep clone list
         for (IEBusValue value : list) {
-            clone.add(value.clone());
+            clone.add(value.getClonedInstance());
         }
 
         return clone;
