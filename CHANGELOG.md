@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.5] - 2021-01-31
+### Changed
+- Removed clone() from DataType objects
+- Simplified EbusConfigurationReader methods
+### Fixed
+- Fix NPE for NestedValues
+
 ## [1.1.4] - 2020-12-27
 ### Changed
 - Enhanced the internal ThreadPool from 30 to 60 to prevent issues on startup
