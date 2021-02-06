@@ -10,8 +10,10 @@ package de.csdev.ebus.service.device;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,18 +36,19 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusDeviceTableService extends EBusConnectorEventListener
         implements IEBusParserListener, IEBusDeviceTableListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusDeviceTableService.class);
 
-    private IEBusController controller;
+    private @NonNull IEBusController controller;
 
-    private Integer scanQueueId = -1;
+    private @NonNull Integer scanQueueId = -1;
 
-    private EBusCommandRegistry configurationProvider;
+    private @NonNull EBusCommandRegistry configurationProvider;
 
-    private EBusDeviceTable deviceTable;
+    private @NonNull EBusDeviceTable deviceTable;
 
     private boolean disableIdentificationRequests = false;
 
@@ -53,8 +56,12 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
 
     private boolean scanRunning = false;
 
-    public EBusDeviceTableService(IEBusController controller, EBusCommandRegistry configurationProvider,
-            EBusDeviceTable deviceTable) {
+    public EBusDeviceTableService(@NonNull IEBusController controller,
+            @NonNull EBusCommandRegistry configurationProvider, @NonNull EBusDeviceTable deviceTable) {
+
+        Objects.requireNonNull(controller);
+        Objects.requireNonNull(configurationProvider);
+        Objects.requireNonNull(deviceTable);
 
         this.controller = controller;
         this.configurationProvider = configurationProvider;
@@ -174,7 +181,7 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
         return false;
     }
 
-    private Byte nextSlaveAddress(byte slaveAddress) {
+    private @Nullable Byte nextSlaveAddress(byte slaveAddress) {
 
         if (slaveAddress == (byte) 0xFD) {
             return null;
@@ -192,7 +199,6 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
      */
     public void dispose() {
         this.controller.removeEBusEventListener(this);
-        this.controller = null;
     }
 
     /**
@@ -253,7 +259,8 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     /*
      * (non-Javadoc)
      *
-     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[], java.lang.Integer)
+     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramReceived(byte[],
+     * java.lang.Integer)
      */
     @Override
     public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
@@ -281,8 +288,9 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     /*
      * (non-Javadoc)
      *
-     * @see de.csdev.ebus.core.EBusConnectorEventListener#onTelegramException(de.csdev.ebus.core.EBusDataException,
-     * java.lang.Integer)
+     * @see
+     * de.csdev.ebus.core.EBusConnectorEventListener#onTelegramException(de.csdev.
+     * ebus.core.EBusDataException, java.lang.Integer)
      */
     @Override
     public void onTelegramException(@NonNull EBusDataException exception, @Nullable Integer sendQueueId) {
@@ -304,8 +312,9 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     /*
      * (non-Javadoc)
      *
-     * @see de.csdev.ebus.service.parser.EBusParserListener#onTelegramResolved(de.csdev.ebus.command.IEBusCommand,
-     * java.util.Map, byte[], java.lang.Integer)
+     * @see
+     * de.csdev.ebus.service.parser.EBusParserListener#onTelegramResolved(de.csdev.
+     * ebus.command.IEBusCommand, java.util.Map, byte[], java.lang.Integer)
      */
     @Override
     public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
@@ -329,8 +338,10 @@ public class EBusDeviceTableService extends EBusConnectorEventListener
     /*
      * (non-Javadoc)
      *
-     * @see de.csdev.ebus.service.device.EBusDeviceTableListener#onEBusDeviceUpdate(de.csdev.ebus.service.device.
-     * EBusDeviceTableListener.TYPE, de.csdev.ebus.service.device.IEBusDevice)
+     * @see
+     * de.csdev.ebus.service.device.EBusDeviceTableListener#onEBusDeviceUpdate(de.
+     * csdev.ebus.service.device. EBusDeviceTableListener.TYPE,
+     * de.csdev.ebus.service.device.IEBusDevice)
      */
     @Override
     public void onEBusDeviceUpdate(IEBusDeviceTableListener.@NonNull TYPE type, @NonNull IEBusDevice device) {
