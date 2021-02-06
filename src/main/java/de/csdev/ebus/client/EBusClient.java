@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2020 by the respective copyright holders.
+ * Copyright (c) 2017-2021 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -80,11 +80,7 @@ public class EBusClient {
      */
     public void addEBusDeviceTableListener(final @NonNull IEBusDeviceTableListener listener) {
         Objects.requireNonNull(listener, LABEL_LISTENER);
-        if (deviceTable != null) {
-            deviceTable.addEBusDeviceTableListener(listener);
-        } else {
-            throw new IllegalStateException("Device Table is not initialized!");
-        }
+        deviceTable.addEBusDeviceTableListener(listener);
     }
 
     /**
@@ -110,11 +106,7 @@ public class EBusClient {
      */
     public void addEBusParserListener(final @NonNull IEBusParserListener listener) {
         Objects.requireNonNull(listener, LABEL_LISTENER);
-        if (resolverService != null) {
-            resolverService.addEBusParserListener(listener);
-        } else {
-            throw new IllegalStateException("Resolver Service is not initialized!");
-        }
+        resolverService.addEBusParserListener(listener);
     }
 
     /**
@@ -182,7 +174,7 @@ public class EBusClient {
      */
     public void connect(final @NonNull IEBusController controller, final byte masterAddress) {
 
-        Objects.requireNonNull(controller, "Parameter controller can't be null!");
+        Objects.requireNonNull(controller, "controller");
 
         controller.addEBusEventListener(resolverService);
 
@@ -206,10 +198,12 @@ public class EBusClient {
     public void dispose() {
         if (controller != null) {
             controller.interrupt();
+            controller = null;
         }
 
         if (deviceTableService != null) {
             deviceTableService.dispose();
+            deviceTableService = null;
         }
 
         if (deviceTable != null) {

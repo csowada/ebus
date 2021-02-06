@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2020 by the respective copyright holders.
+ * Copyright (c) 2017-2021 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -185,7 +185,7 @@ public class EBusLowLevelController extends EBusControllerBase {
         resetWatchdogTimer();
 
         // loop until interrupt or reconnector count is -1 (to many retries)
-        while (!(this.isInterrupted() || reConnectCounter == -1)) {
+        while (!(Thread.interrupted() || reConnectCounter == -1)) {
             try {
 
                 if (!connection.isOpen()) {
@@ -216,6 +216,7 @@ public class EBusLowLevelController extends EBusControllerBase {
                 }
 
             } catch (InterruptedIOException | InterruptedException e) {
+                // bubble interrrupt flag to outer main loop
                 Thread.currentThread().interrupt();
 
             } catch (IOException e) {
@@ -227,6 +228,7 @@ public class EBusLowLevelController extends EBusControllerBase {
                 } catch (IOException e1) {
                     logger.error(e.toString(), e1);
                 } catch (InterruptedException e1) {
+                    // bubble interrrupt flag to outer main loop
                     Thread.currentThread().interrupt();
                 }
 
@@ -240,6 +242,8 @@ public class EBusLowLevelController extends EBusControllerBase {
                 machine.reset();
             }
         } // while loop
+
+        // interrupted flag is not active anymore
 
         try {
             dispose();

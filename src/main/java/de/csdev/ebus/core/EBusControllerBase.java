@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2020 by the respective copyright holders.
+ * Copyright (c) 2017-2021 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -132,10 +132,12 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
         threadPool.execute(() -> {
             for (IEBusConnectorEventListener listener : listeners) {
-                try {
-                    listener.onConnectionException(e);
-                } catch (Exception e1) {
-                    logger.error("Error while firing onConnectionException events!", e1);
+                if (!Thread.interrupted()) {
+                    try {
+                        listener.onConnectionException(e);
+                    } catch (Exception e1) {
+                        logger.error("Error while firing onConnectionException events!", e1);
+                    }
                 }
             }
         });
@@ -166,10 +168,12 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
         threadPool.execute(() -> {
             for (IEBusConnectorEventListener listener : listeners) {
-                try {
-                    listener.onTelegramReceived(receivedData, sendQueueId);
-                } catch (Exception e) {
-                    logger.error("Error while firing onTelegramReceived events!", e);
+                if (!Thread.interrupted()) {
+                    try {
+                        listener.onTelegramReceived(receivedData, sendQueueId);
+                    } catch (Exception e) {
+                        logger.error("Error while firing onTelegramReceived events!", e);
+                    }
                 }
             }
         });
@@ -194,10 +198,12 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
         threadPool.execute(() -> {
             for (IEBusConnectorEventListener listener : listeners) {
-                try {
-                    listener.onTelegramException(exception, sendQueueId);
-                } catch (Exception e) {
-                    logger.error("Error while firing onTelegramException events!", e);
+                if (!Thread.interrupted()) {
+                    try {
+                        listener.onTelegramException(exception, sendQueueId);
+                    } catch (Exception e) {
+                        logger.error("Error while firing onTelegramException events!", e);
+                    }
                 }
             }
         });

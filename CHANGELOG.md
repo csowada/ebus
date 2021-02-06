@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.6] - 2021-02-06
+### Changed
+- Change interuppted behaviour in ``EBusLowLevelController`` thread
+- Enhance @Null check in ``EBusDeviceTableService``
+- Simplified checks due to safe @Null checks
+
 ## [1.1.5] - 2021-01-31
 ### Changed
 - Removed clone() from DataType objects
