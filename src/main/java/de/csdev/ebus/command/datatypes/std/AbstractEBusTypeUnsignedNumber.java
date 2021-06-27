@@ -11,7 +11,7 @@ package de.csdev.ebus.command.datatypes.std;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;

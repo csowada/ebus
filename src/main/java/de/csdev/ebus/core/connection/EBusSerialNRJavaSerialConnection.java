@@ -11,11 +11,11 @@ package de.csdev.ebus.core.connection;
 import java.io.IOException;
 import java.util.TooManyListenersException;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusConsts;
+import de.csdev.ebus.utils.CommonsUtils;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -120,7 +120,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
         // prevent an IllegalMonitorStateException error
         Thread shutdownThread = new Thread(() -> {
 
-            IOUtils.closeQuietly(inputStream);
+            CommonsUtils.closeQuietly(inputStream);
 
             if (outputStream != null) {
                 try {
@@ -128,7 +128,7 @@ public class EBusSerialNRJavaSerialConnection extends AbstractEBusConnection {
                 } catch (IOException e) {
                     // noop
                 }
-                IOUtils.closeQuietly(outputStream);
+                CommonsUtils.closeQuietly(outputStream);
             }
 
             if (serialPort != null) {
