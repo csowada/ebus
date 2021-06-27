@@ -19,13 +19,13 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusQueue.QueueEntry;
+import de.csdev.ebus.utils.CommonsUtils;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -399,13 +399,13 @@ public class EBusEbusdController extends EBusControllerBase {
 
         stopSenderThread();
 
-        IOUtils.closeQuietly(reader);
+        CommonsUtils.closeQuietly(reader);
         reader = null;
 
-        IOUtils.closeQuietly(writer);
+        CommonsUtils.closeQuietly(writer);
         writer = null;
 
-        IOUtils.closeQuietly(socket);
+        CommonsUtils.closeQuietly(socket);
         socket = null;
 
         directMode = false;

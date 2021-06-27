@@ -18,7 +18,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,7 +160,7 @@ public class Emulator {
             Thread.currentThread().interrupt();
         }
 
-        IOUtils.closeQuietly(in);
-        IOUtils.closeQuietly(out);
+        CommonsUtils.closeQuietly(in);
+        CommonsUtils.closeQuietly(out);
     }
 }

@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.7] - 2021-06-27
+### Changed
+- Update project dependencies
+- Remove dependency to ``commons-io``
+- Update to commons lang3
+
 ## [1.1.6] - 2021-02-06
 ### Changed
 - Change interuppted behaviour in ``EBusLowLevelController`` thread

@@ -11,7 +11,7 @@ package de.csdev.ebus.utils;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 

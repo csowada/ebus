@@ -12,9 +12,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.csdev.ebus.utils.CommonsUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -37,8 +38,8 @@ public abstract class AbstractEBusConnection implements IEBusConnection {
             outputStream.flush();
         }
 
-        IOUtils.closeQuietly(inputStream);
-        IOUtils.closeQuietly(outputStream);
+        CommonsUtils.closeQuietly(inputStream);
+        CommonsUtils.closeQuietly(outputStream);
 
         inputStream = null;
         outputStream = null;

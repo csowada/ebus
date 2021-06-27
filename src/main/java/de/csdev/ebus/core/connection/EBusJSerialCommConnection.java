@@ -12,11 +12,11 @@ import java.io.IOException;
 
 import com.fazecast.jSerialComm.SerialPort;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusConsts;
+import de.csdev.ebus.utils.CommonsUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -70,8 +70,8 @@ public class EBusJSerialCommConnection extends AbstractEBusConnection {
         // prevent an IllegalMonitorStateException error
         Thread shutdownThread = new Thread(() -> {
 
-            IOUtils.closeQuietly(inputStream);
-            IOUtils.closeQuietly(outputStream);
+            CommonsUtils.closeQuietly(inputStream);
+            CommonsUtils.closeQuietly(outputStream);
 
             if (serialPort != null) {
                 serialPort.closePort();
