@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.8] - 2021-12-29
+### Changed
+- Update project dependencies
+
 ## [1.1.7] - 2021-06-27
 ### Changed
 - Update project dependencies
