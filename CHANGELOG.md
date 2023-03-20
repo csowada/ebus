@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.9] - 2023-03-20
+### Fixed
+- Remove escaping (0xAA and 0xA) master data bytes and master CRC on function ``EBusCommandUtils.buildPartMasterTelegram``
+
+## [1.1.8] - 2021-12-29
+### Changed
+- Update project dependencies
+
 ## [1.1.7] - 2021-06-27
 ### Changed
 - Update project dependencies

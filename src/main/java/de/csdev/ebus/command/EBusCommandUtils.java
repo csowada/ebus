@@ -204,13 +204,19 @@ public class EBusCommandUtils {
 
         // add the escaped bytes
         for (byte b : masterData) {
-            buf.put(escapeSymbol(b));
+            // disable escaping the special characters as vaillant and wolf
+            // generates AA and A9 bytes!
+            // buf.put(escapeSymbol(b));
+            buf.put(b);
         }
 
         // calculate crc
         byte crc8 = EBusUtils.crc8(buf.array(), buf.position());
 
-        buf.put(escapeSymbol(crc8));
+        // disable escaping the special characters as vaillant and wolf
+        // generates AA and A9 bytes!
+        // buf.put(escapeSymbol(b));
+        buf.put(crc8);
 
         // set limit and reset position
         buf.limit(buf.position());
