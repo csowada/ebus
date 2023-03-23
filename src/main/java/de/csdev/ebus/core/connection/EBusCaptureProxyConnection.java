@@ -10,6 +10,8 @@ package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import de.csdev.ebus.utils.EmulatorCapture;
 
 /**
@@ -54,7 +56,7 @@ public class EBusCaptureProxyConnection implements IEBusConnection {
         return proxyConnection.isReceiveBufferEmpty();
     }
 
-    public int readBytes(final byte[] buffer) throws IOException {
+    public int readBytes(final byte @NonNull [] buffer) throws IOException {
         int readBytes = proxyConnection.readBytes(buffer);
         captureWriter.write(buffer, readBytes);
         return readBytes;

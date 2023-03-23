@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeFloat extends EBusAbstractType<BigDecimal> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeFloat.class);
@@ -49,7 +51,7 @@ public class EBusTypeFloat extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
         float value = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
         if (!Float.isNaN(value)) {
             return BigDecimal.valueOf(value);
@@ -60,7 +62,7 @@ public class EBusTypeFloat extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
 

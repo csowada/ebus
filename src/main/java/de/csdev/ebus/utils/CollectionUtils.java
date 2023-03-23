@@ -27,8 +27,8 @@ public class CollectionUtils {
         throw new IllegalStateException("Utility class");
     }
 
-    public static final @NonNull <T> List<T> emptyList() {
-        return Collections.emptyList();
+    public static final @NonNull <T> List<@Nullable T> emptyList() {
+        return  Collections.emptyList();
     }
 
     /**

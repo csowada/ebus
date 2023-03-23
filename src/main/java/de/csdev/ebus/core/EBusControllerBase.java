@@ -336,7 +336,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     }
 
     @Override
-    public ConnectionStatus getConnectionStatus() {
+    public @NonNull ConnectionStatus getConnectionStatus() {
         return this.connectionStatus;
     }
 

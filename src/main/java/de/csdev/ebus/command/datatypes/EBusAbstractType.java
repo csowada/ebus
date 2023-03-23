@@ -19,6 +19,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +31,14 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
+    private static final  Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
 
-    protected Map<Object, EBusAbstractType<T>> otherInstances = new HashMap<>();
+    protected Map<Object, @Nullable EBusAbstractType<T>> otherInstances = new HashMap<>();
 
-    protected byte[] replaceValue = null;
+    protected byte @Nullable [] replaceValue = null;
 
     protected boolean reverseByteOrder = false;
 
@@ -65,12 +67,12 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      *
      * @return
      */
-    private EBusAbstractType<T> createNewInstance() {
+    private @Nullable EBusAbstractType<T> createNewInstance() {
 
         try {
             @SuppressWarnings({ "unchecked"})
             EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
-            newInstance.types = this.types;
+            newInstance.setTypesParent(types);
             return newInstance;
 
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
@@ -150,7 +152,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @return
      * @throws EBusTypeException
      */
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
         throw new UnsupportedOperationException("Must be overwritten by superclass!");
     }
 
@@ -204,7 +206,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      *
      * @return
      */
-    public byte[] getReplaceValue() {
+    public byte @Nullable [] getReplaceValue() {
 
         int length = getTypeLength();
         if (replaceValue == null || replaceValue.length == 0) {

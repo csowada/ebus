@@ -10,6 +10,8 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.nio.ByteBuffer;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -21,6 +23,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComplexType<Byte> {
 
     public static final String TYPE_KW_CRC = "kw-crc";
@@ -41,7 +44,7 @@ public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComple
     }
 
     @Override
-    public String[] getSupportedTypes() {
+    public String @NonNull [] getSupportedTypes() {
         return supportedTypes;
     }
 

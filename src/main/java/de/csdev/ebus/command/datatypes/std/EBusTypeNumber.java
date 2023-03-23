@@ -8,12 +8,15 @@
  */
 package de.csdev.ebus.command.datatypes.std;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeNumber extends AbstractEBusTypeNumber {
 
     public static final String TYPE_NUMBER = "number";

@@ -225,6 +225,7 @@ public class EBusReceiveStateMachine {
      * @param dataByte The next byte
      * @throws EBusDataException throws an exception on any telegram error
      */
+    @SuppressWarnings("java:S3776")
     public void update(final byte dataByte) throws EBusDataException {
 
         byte data = dataByte;

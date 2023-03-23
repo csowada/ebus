@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public abstract class AbstractEBusConnection implements IEBusConnection {
     }
 
     @Override
-    public int readBytes(final byte[] buffer) throws IOException {
+    public int readBytes(final byte @NonNull [] buffer) throws IOException {
         return inputStream.read(buffer);
     }
 

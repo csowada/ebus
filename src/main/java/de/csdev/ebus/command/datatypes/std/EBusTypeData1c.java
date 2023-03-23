@@ -10,6 +10,7 @@ package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
@@ -20,6 +21,7 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeData1c extends AbstractEBusTypeUnsignedNumber {
 
     public static final String TYPE_DATA1C = "data1c";
@@ -37,13 +39,17 @@ public class EBusTypeData1c extends AbstractEBusTypeUnsignedNumber {
     }
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
         BigDecimal decodeInt = super.decodeInt(data);
-        return decodeInt.divide(BigDecimal.valueOf(2));
+
+        if (decodeInt != null) {
+            return decodeInt.divide(BigDecimal.valueOf(2));
+        }
+        return null;
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
 
         if (b == null) {

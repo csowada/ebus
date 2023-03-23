@@ -30,7 +30,6 @@ public interface IEBusValue {
      *
      * @return
      */
-
     public IEBusType<?> getType();
 
     /**

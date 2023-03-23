@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ import de.csdev.ebus.utils.EBusDateTime;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeDateTime.class);
@@ -149,18 +152,18 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         return result;
     }
 
-    private IEBusType<Object> getDateType() {
+    private @Nullable IEBusType<Object> getDateType() {
         Map<String, Object> properties = new HashMap<>();
         properties.put(IEBusType.VARIANT, variantDate);
         return types.getType(EBusTypeDate.TYPE_DATE, properties);
     }
 
     @Override
-    public String[] getSupportedTypes() {
+    public String @NonNull [] getSupportedTypes() {
         return supportedTypes;
     }
 
-    private IEBusType<Object> getTimeType() {
+    private @Nullable IEBusType<Object> getTimeType() {
         Map<String, Object> properties = new HashMap<>();
         properties.put(IEBusType.VARIANT, variantTime);
         return types.getType(EBusTypeTime.TYPE_TIME, properties);

@@ -157,7 +157,7 @@ public class EBusTypeRegistry {
      * @return
      * @throws EBusTypeException
      */
-    public byte[] encode(String type, Object data) throws EBusTypeException {
+    public byte @Nullable [] encode(String type, Object data) throws EBusTypeException {
 
         IEBusType<?> eBusType = types.get(type);
 

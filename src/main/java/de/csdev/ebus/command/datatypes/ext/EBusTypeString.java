@@ -8,6 +8,7 @@
  */
 package de.csdev.ebus.command.datatypes.ext;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -16,6 +17,7 @@ import de.csdev.ebus.command.datatypes.EBusAbstractType;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeString extends EBusAbstractType<String> {
 
     public static final String TYPE_STRING = "string";

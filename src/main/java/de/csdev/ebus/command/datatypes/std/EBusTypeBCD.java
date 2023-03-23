@@ -11,7 +11,6 @@ package de.csdev.ebus.command.datatypes.std;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -24,6 +23,7 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
 
     public static final String TYPE_BCD = "bcd";
@@ -36,11 +36,9 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
         replaceValue = new byte[] { (byte) 0xFF };
     }
 
-    // @NonNullByDefault({})
     @Override
-    public @NonNull String[] getSupportedTypes() {
+    public String[] getSupportedTypes() {
         return supportedTypes;
-        // return new String[] { TYPE_BCD };
     }
 
     @Override
@@ -49,7 +47,7 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) {
 
         Objects.requireNonNull(data);
 

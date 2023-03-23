@@ -61,6 +61,7 @@ public class EBusConsoleUtils {
      * @return
      * @throws EBusTypeException
      */
+    @SuppressWarnings("java:S3776")
     public static String bruteforceData(byte @Nullable [] data) throws EBusTypeException {
 
         EBusTypeRegistry typeRegistry = new EBusTypeRegistry();
@@ -188,6 +189,7 @@ public class EBusConsoleUtils {
      * @param data
      * @return
      */
+    @SuppressWarnings("java:S3776")
     public static @NonNull String analyzeTelegram(@NonNull EBusCommandRegistry registry, byte @NonNull [] data) {
 
         Objects.requireNonNull(registry, "registry");

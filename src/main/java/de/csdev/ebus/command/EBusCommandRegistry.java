@@ -252,6 +252,7 @@ public class EBusCommandRegistry {
      * @param data
      * @return
      */
+    @SuppressWarnings("java:S3776")
     public boolean matchesCommand(@NonNull IEBusCommandMethod command, @NonNull ByteBuffer data) {
 
         Byte sourceAddress = ObjectUtils.defaultIfNull(command.getSourceAddress(), Byte.valueOf((byte) 0x00));

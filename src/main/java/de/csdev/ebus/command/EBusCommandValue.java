@@ -34,21 +34,21 @@ public class EBusCommandValue implements IEBusValue {
         return value;
     }
 
-    private Object defaultValue;
+    private @Nullable Object defaultValue;
 
-    private BigDecimal factor;
+    private @Nullable BigDecimal factor;
 
-    private String format;
+    private @Nullable String format;
 
-    private String label;
+    private @Nullable String label;
 
-    private Map<String, String> mapping;
+    private @Nullable Map<String, String> mapping;
 
-    private BigDecimal max;
+    private @Nullable BigDecimal max;
 
-    private BigDecimal min;
+    private @Nullable BigDecimal min;
 
-    private String name;
+    private @Nullable String name;
 
     private EBusCommandMethod parent;
 
@@ -94,58 +94,58 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public Object getDefaultValue() {
-        return defaultValue;
+    public @Nullable Object getDefaultValue() {
+        return this.defaultValue;
     }
 
     @Override
-    public BigDecimal getFactor() {
-        return factor;
+    public @Nullable BigDecimal getFactor() {
+        return this.factor;
     }
 
     @Override
-    public String getFormat() {
-        return format;
+    public @Nullable String getFormat() {
+        return this.format;
     }
 
     @Override
-    public String getLabel() {
-        return label;
+    public @Nullable String getLabel() {
+        return this.label;
     }
 
     @Override
-    public Map<String, String> getMapping() {
-        return mapping;
+    public @Nullable Map<@NonNull String, @NonNull String> getMapping() {
+        return this.mapping;
     }
 
     @Override
-    public BigDecimal getMax() {
-        return max;
+    public @Nullable BigDecimal getMax() {
+        return this.max;
     }
 
     @Override
-    public BigDecimal getMin() {
-        return min;
+    public @Nullable BigDecimal getMin() {
+        return this.min;
     }
 
     @Override
     public @Nullable String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public @Nullable IEBusCommandMethod getParent() {
-        return parent;
+        return this.parent;
     }
 
     @Override
-    public Map<String, Object> getProperties() {
-        return CollectionUtils.unmodifiableNotNullMap(properties);
+    public @Nullable Map<@NonNull String, @NonNull Object> getProperties() {
+        return CollectionUtils.unmodifiableNotNullMap(this.properties);
     }
 
     @Override
-    public BigDecimal getStep() {
-        return step;
+    public @Nullable BigDecimal getStep() {
+        return this.step;
     }
 
     @Override
@@ -153,35 +153,35 @@ public class EBusCommandValue implements IEBusValue {
         return Objects.requireNonNull(type);
     }
 
-    public void setDefaultValue(Object defaultValue) {
+    public void setDefaultValue(@Nullable Object defaultValue) {
         this.defaultValue = defaultValue;
     }
 
-    public void setFactor(BigDecimal factor) {
+    public void setFactor(@Nullable BigDecimal factor) {
         this.factor = factor;
     }
 
-    public void setFormat(String format) {
+    public void setFormat(@Nullable String format) {
         this.format = format;
     }
 
-    public void setLabel(String label) {
+    public void setLabel(@Nullable String label) {
         this.label = label;
     }
 
-    public void setMapping(Map<String, String> mapping) {
+    public void setMapping(@Nullable Map<String, String> mapping) {
         this.mapping = mapping;
     }
 
-    public void setMax(BigDecimal max) {
+    public void setMax(@Nullable BigDecimal max) {
         this.max = max;
     }
 
-    public void setMin(BigDecimal min) {
+    public void setMin(@Nullable BigDecimal min) {
         this.min = min;
     }
 
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         this.name = name;
     }
 
@@ -195,15 +195,15 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     public void setProperty(String key, String value) {
-        properties = CollectionUtils.newMapIfNull(properties);
-        properties.put(key, value);
+        this.properties = CollectionUtils.newMapIfNull(properties);
+        this.properties.put(key, value);
     }
 
-    public void setStep(BigDecimal step) {
+    public void setStep(@Nullable BigDecimal step) {
         this.step = step;
     }
 
-    public void setType(IEBusType<?> type) {
+    public void setType(@Nullable IEBusType<?> type) {
         this.type = type;
     }
 

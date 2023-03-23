@@ -15,6 +15,8 @@ import java.util.GregorianCalendar;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -29,6 +31,7 @@ import de.csdev.ebus.utils.EBusDateTime;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
 
     public static final String TYPE_DATE = "date";
@@ -69,7 +72,7 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    public @Nullable EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         Objects.requireNonNull(data);
 

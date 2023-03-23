@@ -8,6 +8,8 @@
  */
 package de.csdev.ebus.core;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
@@ -34,10 +36,12 @@ public class EBusConsts {
     public static final byte ESCAPE = (byte) 0xA9;
 
     /** replacement for an excape symbol */
-    public static final byte[] ESCAPE_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x00 };
+    @SuppressWarnings("java:S2386")
+    public static final byte @NonNull [] ESCAPE_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x00 };
 
     /** replacement for an sync symbol */
-    public static final byte[] SYN_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x01 };
+    @SuppressWarnings("java:S2386")
+    public static final byte @NonNull [] SYN_REPLACEMENT = new byte[] { EBusConsts.ESCAPE, 0x01 };
 
     /** eBUS standard collection id */
     public static final String COLLECTION_STD = "std";
