@@ -161,7 +161,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @return
      */
     protected boolean equalsReplaceValue(byte[] data) {
-        return ArrayUtils.isEquals(data, getReplaceValue());
+        return Objects.deepEquals(data, getReplaceValue());
     }
 
     /*

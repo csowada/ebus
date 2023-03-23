@@ -90,25 +90,28 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
             throw new EBusTypeException("Input byte array must have a length of %d bytes!", getTypeLength());
         }
 
+        IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
+        IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
+
+        if (bcdType == null || charType == null) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's type!");
+        }
+
         if (StringUtils.equals(variant, SHORT)) {
-            IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
             minute = bcdType.decode(new byte[] { data[0] });
             hour = bcdType.decode(new byte[] { data[1] });
 
         } else if (StringUtils.equals(variant, DEFAULT)) {
-            IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
             second = bcdType.decode(new byte[] { data[0] });
             minute = bcdType.decode(new byte[] { data[1] });
             hour = bcdType.decode(new byte[] { data[2] });
 
         } else if (StringUtils.equals(variant, HEX)) {
-            IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
             second = charType.decode(new byte[] { data[0] });
             minute = charType.decode(new byte[] { data[1] });
             hour = charType.decode(new byte[] { data[2] });
 
         } else if (StringUtils.equals(variant, HEX_SHORT)) {
-            IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
             minute = charType.decode(new byte[] { data[0] });
             hour = charType.decode(new byte[] { data[1] });
 
@@ -117,9 +120,15 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
             BigDecimal minutesSinceMidnight = null;
             if (StringUtils.equals(variant, MINUTES_SHORT)) {
                 IEBusType<BigDecimal> type = types.getType(EBusTypeUnsignedNumber.TYPE_UNUMBER, IEBusType.LENGTH, 1);
+                if (type == null) {
+                    throw new EBusTypeException("Unable to get required EBusTyp type!");
+                }
                 minutesSinceMidnight = type.decode(data);
             } else {
                 IEBusType<BigDecimal> type = types.getType(EBusTypeUnsignedNumber.TYPE_UNUMBER, IEBusType.LENGTH, 2);
+                if (type == null) {
+                    throw new EBusTypeException("Unable to get required EBusTyp type!");
+                }
                 minutesSinceMidnight = type.decode(data);
             }
 
@@ -156,6 +165,10 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
         IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
 
+        if (bcdType == null || wordType == null || charType == null) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's type!");
+        }
+
         Calendar calendar = null;
         byte[] result = new byte[this.getTypeLength()];
 
@@ -174,54 +187,53 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
         calendar = (Calendar) calendar.clone();
         calendar.set(1970, 0, 1);
 
-        if (calendar != null) {
-            if (StringUtils.equals(variant, DEFAULT)) {
 
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.SECOND))[0],
-                        bcdType.encode(calendar.get(Calendar.MINUTE))[0],
-                        bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
+        if (StringUtils.equals(variant, DEFAULT)) {
 
-            } else if (StringUtils.equals(variant, SHORT)) {
+            result = new byte[] { bcdType.encode(calendar.get(Calendar.SECOND))[0],
+                    bcdType.encode(calendar.get(Calendar.MINUTE))[0],
+                    bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.MINUTE))[0],
-                        bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
+        } else if (StringUtils.equals(variant, SHORT)) {
 
-            } else if (StringUtils.equals(variant, HEX)) {
+            result = new byte[] { bcdType.encode(calendar.get(Calendar.MINUTE))[0],
+                    bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-                result = new byte[] { charType.encode(calendar.get(Calendar.SECOND))[0],
-                        charType.encode(calendar.get(Calendar.MINUTE))[0],
-                        charType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
+        } else if (StringUtils.equals(variant, HEX)) {
 
-            } else if (StringUtils.equals(variant, HEX_SHORT)) {
+            result = new byte[] { charType.encode(calendar.get(Calendar.SECOND))[0],
+                    charType.encode(calendar.get(Calendar.MINUTE))[0],
+                    charType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-                result = new byte[] { charType.encode(calendar.get(Calendar.MINUTE))[0],
-                        charType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
+        } else if (StringUtils.equals(variant, HEX_SHORT)) {
 
-            } else if (StringUtils.equals(variant, MINUTES) || StringUtils.equals(variant, MINUTES_SHORT)) {
+            result = new byte[] { charType.encode(calendar.get(Calendar.MINUTE))[0],
+                    charType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-                long millis = calendar.getTimeInMillis();
+        } else if (StringUtils.equals(variant, MINUTES) || StringUtils.equals(variant, MINUTES_SHORT)) {
 
-                calendar.clear();
-                calendar.set(1970, 0, 1, 0, 0, 0);
-                calendar.set(Calendar.MILLISECOND, 0);
+            long millis = calendar.getTimeInMillis();
 
-                long millisMidnight = calendar.getTimeInMillis();
+            calendar.clear();
+            calendar.set(1970, 0, 1, 0, 0, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
 
-                BigDecimal minutes = new BigDecimal(millis - millisMidnight);
+            long millisMidnight = calendar.getTimeInMillis();
 
-                // milliseconds to minutes
-                minutes = minutes.divide(BigDecimal.valueOf(1000 * 60), 0, RoundingMode.HALF_UP);
+            BigDecimal minutes = new BigDecimal(millis - millisMidnight);
 
-                // xxx
-                minutes = minutes.divide(minuteMultiplier, 0, RoundingMode.HALF_UP);
+            // milliseconds to minutes
+            minutes = minutes.divide(BigDecimal.valueOf(1000L * 60), 0, RoundingMode.HALF_UP);
 
-                if (StringUtils.equals(variant, MINUTES_SHORT)) {
-                    result = charType.encode(minutes);
-                } else {
-                    result = wordType.encode(minutes);
-                }
+            // xxx
+            minutes = minutes.divide(minuteMultiplier, 0, RoundingMode.HALF_UP);
 
+            if (StringUtils.equals(variant, MINUTES_SHORT)) {
+                result = charType.encode(minutes);
+            } else {
+                result = wordType.encode(minutes);
             }
+
         }
 
         return result;

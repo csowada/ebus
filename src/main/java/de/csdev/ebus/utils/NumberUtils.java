@@ -10,6 +10,7 @@ package de.csdev.ebus.utils;
 
 import java.math.BigDecimal;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -18,6 +19,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class NumberUtils {
 
     private NumberUtils() {

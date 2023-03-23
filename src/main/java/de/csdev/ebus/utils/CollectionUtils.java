@@ -10,6 +10,7 @@ package de.csdev.ebus.utils;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,6 +25,10 @@ public class CollectionUtils {
 
     private CollectionUtils() {
         throw new IllegalStateException("Utility class");
+    }
+
+    public static final @NonNull <T> List<T> emptyList() {
+        return Collections.emptyList();
     }
 
     /**

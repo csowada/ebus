@@ -46,13 +46,13 @@ public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComple
     }
 
     @Override
-    public Byte decodeInt(byte @Nullable [] data) {
-        throw new RuntimeException("Not implemented by EBusTypeKWCrc!");
+    public Byte decodeInt(byte @Nullable [] data) throws EBusTypeException {
+        throw new EBusTypeException("Not implemented by EBusTypeKWCrc!");
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) {
-        throw new RuntimeException("Not implemented by EBusTypeKWCrc!");
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+        throw new EBusTypeException("Not implemented by EBusTypeKWCrc!");
     }
 
     @Override

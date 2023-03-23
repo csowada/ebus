@@ -10,7 +10,7 @@ package de.csdev.ebus.command;
 
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * A marker of a value with child values
@@ -18,6 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusNestedValue {
 
     /**
@@ -32,6 +33,6 @@ public interface IEBusNestedValue {
      *
      * @return
      */
-    public @NonNull List<@NonNull IEBusValue> getChildren();
+    public List<IEBusValue> getChildren();
 
 }

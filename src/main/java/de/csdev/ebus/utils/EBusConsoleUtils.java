@@ -117,14 +117,14 @@ public class EBusConsoleUtils {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(String.format("%-25s | %-10s\n", "Successful received", service.getReceived()));
-        sb.append(String.format("%-25s | %-10s\n", "Failed received", service.getFailed()));
-        sb.append(String.format("%-25s | %-10s\n", "Successful/Failed ratio", service.getFailureRatio()));
+        sb.append(String.format("%-25s | %-10s%n", "Successful received", service.getReceived()));
+        sb.append(String.format("%-25s | %-10s%n", "Failed received", service.getFailed()));
+        sb.append(String.format("%-25s | %-10s%n", "Successful/Failed ratio", service.getFailureRatio()));
         sb.append("\n");
 
-        sb.append(String.format("%-25s | %-10s\n", "Resolved telegrams", service.getResolved()));
-        sb.append(String.format("%-25s | %-10s\n", "Unresolved telegrams", service.getUnresolved()));
-        sb.append(String.format("%-25s | %-10s\n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
+        sb.append(String.format("%-25s | %-10s%n", "Resolved telegrams", service.getResolved()));
+        sb.append(String.format("%-25s | %-10s%n", "Unresolved telegrams", service.getUnresolved()));
+        sb.append(String.format("%-25s | %-10s%n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
 
         return sb.toString();
     }
@@ -149,10 +149,10 @@ public class EBusConsoleUtils {
 
         EBusDevice ownDevice = deviceTable.getOwnDevice();
 
-        sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s\n", "MA", "SA",
+        sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s%n", "MA", "SA",
                 "Identifier", "Device", "Manufacture", "ID", "Firmware", "Hardware", "Last Activity"));
 
-        sb.append(String.format("%-2s-+-%-2s-+-%-14s-+-%-14s-+-%-20s-+-%-2s-+-%-10s-+-%-10s-+-%-20s\n",
+        sb.append(String.format("%-2s-+-%-2s-+-%-14s-+-%-14s-+-%-20s-+-%-2s-+-%-10s-+-%-10s-+-%-20s%n",
                 StringUtils.repeat("-", 2), StringUtils.repeat("-", 2), StringUtils.repeat("-", 14),
                 StringUtils.repeat("-", 14), StringUtils.repeat("-", 20), StringUtils.repeat("-", 2),
                 StringUtils.repeat("-", 10), StringUtils.repeat("-", 10), StringUtils.repeat("-", 20)));
@@ -168,7 +168,7 @@ public class EBusConsoleUtils {
             String deviceName = isBridge ? "<interface>" : mapping.getOrDefault(id, "---");
             String manufacture = isBridge ? "eBUS Library" : device.getManufacturerName();
 
-            sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s\n",
+            sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s%n",
                     masterAddress, slaveAddress, id, deviceName, manufacture,
                     EBusUtils.toHexDumpString(device.getManufacturer()), device.getSoftwareVersion(),
                     device.getHardwareVersion(), activity));
@@ -225,8 +225,8 @@ public class EBusConsoleUtils {
             sb.append("***************************\n");
             sb.append("\n");
 
-            sb.append(String.format("Original data : %s\n", EBusUtils.toHexDumpString(data)));
-            sb.append(String.format("Unescaped data: %s\n", EBusUtils.toHexDumpString(edata)));
+            sb.append(String.format("Original data : %s%n", EBusUtils.toHexDumpString(data)));
+            sb.append(String.format("Unescaped data: %s%n", EBusUtils.toHexDumpString(edata)));
 
             byte[] command = Arrays.copyOfRange(edata, 2, 4);
 
@@ -312,7 +312,7 @@ public class EBusConsoleUtils {
             sb.append("Resolve the telegram\n");
             sb.append("********************\n");
             sb.append("\n");
-            sb.append(String.format("Found %s command method(s) for this telegram.\n", methods.size()));
+            sb.append(String.format("Found %s command method(s) for this telegram.%n", methods.size()));
             sb.append("\n");
 
             for (IEBusCommandMethod method : methods) {
@@ -320,7 +320,7 @@ public class EBusConsoleUtils {
                     if (method != null) {
                         Map<String, Object> result = EBusCommandUtils.decodeTelegram(method, data);
 
-                        sb.append(String.format("Values from command '%s' with method '%s' from collection '%s'\n",
+                        sb.append(String.format("Values from command '%s' with method '%s' from collection '%s'%n",
                                 method.getParent().getId(), method.getMethod(),
                                 method.getParent().getParentCollection().getId()));
 
@@ -331,7 +331,7 @@ public class EBusConsoleUtils {
                                 value = EBusUtils.toHexDumpString((byte[]) value);
                             }
 
-                            sb.append(String.format("  %-20s = %s\n", entry.getKey(),
+                            sb.append(String.format("  %-20s = %s%n", entry.getKey(),
                                     value != null ? value.toString() : "NULL"));
                         }
                     }

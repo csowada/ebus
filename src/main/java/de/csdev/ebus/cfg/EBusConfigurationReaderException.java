@@ -8,10 +8,13 @@
  */
 package de.csdev.ebus.cfg;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusConfigurationReaderException extends Exception {
 
     private static final long serialVersionUID = 1L;

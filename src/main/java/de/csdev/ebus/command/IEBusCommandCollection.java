@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -21,6 +21,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusCommandCollection {
 
     /**
@@ -28,7 +29,7 @@ public interface IEBusCommandCollection {
      *
      * @return
      */
-    public @NonNull List<String> getIdentification();
+    public List<String> getIdentification();
 
     /**
      * Returns the long description
@@ -42,7 +43,7 @@ public interface IEBusCommandCollection {
      *
      * @return
      */
-    public @NonNull String getId();
+    public String getId();
 
     /**
      * Returns the label of this collection
@@ -56,7 +57,7 @@ public interface IEBusCommandCollection {
      *
      * @return
      */
-    public @NonNull Collection<IEBusCommand> getCommands();
+    public Collection<IEBusCommand> getCommands();
 
     /**
      * Returns the requested command or null
@@ -71,7 +72,7 @@ public interface IEBusCommandCollection {
      *
      * @return
      */
-    public @NonNull Map<String, Object> getProperties();
+    public Map<String, Object> getProperties();
 
     /**
      * Returns a property value or <code>null</code>

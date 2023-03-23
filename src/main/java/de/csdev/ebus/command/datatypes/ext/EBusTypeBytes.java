@@ -43,7 +43,7 @@ public class EBusTypeBytes extends EBusAbstractType<byte[]> {
 
         byte[] b = new byte[length];
 
-        if (data != null && data instanceof byte[]) {
+        if (data instanceof byte[]) {
             System.arraycopy(data, 0, b, 0, b.length);
         }
 

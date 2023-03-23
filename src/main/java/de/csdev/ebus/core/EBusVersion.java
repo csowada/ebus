@@ -25,7 +25,7 @@ public class EBusVersion {
             Manifest manifest = new Manifest(rootClass.getResourceAsStream("/META-INF/MANIFEST.MF"));
             return manifest.getMainAttributes().getValue(name);
         } catch (IOException e) {
-
+            // noop
         }
         return "";
     }

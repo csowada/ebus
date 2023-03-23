@@ -11,11 +11,15 @@ package de.csdev.ebus.utils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  *
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusDateTime {
 
     private Calendar calendar;
@@ -96,7 +100,7 @@ public class EBusDateTime {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

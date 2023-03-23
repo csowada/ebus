@@ -10,10 +10,13 @@ package de.csdev.ebus.command;
 
 import java.text.MessageFormat;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusCommandException extends Exception {
 
     private static final long serialVersionUID = 7105215995176921667L;

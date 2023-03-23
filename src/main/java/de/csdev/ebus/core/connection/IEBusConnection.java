@@ -10,10 +10,13 @@ package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusConnection {
 
     /**

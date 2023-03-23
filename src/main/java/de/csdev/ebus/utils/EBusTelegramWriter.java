@@ -35,6 +35,7 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
 @NonNullByDefault
 public class EBusTelegramWriter implements IEBusParserListener {
 
+    @NonNullByDefault({})
     private final Logger logger = LoggerFactory.getLogger(EBusTelegramWriter.class);
 
     private BufferedWriter writerResolved;

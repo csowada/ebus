@@ -10,12 +10,14 @@ package de.csdev.ebus.command.datatypes;
 
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusType<T> {
 
     public static final String LENGTH = "length";

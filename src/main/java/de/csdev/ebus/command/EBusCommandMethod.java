@@ -176,8 +176,9 @@ public class EBusCommandMethod implements IEBusCommandMethod {
     @Override
     public @NonNull Type getType() {
 
-        if (type != null) {
-            return type;
+        Type type0 = this.type;
+        if (type0 != null) {
+            return type0;
         }
 
         if (method.equals(Method.BROADCAST)) {

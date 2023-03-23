@@ -62,6 +62,10 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();
 
+        if (dateType == null || timeType == null) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's type!");
+        }
+
         byte[] timeData = null;
         byte[] dateData = null;
 
@@ -113,6 +117,10 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();
 
+        if (dateType == null || timeType == null) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's type!");
+        }
+
         Calendar calendar = null;
         byte[] result = new byte[this.getTypeLength()];
 
@@ -142,7 +150,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     }
 
     private IEBusType<Object> getDateType() {
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put(IEBusType.VARIANT, variantDate);
         return types.getType(EBusTypeDate.TYPE_DATE, properties);
     }
@@ -153,7 +161,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     }
 
     private IEBusType<Object> getTimeType() {
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put(IEBusType.VARIANT, variantTime);
         return types.getType(EBusTypeTime.TYPE_TIME, properties);
     }
@@ -162,6 +170,10 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     public int getTypeLength() {
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();
+
+        if (dateType == null || timeType == null) {
+            throw new IllegalStateException("Unable to get all required EBusTyp's type!");
+        }
 
         return dateType.getTypeLength() + timeType.getTypeLength();
     }

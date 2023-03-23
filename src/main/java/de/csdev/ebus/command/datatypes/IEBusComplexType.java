@@ -8,10 +8,14 @@
  */
 package de.csdev.ebus.command.datatypes;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusComplexType<T> {
 
     /**
@@ -22,7 +26,7 @@ public interface IEBusComplexType<T> {
      * @return
      * @throws EBusTypeException
      */
-    public T decodeComplex(byte[] rawData, int pos) throws EBusTypeException;
+    public @Nullable T decodeComplex(byte[] rawData, int pos) throws EBusTypeException;
 
     /**
      * ???

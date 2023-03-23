@@ -36,7 +36,6 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
-@NonNullByDefault
 public class EBusDeviceTableService extends EBusConnectorEventListener
         implements IEBusParserListener, IEBusDeviceTableListener {
 

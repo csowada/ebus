@@ -206,7 +206,7 @@ public class EBusCommandUtils {
         for (byte b : masterData) {
             // disable escaping the special characters as vaillant and wolf
             // generates AA and A9 bytes!
-            // buf.put(escapeSymbol(b));
+            // buf.put(escapeSymbol(b))
             buf.put(b);
         }
 
@@ -215,7 +215,7 @@ public class EBusCommandUtils {
 
         // disable escaping the special characters as vaillant and wolf
         // generates AA and A9 bytes!
-        // buf.put(escapeSymbol(b));
+        // buf.put(escapeSymbol(b))
         buf.put(crc8);
 
         // set limit and reset position

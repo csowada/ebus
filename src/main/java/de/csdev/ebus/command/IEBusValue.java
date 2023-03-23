@@ -11,7 +11,7 @@ package de.csdev.ebus.command;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.IEBusType;
@@ -22,6 +22,7 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusValue {
 
     /**
@@ -30,7 +31,7 @@ public interface IEBusValue {
      * @return
      */
 
-    public @NonNull IEBusType<?> getType();
+    public IEBusType<?> getType();
 
     /**
      * Returns the default value if set, can be <code>null</code>
@@ -115,5 +116,5 @@ public interface IEBusValue {
      *
      * @return
      */
-    public @NonNull IEBusValue getClonedInstance();
+    public IEBusValue getClonedInstance();
 }

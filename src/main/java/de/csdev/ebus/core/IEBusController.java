@@ -9,10 +9,11 @@
 package de.csdev.ebus.core;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
+@NonNullByDefault
 public interface IEBusController {
 
-    @NonNull
     Integer addToSendQueue(final byte @NonNull [] buffer, final int maxAttemps) throws EBusControllerException;
 
     /**
@@ -20,7 +21,6 @@ public interface IEBusController {
      * @return
      * @throws EBusControllerException
      */
-    @NonNull
     Integer addToSendQueue(final byte @NonNull [] buffer) throws EBusControllerException;
 
     /**
@@ -28,7 +28,7 @@ public interface IEBusController {
      *
      * @param listener
      */
-    void addEBusEventListener(final @NonNull IEBusConnectorEventListener listener);
+    void addEBusEventListener(final IEBusConnectorEventListener listener);
 
     /**
      * Remove an eBUS listener
@@ -36,7 +36,7 @@ public interface IEBusController {
      * @param listener
      * @return
      */
-    boolean removeEBusEventListener(final @NonNull IEBusConnectorEventListener listener);
+    boolean removeEBusEventListener(final IEBusConnectorEventListener listener);
 
     boolean isRunning();
 
