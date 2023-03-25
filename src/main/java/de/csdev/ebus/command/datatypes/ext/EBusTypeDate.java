@@ -71,6 +71,7 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
+    @SuppressWarnings("java:S3776")
     public @Nullable EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         Objects.requireNonNull(data);
@@ -78,6 +79,10 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
         IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
+
+        if (bcdType == null || wordType == null || charType == null ) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's types!");
+        }
 
         Calendar calendar = new GregorianCalendar();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -155,7 +160,7 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);

@@ -50,6 +50,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
 
     private String variant = DEFAULT;
 
+    @SuppressWarnings({"null"})
     private BigDecimal minuteMultiplier = BigDecimal.valueOf(1);
 
     @Override
@@ -76,6 +77,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
+    @SuppressWarnings("java:S3776")
     public EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         if (data == null) {
@@ -161,7 +163,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);

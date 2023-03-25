@@ -127,7 +127,7 @@ public class EBusConsoleUtils {
         sb.append(String.format("%-25s | %-10s%n", "Unresolved telegrams", service.getUnresolved()));
         sb.append(String.format("%-25s | %-10s%n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
 
-        return sb.toString();
+        return Objects.requireNonNull(sb.toString());
     }
 
     /**
@@ -140,7 +140,7 @@ public class EBusConsoleUtils {
 
         StringBuilder sb = new StringBuilder();
 
-        Map<String, String> mapping = new HashMap<String, String>();
+        Map<String, String> mapping = new HashMap<>();
 
         for (IEBusCommandCollection collection : collections) {
             for (String identification : collection.getIdentification()) {
@@ -219,7 +219,7 @@ public class EBusConsoleUtils {
                 sb.append(StringUtils.repeat("*", len) + "\n");
                 sb.append("\n");
 
-                return sb.toString();
+                return Objects.requireNonNull(sb.toString());
             }
 
             sb.append("\n");
@@ -346,7 +346,7 @@ public class EBusConsoleUtils {
             logger.error("error!", e);
         }
 
-        return sb.toString();
+        return Objects.requireNonNull(sb.toString());
 
     }
 
@@ -361,6 +361,7 @@ public class EBusConsoleUtils {
         return "Slave";
     }
 
+    @SuppressWarnings({"null"})
     private static @NonNull String hex(byte[] b) {
         return EBusUtils.toHexDumpString(b).toString();
 
@@ -387,6 +388,6 @@ public class EBusConsoleUtils {
         sb.append(text);
         sb.append("\n");
 
-        return sb.toString();
+        return Objects.requireNonNull(sb.toString());
     }
 }

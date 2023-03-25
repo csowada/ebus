@@ -34,6 +34,7 @@ import de.csdev.ebus.utils.EBusUtils;
 @NonNullByDefault
 public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
+    @SuppressWarnings({"null"})
     private static final  Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
 
     protected Map<Object, @Nullable EBusAbstractType<T>> otherInstances = new HashMap<>();
@@ -42,6 +43,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
     protected boolean reverseByteOrder = false;
 
+    @SuppressWarnings({"null"})
     protected EBusTypeRegistry types;
 
     /**
@@ -50,8 +52,9 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @param data
      * @return
      */
-    protected byte[] applyByteOrder(byte[] data) {
+    protected byte @Nullable [] applyByteOrder(byte @Nullable [] data) {
 
+        // @SuppressWarnings({})
         data = ArrayUtils.clone(data);
 
         // reverse the byte order immutable
@@ -70,10 +73,13 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     private @Nullable EBusAbstractType<T> createNewInstance() {
 
         try {
-            @SuppressWarnings({ "unchecked"})
+            @SuppressWarnings({ "unchecked" })
             EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
-            newInstance.setTypesParent(types);
-            return newInstance;
+            if (newInstance != null) {
+                newInstance.setTypesParent(types);
+                return newInstance;
+            }
+
 
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             logger.error(EBusConsts.LOG_ERR_DEF, e);
@@ -162,7 +168,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @param data
      * @return
      */
-    protected boolean equalsReplaceValue(byte[] data) {
+    protected boolean equalsReplaceValue(byte @Nullable [] data) {
         return Objects.deepEquals(data, getReplaceValue());
     }
 
@@ -209,12 +215,14 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     public byte @Nullable [] getReplaceValue() {
 
         int length = getTypeLength();
-        if (replaceValue == null || replaceValue.length == 0) {
-            replaceValue = new byte[length];
-            Arrays.fill(replaceValue, (byte) 0xFF);
+        byte[] repValue = this.replaceValue;
+        if (repValue == null || repValue.length == 0) {
+            repValue = new byte[length];
+            Arrays.fill(repValue, (byte) 0xFF);
+            this.replaceValue = repValue;
         }
 
-        return replaceValue;
+        return repValue;
     }
 
     /*
@@ -270,6 +278,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @param replaceValue
      * @throws EBusTypeException
      */
+    @SuppressWarnings("java:S1130")
     public void setReplaceValue(byte[] replaceValue) throws EBusTypeException {
         this.replaceValue = applyByteOrder(replaceValue);
     }

@@ -66,7 +66,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         IEBusType<Object> timeType = getTimeType();
 
         if (dateType == null || timeType == null) {
-            throw new EBusTypeException("Unable to get all required EBusTyp's type!");
+            throw new EBusTypeException("Unable to get all required EBusTyp's types!");
         }
 
         byte[] timeData = null;

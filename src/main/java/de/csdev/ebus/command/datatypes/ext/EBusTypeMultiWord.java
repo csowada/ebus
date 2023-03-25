@@ -34,6 +34,8 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
     private static String[] supportedTypes = new String[] { TYPE_MWORD };
 
     private int length = 2;
+    
+    @SuppressWarnings({"null"})
     private BigDecimal multiplier = BigDecimal.valueOf(1000);
 
     @Override

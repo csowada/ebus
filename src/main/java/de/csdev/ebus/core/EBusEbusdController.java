@@ -128,6 +128,7 @@ public class EBusEbusdController extends EBusControllerBase {
         }
     }
 
+    @SuppressWarnings("java:S3776")
     private ByteBuffer parseLine(String readLine) throws IOException, InterruptedException, EBusDataException {
 
         ByteBuffer b = null;
@@ -250,6 +251,7 @@ public class EBusEbusdController extends EBusControllerBase {
     }
 
     @Override
+    @SuppressWarnings("java:S3776")
     public void run() {
 
         try {
@@ -414,7 +416,7 @@ public class EBusEbusdController extends EBusControllerBase {
         setConnectionStatus(ConnectionStatus.DISCONNECTED);
     }
 
-    private boolean connect() throws UnknownHostException, IOException {
+    private boolean connect() throws IOException {
         logger.info("Run connect ...");
         socket = new Socket(hostname, port);
         socket.setSoTimeout(20000);
