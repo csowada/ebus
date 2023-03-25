@@ -20,7 +20,7 @@ import de.csdev.ebus.command.datatypes.EBusAbstractType;
 @NonNullByDefault
 public class EBusTypeString extends EBusAbstractType<String> {
 
-    public static final String TYPE_STRING = "string";
+    public static String TYPE_STRING = "string";
 
     private static String[] supportedTypes = new String[] { TYPE_STRING };
 

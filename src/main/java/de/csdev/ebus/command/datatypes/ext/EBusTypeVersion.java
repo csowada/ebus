@@ -25,7 +25,7 @@ import de.csdev.ebus.utils.NumberUtils;
 @NonNullByDefault
 public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
-    public static final String TYPE_VERSION = "version";
+    public static String TYPE_VERSION = "version";
 
     private static String[] supportedTypes = new String[] { TYPE_VERSION };
 

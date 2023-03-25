@@ -31,7 +31,7 @@ public class EBusTypeFloat extends EBusAbstractType<BigDecimal> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeFloat.class);
 
-    public static final String TYPE_FLOAT = "float";
+    public static String TYPE_FLOAT = "float";
 
     private static String[] supportedTypes = new String[] { TYPE_FLOAT };
 

@@ -25,7 +25,7 @@ import de.csdev.ebus.command.datatypes.IEBusType;
 @NonNullByDefault
 public class EBusTypeBytes extends EBusAbstractType<byte[]> {
 
-    public static final String TYPE_BYTES = "bytes";
+    public static String TYPE_BYTES = "bytes";
 
     private static String[] supportedTypes = new String[] { TYPE_BYTES };
 

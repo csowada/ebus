@@ -439,7 +439,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 for (EBusCommandValue commandValue : templateCollection) {
 
                     // clone the original value
-                    EBusCommandValue clone = commandValue.getClonedInstance();
+                    EBusCommandValue clone = commandValue.clone();
                     clone.setParent(commandMethod);
 
                     overwritePropertiesFromTemplate(clone, valueDto);
@@ -479,7 +479,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             if (templateCollection != null && !templateCollection.isEmpty()) {
                 for (EBusCommandValue commandValue : templateCollection) {
 
-                    EBusCommandValue clone = commandValue.getClonedInstance();
+                    EBusCommandValue clone = commandValue.clone();
                     clone.setParent(commandMethod);
 
                     overwritePropertiesFromTemplate(clone, valueDto);

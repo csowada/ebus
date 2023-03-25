@@ -63,7 +63,7 @@ public class EBusCommandValue implements IEBusValue {
     }
 
     @Override
-    public @NonNull EBusCommandValue getClonedInstance() {
+    public @NonNull EBusCommandValue clone() {
 
         EBusCommandValue clone = createInstance();
         clone.defaultValue = this.defaultValue;

@@ -24,13 +24,13 @@ import de.csdev.ebus.utils.EBusUtils;
 @NonNullByDefault
 public class EBusTypeBit extends EBusAbstractType<Boolean> {
 
-    public static final String TYPE_BIT = "bit";
+    public static String TYPE_BIT = "bit";
 
-    public static final String POS = "pos";
-    
     private static String[] supportedTypes = new String[] { TYPE_BIT };
 
     @SuppressWarnings("java:S1845")
+    public static String POS = "pos";
+
     private Integer pos = null;
 
     public EBusTypeBit() {

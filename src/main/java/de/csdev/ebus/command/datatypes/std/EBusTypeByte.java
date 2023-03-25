@@ -19,8 +19,8 @@ import de.csdev.ebus.utils.EBusUtils;
 @NonNullByDefault
 public class EBusTypeByte extends AbstractEBusTypeUnsignedNumber {
 
-    public static final String TYPE_UCHAR = "uchar";
-    public static final String TYPE_BYTE = "byte";
+    public static String TYPE_UCHAR = "uchar";
+    public static String TYPE_BYTE = "byte";
 
     private static String[] supportedTypes = new String[] { TYPE_BYTE, TYPE_UCHAR };
 

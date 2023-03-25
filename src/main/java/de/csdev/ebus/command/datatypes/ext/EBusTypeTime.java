@@ -34,20 +34,20 @@ import de.csdev.ebus.utils.EBusDateTime;
 @NonNullByDefault
 public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
 
-    public static final String TYPE_TIME = "time";
+    public static String TYPE_TIME = "time";
 
-    public static final String DEFAULT = "std"; // BTI - 3
-    public static final String HEX = "hex"; // HTI - 3
+    public static String DEFAULT = "std"; // BTI - 3
+    public static String HEX = "hex"; // HTI - 3
 
-    public static final String SHORT = "short"; // BTM - 2
-    public static final String HEX_SHORT = "hex_short"; // HTM - 2
+    public static String SHORT = "short"; // BTM - 2
+    public static String HEX_SHORT = "hex_short"; // HTM - 2
 
-    public static final String MINUTES = "minutes"; // MIN - 2
-    public static final String MINUTES_SHORT = "minutes_short"; // MIN - 1
+    public static String MINUTES = "minutes"; // MIN - 2
+    public static String MINUTES_SHORT = "minutes_short"; // MIN - 1
 
-    public static final String MINUTE_MULTIPLIER = "minuteMultiplier";
-    
     private static String[] supportedTypes = new String[] { TYPE_TIME };
+
+    public static String MINUTE_MULTIPLIER = "minuteMultiplier";
 
     private String variant = DEFAULT;
 
