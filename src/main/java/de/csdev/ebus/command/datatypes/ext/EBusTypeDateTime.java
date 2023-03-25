@@ -52,7 +52,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     private String variantTime = EBusTypeTime.DEFAULT;
 
     @Override
-    protected byte[] applyByteOrder(byte[] data) {
+    protected byte @Nullable [] applyByteOrder(byte @Nullable [] data) {
         if (reverseByteOrder) {
             logger.warn("Parameter 'reverseByteOrder' not supported for EBusTypeDateTime yet!");
         }
