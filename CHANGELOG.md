@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.10] - 2023-03-25
+### Changed
+- Updated source headers to year 2023
+### Fixed
+- Fixed several SonarCube issues
+- Update Maven dependencies
+
 ## [1.1.9] - 2023-03-20
 ### Fixed
 - Remove escaping (0xAA and 0xA) master data bytes and master CRC on function ``EBusCommandUtils.buildPartMasterTelegram``

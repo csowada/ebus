@@ -7,7 +7,7 @@
 	<description>eBUS core library - This library handles the communication with heating engineering via the BUS specification. This protocol is used by many heating manufacturers in Europe.</description>
 	<groupId>de.cs-dev.ebus</groupId>
 	<artifactId>ebus-core</artifactId>
-	<version>1.1.10</version>
+	<version>1.1.11-SNAPSHOT</version>
 	<url>https://github.com/csowada/ebus</url>
 	<packaging>bundle</packaging>
 
