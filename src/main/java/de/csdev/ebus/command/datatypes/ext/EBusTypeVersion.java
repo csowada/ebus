@@ -61,7 +61,7 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         BigDecimal value = NumberUtils.toBigDecimal(data);
 
@@ -74,6 +74,10 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
         byte[] encode1 = types.encode(EBusTypeBCD.TYPE_BCD, values[0]);
         byte[] encode2 = types.encode(EBusTypeBCD.TYPE_BCD, values[1]);
+
+        if ( encode1 == null || encode1.length == 0 || encode2 == null || encode2.length == 0 ) {
+            return null;
+        }
 
         return new byte[] { encode1[0], encode2[0] };
     }

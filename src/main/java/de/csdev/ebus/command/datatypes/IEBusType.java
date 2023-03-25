@@ -74,6 +74,6 @@ public interface IEBusType<T> {
      * @param properties
      * @return
      */
-    public IEBusType<T> getInstance(@Nullable Map<String, Object> properties);
+    public @Nullable IEBusType<T> getInstance(@Nullable Map<String, Object> properties);
 
 }

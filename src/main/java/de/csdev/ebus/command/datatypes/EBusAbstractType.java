@@ -172,7 +172,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @see de.csdev.ebus.command.datatypes.IEBusType#getInstance(java.util.Map)
      */
     @Override
-    public IEBusType<T> getInstance(@Nullable Map<String, Object> properties) {
+    public @Nullable IEBusType<T> getInstance(@Nullable Map<String, Object> properties) {
 
         // use default instance if no properties are set
         if (properties == null || properties.isEmpty()) {
