@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -176,8 +176,9 @@ public class EBusCommandMethod implements IEBusCommandMethod {
     @Override
     public @NonNull Type getType() {
 
-        if (type != null) {
-            return type;
+        Type type0 = this.type;
+        if (type0 != null) {
+            return type0;
         }
 
         if (method.equals(Method.BROADCAST)) {

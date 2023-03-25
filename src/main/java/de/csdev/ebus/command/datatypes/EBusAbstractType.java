@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,16 +31,19 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
+    @SuppressWarnings({"null"})
+    private static final  Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
 
-    protected Map<Object, EBusAbstractType<T>> otherInstances = new HashMap<>();
+    protected Map<Object, @Nullable EBusAbstractType<T>> otherInstances = new HashMap<>();
 
-    protected byte[] replaceValue = null;
+    protected byte @Nullable [] replaceValue = null;
 
     protected boolean reverseByteOrder = false;
 
+    @SuppressWarnings({"null"})
     protected EBusTypeRegistry types;
 
     /**
@@ -48,8 +52,9 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @param data
      * @return
      */
-    protected byte[] applyByteOrder(byte[] data) {
+    protected byte @Nullable [] applyByteOrder(byte @Nullable [] data) {
 
+        // @SuppressWarnings({})
         data = ArrayUtils.clone(data);
 
         // reverse the byte order immutable
@@ -65,13 +70,16 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      *
      * @return
      */
-    private EBusAbstractType<T> createNewInstance() {
+    private @Nullable EBusAbstractType<T> createNewInstance() {
 
         try {
-            @SuppressWarnings({ "unchecked"})
+            @SuppressWarnings({ "unchecked" })
             EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
-            newInstance.types = this.types;
-            return newInstance;
+            if (newInstance != null) {
+                newInstance.setTypesParent(types);
+                return newInstance;
+            }
+
 
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             logger.error(EBusConsts.LOG_ERR_DEF, e);
@@ -150,7 +158,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @return
      * @throws EBusTypeException
      */
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
         throw new UnsupportedOperationException("Must be overwritten by superclass!");
     }
 
@@ -160,8 +168,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @param data
      * @return
      */
-    protected boolean equalsReplaceValue(byte[] data) {
-        return ArrayUtils.isEquals(data, getReplaceValue());
+    protected boolean equalsReplaceValue(byte @Nullable [] data) {
+        return Objects.deepEquals(data, getReplaceValue());
     }
 
     /*
@@ -170,7 +178,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @see de.csdev.ebus.command.datatypes.IEBusType#getInstance(java.util.Map)
      */
     @Override
-    public IEBusType<T> getInstance(@Nullable Map<String, Object> properties) {
+    public @Nullable IEBusType<T> getInstance(@Nullable Map<String, Object> properties) {
 
         // use default instance if no properties are set
         if (properties == null || properties.isEmpty()) {
@@ -204,15 +212,17 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      *
      * @return
      */
-    public byte[] getReplaceValue() {
+    public byte @Nullable [] getReplaceValue() {
 
         int length = getTypeLength();
-        if (replaceValue == null || replaceValue.length == 0) {
-            replaceValue = new byte[length];
-            Arrays.fill(replaceValue, (byte) 0xFF);
+        byte[] repValue = this.replaceValue;
+        if (repValue == null || repValue.length == 0) {
+            repValue = new byte[length];
+            Arrays.fill(repValue, (byte) 0xFF);
+            this.replaceValue = repValue;
         }
 
-        return replaceValue;
+        return repValue;
     }
 
     /*
@@ -268,6 +278,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @param replaceValue
      * @throws EBusTypeException
      */
+    @SuppressWarnings("java:S1130")
     public void setReplaceValue(byte[] replaceValue) throws EBusTypeException {
         this.replaceValue = applyByteOrder(replaceValue);
     }

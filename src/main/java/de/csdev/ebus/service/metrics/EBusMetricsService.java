@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,23 +29,24 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
  */
 @NonNullByDefault
 public class EBusMetricsService extends EBusConnectorEventListener implements IEBusParserListener {
-
+    @SuppressWarnings({"null"})
     private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
-
+    @SuppressWarnings({"null"})
     private BigDecimal resolved = BigDecimal.valueOf(0);
-
+    @SuppressWarnings({"null"})
     private BigDecimal unresolved = BigDecimal.valueOf(0);
-
+    @SuppressWarnings({"null"})
     private BigDecimal received = BigDecimal.valueOf(0);
-
+    @SuppressWarnings({"null"})
     private BigDecimal failed = BigDecimal.valueOf(0);
-
+    @SuppressWarnings({"null"})
     private BigDecimal connectionFailed = BigDecimal.valueOf(0);
-
+    @SuppressWarnings({"null"})
     private BigDecimal receivedAmount = BigDecimal.valueOf(0);
 
     private Map<EBusError, @Nullable BigDecimal> failedMap = new EnumMap<>(EBusError.class);
 
+    @SuppressWarnings({"null"})
     public void clear() {
         resolved = BigDecimal.valueOf(0);
         unresolved = BigDecimal.valueOf(0);
@@ -57,26 +58,30 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
     }
 
     @Override
-    public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
-            @NonNull Map<@NonNull String, @Nullable Object> result, byte @NonNull [] receivedData,
+    @SuppressWarnings({"null"})
+    public void onTelegramResolved(IEBusCommandMethod commandChannel,
+            Map<String, @Nullable Object> result, byte @NonNull [] receivedData,
             @Nullable Integer sendQueueId) {
         resolved = resolved.add(BigDecimal.ONE);
     }
 
     @Override
+    @SuppressWarnings({"null"})
     public void onTelegramResolveFailed(@Nullable IEBusCommandMethod commandChannel, byte @Nullable [] receivedData,
             @Nullable Integer sendQueueId, @Nullable String exceptionMessage) {
         unresolved = unresolved.add(BigDecimal.ONE);
     }
 
     @Override
-    public void onTelegramReceived(byte @NonNull [] receivedData, @Nullable Integer sendQueueId) {
+    @SuppressWarnings({"null"})
+    public void onTelegramReceived(byte[] receivedData, @Nullable Integer sendQueueId) {
         received = received.add(BigDecimal.ONE);
         receivedAmount = receivedAmount.add(BigDecimal.valueOf(receivedData.length));
     }
 
     @Override
-    public void onTelegramException(@NonNull EBusDataException exception, @Nullable Integer sendQueueId) {
+    @SuppressWarnings({"null"})
+    public void onTelegramException(EBusDataException exception, @Nullable Integer sendQueueId) {
 
         EBusError errorCode = exception.getErrorCode();
 
@@ -94,7 +99,8 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
     }
 
     @Override
-    public void onConnectionException(@NonNull Exception e) {
+    @SuppressWarnings({"null"})
+    public void onConnectionException(Exception e) {
         connectionFailed = connectionFailed.add(BigDecimal.ONE);
     }
 
@@ -122,6 +128,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
         return connectionFailed;
     }
 
+    @SuppressWarnings({"null"})
     public BigDecimal getFailureRatio() {
         BigDecimal all = received.add(failed);
         if (!failed.equals(BigDecimal.ZERO) && !all.equals(BigDecimal.ZERO)) {
@@ -133,6 +140,7 @@ public class EBusMetricsService extends EBusConnectorEventListener implements IE
         }
     }
 
+    @SuppressWarnings({"null"})
     public BigDecimal getUnresolvedRatio() {
         BigDecimal all = unresolved.add(resolved);
         if (!unresolved.equals(BigDecimal.ZERO) && !all.equals(BigDecimal.ZERO)) {

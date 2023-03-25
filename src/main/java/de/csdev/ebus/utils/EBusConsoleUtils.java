@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -61,6 +61,7 @@ public class EBusConsoleUtils {
      * @return
      * @throws EBusTypeException
      */
+    @SuppressWarnings("java:S3776")
     public static String bruteforceData(byte @Nullable [] data) throws EBusTypeException {
 
         EBusTypeRegistry typeRegistry = new EBusTypeRegistry();
@@ -117,16 +118,16 @@ public class EBusConsoleUtils {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(String.format("%-25s | %-10s\n", "Successful received", service.getReceived()));
-        sb.append(String.format("%-25s | %-10s\n", "Failed received", service.getFailed()));
-        sb.append(String.format("%-25s | %-10s\n", "Successful/Failed ratio", service.getFailureRatio()));
+        sb.append(String.format("%-25s | %-10s%n", "Successful received", service.getReceived()));
+        sb.append(String.format("%-25s | %-10s%n", "Failed received", service.getFailed()));
+        sb.append(String.format("%-25s | %-10s%n", "Successful/Failed ratio", service.getFailureRatio()));
         sb.append("\n");
 
-        sb.append(String.format("%-25s | %-10s\n", "Resolved telegrams", service.getResolved()));
-        sb.append(String.format("%-25s | %-10s\n", "Unresolved telegrams", service.getUnresolved()));
-        sb.append(String.format("%-25s | %-10s\n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
+        sb.append(String.format("%-25s | %-10s%n", "Resolved telegrams", service.getResolved()));
+        sb.append(String.format("%-25s | %-10s%n", "Unresolved telegrams", service.getUnresolved()));
+        sb.append(String.format("%-25s | %-10s%n", "Resolved/Unresolved ratio", service.getUnresolvedRatio()));
 
-        return sb.toString();
+        return Objects.requireNonNull(sb.toString());
     }
 
     /**
@@ -139,7 +140,7 @@ public class EBusConsoleUtils {
 
         StringBuilder sb = new StringBuilder();
 
-        Map<String, String> mapping = new HashMap<String, String>();
+        Map<String, String> mapping = new HashMap<>();
 
         for (IEBusCommandCollection collection : collections) {
             for (String identification : collection.getIdentification()) {
@@ -149,10 +150,10 @@ public class EBusConsoleUtils {
 
         EBusDevice ownDevice = deviceTable.getOwnDevice();
 
-        sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s\n", "MA", "SA",
+        sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s%n", "MA", "SA",
                 "Identifier", "Device", "Manufacture", "ID", "Firmware", "Hardware", "Last Activity"));
 
-        sb.append(String.format("%-2s-+-%-2s-+-%-14s-+-%-14s-+-%-20s-+-%-2s-+-%-10s-+-%-10s-+-%-20s\n",
+        sb.append(String.format("%-2s-+-%-2s-+-%-14s-+-%-14s-+-%-20s-+-%-2s-+-%-10s-+-%-10s-+-%-20s%n",
                 StringUtils.repeat("-", 2), StringUtils.repeat("-", 2), StringUtils.repeat("-", 14),
                 StringUtils.repeat("-", 14), StringUtils.repeat("-", 20), StringUtils.repeat("-", 2),
                 StringUtils.repeat("-", 10), StringUtils.repeat("-", 10), StringUtils.repeat("-", 20)));
@@ -168,7 +169,7 @@ public class EBusConsoleUtils {
             String deviceName = isBridge ? "<interface>" : mapping.getOrDefault(id, "---");
             String manufacture = isBridge ? "eBUS Library" : device.getManufacturerName();
 
-            sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s\n",
+            sb.append(String.format("%-2s | %-2s | %-14s | %-14s | %-25s | %-2s | %-10s | %-10s | %-20s%n",
                     masterAddress, slaveAddress, id, deviceName, manufacture,
                     EBusUtils.toHexDumpString(device.getManufacturer()), device.getSoftwareVersion(),
                     device.getHardwareVersion(), activity));
@@ -188,6 +189,7 @@ public class EBusConsoleUtils {
      * @param data
      * @return
      */
+    @SuppressWarnings("java:S3776")
     public static @NonNull String analyzeTelegram(@NonNull EBusCommandRegistry registry, byte @NonNull [] data) {
 
         Objects.requireNonNull(registry, "registry");
@@ -217,7 +219,7 @@ public class EBusConsoleUtils {
                 sb.append(StringUtils.repeat("*", len) + "\n");
                 sb.append("\n");
 
-                return sb.toString();
+                return Objects.requireNonNull(sb.toString());
             }
 
             sb.append("\n");
@@ -225,8 +227,8 @@ public class EBusConsoleUtils {
             sb.append("***************************\n");
             sb.append("\n");
 
-            sb.append(String.format("Original data : %s\n", EBusUtils.toHexDumpString(data)));
-            sb.append(String.format("Unescaped data: %s\n", EBusUtils.toHexDumpString(edata)));
+            sb.append(String.format("Original data : %s%n", EBusUtils.toHexDumpString(data)));
+            sb.append(String.format("Unescaped data: %s%n", EBusUtils.toHexDumpString(edata)));
 
             byte[] command = Arrays.copyOfRange(edata, 2, 4);
 
@@ -312,7 +314,7 @@ public class EBusConsoleUtils {
             sb.append("Resolve the telegram\n");
             sb.append("********************\n");
             sb.append("\n");
-            sb.append(String.format("Found %s command method(s) for this telegram.\n", methods.size()));
+            sb.append(String.format("Found %s command method(s) for this telegram.%n", methods.size()));
             sb.append("\n");
 
             for (IEBusCommandMethod method : methods) {
@@ -320,7 +322,7 @@ public class EBusConsoleUtils {
                     if (method != null) {
                         Map<String, Object> result = EBusCommandUtils.decodeTelegram(method, data);
 
-                        sb.append(String.format("Values from command '%s' with method '%s' from collection '%s'\n",
+                        sb.append(String.format("Values from command '%s' with method '%s' from collection '%s'%n",
                                 method.getParent().getId(), method.getMethod(),
                                 method.getParent().getParentCollection().getId()));
 
@@ -331,7 +333,7 @@ public class EBusConsoleUtils {
                                 value = EBusUtils.toHexDumpString((byte[]) value);
                             }
 
-                            sb.append(String.format("  %-20s = %s\n", entry.getKey(),
+                            sb.append(String.format("  %-20s = %s%n", entry.getKey(),
                                     value != null ? value.toString() : "NULL"));
                         }
                     }
@@ -344,7 +346,7 @@ public class EBusConsoleUtils {
             logger.error("error!", e);
         }
 
-        return sb.toString();
+        return Objects.requireNonNull(sb.toString());
 
     }
 
@@ -359,6 +361,7 @@ public class EBusConsoleUtils {
         return "Slave";
     }
 
+    @SuppressWarnings({"null"})
     private static @NonNull String hex(byte[] b) {
         return EBusUtils.toHexDumpString(b).toString();
 
@@ -385,6 +388,6 @@ public class EBusConsoleUtils {
         sb.append(text);
         sb.append("\n");
 
-        return sb.toString();
+        return Objects.requireNonNull(sb.toString());
     }
 }

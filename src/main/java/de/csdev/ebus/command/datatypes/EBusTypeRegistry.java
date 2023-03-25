@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,7 +64,7 @@ public class EBusTypeRegistry {
      * @throws EBusTypeException
      */
     protected void init() throws EBusTypeException {
-        types = new HashMap<String, IEBusType<?>>();
+        types = new HashMap<>();
 
         // primary types
         add(EBusTypeBit.class);
@@ -102,7 +102,7 @@ public class EBusTypeRegistry {
      * @param properties
      * @return
      */
-    public <T> IEBusType<T> getType(String type, Map<String, Object> properties) {
+    public @Nullable <T> IEBusType<T> getType(String type, Map<String, Object> properties) {
         IEBusType<T> ebusType = getType(type);
 
         if (ebusType != null) {
@@ -117,7 +117,7 @@ public class EBusTypeRegistry {
      * @param propertiesArguments
      * @return
      */
-    public <T> IEBusType<T> getType(String type, Object... propertiesArguments) {
+    public @Nullable <T> IEBusType<T> getType(String type, Object... propertiesArguments) {
         Map<String, Object> properties = CollectionUtils.createProperties(propertiesArguments);
         return this.getType(type, properties);
     }
@@ -128,7 +128,7 @@ public class EBusTypeRegistry {
      * @param type
      * @return
      */
-    public <T> IEBusType<T> getType(String type) {
+    public @Nullable <T> IEBusType<T> getType(String type) {
         @SuppressWarnings("unchecked")
         IEBusType<T> eBusType = (IEBusType<T>) types.get(type);
 
@@ -157,7 +157,7 @@ public class EBusTypeRegistry {
      * @return
      * @throws EBusTypeException
      */
-    public byte[] encode(String type, Object data) throws EBusTypeException {
+    public byte @Nullable [] encode(String type, Object data) throws EBusTypeException {
 
         IEBusType<?> eBusType = types.get(type);
 

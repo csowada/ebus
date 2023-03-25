@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,27 +12,32 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.utils.NumberUtils;
 
+@NonNullByDefault
 public abstract class AbstractEBusTypeNumber extends EBusAbstractType<BigDecimal> {
 
     @Override
     public byte[] getReplaceValue() {
         int length = getTypeLength();
-        if (replaceValue == null || replaceValue.length == 0) {
-            replaceValue = new byte[length];
-            replaceValue[length - 1] = (byte) 0x80;
-        }
+        byte[] lReplacevalue = this.replaceValue;
 
-        return replaceValue;
+        if (lReplacevalue == null || lReplacevalue.length == 0) {
+            lReplacevalue = new byte[length];
+            lReplacevalue[length - 1] = (byte) 0x80;
+        }
+        
+        this.replaceValue = lReplacevalue;
+        return lReplacevalue;
     }
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
         byte[] clone = ArrayUtils.clone(data);
         ArrayUtils.reverse(clone);
         return new BigDecimal(new BigInteger(clone));

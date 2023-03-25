@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -358,7 +358,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
      * @return
      */
     protected @NonNull List<@NonNull EBusValueDTO> checkedList(List<EBusValueDTO> master) {
-        List<EBusValueDTO> templates = new ArrayList<>();
+        List<@NonNull EBusValueDTO> templates = new ArrayList<>();
         if (master != null) {
             for (EBusValueDTO template : master) {
                 if (template != null) {
@@ -570,12 +570,16 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
     }
 
     private void overwritePropertiesFromTemplate(@NonNull EBusCommandValue clone, @NonNull EBusValueDTO template) {
+
+        String templateLabel = template.getLabel();
+        String cloneLabel = clone.getLabel();
+
         // allow placeholders in template-block mode
-        if (StringUtils.isNotEmpty(template.getLabel())) {
-            if (StringUtils.isNotEmpty(clone.getLabel()) && clone.getLabel().contains("%s")) {
-                clone.setLabel(String.format(clone.getLabel(), template.getLabel()));
+        if (StringUtils.isNotEmpty(templateLabel)) {
+            if (StringUtils.isNotEmpty(cloneLabel) && cloneLabel.contains("%s")) {
+                clone.setLabel(String.format(cloneLabel, templateLabel));
             } else {
-                clone.setLabel(template.getLabel());
+                clone.setLabel(templateLabel);
             }
         }
     }

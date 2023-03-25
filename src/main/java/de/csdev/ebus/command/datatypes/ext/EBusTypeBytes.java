@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,8 @@ package de.csdev.ebus.command.datatypes.ext;
 import java.util.Map;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -20,6 +22,7 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeBytes extends EBusAbstractType<byte[]> {
 
     public static String TYPE_BYTES = "bytes";
@@ -43,7 +46,7 @@ public class EBusTypeBytes extends EBusAbstractType<byte[]> {
 
         byte[] b = new byte[length];
 
-        if (data != null && data instanceof byte[]) {
+        if (data instanceof byte[]) {
             System.arraycopy(data, 0, b, 0, b.length);
         }
 
@@ -56,7 +59,7 @@ public class EBusTypeBytes extends EBusAbstractType<byte[]> {
     }
 
     @Override
-    public IEBusType<byte[]> getInstance(@Nullable Map<String, Object> properties) {
+    public @NonNull IEBusType<byte[]> getInstance(@Nullable Map<String, Object> properties) {
         Objects.requireNonNull(properties);
 
         if (properties.containsKey(IEBusType.LENGTH)) {

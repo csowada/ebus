@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,7 @@ package de.csdev.ebus.command;
 import java.util.Collection;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -20,6 +20,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusCommand {
 
     /**
@@ -27,7 +28,7 @@ public interface IEBusCommand {
      *
      * @return
      */
-    public @NonNull Collection<@NonNull IEBusCommandMethod> getCommandMethods();
+    public Collection<IEBusCommandMethod> getCommandMethods();
 
     /**
      * Returns the command method if available. Returns <code>null</code> if not availble.
@@ -35,14 +36,14 @@ public interface IEBusCommand {
      * @param method
      * @return
      */
-    public @Nullable IEBusCommandMethod getCommandMethod(final IEBusCommandMethod.@NonNull Method method);
+    public @Nullable IEBusCommandMethod getCommandMethod(final IEBusCommandMethod.Method method);
 
     /**
      * Returns the available command method enums.
      *
      * @return
      */
-    public @NonNull Collection<IEBusCommandMethod.@NonNull Method> getCommandChannelMethods();
+    public Collection<IEBusCommandMethod.Method> getCommandChannelMethods();
 
     /**
      * Returns device information from database
@@ -70,19 +71,19 @@ public interface IEBusCommand {
      *
      * @return
      */
-    public @NonNull String getId();
+    public String getId();
 
     /**
      * Returns a map of additional properties
      *
      * @return
      */
-    public @NonNull Map<@NonNull String, @NonNull Object> getProperties();
+    public Map<String, Object> getProperties();
 
     /**
      * Returns the parent collection
      *
      * @return
      */
-    public @NonNull IEBusCommandCollection getParentCollection();
+    public IEBusCommandCollection getParentCollection();
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,11 +11,15 @@ package de.csdev.ebus.utils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  *
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusDateTime {
 
     private Calendar calendar;
@@ -96,7 +100,7 @@ public class EBusDateTime {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

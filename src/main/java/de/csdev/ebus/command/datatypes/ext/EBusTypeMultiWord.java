@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,8 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.math.BigDecimal;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -22,6 +24,7 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
 
     public static String TYPE_MWORD = "mword";
@@ -31,10 +34,12 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
     private static String[] supportedTypes = new String[] { TYPE_MWORD };
 
     private int length = 2;
+    
+    @SuppressWarnings({"null"})
     private BigDecimal multiplier = BigDecimal.valueOf(1000);
 
     @Override
-    public String[] getSupportedTypes() {
+    public String @NonNull [] getSupportedTypes() {
         return supportedTypes;
     }
 
@@ -44,7 +49,7 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         byte[] dataNew = new byte[2];
 

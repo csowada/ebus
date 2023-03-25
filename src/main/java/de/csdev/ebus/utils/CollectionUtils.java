@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package de.csdev.ebus.utils;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,6 +25,10 @@ public class CollectionUtils {
 
     private CollectionUtils() {
         throw new IllegalStateException("Utility class");
+    }
+
+    public static final @NonNull <T> List<@NonNull T> emptyList() {
+        return Objects.requireNonNull(Collections.emptyList());
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import java.util.GregorianCalendar;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -29,6 +30,7 @@ import de.csdev.ebus.utils.EBusDateTime;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
 
     public static String TYPE_DATE = "date";
@@ -69,13 +71,18 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    @SuppressWarnings("java:S3776")
+    public @Nullable EBusDateTime decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         Objects.requireNonNull(data);
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
         IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
+
+        if (bcdType == null || wordType == null || charType == null ) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's types!");
+        }
 
         Calendar calendar = new GregorianCalendar();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -153,11 +160,15 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         IEBusType<BigDecimal> bcdType = types.getType(EBusTypeBCD.TYPE_BCD);
         IEBusType<BigDecimal> wordType = types.getType(EBusTypeWord.TYPE_WORD);
         IEBusType<BigDecimal> charType = types.getType(EBusTypeChar.TYPE_CHAR);
+
+        if (bcdType == null || wordType == null || charType == null) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's type!");
+        }
 
         Calendar calendar = null;
         byte[] result = new byte[this.getTypeLength()];
@@ -180,51 +191,51 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        if (calendar != null) {
-            if (StringUtils.equals(variant, DEFAULT)) {
 
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                dayOfWeek = dayOfWeek == 1 ? 7 : dayOfWeek - 1;
+        if (StringUtils.equals(variant, DEFAULT)) {
 
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
-                        bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0], bcdType.encode(dayOfWeek)[0],
-                        bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            dayOfWeek = dayOfWeek == 1 ? 7 : dayOfWeek - 1;
 
-            } else if (StringUtils.equals(variant, SHORT)) {
+            result = new byte[] { bcdType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
+                    bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0], bcdType.encode(dayOfWeek)[0],
+                    bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
 
-                result = new byte[] { bcdType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
-                        bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0],
-                        bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
+        } else if (StringUtils.equals(variant, SHORT)) {
 
-            } else if (StringUtils.equals(variant, HEX)) {
+            result = new byte[] { bcdType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
+                    bcdType.encode(calendar.get(Calendar.MONTH) + 1)[0],
+                    bcdType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
 
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                dayOfWeek = dayOfWeek == 1 ? 7 : dayOfWeek - 1;
+        } else if (StringUtils.equals(variant, HEX)) {
 
-                result = new byte[] { charType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
-                        charType.encode(calendar.get(Calendar.MONTH) + 1)[0], charType.encode(dayOfWeek)[0],
-                        charType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            dayOfWeek = dayOfWeek == 1 ? 7 : dayOfWeek - 1;
 
-            } else if (StringUtils.equals(variant, HEX_SHORT)) {
+            result = new byte[] { charType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
+                    charType.encode(calendar.get(Calendar.MONTH) + 1)[0], charType.encode(dayOfWeek)[0],
+                    charType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
 
-                result = new byte[] { charType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
-                        charType.encode(calendar.get(Calendar.MONTH) + 1)[0],
-                        charType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
+        } else if (StringUtils.equals(variant, HEX_SHORT)) {
 
-            } else if (StringUtils.equals(variant, DAYS)) {
+            result = new byte[] { charType.encode(calendar.get(Calendar.DAY_OF_MONTH))[0],
+                    charType.encode(calendar.get(Calendar.MONTH) + 1)[0],
+                    charType.encode(calendar.get(Calendar.YEAR) % 100)[0] };
 
-                long millis = calendar.getTimeInMillis();
+        } else if (StringUtils.equals(variant, DAYS)) {
 
-                calendar.clear();
-                calendar.set(1900, 0, 1, 0, 0);
-                long millis1900 = calendar.getTimeInMillis();
+            long millis = calendar.getTimeInMillis();
 
-                BigDecimal days = new BigDecimal(millis - millis1900);
-                days = days.divide(BigDecimal.valueOf(86400000), 0, RoundingMode.HALF_UP);
+            calendar.clear();
+            calendar.set(1900, 0, 1, 0, 0);
+            long millis1900 = calendar.getTimeInMillis();
 
-                result = wordType.encode(days);
-            }
+            BigDecimal days = new BigDecimal(millis - millis1900);
+            days = days.divide(BigDecimal.valueOf(86400000), 0, RoundingMode.HALF_UP);
+
+            result = wordType.encode(days);
         }
+        
 
         return result;
     }

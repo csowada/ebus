@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,7 +10,7 @@ package de.csdev.ebus.command;
 
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * A marker of a value with child values
@@ -18,6 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusNestedValue {
 
     /**
@@ -32,6 +33,6 @@ public interface IEBusNestedValue {
      *
      * @return
      */
-    public @NonNull List<@NonNull IEBusValue> getChildren();
+    public List<IEBusValue> getChildren();
 
 }

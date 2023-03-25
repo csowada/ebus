@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -129,7 +129,7 @@ public class EBusLowLevelController extends EBusControllerBase {
 
             logger.warn("Retry to connect to eBUS adapter in {} seconds ...", 5 * reConnectCounter);
 
-            Thread.sleep(5000 * reConnectCounter);
+            Thread.sleep(5000L * reConnectCounter);
 
             connection.close();
             if (connection.open()) {
@@ -162,6 +162,7 @@ public class EBusLowLevelController extends EBusControllerBase {
     }
 
     @Override
+    @SuppressWarnings("java:S3776")
     public void run() {
 
         initThreadPool();
@@ -259,6 +260,7 @@ public class EBusLowLevelController extends EBusControllerBase {
      * @param secondTry
      * @throws IOException
      */
+    @SuppressWarnings("java:S3776")
     private void send(boolean secondTry) throws IOException {
 
         if (!isRunning()) {

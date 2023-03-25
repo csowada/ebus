@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,6 +31,7 @@ import de.csdev.ebus.command.IEBusCommandMethod.Type;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusConsts;
+import de.csdev.ebus.utils.CollectionUtils;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
@@ -67,9 +68,13 @@ public class EBusCommandRegistry {
         try {
             this.typeRegistry = new EBusTypeRegistry();
 
-            this.reader = readerClass.getDeclaredConstructor().newInstance();
-            reader.setEBusTypes(this.typeRegistry);
-
+            IEBusConfigurationReader lReader =  readerClass.getDeclaredConstructor().newInstance();
+            if (lReader == null) {
+                throw new IllegalStateException("Unable to create a new eBUS Configuration Reader instance!");
+            }
+            lReader.setEBusTypes(this.typeRegistry);
+            this.reader = lReader;
+            
             if (loadBuildInCommands) {
                 loadBuildInCommandCollections();
             }
@@ -140,6 +145,11 @@ public class EBusCommandRegistry {
         Objects.requireNonNull(data);
 
         ByteBuffer buffer = ByteBuffer.wrap(data);
+
+        if (buffer == null) {
+            return  CollectionUtils.emptyList();
+        }
+
         return find(buffer);
     }
 
@@ -242,11 +252,12 @@ public class EBusCommandRegistry {
      * @param data
      * @return
      */
+    @SuppressWarnings("java:S3776")
     public boolean matchesCommand(@NonNull IEBusCommandMethod command, @NonNull ByteBuffer data) {
 
-        Byte sourceAddress = (Byte) ObjectUtils.defaultIfNull(command.getSourceAddress(), Byte.valueOf((byte) 0x00));
+        Byte sourceAddress = ObjectUtils.defaultIfNull(command.getSourceAddress(), Byte.valueOf((byte) 0x00));
 
-        Byte targetAddress = (Byte) ObjectUtils.defaultIfNull(command.getDestinationAddress(),
+        Byte targetAddress = ObjectUtils.defaultIfNull(command.getDestinationAddress(),
                 Byte.valueOf((byte) 0x00));
 
         // fast check - is this the right telegram type?

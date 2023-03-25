@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,13 +12,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -35,11 +35,12 @@ import de.csdev.ebus.service.parser.IEBusParserListener;
 @NonNullByDefault
 public class EBusTelegramWriter implements IEBusParserListener {
 
+    @NonNullByDefault({})
     private final Logger logger = LoggerFactory.getLogger(EBusTelegramWriter.class);
 
-    private BufferedWriter writerResolved;
+    private @Nullable BufferedWriter writerResolved;
 
-    private BufferedWriter writerUnresolved;
+    private @Nullable BufferedWriter writerUnresolved;
 
     private File loggingDirectory;
 
@@ -48,8 +49,8 @@ public class EBusTelegramWriter implements IEBusParserListener {
     }
 
     @Override
-    public void onTelegramResolved(@NonNull IEBusCommandMethod commandChannel,
-            @NonNull Map<@NonNull String, @Nullable Object> result, byte @NonNull [] receivedData,
+    public void onTelegramResolved(IEBusCommandMethod commandChannel,
+            Map<String, @Nullable Object> result, byte[] receivedData,
             @Nullable Integer sendQueueId) {
 
         try {
@@ -123,15 +124,17 @@ public class EBusTelegramWriter implements IEBusParserListener {
      */
     public void close() {
         try {
-            if (writerResolved != null) {
-                writerResolved.flush();
-                writerResolved.close();
-                writerResolved = null;
+            Writer w = this.writerResolved;
+            if (w != null) {
+                w.flush();
+                w.close();
+                this.writerResolved = null;
             }
 
-            if (writerUnresolved != null) {
-                writerUnresolved.flush();
-                writerUnresolved.close();
+            w = this.writerUnresolved;
+            if (w != null) {
+                w.flush();
+                w.close();
                 writerUnresolved = null;
             }
 
@@ -140,7 +143,7 @@ public class EBusTelegramWriter implements IEBusParserListener {
         }
     }
 
-    private void write(final BufferedWriter writer, final byte[] receivedData, final @Nullable String comment) throws IOException {
+    private void write(final @Nullable BufferedWriter writer, final byte[] receivedData, final @Nullable String comment) throws IOException {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
@@ -168,6 +171,8 @@ public class EBusTelegramWriter implements IEBusParserListener {
 
         sb.append("\n");
 
-        writer.append(sb).flush();
+        if (writer != null) {
+            writer.append(sb).flush();
+        }
     }
 }

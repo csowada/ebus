@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,10 +9,11 @@
 package de.csdev.ebus.core;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
+@NonNullByDefault
 public interface IEBusController {
 
-    @NonNull
     Integer addToSendQueue(final byte @NonNull [] buffer, final int maxAttemps) throws EBusControllerException;
 
     /**
@@ -20,7 +21,6 @@ public interface IEBusController {
      * @return
      * @throws EBusControllerException
      */
-    @NonNull
     Integer addToSendQueue(final byte @NonNull [] buffer) throws EBusControllerException;
 
     /**
@@ -28,7 +28,7 @@ public interface IEBusController {
      *
      * @param listener
      */
-    void addEBusEventListener(final @NonNull IEBusConnectorEventListener listener);
+    void addEBusEventListener(final IEBusConnectorEventListener listener);
 
     /**
      * Remove an eBUS listener
@@ -36,7 +36,7 @@ public interface IEBusController {
      * @param listener
      * @return
      */
-    boolean removeEBusEventListener(final @NonNull IEBusConnectorEventListener listener);
+    boolean removeEBusEventListener(final IEBusConnectorEventListener listener);
 
     boolean isRunning();
 

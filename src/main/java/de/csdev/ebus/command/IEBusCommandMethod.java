@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,13 +11,14 @@ package de.csdev.ebus.command;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusCommandMethod {
 
     /**
@@ -56,21 +57,21 @@ public interface IEBusCommandMethod {
      *
      * @return
      */
-    public IEBusCommandMethod.@NonNull Type getType();
+    public IEBusCommandMethod.Type getType();
 
     /**
      * Returns the parent command
      *
      * @return
      */
-    public @NonNull IEBusCommand getParent();
+    public IEBusCommand getParent();
 
     /**
      * Returns the type of this command
      *
      * @return
      */
-    public IEBusCommandMethod.@NonNull Method getMethod();
+    public IEBusCommandMethod.Method getMethod();
 
     /**
      * Returns defined destination address or null if not defined
@@ -91,27 +92,27 @@ public interface IEBusCommandMethod {
      *
      * @return
      */
-    public @NonNull ByteBuffer getMasterTelegramMask();
+    public ByteBuffer getMasterTelegramMask();
 
     /**
      * Get ordered list of eBus data types for the master part
      *
      * @return
      */
-    public @Nullable List<@NonNull IEBusValue> getMasterTypes();
+    public @Nullable List<IEBusValue> getMasterTypes();
 
     /**
      * Get ordered list of eBus data types for the slave part
      *
      * @return
      */
-    public @Nullable List<@NonNull IEBusValue> getSlaveTypes();
+    public @Nullable List<IEBusValue> getSlaveTypes();
 
     /**
      * Returns the eBus command bytes
      *
      * @return
      */
-    public byte @NonNull [] getCommand();
+    public byte[] getCommand();
 
 }

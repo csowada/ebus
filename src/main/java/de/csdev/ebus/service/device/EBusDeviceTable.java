@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,7 +23,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -112,6 +111,7 @@ public class EBusDeviceTable {
      * @param address
      * @param data
      */
+    @SuppressWarnings("java:S3776")
     public void updateDevice(final byte address, final Map<@NonNull String, @Nullable Object> data) {
 
         boolean newDevice = false;
@@ -164,7 +164,7 @@ public class EBusDeviceTable {
             Object value = data.get("hardware_version");
             if (value != null) {
                 BigDecimal obj2 = NumberUtils.toBigDecimal(value);
-                if (obj2 != null && !ObjectUtils.equals(obj2, device.getHardwareVersion())) {
+                if (obj2 != null && !Objects.equals(obj2, device.getHardwareVersion())) {
                     device.setHardwareVersion(obj2);
                     updatedDevice = true;
                 }
@@ -173,7 +173,7 @@ public class EBusDeviceTable {
             value = data.get("software_version");
             if (value != null) {
                 BigDecimal obj2 = NumberUtils.toBigDecimal(value);
-                if (obj2 != null && !ObjectUtils.equals(obj2, device.getSoftwareVersion())) {
+                if (obj2 != null && !Objects.equals(obj2, device.getSoftwareVersion())) {
                     device.setSoftwareVersion(obj2);
                     updatedDevice = true;
                 }
@@ -182,7 +182,7 @@ public class EBusDeviceTable {
             value = data.get("vendor");
             if (value != null) {
                 BigDecimal obj2 = NumberUtils.toBigDecimal(value);
-                if (obj2 != null && !ObjectUtils.equals(obj2.byteValue(), device.getManufacturer())) {
+                if (obj2 != null && !Objects.equals(obj2.byteValue(), device.getManufacturer())) {
                     int intValue = obj2.intValue();
                     device.setManufacturer((byte) intValue);
                     updatedDevice = true;

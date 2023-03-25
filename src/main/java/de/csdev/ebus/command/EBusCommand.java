@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,7 +28,7 @@ import de.csdev.ebus.utils.CollectionUtils;
 @NonNullByDefault
 public class EBusCommand implements IEBusCommand {
 
-    private Map<IEBusCommandMethod.@NonNull Method, @NonNull IEBusCommandMethod> channels = new EnumMap<>(IEBusCommandMethod.Method.class);
+    private Map<IEBusCommandMethod.Method, IEBusCommandMethod> channels = new EnumMap<>(IEBusCommandMethod.Method.class);
 
     private @Nullable String configurationSource;
 
@@ -48,18 +48,18 @@ public class EBusCommand implements IEBusCommand {
     }
 
     @Override
-    public @NonNull Collection<IEBusCommandMethod.@NonNull Method> getCommandChannelMethods() {
+    public Collection<IEBusCommandMethod.Method> getCommandChannelMethods() {
         return Objects.requireNonNull(Collections.unmodifiableCollection(channels.keySet()));
     }
 
     @Override
-    public @Nullable IEBusCommandMethod getCommandMethod(IEBusCommandMethod.@NonNull Method channel) {
+    public @Nullable IEBusCommandMethod getCommandMethod(IEBusCommandMethod.Method channel) {
         Objects.requireNonNull(channel);
         return CollectionUtils.get(channels, channel);
     }
 
     @Override
-    public @NonNull Collection<@NonNull IEBusCommandMethod> getCommandMethods() {
+    public @NonNull Collection<IEBusCommandMethod> getCommandMethods() {
         return Objects.requireNonNull(Collections.unmodifiableCollection(channels.values()));
     }
 
@@ -89,7 +89,7 @@ public class EBusCommand implements IEBusCommand {
      * @see de.csdev.ebus.command.IEBusCommand#getId()
      */
     @Override
-    public @NonNull String getId() {
+    public String getId() {
         return Objects.requireNonNull(id);
     }
 
@@ -109,7 +109,7 @@ public class EBusCommand implements IEBusCommand {
     }
 
     @Override
-    public Map<@NonNull String, @NonNull Object> getProperties() {
+    public Map<String, Object> getProperties() {
         return Objects.requireNonNull(CollectionUtils.unmodifiableNotNullMap(properties));
     }
 
@@ -138,8 +138,9 @@ public class EBusCommand implements IEBusCommand {
 
     public void setProperties(Map<String, Object> properties) {
         Objects.requireNonNull(properties, "properties");
-        this.properties = new HashMap<>();
-        this.properties.putAll(properties);
+        HashMap<String, Object> props = new HashMap<>();
+        props.putAll(properties);
+        this.properties = props;
     }
 
     public void setProperty(String key, String value) {

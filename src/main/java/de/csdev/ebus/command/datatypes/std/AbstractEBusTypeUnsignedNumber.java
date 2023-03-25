@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -22,10 +23,11 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public abstract class AbstractEBusTypeUnsignedNumber extends EBusAbstractType<BigDecimal> {
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         byte[] clone = ArrayUtils.clone(data);
         ArrayUtils.reverse(clone);
@@ -34,7 +36,7 @@ public abstract class AbstractEBusTypeUnsignedNumber extends EBusAbstractType<Bi
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         BigDecimal b = NumberUtils.toBigDecimal(data == null ? 0 : data);
 

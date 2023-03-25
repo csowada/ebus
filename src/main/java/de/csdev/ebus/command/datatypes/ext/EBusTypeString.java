@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package de.csdev.ebus.command.datatypes.ext;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -16,6 +17,7 @@ import de.csdev.ebus.command.datatypes.EBusAbstractType;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeString extends EBusAbstractType<String> {
 
     public static String TYPE_STRING = "string";

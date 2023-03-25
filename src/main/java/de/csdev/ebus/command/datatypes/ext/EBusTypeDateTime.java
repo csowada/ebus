@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ import de.csdev.ebus.utils.EBusDateTime;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeDateTime.class);
@@ -49,7 +52,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     private String variantTime = EBusTypeTime.DEFAULT;
 
     @Override
-    protected byte[] applyByteOrder(byte[] data) {
+    protected byte @Nullable [] applyByteOrder(byte @Nullable [] data) {
         if (reverseByteOrder) {
             logger.warn("Parameter 'reverseByteOrder' not supported for EBusTypeDateTime yet!");
         }
@@ -61,6 +64,10 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();
+
+        if (dateType == null || timeType == null) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's types!");
+        }
 
         byte[] timeData = null;
         byte[] dateData = null;
@@ -113,6 +120,10 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();
 
+        if (dateType == null || timeType == null) {
+            throw new EBusTypeException("Unable to get all required EBusTyp's type!");
+        }
+
         Calendar calendar = null;
         byte[] result = new byte[this.getTypeLength()];
 
@@ -141,19 +152,19 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         return result;
     }
 
-    private IEBusType<Object> getDateType() {
-        Map<String, Object> properties = new HashMap<String, Object>();
+    private @Nullable IEBusType<Object> getDateType() {
+        Map<String, Object> properties = new HashMap<>();
         properties.put(IEBusType.VARIANT, variantDate);
         return types.getType(EBusTypeDate.TYPE_DATE, properties);
     }
 
     @Override
-    public String[] getSupportedTypes() {
+    public String @NonNull [] getSupportedTypes() {
         return supportedTypes;
     }
 
-    private IEBusType<Object> getTimeType() {
-        Map<String, Object> properties = new HashMap<String, Object>();
+    private @Nullable IEBusType<Object> getTimeType() {
+        Map<String, Object> properties = new HashMap<>();
         properties.put(IEBusType.VARIANT, variantTime);
         return types.getType(EBusTypeTime.TYPE_TIME, properties);
     }
@@ -162,6 +173,10 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
     public int getTypeLength() {
         IEBusType<Object> dateType = getDateType();
         IEBusType<Object> timeType = getTimeType();
+
+        if (dateType == null || timeType == null) {
+            throw new IllegalStateException("Unable to get all required EBusTyp's type!");
+        }
 
         return dateType.getTypeLength() + timeType.getTypeLength();
     }

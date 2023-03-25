@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package de.csdev.ebus.command.datatypes.std;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -22,11 +23,12 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
 
     public static String TYPE_BCD = "bcd";
 
-    private static String[] supportedTypes = new String[] { TYPE_BCD };
+    private static final String[] supportedTypes = new String[] { TYPE_BCD };
 
     private int length = 1;
 
@@ -45,7 +47,7 @@ public class EBusTypeBCD extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) {
 
         Objects.requireNonNull(data);
 

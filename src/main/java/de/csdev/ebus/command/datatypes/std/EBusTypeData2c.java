@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package de.csdev.ebus.command.datatypes.std;
 
 import java.math.BigDecimal;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusTypeException;
@@ -20,6 +21,7 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeData2c extends AbstractEBusTypeNumber {
 
     public static String TYPE_DATA2C = "data2c";
@@ -37,15 +39,18 @@ public class EBusTypeData2c extends AbstractEBusTypeNumber {
     }
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
         BigDecimal decodeInt = super.decodeInt(data);
-        return decodeInt.divide(BigDecimal.valueOf(16));
+        if (decodeInt != null) {
+            return decodeInt.divide(BigDecimal.valueOf(16));
+        }
+        return null;
     }
 
     @Override
     public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
         BigDecimal b = NumberUtils.toBigDecimal(data);
-        
+
         if (b == null) {
             throw new EBusTypeException("Unable to convert input data to number!");
         }

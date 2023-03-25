@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -206,7 +206,7 @@ public class EBusCommandUtils {
         for (byte b : masterData) {
             // disable escaping the special characters as vaillant and wolf
             // generates AA and A9 bytes!
-            // buf.put(escapeSymbol(b));
+            // buf.put(escapeSymbol(b))
             buf.put(b);
         }
 
@@ -215,7 +215,7 @@ public class EBusCommandUtils {
 
         // disable escaping the special characters as vaillant and wolf
         // generates AA and A9 bytes!
-        // buf.put(escapeSymbol(b));
+        // buf.put(escapeSymbol(b))
         buf.put(crc8);
 
         // set limit and reset position
@@ -272,6 +272,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
+    @SuppressWarnings("java:S3776")
     public static @NonNull ByteBuffer composeMasterData(@NonNull IEBusCommandMethod commandMethod,
             @Nullable Map<String, Object> values) throws EBusTypeException {
 
@@ -376,6 +377,7 @@ public class EBusCommandUtils {
      * @throws EBusTypeException
      * @throws EBusCommandException
      */
+    @SuppressWarnings("java:S3776")
     public static @NonNull ByteBuffer buildMasterTelegram(@NonNull IEBusCommandMethod commandMethod,
             @Nullable Byte source, @Nullable Byte target, @Nullable Map<String, Object> values,
             boolean skipAddressChecks) throws EBusTypeException, EBusCommandException {
@@ -489,6 +491,7 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
+    @SuppressWarnings("java:S3776")
     private static int decodeValueList(@Nullable List<@NonNull IEBusValue> values, byte @NonNull [] data,
             @NonNull HashMap<String, Object> result, int pos) throws EBusTypeException {
 
@@ -567,6 +570,7 @@ public class EBusCommandUtils {
      * @param commandChannel
      * @return
      */
+    @SuppressWarnings("java:S3776")
     public static @NonNull ByteBuffer getMasterTelegramMask(@NonNull IEBusCommandMethod commandChannel) {
 
         Objects.requireNonNull(commandChannel, "Parameter command is null!");

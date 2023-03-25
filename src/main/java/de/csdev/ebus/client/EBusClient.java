@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -91,8 +91,10 @@ public class EBusClient {
      */
     public void addEBusEventListener(final @NonNull IEBusConnectorEventListener listener) {
         Objects.requireNonNull(listener, LABEL_LISTENER);
-        if (controller != null) {
-            controller.addEBusEventListener(listener);
+        IEBusController ctrl = this.controller;
+
+        if (ctrl != null) {
+            ctrl.addEBusEventListener(listener);
         } else {
             throw new IllegalStateException("Controller is not initialized!");
         }
@@ -120,12 +122,13 @@ public class EBusClient {
     public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer) throws EBusControllerException {
 
         Objects.requireNonNull(buffer, "buffer");
+        IEBusController ctrl = this.controller;
 
-        if (controller == null) {
+        if (ctrl == null) {
             throw new EBusControllerException("Controller not set!");
         }
 
-        return controller.addToSendQueue(buffer);
+        return ctrl.addToSendQueue(buffer);
     }
 
     /**
@@ -139,11 +142,13 @@ public class EBusClient {
      */
     public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer, final int maxAttemps) throws EBusControllerException {
 
-        if (this.controller == null) {
+        IEBusController ctrl = this.controller;
+
+        if (ctrl == null) {
             throw new EBusControllerException("Controller not set!");
         }
 
-        return this.controller.addToSendQueue(buffer, maxAttemps);
+        return ctrl.addToSendQueue(buffer, maxAttemps);
     }
 
     /**
@@ -179,31 +184,35 @@ public class EBusClient {
         controller.addEBusEventListener(resolverService);
 
         deviceTable.setOwnAddress(masterAddress);
-        deviceTableService = new EBusDeviceTableService(controller, commandRegistry, deviceTable);
-
+        
         // add device table service
-        resolverService.addEBusParserListener(deviceTableService);
-        deviceTable.addEBusDeviceTableListener(deviceTableService);
+        EBusDeviceTableService lDeviceTableService = new EBusDeviceTableService(controller, commandRegistry, deviceTable);
+        resolverService.addEBusParserListener(lDeviceTableService);
+        deviceTable.addEBusDeviceTableListener(lDeviceTableService);
 
         // add metrics service
         controller.addEBusEventListener(metricsService);
         resolverService.addEBusParserListener(metricsService);
 
         this.controller = controller;
+        this.deviceTableService = lDeviceTableService;
     }
 
     /**
      * Disposes the eBUS client with all depended services
      */
     public void dispose() {
-        if (controller != null) {
-            controller.interrupt();
-            controller = null;
+
+        IEBusController ctrl = this.controller;
+        if (ctrl != null) {
+            ctrl.interrupt();
+            this.controller = null;
         }
 
-        if (deviceTableService != null) {
-            deviceTableService.dispose();
-            deviceTableService = null;
+        EBusDeviceTableService lDeviceTableService = this.deviceTableService;
+        if (lDeviceTableService != null) {
+            lDeviceTableService.dispose();
+            this.deviceTableService = null;
         }
 
         if (deviceTable != null) {
@@ -307,9 +316,12 @@ public class EBusClient {
     public boolean removeEBusEventListener(final @NonNull IEBusConnectorEventListener listener) {
         Objects.requireNonNull(listener);
 
-        if (controller != null) {
-            return controller.removeEBusEventListener(listener);
+        IEBusController ctrl = this.controller;
+
+        if (ctrl != null) {
+            return ctrl.removeEBusEventListener(listener);
         }
+
         return false;
     }
 

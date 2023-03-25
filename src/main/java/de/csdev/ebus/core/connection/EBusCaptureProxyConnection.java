@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,8 @@
 package de.csdev.ebus.core.connection;
 
 import java.io.IOException;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import de.csdev.ebus.utils.EmulatorCapture;
 
@@ -54,7 +56,7 @@ public class EBusCaptureProxyConnection implements IEBusConnection {
         return proxyConnection.isReceiveBufferEmpty();
     }
 
-    public int readBytes(final byte[] buffer) throws IOException {
+    public int readBytes(final byte @NonNull [] buffer) throws IOException {
         int readBytes = proxyConnection.readBytes(buffer);
         captureWriter.write(buffer, readBytes);
         return readBytes;

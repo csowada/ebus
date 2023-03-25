@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,12 +10,14 @@ package de.csdev.ebus.command.datatypes;
 
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public interface IEBusType<T> {
 
     public static final String LENGTH = "length";
@@ -72,6 +74,6 @@ public interface IEBusType<T> {
      * @param properties
      * @return
      */
-    public IEBusType<T> getInstance(@Nullable Map<String, Object> properties);
+    public @Nullable IEBusType<T> getInstance(@Nullable Map<String, Object> properties);
 
 }

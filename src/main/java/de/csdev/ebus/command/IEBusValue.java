@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.IEBusType;
@@ -22,6 +23,8 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  * @author Christian Sowada - Initial contribution
  *
  */
+
+@NonNullByDefault
 public interface IEBusValue extends Cloneable {
 
     /**
@@ -29,8 +32,7 @@ public interface IEBusValue extends Cloneable {
      *
      * @return
      */
-
-    public @NonNull IEBusType<?> getType();
+    public IEBusType<?> getType();
 
     /**
      * Returns the default value if set, can be <code>null</code>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.math.BigDecimal;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -21,6 +22,7 @@ import de.csdev.ebus.utils.NumberUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
     public static String TYPE_VERSION = "version";
@@ -38,7 +40,7 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
+    public @Nullable BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
 
         if (data == null) {
             throw new IllegalArgumentException();
@@ -59,7 +61,7 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+    public byte @Nullable [] encodeInt(@Nullable Object data) throws EBusTypeException {
 
         BigDecimal value = NumberUtils.toBigDecimal(data);
 
@@ -72,6 +74,10 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
         byte[] encode1 = types.encode(EBusTypeBCD.TYPE_BCD, values[0]);
         byte[] encode2 = types.encode(EBusTypeBCD.TYPE_BCD, values[1]);
+
+        if ( encode1 == null || encode1.length == 0 || encode2 == null || encode2.length == 0 ) {
+            return null;
+        }
 
         return new byte[] { encode1[0], encode2[0] };
     }

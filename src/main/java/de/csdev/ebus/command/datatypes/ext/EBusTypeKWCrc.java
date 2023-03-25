@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-2021 by the respective copyright holders.
+ * Copyright (c) 2017-2023 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,8 @@ package de.csdev.ebus.command.datatypes.ext;
 
 import java.nio.ByteBuffer;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
@@ -21,6 +23,7 @@ import de.csdev.ebus.utils.EBusUtils;
  * @author Christian Sowada - Initial contribution
  *
  */
+@NonNullByDefault
 public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComplexType<Byte> {
 
     public static String TYPE_KW_CRC = "kw-crc";
@@ -41,18 +44,18 @@ public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComple
     }
 
     @Override
-    public String[] getSupportedTypes() {
+    public String @NonNull [] getSupportedTypes() {
         return supportedTypes;
     }
 
     @Override
-    public Byte decodeInt(byte @Nullable [] data) {
-        throw new RuntimeException("Not implemented by EBusTypeKWCrc!");
+    public Byte decodeInt(byte @Nullable [] data) throws EBusTypeException {
+        throw new EBusTypeException("Not implemented by EBusTypeKWCrc!");
     }
 
     @Override
-    public byte[] encodeInt(@Nullable Object data) {
-        throw new RuntimeException("Not implemented by EBusTypeKWCrc!");
+    public byte[] encodeInt(@Nullable Object data) throws EBusTypeException {
+        throw new EBusTypeException("Not implemented by EBusTypeKWCrc!");
     }
 
     @Override
