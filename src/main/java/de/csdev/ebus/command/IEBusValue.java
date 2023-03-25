@@ -25,7 +25,7 @@ import de.csdev.ebus.command.datatypes.IEBusType;
  */
 
 @NonNullByDefault
-public interface IEBusValue extends Cloneable {
+public interface IEBusValue {
 
     /**
      * Returns the type of this value
@@ -117,5 +117,5 @@ public interface IEBusValue extends Cloneable {
      *
      * @return
      */
-    public @NonNull IEBusValue clone();
+    public IEBusValue getClonedInstance();
 }
