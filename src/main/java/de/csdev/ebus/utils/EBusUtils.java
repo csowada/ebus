@@ -240,7 +240,7 @@ public class EBusUtils {
      * @param hexDumpString
      * @return
      */
-    public static @Nullable Byte toByte(final String hexDumpString) {
+    public static @Nullable Byte toByte(final @Nullable String hexDumpString) {
         if (StringUtils.isEmpty(hexDumpString)) {
             return null;
         }

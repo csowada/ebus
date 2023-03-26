@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.11] - 2023-03-26
+### Fixed
+- Fix ``@Nullable`` in Utils class
+
 ## [1.1.10] - 2023-03-25
 ### Changed
 - Updated source headers to year 2023
