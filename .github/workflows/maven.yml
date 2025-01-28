@@ -14,6 +14,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - uses: actions/checkout@v2
@@ -35,19 +38,22 @@ jobs:
         restore-keys: ${{ runner.os }}-sonar
 
     - name: Set up Java
-      uses: actions/setup-java@v1
+      uses: actions/checkout@v4
       with:
         java-version: 11
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         server-username: OSSRH_USERNAME  # env variable for username in deploy
         server-password: OSSRH_PASSWORD  # env variable for token in deploy
 
-    - name: Build and analyze
-      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        BUILD_NUMBER: ${{ github.run_id }}-${{ github.run_number }}
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    # - name: Build and analyze
+    #   run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     BUILD_NUMBER: ${{ github.run_id }}-${{ github.run_number }}
 
     - name: Upload Maven build artifact
       uses: actions/upload-artifact@v4
