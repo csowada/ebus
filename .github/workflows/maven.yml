@@ -24,21 +24,21 @@ jobs:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
     - name: Cache Maven packages
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+        # restore-keys: ${{ runner.os }}-m2
 
     - name: Cache SonarCloud packages
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
+        # restore-keys: ${{ runner.os }}-sonar
 
     - name: Set up Java
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
       with:
         java-version: 11
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
