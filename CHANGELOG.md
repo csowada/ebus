@@ -2,7 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased 
+
+## [1.1.12] - 2025-01-29
 ### Changed
+- Update project dependencies
 - Add Tests for encode master data
 ### Fixed
 - Revert change from v1.1.9 to encode master data again
