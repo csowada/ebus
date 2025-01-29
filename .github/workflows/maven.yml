@@ -33,6 +33,8 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: 11
+        distribution: temurin
+        cache: maven
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         server-username: OSSRH_USERNAME  # env variable for username in deploy
         server-password: OSSRH_PASSWORD  # env variable for token in deploy
