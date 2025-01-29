@@ -34,6 +34,8 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: 11
+        distribution: temurin
+        cache: maven
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
         server-username: OSSRH_USERNAME  # env variable for username in deploy
         server-password: OSSRH_PASSWORD  # env variable for token in deploy
@@ -54,7 +56,9 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: 11
-
+        distribution: temurin
+        cache: maven
+        
     - name: Publish to GitHub Packages
     #  -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/csowada/ebus
       run: mvn deploy --batch-mode --update-snapshots -P !sign,!build-extras,!deploy-ossrh,deploy-github -Dmaven.test.skip=true
