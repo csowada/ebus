@@ -17,7 +17,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.release>8</maven.compiler.release>
-		<license.year>2023</license.year>
+		<license.year>2025</license.year>
 		<bundle.version>${project.version}</bundle.version>
 		<sonar.projectKey>csowada_ebus</sonar.projectKey>
 		<sonar.organization>csowada</sonar.organization>
