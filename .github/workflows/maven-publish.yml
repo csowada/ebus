@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Use Cache for Maven packages
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -31,7 +31,7 @@ jobs:
         GPG_FILE: ${{secrets.GPG_FILE}}
 
     - name: Set up Java for Apache Maven Central
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v4
       with:
         java-version: 11
         server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
@@ -51,7 +51,7 @@ jobs:
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
     - name: Set up Java for publishing to GitHub Packages
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v4
       with:
         java-version: 11
 
