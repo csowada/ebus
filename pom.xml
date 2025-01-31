@@ -7,7 +7,7 @@
 	<description>eBUS core library - This library handles the communication with heating engineering via the BUS specification. This protocol is used by many heating manufacturers in Europe.</description>
 	<groupId>de.cs-dev.ebus</groupId>
 	<artifactId>ebus-core</artifactId>
-	<version>1.1.12</version>
+	<version>1.1.13</version>
 	<url>https://github.com/csowada/ebus</url>
 	<packaging>bundle</packaging>
 
@@ -321,7 +321,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.17.0</version>
+			<version>3.14.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -344,7 +344,7 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.11.0</version>
+			<version>2.10.1</version>
 			<scope>provided</scope>
 		</dependency>
 

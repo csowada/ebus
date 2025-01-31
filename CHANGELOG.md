@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.1.13] - 2025-01-31
+### Changed
+- Update project dependencies to openHAB 4.x versions
+
 ## [1.1.12] - 2025-01-29
 ### Changed
 - Update project dependencies
