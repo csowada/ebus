@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -56,6 +55,7 @@ import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.command.datatypes.std.EBusTypeByte;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.StringUtil;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -142,15 +142,15 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         Objects.requireNonNull(collection, "collection");
 
-        if (StringUtils.isEmpty(collection.getId())) {
+        if (StringUtil.isEmpty(collection.getId())) {
             throw new EBusConfigurationReaderException("The property 'id' is missing for the configuration!");
         }
 
-        if (StringUtils.isEmpty(collection.getLabel())) {
+        if (StringUtil.isEmpty(collection.getLabel())) {
             throw new EBusConfigurationReaderException("The property 'label' is missing for the configuration!");
         }
 
-        if (StringUtils.isEmpty(collection.getDescription())) {
+        if (StringUtil.isEmpty(collection.getDescription())) {
             throw new EBusConfigurationReaderException("The property 'description' is missing for the configuration!");
         }
 
@@ -158,8 +158,12 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             throw new EBusConfigurationReaderException("The property 'properties' is missing for the configuration!");
         }
 
-        EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
-                collection.getDescription(), collection.getProperties());
+        String id = Objects.requireNonNull(collection.getId(), "Collection ID must not be null");
+        String label = Objects.requireNonNull(collection.getLabel(), "Collection label must not be null");
+        String description = Objects.requireNonNull(collection.getDescription(), "Collection description must not be null");
+        Map<String, Object> properties = Objects.requireNonNull(collection.getProperties(), "Collection properties must not be null");
+        
+        EBusCommandCollection commandCollection = new EBusCommandCollection(id, label, description, properties);
 
         // add md5 hash
         commandCollection.setIdentification(collection.getIdentification());
@@ -263,8 +267,9 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         // read in template block
         for (EBusValueDTO template : checkedList(commandElement.getTemplate())) {
             for (EBusCommandValue templateCfg : parseValueConfiguration(template, null, null, null)) {
-                if (StringUtils.isEmpty(templateCfg.getName())) {
-                    templateMap.put(templateCfg.getName(), templateCfg);
+                String name = templateCfg.getName();
+                if (StringUtil.isEmpty(name)) {
+                    templateMap.put(name, templateCfg);
                 }
 
                 templateList.add(templateCfg);
@@ -307,8 +312,9 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 EBusCommandMethod commandMethod = new EBusCommandMethod(cfg, method);
 
                 // overwrite with local command
-                if (StringUtils.isNotEmpty(commandMethodElement.getCommand())) {
-                    commandMethod.setCommand(EBusUtils.toByteArray(commandMethodElement.getCommand()));
+                String methodCommand = commandMethodElement.getCommand();
+                if (StringUtil.isNotEmpty(methodCommand)) {
+                    commandMethod.setCommand(EBusUtils.toByteArray(methodCommand));
                 } else {
                     commandMethod.setCommand(command);
                 }
@@ -329,7 +335,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 }
 
                 // default type is always master-slave if not explicit set or a broadcast
-                if (StringUtils.equals(commandMethodElement.getType(), "master-master")) {
+                String methodType = commandMethodElement.getType();
+                if ("master-master".equals(methodType)) {
                     commandMethod.setType(IEBusCommandMethod.Type.MASTER_MASTER);
 
                 } else if (method == Method.BROADCAST) {
@@ -393,7 +400,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             collectionId = commandMethod.getParent().getParentCollection().getId();
         }
 
-        if (StringUtils.isEmpty(typeStr)) {
+        if (StringUtil.isEmpty(typeStr)) {
             throw new EBusConfigurationReaderException("Property 'type' is missing for command ! %s",
                     commandMethod != null ? commandMethod.getParent() : "<NULL>");
         }
@@ -402,7 +409,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
             Collection<@NonNull EBusCommandValue> templateCollection = null;
 
-            if (StringUtils.isNotEmpty(valueDto.getName())) {
+            String valueName = valueDto.getName();
+            if (StringUtil.isNotEmpty(valueName)) {
                 logger.warn("Property 'name' is not allowed for type 'template-block', ignore property !");
             }
 
@@ -410,12 +418,10 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             String id = (String) valueDto.getProperty("id");
             String globalId = collectionId + "." + id;
 
-            if (StringUtils.isNotEmpty(id)) {
-
+            if (StringUtil.isNotEmpty(id)) {
                 templateCollection = templateBlockRegistry.get(id);
 
                 if (templateCollection == null) {
-
                     // try to convert the local id to a global id
                     logger.trace("Unable to find a template with id {}, second try with {} ...", id, globalId);
 
@@ -456,7 +462,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             String globalId = collectionId != null ? collectionId + "." + id : null;
             Collection<@NonNull EBusCommandValue> templateCollection = null;
 
-            if (StringUtils.isEmpty(id)) {
+            if (StringUtil.isEmpty(id)) {
                 throw new EBusConfigurationReaderException("No additional information for type 'template' defined!");
             }
 
@@ -485,7 +491,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                     overwritePropertiesFromTemplate(clone, valueDto);
 
                     // allow owerwrite for single names
-                    clone.setName(StringUtils.defaultIfEmpty(valueDto.getName(), clone.getName()));
+                    clone.setName(StringUtil.defaultIfEmpty(valueDto.getName(), Objects.requireNonNull(clone.getName())));
 
                     result.add(clone);
                 }
@@ -570,13 +576,12 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
     }
 
     private void overwritePropertiesFromTemplate(@NonNull EBusCommandValue clone, @NonNull EBusValueDTO template) {
-
         String templateLabel = template.getLabel();
         String cloneLabel = clone.getLabel();
 
         // allow placeholders in template-block mode
-        if (StringUtils.isNotEmpty(templateLabel)) {
-            if (StringUtils.isNotEmpty(cloneLabel) && cloneLabel.contains("%s")) {
+        if (StringUtil.isNotEmpty(templateLabel)) {
+            if (cloneLabel != null && cloneLabel.contains("%s")) {
                 clone.setLabel(String.format(cloneLabel, templateLabel));
             } else {
                 clone.setLabel(templateLabel);

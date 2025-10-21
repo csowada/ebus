@@ -88,4 +88,32 @@ public class NumberUtils {
         return (byte) (high * 10 + low);
     }
 
+    /**
+     * Checks if a String contains only digits.
+     */
+    public static boolean isDigits(@Nullable String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isDigit(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Converts a String to an Integer, handling nulls.
+     */
+    public static @Nullable Integer createInteger(@Nullable String str) {
+        if (str == null) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(str);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }

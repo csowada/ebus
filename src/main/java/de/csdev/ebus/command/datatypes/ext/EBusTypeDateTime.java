@@ -14,7 +14,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -25,6 +24,7 @@ import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.command.datatypes.IEBusType;
 import de.csdev.ebus.utils.EBusDateTime;
+import de.csdev.ebus.utils.ArrayUtil;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -56,7 +56,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
         if (reverseByteOrder) {
             logger.warn("Parameter 'reverseByteOrder' not supported for EBusTypeDateTime yet!");
         }
-        return ArrayUtils.clone(data);
+        return ArrayUtil.clone(data);
     }
 
     @Override

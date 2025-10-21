@@ -13,7 +13,6 @@ import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -101,28 +100,28 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
             throw new EBusTypeException("Unable to get all required EBusTyp's type!");
         }
 
-        if (StringUtils.equals(variant, SHORT)) {
+        if (SHORT.equals(variant)) {
             minute = bcdType.decode(new byte[] { data[0] });
             hour = bcdType.decode(new byte[] { data[1] });
 
-        } else if (StringUtils.equals(variant, DEFAULT)) {
+        } else if (DEFAULT.equals(variant)) {
             second = bcdType.decode(new byte[] { data[0] });
             minute = bcdType.decode(new byte[] { data[1] });
             hour = bcdType.decode(new byte[] { data[2] });
 
-        } else if (StringUtils.equals(variant, HEX)) {
+        } else if (HEX.equals(variant)) {
             second = charType.decode(new byte[] { data[0] });
             minute = charType.decode(new byte[] { data[1] });
             hour = charType.decode(new byte[] { data[2] });
 
-        } else if (StringUtils.equals(variant, HEX_SHORT)) {
+        } else if (HEX_SHORT.equals(variant)) {
             minute = charType.decode(new byte[] { data[0] });
             hour = charType.decode(new byte[] { data[1] });
 
-        } else if (StringUtils.equals(variant, MINUTES) || StringUtils.equals(variant, MINUTES_SHORT)) {
+        } else if (MINUTES.equals(variant) || MINUTES_SHORT.equals(variant)) {
 
             BigDecimal minutesSinceMidnight = null;
-            if (StringUtils.equals(variant, MINUTES_SHORT)) {
+            if (MINUTES_SHORT.equals(variant)) {
                 IEBusType<BigDecimal> type = types.getType(EBusTypeUnsignedNumber.TYPE_UNUMBER, IEBusType.LENGTH, 1);
                 if (type == null) {
                     throw new EBusTypeException("Unable to get required EBusTyp type!");
@@ -192,29 +191,29 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
         calendar.set(1970, 0, 1);
 
 
-        if (StringUtils.equals(variant, DEFAULT)) {
+        if (DEFAULT.equals(variant)) {
 
             result = new byte[] { bcdType.encode(calendar.get(Calendar.SECOND))[0],
                     bcdType.encode(calendar.get(Calendar.MINUTE))[0],
                     bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-        } else if (StringUtils.equals(variant, SHORT)) {
+        } else if (SHORT.equals(variant)) {
 
             result = new byte[] { bcdType.encode(calendar.get(Calendar.MINUTE))[0],
                     bcdType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-        } else if (StringUtils.equals(variant, HEX)) {
+        } else if (HEX.equals(variant)) {
 
             result = new byte[] { charType.encode(calendar.get(Calendar.SECOND))[0],
                     charType.encode(calendar.get(Calendar.MINUTE))[0],
                     charType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-        } else if (StringUtils.equals(variant, HEX_SHORT)) {
+        } else if (HEX_SHORT.equals(variant)) {
 
             result = new byte[] { charType.encode(calendar.get(Calendar.MINUTE))[0],
                     charType.encode(calendar.get(Calendar.HOUR_OF_DAY))[0] };
 
-        } else if (StringUtils.equals(variant, MINUTES) || StringUtils.equals(variant, MINUTES_SHORT)) {
+        } else if (MINUTES.equals(variant) || MINUTES_SHORT.equals(variant)) {
 
             long millis = calendar.getTimeInMillis();
 
@@ -232,7 +231,7 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
             // xxx
             minutes = minutes.divide(minuteMultiplier, 0, RoundingMode.HALF_UP);
 
-            if (StringUtils.equals(variant, MINUTES_SHORT)) {
+            if (MINUTES_SHORT.equals(variant)) {
                 result = charType.encode(minutes);
             } else {
                 result = wordType.encode(minutes);

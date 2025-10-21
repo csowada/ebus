@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -32,6 +31,7 @@ import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusReceiveStateMachine;
 import de.csdev.ebus.core.EBusReceiveStateMachine.State;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.StringUtil;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -515,7 +515,7 @@ public class EBusCommandUtils {
 
                             Object decode2 = child.getType().decode(src);
 
-                            if (StringUtils.isNotEmpty(child.getName())) {
+                            if (StringUtil.isNotEmpty(child.getName())) {
                                 decode2 = applyNumberOperations(decode2, ev);
                                 result.put(child.getName(), decode2);
                             }
@@ -523,7 +523,7 @@ public class EBusCommandUtils {
                     }
                 }
 
-                if (StringUtils.isNotEmpty(ev.getName())) {
+                if (StringUtil.isNotEmpty(ev.getName())) {
                     decode = applyNumberOperations(decode, ev);
                     result.put(ev.getName(), decode);
                 }

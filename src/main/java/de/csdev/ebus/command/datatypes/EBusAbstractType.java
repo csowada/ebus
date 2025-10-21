@@ -17,8 +17,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -26,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.ArrayUtil;
+import de.csdev.ebus.utils.FieldUtil;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -54,12 +54,11 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      */
     protected byte @Nullable [] applyByteOrder(byte @Nullable [] data) {
 
-        // @SuppressWarnings({})
-        data = ArrayUtils.clone(data);
+        data = ArrayUtil.clone(data);
 
         // reverse the byte order immutable
         if (reverseByteOrder) {
-            ArrayUtils.reverse(data);
+            ArrayUtil.reverse(data);
         }
 
         return data;
@@ -135,13 +134,23 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
         // return the replace value
         if (data == null) {
-            return applyByteOrder(getReplaceValue());
+            byte[] replaceValue = getReplaceValue();
+            if (replaceValue == null) {
+                throw new IllegalStateException("Replace value must not be null");
+            }
+            return applyByteOrder(replaceValue);
         }
 
         byte[] result = encodeInt(data);
+        if (result == null) {
+            throw new EBusTypeException("Encoded result must not be null");
+        }
 
         // apply the right byte order after processing
         result = applyByteOrder(result);
+        if (result == null) {
+            throw new IllegalStateException("Result after applying byte order must not be null");
+        }
 
         if (result.length != getTypeLength()) {
             throw new EBusTypeException("Result byte-array has size {0}, expected {1} for eBUS type {2}", result.length,
@@ -261,8 +270,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         }
 
         try {
-            Field field = FieldUtils.getField(instance.getClass(), property, true);
-
+            Field field = FieldUtil.getField(instance.getClass(), property, true);
             if (field != null) {
                 field.set(instance, value);
             }
