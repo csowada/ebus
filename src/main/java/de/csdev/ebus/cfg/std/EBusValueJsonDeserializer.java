@@ -37,9 +37,6 @@ import de.csdev.ebus.cfg.std.dto.EBusValueDTO;
  */
 public class EBusValueJsonDeserializer implements JsonDeserializer<List<EBusValueDTO>> {
 
-    @SuppressWarnings("unused")
-    private final Logger logger = LoggerFactory.getLogger(EBusValueJsonDeserializer.class);
-
     @Override
     public List<EBusValueDTO> deserialize(JsonElement jElement, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {

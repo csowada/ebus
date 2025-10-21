@@ -14,6 +14,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Utility class to replace Apache Commons Lang ObjectUtils
+ * 
+ * @author Christian Sowada - Initial contribution
  */
 public final class ObjectUtil {
     private ObjectUtil() {
@@ -28,7 +30,7 @@ public final class ObjectUtil {
         if (values == null) {
             return null;
         }
-        for (T val : values) {
+        for (@Nullable T val : values) {
             if (val != null) {
                 return val;
             }

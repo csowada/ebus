@@ -147,7 +147,7 @@ public class EBusCommandRegistry {
         ByteBuffer buffer = ByteBuffer.wrap(data);
 
         if (buffer == null) {
-            return  CollectionUtils.emptyList();
+            return CollectionUtils.emptyList();
         }
 
         return find(buffer);

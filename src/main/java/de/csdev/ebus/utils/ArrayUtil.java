@@ -15,6 +15,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Utility class to replace Apache Commons Lang ArrayUtils
+ * @author Christian Sowada - Initial contribution
  */
 public final class ArrayUtil {
     private ArrayUtil() {
@@ -24,14 +25,14 @@ public final class ArrayUtil {
     /**
      * Checks if an array is empty or null.
      */
-    public static boolean isEmpty(@Nullable byte[] array) {
+    public static boolean isEmpty(byte @Nullable [] array) {
         return array == null || array.length == 0;
     }
 
     /**
      * Checks if an array is not empty and not null.
      */
-    public static boolean isNotEmpty(@Nullable byte[] array) {
+    public static boolean isNotEmpty(byte @Nullable [] array) {
         return !isEmpty(array);
     }
 
@@ -39,7 +40,7 @@ public final class ArrayUtil {
      * Copies the specified array, truncating or padding with zeros (if necessary)
      * so the copy has the specified length.
      */
-    public static byte[] copyOf(@NonNull byte[] original, int newLength) {
+    public static byte[] copyOf(byte @Nullable [] original, int newLength) {
         Objects.requireNonNull(original, "original must not be null");
         return Arrays.copyOf(original, newLength);
     }
@@ -47,7 +48,7 @@ public final class ArrayUtil {
     /**
      * Reverses the order of the given array.
      */
-    public static void reverse(@NonNull byte[] array) {
+    public static void reverse(byte @Nullable [] array) {
         Objects.requireNonNull(array, "array must not be null");
         int i = 0;
         int j = array.length - 1;
@@ -76,7 +77,7 @@ public final class ArrayUtil {
     /**
      * Converts an array of primitive bytes to objects.
      */
-    public static @NonNull Byte[] toObject(@NonNull byte[] array) {
+    public static @NonNull Byte[] toObject(byte @Nullable [] array) {
         Objects.requireNonNull(array, "array must not be null");
         final Byte[] result = new Byte[array.length];
         for (int i = 0; i < array.length; i++) {

@@ -14,6 +14,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Utility class to replace Apache Commons Lang StringUtils
+ * 
+ * @author Christian Sowada - Initial contribution
  */
 public final class StringUtil {
     private StringUtil() {
