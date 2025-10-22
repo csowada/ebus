@@ -61,7 +61,7 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     private ScheduledFuture<?> watchdogTimer;
 
-    private int watchdogTimerTimeout = 300; // 5min
+    private int watchdogTimerTimeout = DEFAULT_WATCHDOG_TIMEOUT; // 5min
 
     protected @NonNull EBusQueue queue = new EBusQueue();
 

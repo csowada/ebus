@@ -483,7 +483,6 @@ public class EBusLowLevelController extends EBusControllerBase {
             if (sendMachine.isWaitingForSlaveAnswer()) {
                 logger.trace("Waiting for slave answer ...");
 
-                logger.warn("eBUS Watchdog Timer triggered!");
                 while (!sendMachine.isWaitingForMasterACK() && !sendMachine.isWaitingForMasterSYN()) {
                     read = connection.readByte(true);
                     if (read != -1) {
@@ -543,28 +542,23 @@ public class EBusLowLevelController extends EBusControllerBase {
     protected void dispose() throws InterruptedException {
         logger.info("Shutting down eBUS controller");
 
-        try {
-            // Update status first to prevent new operations
-            setConnectionStatus(ConnectionStatus.DISCONNECTED);
+        // Update status first to prevent new operations
+        setConnectionStatus(ConnectionStatus.DISCONNECTED);
 
-            // Clean up base class resources
-            super.dispose();
+        // Clean up base class resources
+        super.dispose();
 
-            // Close physical connection
-            if (connection != null) {
-                logger.debug("Closing eBUS connection");
-                try {
-                    connection.close();
-                } catch (IOException e) {
-                    logger.error("Error closing eBUS connection: {}", e.getMessage(), e);
-                }
+        // Close physical connection
+        if (connection != null) {
+            logger.debug("Closing eBUS connection");
+            try {
+                connection.close();
+            } catch (IOException e) {
+                logger.error("Error closing eBUS connection: {}", e.getMessage(), e);
             }
-
-            logger.info("eBUS controller shutdown complete");
-        } catch (Exception e) {
-            logger.error("Error during controller disposal: {}", e.getMessage(), e);
-            throw e;
         }
+
+        logger.info("eBUS controller shutdown complete");
     }
 
     /**
