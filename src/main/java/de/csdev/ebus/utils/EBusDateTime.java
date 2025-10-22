@@ -70,9 +70,6 @@ public class EBusDateTime {
     public String toString() {
 
         SimpleDateFormat format = null;
-        if (calendar == null) {
-            return "<null>";
-        }
 
         if (anyDate && anyTime) {
             return "<any>";
@@ -117,11 +114,7 @@ public class EBusDateTime {
         if (anyTime != other.anyTime) {
             return false;
         }
-        if (calendar == null) {
-            if (other.calendar != null) {
-                return false;
-            }
-        } else if (!calendar.equals(other.calendar)) {
+        if (!calendar.equals(other.calendar)) {
             return false;
         }
         return true;

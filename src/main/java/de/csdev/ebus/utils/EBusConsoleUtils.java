@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -66,12 +65,12 @@ public class EBusConsoleUtils {
 
         EBusTypeRegistry typeRegistry = new EBusTypeRegistry();
 
-        IEBusType<Object> typeD1C = typeRegistry.getType(EBusTypeData1c.TYPE_DATA1C);
-        IEBusType<Object> typeBCD = typeRegistry.getType(EBusTypeBCD.TYPE_BCD);
-        IEBusType<Object> typeWord = typeRegistry.getType(EBusTypeWord.TYPE_WORD);
-        IEBusType<Object> typeInt = typeRegistry.getType(EBusTypeInteger.TYPE_INTEGER);
-        IEBusType<Object> typeD2B = typeRegistry.getType(EBusTypeData2b.TYPE_DATA2B);
-        IEBusType<Object> typeD2C = typeRegistry.getType(EBusTypeData2c.TYPE_DATA2C);
+        @NonNull IEBusType<Object> typeD1C = Objects.requireNonNull(typeRegistry.getType(EBusTypeData1c.TYPE_DATA1C));
+        @NonNull IEBusType<Object> typeBCD = Objects.requireNonNull(typeRegistry.getType(EBusTypeBCD.TYPE_BCD));
+        @NonNull IEBusType<Object> typeWord = Objects.requireNonNull(typeRegistry.getType(EBusTypeWord.TYPE_WORD));
+        @NonNull IEBusType<Object> typeInt = Objects.requireNonNull(typeRegistry.getType(EBusTypeInteger.TYPE_INTEGER));
+        @NonNull IEBusType<Object> typeD2B = Objects.requireNonNull(typeRegistry.getType(EBusTypeData2b.TYPE_DATA2B));
+        @NonNull IEBusType<Object> typeD2C = Objects.requireNonNull(typeRegistry.getType(EBusTypeData2c.TYPE_DATA2C));
 
         String format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s%-13s", "Pos", "WORD", "Int", "UInt8",
                 "DATA2B", "DATA2C", "DATA1c", "BCD");
@@ -154,9 +153,9 @@ public class EBusConsoleUtils {
                 "Identifier", "Device", "Manufacture", "ID", "Firmware", "Hardware", "Last Activity"));
 
         sb.append(String.format("%-2s-+-%-2s-+-%-14s-+-%-14s-+-%-20s-+-%-2s-+-%-10s-+-%-10s-+-%-20s%n",
-                StringUtils.repeat("-", 2), StringUtils.repeat("-", 2), StringUtils.repeat("-", 14),
-                StringUtils.repeat("-", 14), StringUtils.repeat("-", 20), StringUtils.repeat("-", 2),
-                StringUtils.repeat("-", 10), StringUtils.repeat("-", 10), StringUtils.repeat("-", 20)));
+                StringUtil.repeat("-", 2), StringUtil.repeat("-", 2), StringUtil.repeat("-", 14),
+                StringUtil.repeat("-", 14), StringUtil.repeat("-", 20), StringUtil.repeat("-", 2),
+                StringUtil.repeat("-", 10), StringUtil.repeat("-", 10), StringUtil.repeat("-", 20)));
 
         for (EBusDevice device : deviceTable.getDeviceTable()) {
 
@@ -176,7 +175,7 @@ public class EBusConsoleUtils {
 
         }
 
-        sb.append(StringUtils.repeat("-", 118) + "\n");
+        sb.append(StringUtil.repeat("-", 118) + "\n");
         sb.append("MA = Master Address / SA = Slave Address / ID = Manufacture ID\n");
 
         return sb.toString();
@@ -209,14 +208,14 @@ public class EBusConsoleUtils {
                 int len = msg.length();
 
                 sb.append("\n");
-                sb.append(StringUtils.repeat("*", len) + "\n");
+                sb.append(StringUtil.repeat("*", len) + "\n");
                 sb.append(msg + "\n");
 
                 msg = "**     !!! Warning: All following results are wrong and only displayed for information purpose !!!";
-                msg += StringUtils.repeat(" ", len - msg.length() - 2) + "**";
+                msg += StringUtil.repeat(" ", len - msg.length() - 2) + "**";
 
                 sb.append(msg + "\n");
-                sb.append(StringUtils.repeat("*", len) + "\n");
+                sb.append(StringUtil.repeat("*", len) + "\n");
                 sb.append("\n");
 
                 return Objects.requireNonNull(sb.toString());
@@ -374,16 +373,16 @@ public class EBusConsoleUtils {
     private static @NonNull String createTelegramResoverRow(int pos, int length, int textStart, String text) {
 
         StringBuilder sb = new StringBuilder();
-        String repeat = StringUtils.repeat("^^ ", length);
+        String repeat = StringUtil.repeat("^^ ", length);
 
         if (repeat.length() > 0) {
             repeat = repeat.substring(0, repeat.length() - 1);
         }
 
-        sb.append(StringUtils.repeat(" ", pos * 3));
+        sb.append(StringUtil.repeat(" ", pos * 3));
         sb.append(repeat);
 
-        sb.append(StringUtils.repeat("-", textStart - sb.length()));
+        sb.append(StringUtil.repeat("-", textStart - sb.length()));
         sb.append(" ");
         sb.append(text);
         sb.append("\n");

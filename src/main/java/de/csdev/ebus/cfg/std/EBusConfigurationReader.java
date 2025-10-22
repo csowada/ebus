@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -56,25 +55,47 @@ import de.csdev.ebus.command.datatypes.ext.EBusTypeBytes;
 import de.csdev.ebus.command.datatypes.std.EBusTypeByte;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.StringUtil;
 
 /**
  * @author Christian Sowada - Initial contribution
  *
  */
+/**
+ * A configuration reader for eBus configurations that loads and parses
+ * configuration files
+ * in JSON format. This reader handles templates, command methods, and value
+ * configurations
+ * while maintaining type safety and null safety.
+ *
+ * @author Christian Sowada - Initial contribution
+ */
 public class EBusConfigurationReader implements IEBusConfigurationReader {
+
+    private static final int INITIAL_MAP_CAPACITY = 32;
+    private static final String ERROR_REGISTRY_INIT = "Unable to create a new eBus type registry!";
 
     private final Logger logger = LoggerFactory.getLogger(EBusConfigurationReader.class);
 
     private @NonNull EBusTypeRegistry registry;
 
-    private @NonNull Map<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>> templateValueRegistry = new HashMap<>();
-    private @NonNull Map<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>> templateBlockRegistry = new HashMap<>();
+    // Initialize maps with a reasonable initial capacity to avoid resizing
+    private @NonNull Map<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>> templateValueRegistry = new HashMap<>(
+            INITIAL_MAP_CAPACITY);
+    private @NonNull Map<@NonNull String, @Nullable Collection<@NonNull EBusCommandValue>> templateBlockRegistry = new HashMap<>(
+            INITIAL_MAP_CAPACITY);
 
+    /**
+     * Creates a new EBusConfigurationReader instance.
+     * Initializes the type registry and template registries.
+     *
+     * @throws IllegalStateException if the type registry cannot be created
+     */
     public EBusConfigurationReader() {
         try {
             this.registry = new EBusTypeRegistry();
         } catch (EBusTypeException e) {
-            throw new IllegalStateException("Unable to create a new eBus type registry!");
+            throw new IllegalStateException(ERROR_REGISTRY_INIT, e);
         }
     }
 
@@ -137,20 +158,28 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * de.csdev.ebus.cfg.IEBusConfigurationReader#loadConfigurationCollection(de.
+     * csdev.
+     * ebus.cfg.std.dto.EBusCollectionDTO)
+     */
     public @NonNull IEBusCommandCollection loadConfigurationCollection(@NonNull EBusCollectionDTO collection)
             throws EBusConfigurationReaderException {
 
         Objects.requireNonNull(collection, "collection");
 
-        if (StringUtils.isEmpty(collection.getId())) {
+        if (StringUtil.isEmpty(collection.getId())) {
             throw new EBusConfigurationReaderException("The property 'id' is missing for the configuration!");
         }
 
-        if (StringUtils.isEmpty(collection.getLabel())) {
+        if (StringUtil.isEmpty(collection.getLabel())) {
             throw new EBusConfigurationReaderException("The property 'label' is missing for the configuration!");
         }
 
-        if (StringUtils.isEmpty(collection.getDescription())) {
+        if (StringUtil.isEmpty(collection.getDescription())) {
             throw new EBusConfigurationReaderException("The property 'description' is missing for the configuration!");
         }
 
@@ -158,8 +187,14 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             throw new EBusConfigurationReaderException("The property 'properties' is missing for the configuration!");
         }
 
-        EBusCommandCollection commandCollection = new EBusCommandCollection(collection.getId(), collection.getLabel(),
-                collection.getDescription(), collection.getProperties());
+        String id = Objects.requireNonNull(collection.getId(), "Collection ID must not be null");
+        String label = Objects.requireNonNull(collection.getLabel(), "Collection label must not be null");
+        String description = Objects.requireNonNull(collection.getDescription(),
+                "Collection description must not be null");
+        Map<String, Object> properties = Objects.requireNonNull(collection.getProperties(),
+                "Collection properties must not be null");
+
+        EBusCommandCollection commandCollection = new EBusCommandCollection(id, label, description, properties);
 
         // add md5 hash
         commandCollection.setIdentification(collection.getIdentification());
@@ -179,6 +214,15 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         return commandCollection;
     }
 
+    /**
+     * Parses the template list configuration from the given collection.
+     * This method processes all template blocks defined in the collection
+     * and adds them to the template registries for later use.
+     *
+     * @param collection The eBus collection containing template definitions
+     * @throws EBusConfigurationReaderException if there's an error parsing
+     *                                          templates
+     */
     protected void parseTemplateListConfiguration(@NonNull EBusCollectionDTO collection)
             throws EBusConfigurationReaderException {
 
@@ -193,10 +237,27 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         }
     }
 
-    protected void parseTemplateBlockConfiguration(@Nullable List<EBusValueDTO> templateValues, @NonNull EBusCollectionDTO collection, @NonNull EBusCommandTemplatesDTO templates)
+    /**
+     * Parses template block configuration and adds templates to the registry.
+     * This method processes template values and creates corresponding command
+     * values
+     * that can be reused throughout the configuration.
+     *
+     * @param templateValues The list of template values to parse, may be null
+     * @param collection     The parent collection containing these templates
+     * @param templates      The template configuration containing name and other
+     *                       properties
+     * @throws EBusConfigurationReaderException if there's an error parsing the
+     *                                          templates
+     */
+    protected void parseTemplateBlockConfiguration(@Nullable List<EBusValueDTO> templateValues,
+            @NonNull EBusCollectionDTO collection, @NonNull EBusCommandTemplatesDTO templates)
             throws EBusConfigurationReaderException {
 
-        if (templateValues == null) {
+        Objects.requireNonNull(collection, "collection cannot be null");
+        Objects.requireNonNull(templates, "templates cannot be null");
+
+        if (templateValues == null || templateValues.isEmpty()) {
             return;
         }
 
@@ -204,32 +265,39 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
         for (EBusValueDTO value : templateValues) {
             if (value != null) {
-                Collection<@NonNull EBusCommandValue> pv = parseValueConfiguration(value, null, null, null);
+                Collection<@NonNull EBusCommandValue> parsedValues = parseValueConfiguration(value, null, null, null);
 
-                if (!pv.isEmpty()) {
-                    blockList.addAll(pv);
+                if (!parsedValues.isEmpty()) {
+                    blockList.addAll(parsedValues);
 
-                    // global id
-                    String id = collection.getId() + "." + templates.getName() + "." + value.getName();
+                    // Build global id with StringBuilder for better performance
+                    String id = new StringBuilder(50)
+                            .append(collection.getId())
+                            .append('.')
+                            .append(templates.getName())
+                            .append('.')
+                            .append(value.getName())
+                            .toString();
+
                     logger.trace("Add template with global id {} to registry ...", id);
-                    templateValueRegistry.put(id, pv);
+                    templateValueRegistry.put(id, parsedValues);
                 }
             }
         }
 
         if (!blockList.isEmpty()) {
             String id = collection.getId() + "." + templates.getName();
-
-            // global id
             logger.trace("Add template block with global id {} to registry ...", id);
             templateBlockRegistry.put(id, blockList);
         }
     }
 
     /**
-     * @param commandCollection
-     * @param commandElement
-     * @return
+     * Parses the command configuration from the given collection.
+     * 
+     * @param commandCollection The eBus command collection
+     * @param commandElement    The eBus command element to parse
+     * @return The parsed eBus command
      * @throws EBusConfigurationReaderException
      */
     protected EBusCommand parseTelegramConfiguration(@NonNull IEBusCommandCollection commandCollection,
@@ -263,8 +331,9 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         // read in template block
         for (EBusValueDTO template : checkedList(commandElement.getTemplate())) {
             for (EBusCommandValue templateCfg : parseValueConfiguration(template, null, null, null)) {
-                if (StringUtils.isEmpty(templateCfg.getName())) {
-                    templateMap.put(templateCfg.getName(), templateCfg);
+                String name = templateCfg.getName();
+                if (StringUtil.isEmpty(name)) {
+                    templateMap.put(name, templateCfg);
                 }
 
                 templateList.add(templateCfg);
@@ -307,8 +376,9 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 EBusCommandMethod commandMethod = new EBusCommandMethod(cfg, method);
 
                 // overwrite with local command
-                if (StringUtils.isNotEmpty(commandMethodElement.getCommand())) {
-                    commandMethod.setCommand(EBusUtils.toByteArray(commandMethodElement.getCommand()));
+                String methodCommand = commandMethodElement.getCommand();
+                if (StringUtil.isNotEmpty(methodCommand)) {
+                    commandMethod.setCommand(EBusUtils.toByteArray(methodCommand));
                 } else {
                     commandMethod.setCommand(command);
                 }
@@ -317,19 +387,22 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                 commandMethod.setSourceAddress(source);
 
                 for (EBusValueDTO template : checkedList(commandMethodElement.getMaster())) {
-                    for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, templateList, commandMethod)) {
-                            commandMethod.addMasterValue(ev);
-                        }
+                    for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, templateList,
+                            commandMethod)) {
+                        commandMethod.addMasterValue(ev);
+                    }
                 }
 
                 for (EBusValueDTO template : checkedList(commandMethodElement.getSlave())) {
-                    for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, templateList, commandMethod)) {
-                            commandMethod.addSlaveValue(ev);
-                        }
+                    for (EBusCommandValue ev : parseValueConfiguration(template, templateMap, templateList,
+                            commandMethod)) {
+                        commandMethod.addSlaveValue(ev);
+                    }
                 }
 
                 // default type is always master-slave if not explicit set or a broadcast
-                if (StringUtils.equals(commandMethodElement.getType(), "master-master")) {
+                String methodType = commandMethodElement.getType();
+                if ("master-master".equals(methodType)) {
                     commandMethod.setType(IEBusCommandMethod.Type.MASTER_MASTER);
 
                 } else if (method == Method.BROADCAST) {
@@ -353,23 +426,31 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
     }
 
     /**
-     * Helper function to work with a secure non null list
-     * @param master
-     * @return
+     * Creates a new list containing only non-null elements from the input list.
+     * This helper function ensures type safety and null safety when working with
+     * lists
+     * of EBusValueDTO objects.
+     *
+     * @param source The source list that may contain null elements
+     * @return A new list containing only non-null elements, never null itself
      */
-    protected @NonNull List<@NonNull EBusValueDTO> checkedList(List<EBusValueDTO> master) {
-        List<@NonNull EBusValueDTO> templates = new ArrayList<>();
-        if (master != null) {
-            for (EBusValueDTO template : master) {
-                if (template != null) {
-                    templates.add(template);
-                }
+    protected @NonNull List<@NonNull EBusValueDTO> checkedList(@Nullable List<EBusValueDTO> source) {
+        if (source == null || source.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // Pre-size the list to avoid resizing
+        List<@NonNull EBusValueDTO> templates = new ArrayList<>(source.size());
+        for (EBusValueDTO template : source) {
+            if (template != null) {
+                templates.add(template);
             }
         }
         return templates;
     }
 
     /**
+     * Parses the value configuration from the given DTO.
      * @param valueDto
      * @param templateMap
      * @param commandMethod
@@ -393,7 +474,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             collectionId = commandMethod.getParent().getParentCollection().getId();
         }
 
-        if (StringUtils.isEmpty(typeStr)) {
+        if (StringUtil.isEmpty(typeStr)) {
             throw new EBusConfigurationReaderException("Property 'type' is missing for command ! %s",
                     commandMethod != null ? commandMethod.getParent() : "<NULL>");
         }
@@ -402,7 +483,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
 
             Collection<@NonNull EBusCommandValue> templateCollection = null;
 
-            if (StringUtils.isNotEmpty(valueDto.getName())) {
+            String valueName = valueDto.getName();
+            if (StringUtil.isNotEmpty(valueName)) {
                 logger.warn("Property 'name' is not allowed for type 'template-block', ignore property !");
             }
 
@@ -410,12 +492,10 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             String id = (String) valueDto.getProperty("id");
             String globalId = collectionId + "." + id;
 
-            if (StringUtils.isNotEmpty(id)) {
-
+            if (StringUtil.isNotEmpty(id)) {
                 templateCollection = templateBlockRegistry.get(id);
 
                 if (templateCollection == null) {
-
                     // try to convert the local id to a global id
                     logger.trace("Unable to find a template with id {}, second try with {} ...", id, globalId);
 
@@ -456,7 +536,7 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
             String globalId = collectionId != null ? collectionId + "." + id : null;
             Collection<@NonNull EBusCommandValue> templateCollection = null;
 
-            if (StringUtils.isEmpty(id)) {
+            if (StringUtil.isEmpty(id)) {
                 throw new EBusConfigurationReaderException("No additional information for type 'template' defined!");
             }
 
@@ -485,7 +565,8 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
                     overwritePropertiesFromTemplate(clone, valueDto);
 
                     // allow owerwrite for single names
-                    clone.setName(StringUtils.defaultIfEmpty(valueDto.getName(), clone.getName()));
+                    clone.setName(
+                            StringUtil.defaultIfEmpty(valueDto.getName(), Objects.requireNonNull(clone.getName())));
 
                     result.add(clone);
                 }
@@ -570,13 +651,12 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
     }
 
     private void overwritePropertiesFromTemplate(@NonNull EBusCommandValue clone, @NonNull EBusValueDTO template) {
-
         String templateLabel = template.getLabel();
         String cloneLabel = clone.getLabel();
 
         // allow placeholders in template-block mode
-        if (StringUtils.isNotEmpty(templateLabel)) {
-            if (StringUtils.isNotEmpty(cloneLabel) && cloneLabel.contains("%s")) {
+        if (StringUtil.isNotEmpty(templateLabel)) {
+            if (cloneLabel != null && cloneLabel.contains("%s")) {
                 clone.setLabel(String.format(cloneLabel, templateLabel));
             } else {
                 clone.setLabel(templateLabel);
@@ -597,32 +677,62 @@ public class EBusConfigurationReader implements IEBusConfigurationReader {
         registry = ebusTypes;
     }
 
+    /**
+     * Loads a bundle of configuration collections from a JSON index file.
+     * The index file should contain a "files" array with URLs to individual
+     * configuration files.
+     *
+     * @param url The URL to the index file
+     * @return A list of loaded command collections
+     * @throws EBusConfigurationReaderException if there's an error parsing
+     *                                          configurations
+     * @throws IOException                      if there's an error reading the
+     *                                          files
+     * @throws NullPointerException             if url is null
+     */
     @Override
     public @NonNull List<@NonNull IEBusCommandCollection> loadConfigurationCollectionBundle(@NonNull URL url)
-        throws EBusConfigurationReaderException, IOException {
+            throws EBusConfigurationReaderException, IOException {
 
-        Objects.requireNonNull(url, "url");
+        Objects.requireNonNull(url, "url cannot be null");
 
         List<@NonNull IEBusCommandCollection> result = new ArrayList<>();
+        InputStreamReader reader = null;
 
-        Gson gson = new Gson();
-        Type type = new TypeToken<Map<String, ?>>() {
-        }.getType();
+        try {
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String, ?>>() {
+            }.getType();
 
-        Map<String, ?> mapping = gson.fromJson(new InputStreamReader(url.openStream()), type);
+            reader = new InputStreamReader(url.openStream());
+            Map<String, ?> mapping = gson.fromJson(reader, type);
 
-        if (mapping.containsKey("files")) {
+            if (mapping != null && mapping.containsKey("files")) {
+                @SuppressWarnings("unchecked")
+                List<Map<String, String>> files = (List<Map<String, String>>) mapping.get("files");
 
-            @SuppressWarnings("unchecked")
-            List<Map<String, String>> files = (List<Map<String, String>>) mapping.get("files");
+                if (files != null && !files.isEmpty()) {
+                    // Pre-size the result list
+                    result = new ArrayList<>(files.size());
 
-            if (files != null && !files.isEmpty()) {
-                for (Map<String, String> file : files) {
-                    URL fileUrl = new URL(url, file.get("url"));
+                    for (Map<String, String> file : files) {
+                        String fileUrlStr = file.get("url");
+                        if (fileUrlStr != null) {
+                            URL fileUrl = new URL(url, fileUrlStr);
+                            logger.debug("Loading configuration from url {} ...", fileUrl);
 
-                    logger.debug("Load configuration from url {} ...", fileUrl);
-                    IEBusCommandCollection collection = loadConfigurationCollection(fileUrl);
-                    result.add(collection);
+                            IEBusCommandCollection collection = loadConfigurationCollection(fileUrl);
+                            result.add(collection);
+                        }
+                    }
+                }
+            }
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    logger.warn("Failed to close reader", e);
                 }
             }
         }

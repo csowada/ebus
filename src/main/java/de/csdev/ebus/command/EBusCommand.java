@@ -132,12 +132,12 @@ public class EBusCommand implements IEBusCommand {
     }
 
     public void setParentCollection(IEBusCommandCollection parentCollection) {
-        Objects.requireNonNull(parentCollection, "parentCollection");
+        Objects.requireNonNull(parentCollection, "parentCollection must not be null");
         this.parentCollection = parentCollection;
     }
 
     public void setProperties(Map<String, Object> properties) {
-        Objects.requireNonNull(properties, "properties");
+        Objects.requireNonNull(properties, "properties must not be null");
         HashMap<String, Object> props = new HashMap<>();
         props.putAll(properties);
         this.properties = props;
@@ -145,8 +145,8 @@ public class EBusCommand implements IEBusCommand {
 
     public void setProperty(String key, String value) {
 
-        Objects.requireNonNull(key, "key");
-        Objects.requireNonNull(value, "value");
+        Objects.requireNonNull(key, "key must not be null");
+        Objects.requireNonNull(value, "value must not be null");
 
         this.properties = CollectionUtils.newMapIfNull(this.properties);
 

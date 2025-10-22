@@ -19,15 +19,15 @@ import de.csdev.ebus.utils.EBusUtils;
 @NonNullByDefault
 public class EBusTypeUnsignedNumber extends AbstractEBusTypeUnsignedNumber {
 
-    public static String TYPE_UNUMBER = "unumber";
+    public static final String TYPE_UNUMBER = "unumber";
 
-    private static String[] supportedTypes = new String[] { TYPE_UNUMBER };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_UNUMBER };
 
     private int length = 1;
 
     @Override
     public String[] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override

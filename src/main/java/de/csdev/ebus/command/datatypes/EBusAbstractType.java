@@ -17,8 +17,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -26,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.ArrayUtil;
+import de.csdev.ebus.utils.FieldUtil;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -34,7 +35,6 @@ import de.csdev.ebus.utils.EBusUtils;
 @NonNullByDefault
 public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
-    @SuppressWarnings({"null"})
     private static final  Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
 
     protected Map<Object, @Nullable EBusAbstractType<T>> otherInstances = new HashMap<>();
@@ -54,12 +54,11 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      */
     protected byte @Nullable [] applyByteOrder(byte @Nullable [] data) {
 
-        // @SuppressWarnings({})
-        data = ArrayUtils.clone(data);
+        data = ArrayUtil.clone(data);
 
         // reverse the byte order immutable
         if (reverseByteOrder) {
-            ArrayUtils.reverse(data);
+            ArrayUtil.reverse(data);
         }
 
         return data;
@@ -73,8 +72,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     private @Nullable EBusAbstractType<T> createNewInstance() {
 
         try {
-            @SuppressWarnings({ "unchecked" })
-            EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
+            @SuppressWarnings("unchecked")
+            @Nullable EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
             if (newInstance != null) {
                 newInstance.setTypesParent(types);
                 return newInstance;
@@ -131,17 +130,33 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @see de.csdev.ebus.command.datatypes.IEBusType#encode(java.lang.Object)
      */
     @Override
-    public byte[] encode(@Nullable Object data) throws EBusTypeException {
+    public byte @NonNull [] encode(@Nullable Object data) throws EBusTypeException {
 
         // return the replace value
         if (data == null) {
-            return applyByteOrder(getReplaceValue());
+            byte @Nullable [] tmpReplaceValue = getReplaceValue();
+            if (tmpReplaceValue == null) {
+                throw new IllegalStateException("Replace value must not be null");
+            }
+
+            byte[] ndata = applyByteOrder(tmpReplaceValue);
+            if (ndata == null) {
+                throw new IllegalStateException("Replace value after applying byte order must not be null");
+            }
+
+            return ndata;
         }
 
         byte[] result = encodeInt(data);
+        if (result == null) {
+            throw new EBusTypeException("Encoded result must not be null");
+        }
 
         // apply the right byte order after processing
         result = applyByteOrder(result);
+        if (result == null) {
+            throw new IllegalStateException("Result after applying byte order must not be null");
+        }
 
         if (result.length != getTypeLength()) {
             throw new EBusTypeException("Result byte-array has size {0}, expected {1} for eBUS type {2}", result.length,
@@ -261,8 +276,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
         }
 
         try {
-            Field field = FieldUtils.getField(instance.getClass(), property, true);
-
+            Field field = FieldUtil.getField(instance.getClass(), property, true);
             if (field != null) {
                 field.set(instance, value);
             }

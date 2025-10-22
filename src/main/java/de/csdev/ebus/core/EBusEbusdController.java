@@ -15,18 +15,17 @@ import java.io.InterruptedIOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.csdev.ebus.core.EBusQueue.QueueEntry;
 import de.csdev.ebus.utils.CommonsUtils;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.StringUtil;
+import de.csdev.ebus.utils.NumberUtils;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -143,11 +142,11 @@ public class EBusEbusdController extends EBusControllerBase {
                 logger.error("End of stream has been reached!");
                 reconnect();
 
-            } else if (StringUtils.startsWith(readLine, "ERR:")) {
+            } else if (StringUtil.startsWith(readLine, "ERR:")) {
                 logger.error(readLine);
                 reconnect();
 
-            } else if (StringUtils.equals(readLine, "direct mode started")) {
+            } else if (readLine != null && readLine.equals("direct mode started")) {
                 logger.info("ebusd direct mode enabled!");
 
                 // start sender thread
@@ -160,18 +159,24 @@ public class EBusEbusdController extends EBusControllerBase {
             } else if (readLine.startsWith("version:")) {
                 try {
                     String[] split = readLine.split(":");
-                    String value = StringUtils.trim(split[1]);
+                    String value = split[1].trim();
 
-                    logger.info("Use ebusd version: {}", value);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("Use ebusd version: {}", value.replaceAll("[\n\r]", "_"));
+                    }
 
-                    String version = StringUtils.trim(value.split(" ")[1]);
+                    String version = value.split(" ")[1].trim();
                     String[] versionParts = version.split("\\.");
                     if (NumberUtils.isDigits(versionParts[0]) && NumberUtils.isDigits(versionParts[1])) {
-                        int versio = (NumberUtils.createInteger(versionParts[0]) * 1000)
-                                + NumberUtils.createInteger(versionParts[1]);
-                        if (versio < 3004) {
-                            logger.warn("Your ebusd version is not supported. Please use a version >= 3.4 !");
+                        Integer major = NumberUtils.createInteger(versionParts[0]);
+                        Integer minor = NumberUtils.createInteger(versionParts[1]);
+                        if (major != null && minor != null) {
+                            int versionNum = (major * 1000) + minor;
+                            if (versionNum < 3004) {
+                                logger.warn("Your ebusd version is not supported. Please use a version >= 3.4 !");
+                            }
                         }
+
                     }
                 } catch (Exception e) {
                     // do not stop because of version check
@@ -201,7 +206,7 @@ public class EBusEbusdController extends EBusControllerBase {
                             b = convertEBusdDataToFullTelegram(EBusUtils.toByteArray2(split[0]), null);
 
                         } else if (split[1].startsWith("ERR")) {
-                            throw new EBusDataException(StringUtils.trim(split[2]));
+                            throw new EBusDataException(split[2].trim());
 
                         } else {
                             // // Master Slave

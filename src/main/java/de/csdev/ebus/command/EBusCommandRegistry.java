@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -33,6 +32,7 @@ import de.csdev.ebus.command.datatypes.EBusTypeRegistry;
 import de.csdev.ebus.core.EBusConsts;
 import de.csdev.ebus.utils.CollectionUtils;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.ObjectUtil;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -147,7 +147,7 @@ public class EBusCommandRegistry {
         ByteBuffer buffer = ByteBuffer.wrap(data);
 
         if (buffer == null) {
-            return  CollectionUtils.emptyList();
+            return CollectionUtils.emptyList();
         }
 
         return find(buffer);
@@ -255,9 +255,9 @@ public class EBusCommandRegistry {
     @SuppressWarnings("java:S3776")
     public boolean matchesCommand(@NonNull IEBusCommandMethod command, @NonNull ByteBuffer data) {
 
-        Byte sourceAddress = ObjectUtils.defaultIfNull(command.getSourceAddress(), Byte.valueOf((byte) 0x00));
+        Byte sourceAddress = ObjectUtil.defaultIfNull(command.getSourceAddress(), Byte.valueOf((byte) 0x00));
 
-        Byte targetAddress = ObjectUtils.defaultIfNull(command.getDestinationAddress(),
+        Byte targetAddress = ObjectUtil.defaultIfNull(command.getDestinationAddress(),
                 Byte.valueOf((byte) 0x00));
 
         // fast check - is this the right telegram type?

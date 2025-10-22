@@ -25,15 +25,15 @@ import de.csdev.ebus.command.datatypes.IEBusType;
 @NonNullByDefault
 public class EBusTypeBytes extends EBusAbstractType<byte[]> {
 
-    public static String TYPE_BYTES = "bytes";
+    public static final String TYPE_BYTES = "bytes";
 
-    private static String[] supportedTypes = new String[] { TYPE_BYTES };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_BYTES };
 
     private Integer length = 1;
 
     @Override
     public String[] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override

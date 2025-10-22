@@ -11,7 +11,6 @@ package de.csdev.ebus.command;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 

@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -32,6 +31,7 @@ import de.csdev.ebus.core.EBusDataException;
 import de.csdev.ebus.core.EBusReceiveStateMachine;
 import de.csdev.ebus.core.EBusReceiveStateMachine.State;
 import de.csdev.ebus.utils.EBusUtils;
+import de.csdev.ebus.utils.StringUtil;
 
 /**
  * @author Christian Sowada - Initial contribution
@@ -114,7 +114,7 @@ public class EBusCommandUtils {
      * @return
      */
     public static byte unescapeSymbol(byte reversedByte) {
-        if (reversedByte == (byte) 0x00 ) {
+        if (reversedByte == (byte) 0x00) {
             return EBusConsts.ESCAPE;
         }
         return reversedByte == (byte) 0x01 ? EBusConsts.SYN : reversedByte;
@@ -147,8 +147,9 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static @NonNull ByteBuffer buildCompleteTelegram(byte source, byte target, byte[] command, byte[] masterData,
-            byte[] slaveData) {
+    public static @NonNull ByteBuffer buildCompleteTelegram(byte source, byte target, byte[] command,
+            byte @Nullable [] masterData,
+            byte @Nullable [] slaveData) {
 
         boolean isMastereMaster = EBusUtils.isMasterAddress(target);
         boolean isBroadcast = target == EBusConsts.BROADCAST_ADDRESS;
@@ -183,7 +184,8 @@ public class EBusCommandUtils {
     }
 
     /**
-     * Builds an escaped master telegram part or if slaveData is used a complete telegram incl. master ACK and SYN
+     * Builds an escaped master telegram part or if slaveData is used a complete
+     * telegram incl. master ACK and SYN
      *
      * @param source
      * @param target
@@ -192,8 +194,8 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static @NonNull ByteBuffer buildPartMasterTelegram(byte source, byte target, byte[] command,
-            byte[] masterData) {
+    public static @NonNull ByteBuffer buildPartMasterTelegram(byte source, byte target, byte @NonNull [] command,
+            byte @NonNull [] masterData) {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 
@@ -260,94 +262,114 @@ public class EBusCommandUtils {
     }
 
     /**
+     * Process a nested value entry of the command
+     * 
+     * @param nestedValue
+     * @param values
+     * @return
+     */
+    private static byte @Nullable [] processNestedValue(IEBusNestedValue nestedValue,
+            @Nullable Map<String, Object> values) {
+        List<@NonNull IEBusValue> list = nestedValue.getChildren();
+        int n = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+            @Nullable
+            IEBusValue childValue = list.get(i);
+            if (values != null && values.containsKey(childValue.getName())) {
+                Boolean object = (Boolean) values.get(childValue.getName());
+                if (object.booleanValue()) {
+                    n = n | (1 << i);
+                }
+            }
+        }
+
+        return new byte[] { (byte) n };
+    }
+
+    /**
+     * Process a single entry of the command
+     * 
+     * @param entry
+     * @param type
+     * @param values
+     * @param buf
+     * @param complexTypes
+     * @return
+     * @throws EBusTypeException
+     */
+    private static byte @Nullable [] processEntry(IEBusValue entry, IEBusType<?> type,
+            @Nullable Map<String, Object> values,
+            ByteBuffer buf, Map<Integer, IEBusComplexType<?>> complexTypes) throws EBusTypeException {
+
+        if (values != null && values.containsKey(entry.getName())) {
+            return type.encode(values.get(entry.getName()));
+        }
+
+        if (type instanceof IEBusComplexType) {
+            complexTypes.put(buf.position(), (IEBusComplexType<?>) type);
+            return new byte[entry.getType().getTypeLength()];
+        }
+
+        return type.encode(entry.getDefaultValue());
+    }
+
+    /**
+     * Process all complex types after the simple types are encoded
+     * 
+     * @param buf
+     * @param complexTypes
+     * @throws EBusTypeException
+     */
+    private static void processComplexTypes(ByteBuffer buf, Map<Integer, IEBusComplexType<?>> complexTypes)
+            throws EBusTypeException {
+        if (!complexTypes.isEmpty()) {
+            int orgPos = buf.position();
+            buf.limit(buf.position());
+            for (Entry<Integer, IEBusComplexType<?>> entry : complexTypes.entrySet()) {
+                buf.position(entry.getKey());
+                buf.put(entry.getValue().encodeComplex(buf));
+            }
+            buf.position(orgPos);
+        }
+    }
+
+    /**
+     * Compose the master data part of a telegram
+     * 
      * @param commandMethod
      * @param values
      * @return
      * @throws EBusTypeException
      */
-    @SuppressWarnings("java:S3776")
     public static @NonNull ByteBuffer composeMasterData(@NonNull IEBusCommandMethod commandMethod,
             @Nullable Map<String, Object> values) throws EBusTypeException {
 
         Objects.requireNonNull(commandMethod);
-
         ByteBuffer buf = ByteBuffer.allocate(50);
-
         Map<Integer, IEBusComplexType<?>> complexTypes = new HashMap<>();
 
         List<@NonNull IEBusValue> masterTypes = commandMethod.getMasterTypes();
         if (masterTypes != null) {
             for (IEBusValue entry : masterTypes) {
+                byte @Nullable [] byteArray;
 
-                IEBusType<?> type = entry.getType();
-                byte[] b = null;
-
-                // compute byte value from 8 bits
                 if (entry instanceof IEBusNestedValue) {
-                    IEBusNestedValue nestedValue = (IEBusNestedValue) entry;
-                    List<@NonNull IEBusValue> list = nestedValue.getChildren();
-
-                    int n = 0;
-
-                    for (int i = 0; i < list.size(); i++) {
-                        IEBusValue childValue = list.get(i);
-                        if (values != null && values.containsKey(childValue.getName())) {
-                            Boolean object = (Boolean) values.get(childValue.getName());
-
-                            if (object.booleanValue()) {
-                                // set bit
-                                n = n | (1 << i);
-                            }
-
-                        }
-                    }
-
-                    b = new byte[] { (byte) n };
-
-                } else if (values != null && values.containsKey(entry.getName())) {
-                    // use the value from the values map if set
-                    b = type.encode(values.get(entry.getName()));
-
+                    byteArray = processNestedValue((IEBusNestedValue) entry, values);
                 } else {
-                    if (type instanceof IEBusComplexType) {
-
-                        // add the complex to the list for post processing
-                        complexTypes.put(buf.position(), (IEBusComplexType<?>) type);
-
-                        // add placeholder
-                        b = new byte[entry.getType().getTypeLength()];
-
-                    } else {
-                        b = type.encode(entry.getDefaultValue());
-
-                    }
-
+                    byteArray = processEntry(entry, entry.getType(), values, buf, complexTypes);
                 }
 
-                if (b == null) {
-                    throw new EBusTypeException("Encoded value is null! " + type.toString());
+                if (byteArray == null) {
+                    throw new EBusTypeException("Encoded value is null! " + entry.getType().toString());
                 }
 
-                buf.put(b);
+                buf.put(byteArray);
             }
         }
 
-        // replace the placeholders with the complex values
-        if (!complexTypes.isEmpty()) {
-            int orgPos = buf.position();
-            buf.limit(buf.position());
-            for (Entry<Integer, IEBusComplexType<?>> entry : complexTypes.entrySet()) {
-                // jump to position
-                buf.position(entry.getKey());
-                // put new value
-                buf.put(entry.getValue().encodeComplex(buf));
+        processComplexTypes(buf, complexTypes);
 
-            }
-            buf.position(orgPos);
-
-        }
-
-        // reset pos to zero and set the new limit
         buf.limit(buf.position());
         buf.position(0);
 
@@ -402,7 +424,7 @@ public class EBusCommandUtils {
                     targetChecked = EBusConsts.BROADCAST_ADDRESS;
                     if (logger.isWarnEnabled()) {
                         logger.warn("Replace target address {} with valid broadcast address 0xFE !",
-                            EBusUtils.toHexDumpString(target));
+                                EBusUtils.toHexDumpString(target));
                     }
                 }
             } else if (commandMethod.getType().equals(Type.MASTER_MASTER)) {
@@ -416,7 +438,7 @@ public class EBusCommandUtils {
                     } else {
                         if (logger.isWarnEnabled()) {
                             logger.warn("Replace slave target address {} with valid master address {}!",
-                                EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
+                                    EBusUtils.toHexDumpString(target), EBusUtils.toHexDumpString(targetChecked));
                         }
                     }
                 }
@@ -515,7 +537,7 @@ public class EBusCommandUtils {
 
                             Object decode2 = child.getType().decode(src);
 
-                            if (StringUtils.isNotEmpty(child.getName())) {
+                            if (StringUtil.isNotEmpty(child.getName())) {
                                 decode2 = applyNumberOperations(decode2, ev);
                                 result.put(child.getName(), decode2);
                             }
@@ -523,7 +545,7 @@ public class EBusCommandUtils {
                     }
                 }
 
-                if (StringUtils.isNotEmpty(ev.getName())) {
+                if (StringUtil.isNotEmpty(ev.getName())) {
                     decode = applyNumberOperations(decode, ev);
                     result.put(ev.getName(), decode);
                 }
