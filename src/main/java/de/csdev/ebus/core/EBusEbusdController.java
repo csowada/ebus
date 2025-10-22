@@ -161,7 +161,9 @@ public class EBusEbusdController extends EBusControllerBase {
                     String[] split = readLine.split(":");
                     String value = split[1].trim();
 
-                    logger.info("Use ebusd version: {}", value);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("Use ebusd version: {}", value.replaceAll("[\n\r]", "_"));
+                    }
 
                     String version = value.split(" ")[1].trim();
                     String[] versionParts = version.split("\\.");
