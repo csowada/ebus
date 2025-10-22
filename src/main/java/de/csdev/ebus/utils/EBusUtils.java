@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.core.EBusConsts;
-import de.csdev.ebus.utils.StringUtil;
+
 /**
  * A helper class to decode all eBus data types and telegrams.
  *
@@ -135,7 +135,7 @@ public class EBusUtils {
 
         for (int i = 0; i < len; i++) {
             byte b = data[i];
-            ucCrc = crc8_tab(b, ucCrc);
+            ucCrc = crc8Tab(b, ucCrc);
         }
         return ucCrc;
     }
@@ -147,7 +147,7 @@ public class EBusUtils {
      * @param crcInit The current crc result or another start value
      * @return The crc result
      */
-    public static byte crc8_tab(final byte data, final byte crcInit) {
+    public static byte crc8Tab(final byte data, final byte crcInit) {
         short ci = (short) (crcInit & 0xFF);
         return (byte) (CRC_TAB_8_VALUE[ci] ^ (data & 0xFF));
     }
@@ -244,7 +244,11 @@ public class EBusUtils {
         if (StringUtil.isEmpty(hexDumpString)) {
             return null;
         }
-        return toByteArray(hexDumpString)[0];
+        byte[] arr = toByteArray(hexDumpString);
+        if (arr.length == 0) {
+            return null;
+        }
+        return arr[0];
     }
 
     /**

@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -134,11 +135,11 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
         // return the replace value
         if (data == null) {
-            byte[] replaceValue = getReplaceValue();
-            if (replaceValue == null) {
+            byte @Nullable [] tmpReplaceValue = getReplaceValue();
+            if (tmpReplaceValue == null) {
                 throw new IllegalStateException("Replace value must not be null");
             }
-            return applyByteOrder(replaceValue);
+            return applyByteOrder(tmpReplaceValue);
         }
 
         byte[] result = encodeInt(data);

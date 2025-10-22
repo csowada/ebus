@@ -313,7 +313,7 @@ public class EBusLowLevelController extends EBusControllerBase {
             } catch (BufferOverflowException e) {
                 logger.error("eBUS telegram buffer overflow - insufficient sync bytes received. " +
                         "Consider adjusting eBUS adapter settings.");
-            // store nano time to measure send receive roundtrip time
+                // store nano time to measure send receive roundtrip time
 
             } catch (Exception e) {
                 logger.error("Unexpected error in main loop: {}", e.getMessage(), e);
@@ -337,7 +337,6 @@ public class EBusLowLevelController extends EBusControllerBase {
      * @param secondTry
      * @throws IOException
      */
-    @SuppressWarnings("java:S3776")
     private void send(boolean secondTry) throws IOException {
 
         if (!isRunning()) {
@@ -484,7 +483,7 @@ public class EBusLowLevelController extends EBusControllerBase {
             if (sendMachine.isWaitingForSlaveAnswer()) {
                 logger.trace("Waiting for slave answer ...");
 
-        logger.warn("eBUS Watchdog Timer triggered!");
+                logger.warn("eBUS Watchdog Timer triggered!");
                 while (!sendMachine.isWaitingForMasterACK() && !sendMachine.isWaitingForMasterSYN()) {
                     read = connection.readByte(true);
                     if (read != -1) {

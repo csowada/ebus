@@ -260,7 +260,7 @@ public class EBusReceiveStateMachine {
 
                         // add data to result and crc
                         bb.put(data);
-                        crc = EBusUtils.crc8_tab(data, (byte) 0);
+                        crc = EBusUtils.crc8Tab(data, (byte) 0);
 
                         setState(State.SRC_ADDR);
 
@@ -285,7 +285,7 @@ public class EBusReceiveStateMachine {
 
                     // add data to result and crc
                     bb.put(data);
-                    crc = EBusUtils.crc8_tab(data, crc);
+                    crc = EBusUtils.crc8Tab(data, crc);
 
                     setState(State.TGT_ADDR);
                     break;
@@ -298,7 +298,7 @@ public class EBusReceiveStateMachine {
 
                     // add data to result and crc
                     bb.put(data);
-                    crc = EBusUtils.crc8_tab(data, crc);
+                    crc = EBusUtils.crc8Tab(data, crc);
 
                     setState(State.PRIMARY_CMD);
                     break;
@@ -311,7 +311,7 @@ public class EBusReceiveStateMachine {
 
                     // add data to result and crc
                     bb.put(data);
-                    crc = EBusUtils.crc8_tab(data, crc);
+                    crc = EBusUtils.crc8Tab(data, crc);
 
                     setState(State.SECONDARY_CMD);
                     break;
@@ -335,7 +335,7 @@ public class EBusReceiveStateMachine {
 
                     // add data to result and crc
                     bb.put(data);
-                    crc = EBusUtils.crc8_tab(data, crc);
+                    crc = EBusUtils.crc8Tab(data, crc);
 
                     setState(len == 0 ? State.DATA1 : State.LENGTH1);
                     break;
@@ -347,7 +347,7 @@ public class EBusReceiveStateMachine {
                     throwExceptionIfSYN(data);
 
                     // add data to crc
-                    crc = EBusUtils.crc8_tab(data, crc);
+                    crc = EBusUtils.crc8Tab(data, crc);
 
                     if (data == EBusConsts.ESCAPE) {
                         isEscapedByte = true;
@@ -473,7 +473,7 @@ public class EBusReceiveStateMachine {
 
                     // add data to result and crc
                     bb.put(data);
-                    crc = EBusUtils.crc8_tab(data, (byte) 0);
+                    crc = EBusUtils.crc8Tab(data, (byte) 0);
 
                     if (data > 16) {
                         throw new EBusDataException("Slave Data Length too large!",
@@ -497,7 +497,7 @@ public class EBusReceiveStateMachine {
                     throwExceptionIfSYN(data);
 
                     // add symbol to crc check
-                    crc = EBusUtils.crc8_tab(data, crc);
+                    crc = EBusUtils.crc8Tab(data, crc);
 
                     // is symbol an escape symbol, then we have to decode the next symbol
                     if (data == EBusConsts.ESCAPE) {

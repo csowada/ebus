@@ -18,6 +18,8 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Christian Sowada - Initial contribution
  */
 public final class ArrayUtil {
+    private static final String ARRAY_MUST_NOT_BE_NULL = "array must not be null";
+
     private ArrayUtil() {
         // Utility class
     }
@@ -56,7 +58,7 @@ public final class ArrayUtil {
      * Reverses the order of the given array.
      */
     public static void reverse(byte @Nullable [] array) {
-        Objects.requireNonNull(array, "array must not be null");
+        Objects.requireNonNull(array, ARRAY_MUST_NOT_BE_NULL);
         int i = 0;
         int j = array.length - 1;
         byte tmp;
@@ -73,7 +75,7 @@ public final class ArrayUtil {
      * Creates a new array containing the specified elements.
      */
     public static byte[] toPrimitive(@NonNull Byte[] array) {
-        Objects.requireNonNull(array, "array must not be null");
+        Objects.requireNonNull(array, ARRAY_MUST_NOT_BE_NULL);
         final byte[] result = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = array[i] != null ? array[i] : 0;
@@ -85,7 +87,7 @@ public final class ArrayUtil {
      * Converts an array of primitive bytes to objects.
      */
     public static @NonNull Byte[] toObject(byte @Nullable [] array) {
-        Objects.requireNonNull(array, "array must not be null");
+        Objects.requireNonNull(array, ARRAY_MUST_NOT_BE_NULL);
         final Byte[] result = new Byte[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = array[i];
@@ -113,7 +115,7 @@ public final class ArrayUtil {
         }
         
         for (String element : array) {
-            if (element == valueToFind) {
+            if (element.equals(valueToFind)) {
                 return true;
             }
         }

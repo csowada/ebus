@@ -265,7 +265,6 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    @SuppressWarnings("java:S3776")
     public static @NonNull ByteBuffer composeMasterData(@NonNull IEBusCommandMethod commandMethod,
             @Nullable Map<String, Object> values) throws EBusTypeException {
 
@@ -280,7 +279,7 @@ public class EBusCommandUtils {
             for (IEBusValue entry : masterTypes) {
 
                 IEBusType<?> type = entry.getType();
-                byte[] b = null;
+                byte @Nullable[] byteArray = null;
 
                 // compute byte value from 8 bits
                 if (entry instanceof IEBusNestedValue) {
@@ -290,7 +289,7 @@ public class EBusCommandUtils {
                     int n = 0;
 
                     for (int i = 0; i < list.size(); i++) {
-                        IEBusValue childValue = list.get(i);
+                        @Nullable IEBusValue childValue = list.get(i);
                         if (values != null && values.containsKey(childValue.getName())) {
                             Boolean object = (Boolean) values.get(childValue.getName());
 
@@ -302,11 +301,11 @@ public class EBusCommandUtils {
                         }
                     }
 
-                    b = new byte[] { (byte) n };
+                    byteArray = new byte[] { (byte) n };
 
                 } else if (values != null && values.containsKey(entry.getName())) {
                     // use the value from the values map if set
-                    b = type.encode(values.get(entry.getName()));
+                    byteArray = type.encode(values.get(entry.getName()));
 
                 } else {
                     if (type instanceof IEBusComplexType) {
@@ -315,20 +314,20 @@ public class EBusCommandUtils {
                         complexTypes.put(buf.position(), (IEBusComplexType<?>) type);
 
                         // add placeholder
-                        b = new byte[entry.getType().getTypeLength()];
+                        byteArray = new byte[entry.getType().getTypeLength()];
 
                     } else {
-                        b = type.encode(entry.getDefaultValue());
+                        byteArray = type.encode(entry.getDefaultValue());
 
                     }
 
                 }
 
-                if (b == null) {
+                if (byteArray == null) {
                     throw new EBusTypeException("Encoded value is null! " + type.toString());
                 }
 
-                buf.put(b);
+                buf.put(byteArray);
             }
         }
 
