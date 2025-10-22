@@ -11,7 +11,7 @@ package de.csdev.ebus.utils;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -135,7 +135,7 @@ public class EBusUtils {
 
         for (int i = 0; i < len; i++) {
             byte b = data[i];
-            ucCrc = crc8_tab(b, ucCrc);
+            ucCrc = crc8Tab(b, ucCrc);
         }
         return ucCrc;
     }
@@ -147,7 +147,7 @@ public class EBusUtils {
      * @param crcInit The current crc result or another start value
      * @return The crc result
      */
-    public static byte crc8_tab(final byte data, final byte crcInit) {
+    public static byte crc8Tab(final byte data, final byte crcInit) {
         short ci = (short) (crcInit & 0xFF);
         return (byte) (CRC_TAB_8_VALUE[ci] ^ (data & 0xFF));
     }
@@ -241,10 +241,14 @@ public class EBusUtils {
      * @return
      */
     public static @Nullable Byte toByte(final @Nullable String hexDumpString) {
-        if (StringUtils.isEmpty(hexDumpString)) {
+        if (StringUtil.isEmpty(hexDumpString)) {
             return null;
         }
-        return toByteArray(hexDumpString)[0];
+        byte[] arr = toByteArray(hexDumpString);
+        if (arr.length == 0) {
+            return null;
+        }
+        return arr[0];
     }
 
     /**
@@ -282,7 +286,7 @@ public class EBusUtils {
      * @return
      */
     public static byte[] toByteArray(final @Nullable String hexDumpString) throws NumberFormatException {
-        if (hexDumpString == null || StringUtils.isEmpty(hexDumpString)) {
+        if (hexDumpString == null || StringUtil.isEmpty(hexDumpString)) {
             return new byte[0];
         }
 
@@ -307,7 +311,7 @@ public class EBusUtils {
 
         String h = hexDumpString;
 
-        if (h == null || StringUtils.isEmpty(h)) {
+        if (h == null || StringUtil.isEmpty(h)) {
             return new byte[0];
         }
 
@@ -334,7 +338,7 @@ public class EBusUtils {
 
         StringBuilder sb = new StringBuilder();
         for (String string : args) {
-            if (string != null && StringUtils.isNotEmpty(string)) {
+            if (string != null && StringUtil.isNotEmpty(string)) {
                 sb.append(string.length() % 2 == 0 ? string : "0" + string);
             }
         }

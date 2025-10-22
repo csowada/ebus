@@ -11,13 +11,13 @@ package de.csdev.ebus.command.datatypes.std;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.csdev.ebus.command.datatypes.EBusAbstractType;
 import de.csdev.ebus.command.datatypes.EBusTypeException;
 import de.csdev.ebus.utils.NumberUtils;
+import de.csdev.ebus.utils.ArrayUtil;
 
 @NonNullByDefault
 public abstract class AbstractEBusTypeNumber extends EBusAbstractType<BigDecimal> {
@@ -38,8 +38,8 @@ public abstract class AbstractEBusTypeNumber extends EBusAbstractType<BigDecimal
 
     @Override
     public @Nullable BigDecimal decodeInt(byte @Nullable [] data) throws EBusTypeException {
-        byte[] clone = ArrayUtils.clone(data);
-        ArrayUtils.reverse(clone);
+        byte[] clone = ArrayUtil.clone(data);
+        ArrayUtil.reverse(clone);
         return new BigDecimal(new BigInteger(clone));
     }
 

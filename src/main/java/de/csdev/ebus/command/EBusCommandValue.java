@@ -76,10 +76,13 @@ public class EBusCommandValue implements IEBusValue {
         clone.step = this.step;
         clone.type = this.type;
 
-        if (this.mapping != null) {
-            clone.mapping = new HashMap<>();
-            for (Entry<String, String> elem : this.mapping.entrySet()) {
-                clone.mapping.put(elem.getKey(), elem.getValue());
+        Map<String, String> tmpMapping = this.mapping;
+
+        if (tmpMapping != null) {
+            Map<String, String> cloneMapping = new HashMap<>();
+            clone.mapping = cloneMapping;
+            for (Entry<String, String> elem : tmpMapping.entrySet()) {
+                cloneMapping.put(elem.getKey(), elem.getValue());
             }
         }
 

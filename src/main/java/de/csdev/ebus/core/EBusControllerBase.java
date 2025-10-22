@@ -24,16 +24,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Christian Sowada - Initial contribution
+ * Base implementation of an eBus controller that handles the core functionality
+ * of eBus communication, including event handling, connection management,
+ * and telegram processing.
+ * 
+ * This class provides:
+ * - Event listener management
+ * - Thread pool management for event processing
+ * - Connection status handling
+ * - Watchdog timer functionality
+ * - Queue management for sending/receiving telegrams
  *
+ * @author Christian Sowada - Initial contribution
  */
 public abstract class EBusControllerBase extends Thread implements IEBusController {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusControllerBase.class);
 
     private static final String THREADPOOL_NOT_READY = "ThreadPool not ready!";
+    private static final int DEFAULT_CORE_POOL_SIZE = 5;
+    private static final int MAX_POOL_SIZE = 60;
+    private static final long KEEP_ALIVE_TIME = 60L;
+    private static final int DEFAULT_WATCHDOG_TIMEOUT = 300; // 5 minutes
+    private static final int THREAD_POOL_TERMINATION_TIMEOUT = 10;
 
-    /** serial receive buffer */
+    /** Serial receive buffer for processing incoming data */
     protected @NonNull EBusReceiveStateMachine machine = new EBusReceiveStateMachine();
 
     /** the list for listeners */
@@ -46,50 +61,71 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     private ScheduledFuture<?> watchdogTimer;
 
-    private int watchdogTimerTimeout = 300; // 5min
+    private int watchdogTimerTimeout = DEFAULT_WATCHDOG_TIMEOUT; // 5min
 
     protected @NonNull EBusQueue queue = new EBusQueue();
 
     private @NonNull ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[], int)
+    /**
+     * Adds a telegram to the send queue with a specified maximum number of retry attempts.
+     * 
+     * @param buffer The telegram data to send
+     * @param maxAttempts The maximum number of retry attempts
+     * @return A unique identifier for the queued telegram
+     * @throws EBusControllerException if the controller is not connected or the queue operation fails
+     * @throws NullPointerException if buffer is null
      */
     @Override
-    public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer, final int maxAttemps) throws EBusControllerException {
-        if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
-            throw new EBusControllerException("Controller not connected, unable to add telegrams to send queue!");
+    public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer, final int maxAttempts) throws EBusControllerException {
+        Objects.requireNonNull(buffer, "buffer cannot be null");
+        if (maxAttempts <= 0) {
+            throw new IllegalArgumentException("maxAttempts must be greater than 0");
         }
-
-        Integer sendId = queue.addToSendQueue(buffer, maxAttemps);
-
+        
+        validateConnectionStatus();
+        
+        Integer sendId = queue.addToSendQueue(buffer, maxAttempts);
         if (sendId == null) {
-            throw new EBusControllerException("Unable to add telegrams to send queue!");
+            throw new EBusControllerException("Failed to add telegram to send queue");
         }
-
+        
+        logger.debug("Added telegram to send queue with ID {} and {} max attempts", sendId, maxAttempts);
         return sendId;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see de.csdev.ebus.core.IEBusController#addToSendQueue(byte[])
+    /**
+     * Adds a telegram to the send queue using default retry attempts.
+     * 
+     * @param buffer The telegram data to send
+     * @return A unique identifier for the queued telegram
+     * @throws EBusControllerException if the controller is not connected or the queue operation fails
+     * @throws NullPointerException if buffer is null
      */
     @Override
     public @NonNull Integer addToSendQueue(final byte @NonNull [] buffer) throws EBusControllerException {
-        if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
-            throw new EBusControllerException("Controller not connected, unable to add telegrams to send queue!");
-        }
-
+        Objects.requireNonNull(buffer, "buffer cannot be null");
+        
+        validateConnectionStatus();
+        
         Integer sendId = queue.addToSendQueue(buffer);
-
         if (sendId == null) {
-            throw new EBusControllerException("Unable to add telegrams to send queue!");
+            throw new EBusControllerException("Failed to add telegram to send queue");
         }
-
+        
+        logger.debug("Added telegram to send queue with ID {}", sendId);
         return sendId;
+    }
+    
+    /**
+     * Validates that the controller is in a connected state.
+     * 
+     * @throws EBusControllerException if the controller is not connected
+     */
+    private void validateConnectionStatus() throws EBusControllerException {
+        if (getConnectionStatus() != ConnectionStatus.CONNECTED) {
+            throw new EBusControllerException("Controller is not connected - current status: " + getConnectionStatus());
+        }
     }
 
     /*
@@ -115,95 +151,101 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     }
 
     /**
-     * @param e
+     * Notifies all registered listeners about a connection exception.
+     * The notification is dispatched asynchronously via the thread pool.
+     * If the controller is not running or the thread pool is not available,
+     * the event will not be fired.
+     *
+     * @param exception The connection exception that occurred
+     * @throws NullPointerException if exception is null
      */
-    protected void fireOnConnectionException(final @NonNull Exception e) {
+    protected void fireOnConnectionException(final @NonNull Exception exception) {
+        Objects.requireNonNull(exception, "exception cannot be null");
 
-        Objects.requireNonNull(e);
-
-        if (!isRunning()) {
-            return;
-        }
-
-        if (threadPool == null || threadPool.isTerminated()) {
-            logger.warn(THREADPOOL_NOT_READY);
+        if (!isRunning() || !validateThreadPool()) {
+            logger.warn("Cannot fire connection exception event - controller not running or thread pool not ready");
             return;
         }
 
         threadPool.execute(() -> {
+            String exceptionName = exception.getClass().getSimpleName();
+            logger.debug("Firing connection exception event for {} to {} listeners", 
+                exceptionName, listeners.size());
+
             for (IEBusConnectorEventListener listener : listeners) {
-                if (!Thread.interrupted()) {
-                    try {
-                        listener.onConnectionException(e);
-                    } catch (Exception e1) {
-                        logger.error("Error while firing onConnectionException events!", e1);
-                    }
+                if (Thread.interrupted()) {
+                    logger.debug("Connection exception event processing interrupted");
+                    break;
+                }
+                try {
+                    listener.onConnectionException(exception);
+                } catch (Exception e) {
+                    logger.error("Error in connection exception listener: {}", e.getMessage(), e);
                 }
             }
         });
     }
 
     /**
-     * Called if a valid eBus telegram was received. Send to event
-     * listeners via thread pool to prevent blocking.
+     * Fires a telegram received event to all registered listeners.
+     * The event is dispatched asynchronously via the thread pool to prevent blocking.
+     * Validates the state and data before firing the event.
      *
-     * @param receivedData
-     * @param sendQueueId
+     * @param receivedData The received telegram data, must not be null or empty
+     * @param sendQueueId The optional queue ID if this was a response to a sent telegram
      */
     protected void fireOnEBusTelegramReceived(final byte @NonNull [] receivedData, final Integer sendQueueId) {
+        Objects.requireNonNull(receivedData, "receivedData cannot be null");
 
-        if (!isRunning()) {
-            return;
-        }
-
-        if (threadPool == null || threadPool.isTerminated()) {
-            logger.warn(THREADPOOL_NOT_READY + " Can't fire onTelegramReceived events ...");
-            return;
-        }
-
-        if (receivedData.length == 0) {
-            logger.warn("Telegram data is empty! Can't fire onTelegramReceived events ...");
+        if (!isRunning() || !validateThreadPool() || receivedData.length == 0) {
+            logger.warn("Cannot fire telegram received event - controller not running or invalid data");
             return;
         }
 
         threadPool.execute(() -> {
             for (IEBusConnectorEventListener listener : listeners) {
-                if (!Thread.interrupted()) {
-                    try {
-                        listener.onTelegramReceived(receivedData, sendQueueId);
-                    } catch (Exception e) {
-                        logger.error("Error while firing onTelegramReceived events!", e);
-                    }
+                if (Thread.interrupted()) {
+                    break;
+                }
+                try {
+                    listener.onTelegramReceived(receivedData, sendQueueId);
+                } catch (Exception e) {
+                    logger.error("Error in telegram received event listener", e);
                 }
             }
         });
     }
 
     /**
-     * @param exception
-     * @param sendQueueId
+     * Notifies all registered listeners about a data exception that occurred during
+     * telegram processing. The notification is dispatched asynchronously via the thread pool.
+     *
+     * @param exception The data exception that occurred
+     * @param sendQueueId The optional queue ID if this was related to a sent telegram
+     * @throws NullPointerException if exception is null
      */
     protected void fireOnEBusDataException(final @NonNull EBusDataException exception, final Integer sendQueueId) {
+        Objects.requireNonNull(exception, "exception cannot be null");
 
-        Objects.requireNonNull(exception);
-
-        if (!isRunning()) {
-            return;
-        }
-
-        if (threadPool == null || threadPool.isTerminated()) {
-            logger.warn(THREADPOOL_NOT_READY);
+        if (!isRunning() || !validateThreadPool()) {
+            logger.warn("Cannot fire data exception event - controller not running or thread pool not ready");
             return;
         }
 
         threadPool.execute(() -> {
+            String exceptionMessage = exception.getMessage();
+            logger.debug("Firing data exception event to {} listeners. Error: {}", 
+                listeners.size(), exceptionMessage);
+
             for (IEBusConnectorEventListener listener : listeners) {
-                if (!Thread.interrupted()) {
-                    try {
-                        listener.onTelegramException(exception, sendQueueId);
-                    } catch (Exception e) {
-                        logger.error("Error while firing onTelegramException events!", e);
-                    }
+                if (Thread.interrupted()) {
+                    logger.debug("Data exception event processing interrupted");
+                    break;
+                }
+                try {
+                    listener.onTelegramException(exception, sendQueueId);
+                } catch (Exception e) {
+                    logger.error("Error in data exception listener: {}", e.getMessage(), e);
                 }
             }
         });
@@ -239,39 +281,47 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
     /**
      *
      */
+    /**
+     * Initializes the thread pools used for event processing and watchdog timer.
+     * Creates a main thread pool for processing received telegrams and events,
+     * and a single-threaded scheduled executor for the watchdog timer.
+     */
     protected void initThreadPool() {
-        // create new thread pool to send received telegrams
-        // limit the number of threads to 30
-        threadPool = new ThreadPoolExecutor(5, 60, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(),
-                new EBusWorkerThreadFactory("ebus-receiver", true));
+        // Create new thread pool to send received telegrams
+        threadPool = new ThreadPoolExecutor(
+            DEFAULT_CORE_POOL_SIZE,
+            MAX_POOL_SIZE,
+            KEEP_ALIVE_TIME,
+            TimeUnit.SECONDS,
+            new SynchronousQueue<>(),
+            new EBusWorkerThreadFactory("ebus-receiver", true)
+        );
 
-        // create watch dog thread pool
-        threadPoolWDT = Executors.newSingleThreadScheduledExecutor(new EBusWorkerThreadFactory("ebus-wdt", false));
+        // Create watch dog thread pool
+        threadPoolWDT = Executors.newSingleThreadScheduledExecutor(
+            new EBusWorkerThreadFactory("ebus-wdt", false)
+        );
     }
 
     /**
-     * @throws InterruptedException
+     * Shuts down both the main thread pool and watchdog timer thread pool.
+     * Attempts graceful shutdown first, then forces shutdown if needed.
+     * Waits for pool termination with a timeout.
      *
+     * @throws InterruptedException if interrupted while waiting for thread pools to terminate
      */
     protected void shutdownThreadPool() throws InterruptedException {
-        // shutdown threadpool
+        // Shutdown main thread pool
         if (threadPool != null && !threadPool.isShutdown()) {
             threadPool.shutdownNow();
-        }
-
-        if (threadPoolWDT != null && !threadPoolWDT.isShutdown()) {
-            threadPoolWDT.shutdownNow();
-        }
-
-        if (threadPool != null) {
-            // wait up to 10sec. for the thread pool
-            threadPool.awaitTermination(10, TimeUnit.SECONDS);
+            threadPool.awaitTermination(THREAD_POOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS);
             threadPool = null;
         }
 
-        if (threadPoolWDT != null) {
-            // wait up to 10sec. for the thread pool
-            threadPoolWDT.awaitTermination(10, TimeUnit.SECONDS);
+        // Shutdown watchdog thread pool
+        if (threadPoolWDT != null && !threadPoolWDT.isShutdown()) {
+            threadPoolWDT.shutdownNow();
+            threadPoolWDT.awaitTermination(THREAD_POOL_TERMINATION_TIMEOUT, TimeUnit.SECONDS);
             threadPoolWDT = null;
         }
     }
@@ -286,49 +336,115 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
         return !isInterrupted() && isAlive();
     }
 
-    protected void dispose() throws InterruptedException {
-
-        listeners.clear();
-
-        if (watchdogTimer != null) {
-            watchdogTimer.cancel(true);
-            watchdogTimer = null;
-        }
-
-        shutdownThreadPool();
-    }
-
-    protected void resetWatchdogTimer() {
-        Runnable r = EBusControllerBase.this::fireWatchDogTimer;
-
-        if (watchdogTimer != null && !watchdogTimer.isCancelled()) {
-            watchdogTimer.cancel(true);
-        }
-
-        if (!threadPoolWDT.isShutdown()) {
-            watchdogTimer = threadPoolWDT.schedule(r, watchdogTimerTimeout, TimeUnit.SECONDS);
-        }
-
-    }
-
-    /*
-     * (non-Javadoc)
+    /**
+     * Disposes of this controller instance, cleaning up all resources.
+     * This method:
+     * - Clears all event listeners
+     * - Cancels the watchdog timer
+     * - Shuts down thread pools
+     * - Resets internal state
      *
-     * @see de.csdev.ebus.core.IEBusController#setWatchdogTimerTimeout(int)
+     * This method should be called when the controller is no longer needed.
+     *
+     * @throws InterruptedException if interrupted while shutting down thread pools
+     */
+    protected void dispose() throws InterruptedException {
+        logger.debug("Disposing eBus controller...");
+        
+        synchronized (this) {
+            // Clear all listeners first to prevent new events during shutdown
+            if (!listeners.isEmpty()) {
+                logger.debug("Removing {} event listeners", listeners.size());
+                listeners.clear();
+            }
+
+            // Cancel watchdog timer
+            if (watchdogTimer != null) {
+                logger.debug("Cancelling watchdog timer");
+                watchdogTimer.cancel(true);
+                watchdogTimer = null;
+            }
+
+            // Reset connection status
+            connectionStatus = ConnectionStatus.DISCONNECTED;
+
+            // Clear the send queue
+            queue = new EBusQueue();
+
+            // Shutdown thread pools
+            logger.debug("Shutting down thread pools");
+            shutdownThreadPool();
+        }
+        
+        logger.debug("eBus controller disposed successfully");
+    }
+
+    /**
+     * Resets the watchdog timer with the current timeout value.
+     * Cancels any existing timer and schedules a new one if the thread pool is active.
+     * This method is thread-safe.
+     */
+    protected void resetWatchdogTimer() {
+        synchronized (this) {
+            if (threadPoolWDT == null || threadPoolWDT.isShutdown()) {
+                logger.debug("Cannot reset watchdog timer - thread pool is not active");
+                return;
+            }
+
+            // Cancel existing timer if present
+            if (watchdogTimer != null && !watchdogTimer.isCancelled()) {
+                watchdogTimer.cancel(true);
+            }
+
+            // Schedule new timer
+            watchdogTimer = threadPoolWDT.schedule(
+                this::fireWatchDogTimer,
+                watchdogTimerTimeout,
+                TimeUnit.SECONDS
+            );
+        }
+    }
+
+    /**
+     * Sets the timeout duration for the watchdog timer.
+     * 
+     * @param seconds the timeout duration in seconds
+     * @throws IllegalArgumentException if seconds is less than or equal to 0
      */
     @Override
     public void setWatchdogTimerTimeout(final int seconds) {
-        watchdogTimerTimeout = seconds;
+        if (seconds <= 0) {
+            throw new IllegalArgumentException("Watchdog timeout must be greater than 0 seconds");
+        }
+        this.watchdogTimerTimeout = seconds;
     }
 
+    /**
+     * Called when the watchdog timer expires.
+     * Subclasses must implement this method to handle watchdog timeouts.
+     */
     protected abstract void fireWatchDogTimer();
 
+    /**
+     * Validates that the thread pool is ready to execute tasks.
+     * 
+     * @return true if the thread pool is initialized and not terminated
+     */
+    protected boolean validateThreadPool() {
+        return threadPool != null && !threadPool.isTerminated();
+    }
+
+    /**
+     * Updates the connection status and fires a status change event if needed.
+     * Thread-safe implementation that ensures events are only fired for actual status changes.
+     *
+     * @param status the new connection status to set
+     * @throws NullPointerException if status is null
+     */
     protected void setConnectionStatus(final @NonNull ConnectionStatus status) {
+        Objects.requireNonNull(status, "status cannot be null");
 
-        Objects.requireNonNull(status, "status");
-
-
-        // only run on a real status change
+        // Only fire event on actual status change
         if (this.connectionStatus != status) {
             this.connectionStatus = status;
             fireOnEBusConnectionStatusChange(status);
@@ -342,6 +458,6 @@ public abstract class EBusControllerBase extends Thread implements IEBusControll
 
     @Override
     public void run() {
-        throw new IllegalStateException("Method run() should be overwritten!");
+        throw new IllegalStateException("Method run() must be overridden by subclasses");
     }
 }

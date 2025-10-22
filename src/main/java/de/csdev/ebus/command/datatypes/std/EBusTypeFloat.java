@@ -29,10 +29,9 @@ import de.csdev.ebus.utils.NumberUtils;
 @NonNullByDefault
 public class EBusTypeFloat extends EBusAbstractType<BigDecimal> {
 
-    @SuppressWarnings({"null"})
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeFloat.class);
 
-    public static String TYPE_FLOAT = "float";
+    public static final String TYPE_FLOAT = "float";
 
     private static String[] supportedTypes = new String[] { TYPE_FLOAT };
 

@@ -22,234 +22,311 @@ import de.csdev.ebus.core.connection.IEBusConnection;
 import de.csdev.ebus.utils.EBusUtils;
 
 /**
- * @author Christian Sowada - Initial contribution
+ * Low-level implementation of an eBUS controller that handles direct
+ * communication
+ * with the physical eBUS interface. This controller manages:
+ * - Raw data transmission and reception
+ * - Connection management and auto-reconnection
+ * - Collision detection and handling
+ * - Telegram validation and processing
+ * - Synchronization and timing
  *
+ * @author Christian Sowada - Initial contribution
  */
 public class EBusLowLevelController extends EBusControllerBase {
 
     private static final Logger logger = LoggerFactory.getLogger(EBusLowLevelController.class);
 
+    /** Maximum number of reconnection attempts before giving up */
+    private static final int MAX_RECONNECT_ATTEMPTS = 10;
+
+    /** Base delay in milliseconds between reconnection attempts */
+    private static final long BASE_RECONNECT_DELAY = 5000L;
+
+    /** Size of the receive buffer */
+    private static final int RECEIVE_BUFFER_SIZE = 100;
+
+    /** Default value for no round trip time measured */
+    private static final long NO_ROUNDTRIP_TIME = -1L;
+
+    /** The physical eBUS connection */
     protected @NonNull IEBusConnection connection;
 
-    /** counts the re-connection tries */
+    /** Counter for connection retry attempts */
     private int reConnectCounter = 0;
 
-    private long sendRoundTrip = -1;
+    /** Last measured send-receive round trip time in nanoseconds */
+    private long sendRoundTrip = NO_ROUNDTRIP_TIME;
 
+    /**
+     * Creates a new eBUS low-level controller with the specified connection.
+     *
+     * @param connection The physical eBUS connection to use
+     * @throws NullPointerException if connection is null
+     */
     public EBusLowLevelController(@NonNull IEBusConnection connection) {
         super();
-
-        Objects.requireNonNull(connection, "connection");
-        this.connection = connection;
+        this.connection = Objects.requireNonNull(connection, "connection cannot be null");
+        logger.debug("Created new eBUS controller with connection type: {}",
+                connection.getClass().getSimpleName());
     }
 
+    /**
+     * Returns the last measured send-receive round trip time in nanoseconds.
+     *
+     * @return The last measured round trip time, or -1 if no measurement is
+     *         available
+     */
     @Override
     public long getLastSendReceiveRoundtripTime() {
         return sendRoundTrip;
     }
 
     /**
-     * @return
-     * @throws EBusControllerException
+     * Gets the current eBUS connection instance.
+     * 
+     * @return The current eBUS connection
+     * @throws EBusControllerException if the controller is not running
      */
     public @NonNull IEBusConnection getConnection() throws EBusControllerException {
         if (!isRunning()) {
-            throw new EBusControllerException();
+            throw new EBusControllerException("Cannot access connection - controller is not running");
         }
         return connection;
     }
 
     /**
-     * Called event if a packet has been received
+     * Processes received eBUS data bytes.
+     * Handles data reception, state machine updates, and telegram processing.
+     * This method is called for each byte received from the eBUS.
      *
-     * @throws IOException
+     * @param data The received byte from the eBUS
+     * @throws IOException if an I/O error occurs during processing
      */
     private void onEBusDataReceived(byte data) throws IOException {
-
         if (!isRunning()) {
-            logger.trace("Skip event, thread was interrupted ...");
+            logger.trace("Skipping data processing - controller interrupted");
             return;
         }
 
         try {
+            // Update state machine with received byte
             machine.update(data);
+
+            if (machine.isWaitingForSlaveAnswer()) {
+                logger.trace("Awaiting slave response");
+            }
+
+            // Process SYN byte reception
+            if (machine.isSync()) {
+                processSyncReceived();
+            }
         } catch (EBusDataException e) {
-            this.fireOnEBusDataException(e, e.getSendId());
+            logger.debug("Data exception during processing: {}", e.getMessage());
+            fireOnEBusDataException(e, e.getSendId());
         }
-
-        if (machine.isWaitingForSlaveAnswer()) {
-            logger.trace("waiting for slave answer ...");
-        }
-
-        // we received a SYN byte
-        if (machine.isSync()) {
-
-            // try to send something if the send queue is not empty
-            send(false);
-
-            // afterwards check for next sending slot
-            try {
-                queue.checkSendStatus(false);
-            } catch (EBusDataException e) {
-                fireOnEBusDataException(e, e.getSendId());
-            }
-
-            // check if a complete and valid telegram is available
-            if (machine.isTelegramAvailable()) {
-
-                byte[] telegramData = machine.getTelegramData();
-
-                // execute event
-                fireOnEBusTelegramReceived(telegramData, null);
-                machine.reset();
-            }
-        }
-
-    }
-
-    private void reconnect() throws IOException, InterruptedException {
-
-        if (!isRunning()) {
-            logger.trace("Skip reconnect, thread was interrupted ...");
-            return;
-        }
-
-        logger.info("Try to reconnect to eBUS adapter ...");
-
-        // set connection status to connecting
-        setConnectionStatus(ConnectionStatus.CONNECTING);
-
-        if (reConnectCounter > 10) {
-            reConnectCounter = -1;
-            this.interrupt();
-
-        } else {
-
-            reConnectCounter++;
-
-            logger.warn("Retry to connect to eBUS adapter in {} seconds ...", 5 * reConnectCounter);
-
-            Thread.sleep(5000L * reConnectCounter);
-
-            connection.close();
-            if (connection.open()) {
-                resetWatchdogTimer();
-            }
-        }
-
     }
 
     /**
-     * Resend data if it's the first try or call resetSend()
+     * Handles the reception of a SYN byte, which marks potential telegram
+     * boundaries.
+     * This includes sending queued data and processing complete telegrams.
      *
-     * @param secondTry
-     * @return
-     * @throws IOException
+     * @throws IOException if an I/O error occurs during processing
      */
-    private boolean resend() {
+    private void processSyncReceived() throws IOException {
+        try {
+            // Attempt to send queued data
+            send(false);
 
-        QueueEntry entry = queue.getCurrent();
+            // Check send queue status
+            queue.checkSendStatus(false);
 
-        if (isRunning() && entry != null && !entry.secondTry) {
-            entry.secondTry = true;
-            return true;
+            // Process complete telegram if available
+            if (machine.isTelegramAvailable()) {
+                byte[] telegramData = machine.getTelegramData();
 
-        } else {
-            logger.warn("Resend failed, remove data from sending queue ...");
-            queue.resetSendQueue();
-            return false;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Complete telegram received: {}",
+                            EBusUtils.toHexDumpString(telegramData));
+                }
+
+                fireOnEBusTelegramReceived(telegramData, null);
+                machine.reset();
+            }
+        } catch (EBusDataException e) {
+            logger.debug("Data exception during sync processing: {}", e.getMessage());
+            fireOnEBusDataException(e, e.getSendId());
         }
     }
 
+    /**
+     * Attempts to reconnect to the eBUS adapter using an exponential backoff
+     * strategy.
+     * After MAX_RECONNECT_ATTEMPTS failed attempts, the controller will be
+     * interrupted.
+     *
+     * @throws IOException          if connection operations fail
+     * @throws InterruptedException if the thread is interrupted during reconnection
+     */
+    private void reconnect() throws IOException, InterruptedException {
+        if (!isRunning()) {
+            logger.trace("Skip reconnect, thread was interrupted");
+            return;
+        }
+
+        logger.info("Attempting to reconnect to eBUS adapter");
+        setConnectionStatus(ConnectionStatus.CONNECTING);
+
+        if (reConnectCounter > MAX_RECONNECT_ATTEMPTS) {
+            logger.error("Maximum reconnection attempts ({}) exceeded, shutting down controller",
+                    MAX_RECONNECT_ATTEMPTS);
+            reConnectCounter = -1;
+            this.interrupt();
+            return;
+        }
+
+        reConnectCounter++;
+        long delayMillis = BASE_RECONNECT_DELAY * reConnectCounter;
+
+        logger.warn("Will retry connection in {} seconds (attempt {}/{})",
+                delayMillis / 1000, reConnectCounter, MAX_RECONNECT_ATTEMPTS);
+
+        try {
+            Thread.sleep(delayMillis);
+
+            // Close existing connection before attempting to open a new one
+            connection.close();
+
+            if (connection.open()) {
+                logger.info("Successfully reconnected to eBUS adapter");
+                resetWatchdogTimer();
+            } else {
+                logger.warn("Failed to open connection on attempt {}", reConnectCounter);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+    }
+
+    /**
+     * Attempts to resend the current telegram if no previous retry has been made.
+     * Implements a single-retry policy for failed transmissions.
+     *
+     * @return true if the telegram will be retried, false if no retry is possible
+     */
+    private boolean resend() {
+        QueueEntry entry = queue.getCurrent();
+
+        if (!isRunning() || entry == null) {
+            logger.debug("Cannot resend - controller not running or no current entry");
+            return false;
+        }
+
+        if (entry.secondTry) {
+            logger.warn("Maximum retry attempts reached for telegram ID {}, removing from queue",
+                    entry.id);
+            queue.resetSendQueue();
+            return false;
+        }
+
+        entry.secondTry = true;
+        logger.debug("Scheduling retry for telegram ID {}", entry.id);
+        return true;
+    }
+
+    /**
+     * Main controller loop that handles the eBUS communication.
+     * Manages connection state, data reception, and error recovery.
+     */
     @Override
     @SuppressWarnings("java:S3776")
     public void run() {
+        logger.info("Starting eBUS low level controller");
 
+        // Initialize thread pools for event handling
         initThreadPool();
 
-        int read = -1;
+        int bytesRead = -1;
+        byte[] receiveBuffer = new byte[RECEIVE_BUFFER_SIZE];
 
-        byte[] buffer = new byte[100];
-
+        // Initialize connection if needed
         try {
             if (!connection.isOpen()) {
-
+                logger.debug("Opening initial connection to eBUS");
                 setConnectionStatus(ConnectionStatus.CONNECTING);
-
                 connection.open();
             }
         } catch (IOException e) {
-            logger.error(EBusConsts.LOG_ERR_DEF, e);
+            logger.error("Failed to establish initial connection: {}", e.getMessage(), e);
             fireOnConnectionException(e);
         }
 
         resetWatchdogTimer();
 
-        // loop until interrupt or reconnector count is -1 (to many retries)
-        while (!(Thread.interrupted() || reConnectCounter == -1)) {
+        // Main control loop - continue until interrupted or max reconnection attempts
+        // exceeded
+        while (!Thread.interrupted() && reConnectCounter != -1) {
             try {
-
                 if (!connection.isOpen()) {
                     reconnect();
-
                 } else {
-
-                    // the connection is now connected
+                    // Connection is established
                     setConnectionStatus(ConnectionStatus.CONNECTED);
 
-                    // read byte from connector
-                    read = connection.readBytes(buffer);
+                    // Read data from the bus
+                    bytesRead = connection.readBytes(receiveBuffer);
 
-                    if (read == -1) {
-                        logger.debug("eBUS read timeout occured, no data on bus ...");
-                        throw new IOException("End of eBUS stream reached!");
-
-                    } else {
-                        for (int i = 0; i < read; i++) {
-                            onEBusDataReceived(buffer[i]);
-
-                        }
-
-                        // reset with received data
-                        resetWatchdogTimer();
-                        reConnectCounter = 0;
+                    if (bytesRead == -1) {
+                        logger.debug("eBUS read timeout occurred, no data on bus");
+                        throw new IOException("End of eBUS stream reached");
                     }
+
+                    // Process received bytes
+                    for (int i = 0; i < bytesRead; i++) {
+                        onEBusDataReceived(receiveBuffer[i]);
+                    }
+
+                    // Reset watchdog and connection counter on successful read
+                    resetWatchdogTimer();
+                    reConnectCounter = 0;
                 }
 
             } catch (InterruptedIOException | InterruptedException e) {
-                // bubble interrrupt flag to outer main loop
+                logger.debug("Controller interrupted, stopping main loop");
                 Thread.currentThread().interrupt();
 
             } catch (IOException e) {
-                logger.error("An IO exception has occured! Try to reconnect eBUS connector ...", e);
+                logger.error("IO exception occurred - attempting to reconnect: {}", e.getMessage(), e);
                 fireOnConnectionException(e);
 
                 try {
                     reconnect();
-                } catch (IOException e1) {
-                    logger.error(e.toString(), e1);
-                } catch (InterruptedException e1) {
-                    // bubble interrrupt flag to outer main loop
+                } catch (IOException reconnectError) {
+                    logger.error("Failed to reconnect: {}", reconnectError.getMessage(), reconnectError);
+                } catch (InterruptedException interrupted) {
+                    logger.debug("Reconnection attempt interrupted");
                     Thread.currentThread().interrupt();
                 }
 
             } catch (BufferOverflowException e) {
-                logger.error(
-                        "eBUS telegram buffer overflow - not enough sync bytes received! Try to adjust eBUS adapter.");
-                machine.reset();
+                logger.error("eBUS telegram buffer overflow - insufficient sync bytes received. " +
+                        "Consider adjusting eBUS adapter settings.");
+                // store nano time to measure send receive roundtrip time
 
             } catch (Exception e) {
-                logger.error(e.toString(), e);
+                logger.error("Unexpected error in main loop: {}", e.getMessage(), e);
                 machine.reset();
             }
-        } // while loop
+        }
 
-        // interrupted flag is not active anymore
+        logger.info("eBUS controller main loop terminated, performing cleanup");
 
         try {
             dispose();
         } catch (InterruptedException e) {
-            logger.error("error!", e);
+            logger.error("Interrupted during controller cleanup", e);
             Thread.currentThread().interrupt();
         }
     }
@@ -260,7 +337,6 @@ public class EBusLowLevelController extends EBusControllerBase {
      * @param secondTry
      * @throws IOException
      */
-    @SuppressWarnings("java:S3776")
     private void send(boolean secondTry) throws IOException {
 
         if (!isRunning()) {
@@ -407,7 +483,6 @@ public class EBusLowLevelController extends EBusControllerBase {
             if (sendMachine.isWaitingForSlaveAnswer()) {
                 logger.trace("Waiting for slave answer ...");
 
-                // read input data until the telegram is complete or fails
                 while (!sendMachine.isWaitingForMasterACK() && !sendMachine.isWaitingForMasterSYN()) {
                     read = connection.readByte(true);
                     if (read != -1) {
@@ -457,39 +532,51 @@ public class EBusLowLevelController extends EBusControllerBase {
         }
     }
 
+    /**
+     * Performs a clean shutdown of the controller.
+     * Closes connections, updates status, and releases resources.
+     *
+     * @throws InterruptedException if interrupted during cleanup
+     */
     @Override
     protected void dispose() throws InterruptedException {
+        logger.info("Shutting down eBUS controller");
 
-        logger.info("eBUS connection thread is shuting down ...");
-
-        // set connection status to disconnected
+        // Update status first to prevent new operations
         setConnectionStatus(ConnectionStatus.DISCONNECTED);
 
+        // Clean up base class resources
         super.dispose();
 
-        // *******************************
-        // ** end of thread **
-        // *******************************
-
-        // disconnect the connector e.g. close serial port
-        try {
-            if (connection != null) {
+        // Close physical connection
+        if (connection != null) {
+            logger.debug("Closing eBUS connection");
+            try {
                 connection.close();
+            } catch (IOException e) {
+                logger.error("Error closing eBUS connection: {}", e.getMessage(), e);
             }
-        } catch (IOException e) {
-            logger.error(e.toString(), e);
         }
 
+        logger.info("eBUS controller shutdown complete");
     }
 
+    /**
+     * Handles watchdog timer expiration.
+     * Forces a connection close to trigger reconnection on timeout.
+     */
     @Override
     protected void fireWatchDogTimer() {
-        logger.warn("eBUS Watchdog Timer!");
+        logger.warn("Watchdog timer expired - forcing connection reset");
 
         try {
+            logger.debug("Closing connection due to watchdog timeout");
             connection.close();
         } catch (IOException e) {
-            logger.error(EBusConsts.LOG_ERR_DEF, e);
+            logger.error("Error closing connection on watchdog timeout: {}", e.getMessage(), e);
         }
+
+        // Reset send round trip time measurement
+        sendRoundTrip = NO_ROUNDTRIP_TIME;
     }
 }

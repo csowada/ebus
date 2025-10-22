@@ -26,13 +26,13 @@ import de.csdev.ebus.utils.EBusUtils;
 @NonNullByDefault
 public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComplexType<Byte> {
 
-    public static String TYPE_KW_CRC = "kw-crc";
+    public static final String TYPE_KW_CRC = "kw-crc";
 
-    public static String POS = "pos";
+    public static final String POS = "pos";
 
     public static int pos = 0;
 
-    private static String[] supportedTypes = new String[] { TYPE_KW_CRC };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_KW_CRC };
 
     public EBusTypeKWCrc() {
         replaceValue = new byte[] { (byte) 0xCC };
@@ -45,7 +45,7 @@ public class EBusTypeKWCrc extends EBusAbstractType<Byte> implements IEBusComple
 
     @Override
     public String @NonNull [] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override
