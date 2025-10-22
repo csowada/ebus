@@ -30,6 +30,13 @@ public final class ArrayUtil {
     }
 
     /**
+     * Checks if an array is empty or null.
+     */
+    public static boolean isEmpty(String @Nullable [] array) {
+        return array == null || array.length == 0;
+    }
+
+    /**
      * Checks if an array is not empty and not null.
      */
     public static boolean isNotEmpty(byte @Nullable [] array) {
@@ -91,5 +98,25 @@ public final class ArrayUtil {
      */
     public static byte @Nullable [] clone(byte @Nullable [] array) {
         return array == null ? null : Arrays.copyOf(array, array.length);
+    }
+
+    /**
+     * Checks if the given array contains the specified value.
+     * 
+     * @param array the array to search through (may be null)
+     * @param valueToFind the value to find
+     * @return true if the array contains the specified value
+     */
+    public static boolean contains(String @Nullable [] array, String valueToFind) {
+        if (array == null || isEmpty(array)) {
+            return false;
+        }
+        
+        for (String element : array) {
+            if (element == valueToFind) {
+                return true;
+            }
+        }
+        return false;
     }
 }
