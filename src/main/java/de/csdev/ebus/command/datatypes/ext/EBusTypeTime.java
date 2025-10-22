@@ -43,18 +43,17 @@ public class EBusTypeTime extends EBusAbstractType<EBusDateTime> {
     public static final String MINUTES = "minutes"; // MIN - 2
     public static final String MINUTES_SHORT = "minutes_short"; // MIN - 1
 
-    private static String[] supportedTypes = new String[] { TYPE_TIME };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_TIME };
 
     public static final String MINUTE_MULTIPLIER = "minuteMultiplier";
 
     private String variant = DEFAULT;
 
-    @SuppressWarnings({"null"})
     private BigDecimal minuteMultiplier = BigDecimal.valueOf(1);
 
     @Override
     public String[] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override

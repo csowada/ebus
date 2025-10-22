@@ -21,11 +21,11 @@ public class EBusTypeInteger extends AbstractEBusTypeNumber {
 
     public static final String TYPE_INTEGER = "int";
 
-    private static String[] supportedTypes = new String[] { TYPE_INTEGER };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_INTEGER };
 
     @Override
     public String[] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override

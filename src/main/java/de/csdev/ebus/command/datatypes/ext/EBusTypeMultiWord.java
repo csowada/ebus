@@ -31,16 +31,15 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
 
     public static final String BLOCK_MULTIPLIER = "multiplier";
 
-    private static String[] supportedTypes = new String[] { TYPE_MWORD };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_MWORD };
 
     private int length = 2;
     
-    @SuppressWarnings({"null"})
     private BigDecimal multiplier = BigDecimal.valueOf(1000);
 
     @Override
     public String @NonNull [] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override
@@ -85,9 +84,9 @@ public class EBusTypeMultiWord extends EBusAbstractType<BigDecimal> {
 
         byte[] result = new byte[getTypeLength()];
 
-        int length = this.length - 1;
+        int tmpLength = this.length - 1;
 
-        for (int i = length; i >= 0; i--) {
+        for (int i = tmpLength; i >= 0; i--) {
 
             BigDecimal factor = this.multiplier.pow(i);
             BigDecimal[] divideAndRemainder = value.divideAndRemainder(factor);

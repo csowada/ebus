@@ -27,11 +27,11 @@ public class EBusTypeVersion extends EBusAbstractType<BigDecimal> {
 
     public static final String TYPE_VERSION = "version";
 
-    private static String[] supportedTypes = new String[] { TYPE_VERSION };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_VERSION };
 
     @Override
     public String[] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override

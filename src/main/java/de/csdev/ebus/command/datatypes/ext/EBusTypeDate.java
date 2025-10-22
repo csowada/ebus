@@ -44,13 +44,13 @@ public class EBusTypeDate extends EBusAbstractType<EBusDateTime> {
 
     public static final String DAYS = "days"; // DAY - 2
 
-    private static String[] supportedTypes = new String[] { TYPE_DATE };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_DATE };
 
     private String variant = DEFAULT;
 
     @Override
     public String[] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override

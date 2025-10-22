@@ -21,13 +21,13 @@ public class EBusTypeNumber extends AbstractEBusTypeNumber {
 
     public static final String TYPE_NUMBER = "number";
 
-    private static String[] supportedTypes = new String[] { TYPE_NUMBER };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_NUMBER };
 
     private int length = 1;
 
     @Override
     public String[] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override

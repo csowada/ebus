@@ -22,13 +22,13 @@ public class EBusTypeString extends EBusAbstractType<String> {
 
     public static final String TYPE_STRING = "string";
 
-    private static String[] supportedTypes = new String[] { TYPE_STRING };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_STRING };
 
     private Integer length = 1;
 
     @Override
     public String[] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     @Override

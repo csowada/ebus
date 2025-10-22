@@ -37,7 +37,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
     public static final String TYPE_DATETIME = "datetime";
 
-    private static final String[] supportedTypes = new String[] { TYPE_DATETIME };
+    private static final String[] SUPPORTED_TYPES = new String[] { TYPE_DATETIME };
 
     public static final String TIME_FIRST = "timeFirst";
 
@@ -160,7 +160,7 @@ public class EBusTypeDateTime extends EBusAbstractType<EBusDateTime> {
 
     @Override
     public String @NonNull [] getSupportedTypes() {
-        return supportedTypes;
+        return SUPPORTED_TYPES;
     }
 
     private @Nullable IEBusType<Object> getTimeType() {
