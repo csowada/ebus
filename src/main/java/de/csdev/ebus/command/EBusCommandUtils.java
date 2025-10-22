@@ -147,8 +147,8 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static @NonNull ByteBuffer buildCompleteTelegram(byte source, byte target, byte[] command, byte[] masterData,
-            byte[] slaveData) {
+    public static @NonNull ByteBuffer buildCompleteTelegram(byte source, byte target, byte[] command, byte @Nullable [] masterData,
+            byte @Nullable [] slaveData) {
 
         boolean isMastereMaster = EBusUtils.isMasterAddress(target);
         boolean isBroadcast = target == EBusConsts.BROADCAST_ADDRESS;
@@ -192,8 +192,8 @@ public class EBusCommandUtils {
      * @return
      * @throws EBusTypeException
      */
-    public static @NonNull ByteBuffer buildPartMasterTelegram(byte source, byte target, byte[] command,
-            byte[] masterData) {
+    public static @NonNull ByteBuffer buildPartMasterTelegram(byte source, byte target, byte @NonNull [] command,
+            byte @NonNull [] masterData) {
 
         ByteBuffer buf = ByteBuffer.allocate(50);
 

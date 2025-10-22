@@ -35,7 +35,6 @@ import de.csdev.ebus.utils.FieldUtil;
 @NonNullByDefault
 public abstract class EBusAbstractType<T> implements IEBusType<T> {
 
-    @SuppressWarnings({"null"})
     private static final  Logger logger = LoggerFactory.getLogger(EBusAbstractType.class);
 
     protected Map<Object, @Nullable EBusAbstractType<T>> otherInstances = new HashMap<>();
@@ -73,8 +72,8 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
     private @Nullable EBusAbstractType<T> createNewInstance() {
 
         try {
-            @SuppressWarnings({ "unchecked" })
-            EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
+            @SuppressWarnings("unchecked")
+            @Nullable EBusAbstractType<T> newInstance = this.getClass().getDeclaredConstructor().newInstance();
             if (newInstance != null) {
                 newInstance.setTypesParent(types);
                 return newInstance;
@@ -131,7 +130,7 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
      * @see de.csdev.ebus.command.datatypes.IEBusType#encode(java.lang.Object)
      */
     @Override
-    public byte[] encode(@Nullable Object data) throws EBusTypeException {
+    public byte @NonNull [] encode(@Nullable Object data) throws EBusTypeException {
 
         // return the replace value
         if (data == null) {
@@ -139,7 +138,13 @@ public abstract class EBusAbstractType<T> implements IEBusType<T> {
             if (tmpReplaceValue == null) {
                 throw new IllegalStateException("Replace value must not be null");
             }
-            return applyByteOrder(tmpReplaceValue);
+
+            byte[] ndata = applyByteOrder(tmpReplaceValue);
+            if (ndata == null) {
+                throw new IllegalStateException("Replace value after applying byte order must not be null");
+            }
+
+            return ndata;
         }
 
         byte[] result = encodeInt(data);

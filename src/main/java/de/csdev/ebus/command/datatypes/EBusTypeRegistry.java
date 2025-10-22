@@ -46,6 +46,8 @@ import de.csdev.ebus.utils.CollectionUtils;
  */
 public class EBusTypeRegistry {
 
+    private static final String NO_E_BUS_DATA_TYPE_WITH_NAME = "No eBUS data type with name {} !";
+
     private static final Logger logger = LoggerFactory.getLogger(EBusTypeRegistry.class);
 
     private Map<String, IEBusType<?>> types = null;
@@ -133,7 +135,7 @@ public class EBusTypeRegistry {
         IEBusType<T> eBusType = (IEBusType<T>) types.get(type);
 
         if (eBusType == null) {
-            logger.warn("No eBUS data type with name {} !", type);
+            logger.warn(NO_E_BUS_DATA_TYPE_WITH_NAME, type);
             return null;
         }
 
@@ -145,7 +147,7 @@ public class EBusTypeRegistry {
      *
      * @return
      */
-    public <T> Set<String> getTypesNames() {
+    public Set<String> getTypesNames() {
         return types.keySet();
     }
 
@@ -162,7 +164,7 @@ public class EBusTypeRegistry {
         IEBusType<?> eBusType = types.get(type);
 
         if (eBusType == null) {
-            logger.warn("No eBUS data type with name {} !", type);
+            logger.warn(NO_E_BUS_DATA_TYPE_WITH_NAME, type);
             return null;
         }
 
@@ -183,7 +185,7 @@ public class EBusTypeRegistry {
         IEBusType<T> eBusType = (IEBusType<T>) types.get(type);
 
         if (eBusType == null) {
-            logger.warn("No eBUS data type with name {} !", type);
+            logger.warn(NO_E_BUS_DATA_TYPE_WITH_NAME, type);
             return null;
         }
 

@@ -44,14 +44,14 @@ public interface IEBusType<T> {
      * @return
      * @throws EBusTypeException
      */
-    public byte[] encode(@Nullable Object data) throws EBusTypeException;
+    public byte @Nullable [] encode(@Nullable Object data) throws EBusTypeException;
 
     /**
      * Returns the support types of this type
      *
      * @return
      */
-    public String[] getSupportedTypes();
+    public String [] getSupportedTypes();
 
     /**
      * Internal only
