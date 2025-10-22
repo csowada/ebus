@@ -28,7 +28,7 @@ public class EBusTypeBit extends EBusAbstractType<Boolean> {
 
     private static final String[] supportedTypes = new String[] { TYPE_BIT };
 
-    public static String POS = "pos";
+    public static final String POS = "pos";
 
     // will be filled by reflection
     @SuppressWarnings({"null", "java:S1845"})
