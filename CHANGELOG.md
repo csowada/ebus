@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased 
 
+## [1.2.0] - 2025-10-22
+### Changed
+- Large update on code base to modernize code and solve smaller issues, no new features!
+- Remove dependency to Apache Commons Lang3
+
 ## [1.1.13] - 2025-01-31
 ### Changed
 - Update project dependencies to openHAB 4.x versions
