@@ -4,6 +4,7 @@
 name: Maven Package
 
 on:
+  workflow_dispatch:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
@@ -39,10 +40,10 @@ jobs:
         java-version: 11
         distribution: temurin
         cache: maven
-        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
-        server-username: OSSRH_USERNAME  # env variable for username in deploy
-        server-password: OSSRH_PASSWORD  # env variable for token in deploy
-        gpg-passphrase: GPG_PASSPHRASE  # env variable for GPG private key passphrase
+        server-id: central # Value of the distributionManagement/repository/id field of the pom.xml
+        server-username: MAVEN_CENTRAL_USER  # env variable for username in deploy
+        server-password: MAVEN_CENTRAL_PASSWORD  # env variable for token in deploy
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE  # env variable for GPG private key passphrase
 
     - name: Build and Verify with Maven
       run: mvn --batch-mode --update-snapshots clean compile verify
@@ -51,9 +52,9 @@ jobs:
       # run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras -Dmaven.test.skip=true
       run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras,deploy-ossrh -Dmaven.test.skip=true
       env:
-        OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
-        OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        MAVEN_CENTRAL_USER: ${{ secrets.MAVEN_CENTRAL_USER }}
+        MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
     - name: Set up Java for publishing to GitHub Packages
       uses: actions/setup-java@v4
@@ -62,6 +63,7 @@ jobs:
         distribution: temurin
         cache: maven
         
+
     - name: Publish to GitHub Packages
     #  -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/csowada/ebus
       run: mvn deploy --batch-mode --update-snapshots -P !sign,!build-extras,!deploy-ossrh,deploy-github -Dmaven.test.skip=true
