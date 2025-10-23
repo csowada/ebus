@@ -4,6 +4,7 @@
 name: Maven Package
 
 on:
+  workflow_dispatch:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
@@ -51,8 +52,8 @@ jobs:
       # run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras -Dmaven.test.skip=true
       run: mvn deploy --batch-mode --update-snapshots -P sign,!build-extras,deploy-ossrh -Dmaven.test.skip=true
       env:
-        # OSSRH_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
-        # OSSRH_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
+        MAVEN_CENTRAL_USER: ${{ secrets.MAVEN_CENTRAL_USER }}
+        MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
     - name: Set up Java for publishing to GitHub Packages
